@@ -194,10 +194,11 @@ def login():
                 
                 if len(result) == 0:
                     session['userType'] = 'customer'
+                    session['firstName'] = result['firstName']
                 else:
                     session['userType'] = 'iatauser'
+                    session['firstName'] = result['firstName']
 
-                print(session)
                 flash('You are now logged in', 'success')
                 return render_template('index.html')
             else:
