@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container-login">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class = 'text-center'>
+                <p>Register</p><i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+        <form action="{{ url_for('registerI') }}" method="POST"
+        autocomplete="off"
+        >
+            <div class="formhelp mb-5">
+                <i class="fas fa-user-tie fa-lg"></i>
+                <input type="text" name="firstName" class="form-control text-center" required placeholder="Enter First Name&#42;"
+                    onfocus="this.placeholder = ''"
+                onfocusout = "this.placeholder = 'Enter First Name&#42;'"    
+                minlength="4"
+                maxlength="12"
+                >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-user-tie fa-lg"></i>
+                <input type="text" name="lastName" class="form-control text-center" required placeholder="Enter Last Name&#42;"
+                    onfocus="this.placeholder = ''"
+                    onfocusout = "this.placeholder = 'Enter Last Name&#42;'"
+                minlength="4"
+                maxlength="12"    
+                    >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-envelope fa-lg"></i>
+                <input type="email" name="email" class="form-control text-center" required
+                    placeholder="Email Address&#42;" onfocus="this.placeholder = ''"
+                    onfocusout = "this.placeholder = 'Email Address&#42;'"
+                    >
+                <small id='smallID' class='form-text text-muted'>
+                    We'll never share your email with anyone else.
+                </small>
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-key fa-lg"></i>
+                <input type="password" name="password"
+                    id = 'password' class="form-control text-center" required
+                    placeholder="Password&#42;" onfocus="this.placeholder = ''"
+                    onfocusout = "this.placeholder = 'Password&#42;'"
+                    minlength="4"
+                    maxlength="12"
+
+                    onkeyup= 'checkp();'
+                    >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-key fa-lg"></i>
+                <input type="password" name="confirmPassword" class="form-control text-center" required placeholder="Confirm Password&#42;"
+                id = 'cpassword'    
+                onfocus="this.placeholder = ''"
+                    onfocusout = "this.placeholder = 'Confirm Password&#42;'"
+                    minlength="4"
+                    maxlength="12"
+                    onkeyup= 'checkp();'
+                    >
+                <span id='msg' class='form-text text-muted'>
+                </span>
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-asterisk fa-lg"></i>
+                <input type="text" name="IATACode" class="form-control text-center" required placeholder="Enter IATA Code&#42;"
+                    onfocus="this.placeholder = ''"
+                    onfocusout = "this.placeholder = 'Enter IATA Code&#42;'"
+                    >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-asterisk fa-lg"></i>
+                <input type="text" name="agencyName" class="form-control text-center" required placeholder="Enter Travel Agency Name&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Travel Agency Name&#42;'"
+                minlength="4"
+                maxlength="12"    
+                    >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-mobile fa-lg"></i>
+                <input type="text" name="phoneN" class="form-control text-center" required
+                    placeholder="Enter Phone Number&#42;" onfocus="this.placeholder = ''"
+                    onfocusout="this.placeholder = 'Enter Phone Number&#42;'">
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-address-book fa-lg"></i>
+                <textarea name="address" class="form-control text-center" required placeholder="Enter Address&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Address&#42;'"></textarea>
+            </div>
+            <div class="formhelp mb-5">
+                <i class="far fa-flag"></i>
+                <input type="text" name="country" class="form-control text-center" required placeholder="Country&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'"
+                    minlength="4"
+                    maxlength="12"
+                    >
+            </div>
+            <div class="formhelp mb-5">
+                <i class="fas fa-city fa-lg"></i>
+                <input type="text" name="city" class="form-control text-center" required placeholder="City&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City&#42;'"
+                    minlength="4"
+                    maxlength="12">
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" 
+                        id = 'subm'
+                        class="btnLogin">Sign Up <i class="fas fa-user-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
