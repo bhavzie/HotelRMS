@@ -264,6 +264,12 @@ def passwordupdatef():
     flash('Your password has been updated', 'success')
     return render_template('login.html', title = 'Login')
 
+@is_logged_in
+@app.route('/signOut')
+def signOut():
+    session.clear()
+    flash('You are now logged out', 'success')
+    return render_template('login.html', title = 'Login')
 
 if __name__ == "__main__":
     app.run(debug = True)

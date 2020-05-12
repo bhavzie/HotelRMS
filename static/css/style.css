@@ -23,7 +23,8 @@
 }
 
 .navbar-brand {
-  font-size: 26px !important;
+  font-size: 25px !important;
+  margin-bottom: 6px;
 }
 
 
