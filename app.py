@@ -206,12 +206,11 @@ def login():
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
-    return render_template('forgotpassword.html', title = 'forgotpassword')
+    return render_template('forgotpasswordreq.html', title = 'forgotpassword')
 
-@app.route('/passwordupdate', methods = ['GET', 'POST'])
-def passwordupdate():
+@app.route('/passwordupdatereq', methods = ['GET', 'POST'])
+def passwordupdatereq():
     email = request.form['email']
-    password = request.form['password']
 
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From IATAUsers where email = %s', [email])
@@ -222,15 +221,48 @@ def passwordupdate():
 
     if len(data1) == 0 and len(data2) == 0:
         flash('Email not registered', 'danger')
-        return render_template('login.html', title = 'Login')
+        return render_template('login.html', title='Login')
     else:
-        if len(data1) != 0:
-            cursor.execute('Update IATAUsers SET password = %s WHERE email = %s', [password, email])
-        else:
-            cursor.execute('Update Customers SET password = %s WHERE email = %s', [password, email])
+        token = generate_confirmation_token(email)
+        msg = Message(
+            'Update Password',
+            sender = 'koolbhavya.epic@gmail.com',
+            recipients = [email])
+        link = url_for('passwordupdate', token = token, _external=True)
+        msg.body = 'Change your password by clicking this link:- {}'.format(link)
+        mail.send(msg)
+
+        flash('Kindly Check your email', 'success')
+        return render_template('login.html', title = 'Login')
+
+
+@app.route('/passwordupdate/<token>', methods = ['GET', 'POST'])
+def passwordupdate(token):
+    email = confirm_token(token)
+
+    return render_template('forgotpassword.html', email = email)
+
+@app.route('/passwordupdatef', methods = ['GET', 'POST'])
+def passwordupdatef():
+    email = request.form['email']
+    password = request.form['password']
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From IATAUsers where email = %s', [email])
+    data1 = cursor.fetchall()
+
+    cursor.execute('SELECT * From Customers where email = %s', [email])
+    data2 = cursor.fetchall()
+
+    if len(data1) == 0:
+        cursor.execute('UPDATE Customers SET password = %s where email = %s', [password, email])
+    else:
+        cursor.execute('UPDATE IATAUsers SET password = %s where email = %s', [password, email])
+
     mysql.connection.commit()
+    cursor.close()
     flash('Your password has been updated', 'success')
-    return render_template('login.html', title="Login")
+    return render_template('login.html', title = 'Login')
 
 
 if __name__ == "__main__":
