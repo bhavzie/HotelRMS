@@ -366,14 +366,10 @@ if __name__ == "__main__":
 
 
 '''
-    access management
 
-    hotel users admin => all
 
     hotel dev admin => ui management, create hotel users
 
-    iata => req, user-management(add, edit), analytics(only dashboard)
-
-    others => req, analytics(only dashboard)
+    master database => user
 
 '''
