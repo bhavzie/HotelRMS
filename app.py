@@ -45,8 +45,21 @@ def confirm_email(token):
     else:
         # DB ADD the Verified Email Flag
         cursor = mysql.connection.cursor()
-        cursor.execute('UPDATE IATAUsers SET email_verified = 1 WHERE email = %s', [email])
-        
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * From Customers where email = %s', [email])
+        data = cursor.fetchall()
+        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
+        data2 = cursor.fetchall()
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        data3 = cursor.fetchall()
+
+        if len(data) != 0:
+            cursor.execute('UPDATE Customers SET email_verified = 1 WHERE email = %s', [email])
+        elif len(data2) != 0:
+            cursor.execute('UPDATE IATAUsers SET email_verified = 1 WHERE email = %s', [email])
+        else:
+            cursor.execute('UPDATE hotelUsers SET email_verified = 1 WHERE email = %s', [email])
+
         mysql.connection.commit()
         cursor.close()
         
@@ -104,8 +117,10 @@ def registerI():
         data = cursor.fetchall()
         cursor.execute('SELECT * From Customers where email = %s', [email])
         data2 = cursor.fetchall()
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        data3 = cursor.fetchall()
 
-        if len(data) == 0 and len(data2) == 0:
+        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
             token = generate_confirmation_token(email)
             msg = Message(
             'Confirm Email',
@@ -144,8 +159,10 @@ def registerC():
         data = cursor.fetchall()
         cursor.execute('SELECT * From IATAUsers where email = %s', [email])
         data2 = cursor.fetchall()
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        data3 = cursor.fetchall()
 
-        if len(data) == 0 and len(data2) == 0:
+        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
             token = generate_confirmation_token(email)
             msg = Message(
             'Confirm Email',
@@ -176,29 +193,44 @@ def login():
 
         cursor = mysql.connection.cursor()
         cursor.execute("SELECT * From IATAUsers where email = %s", [email]) 
-        result = cursor.fetchall()
+        data = cursor.fetchall()
         
         cursor.execute('SELECT * From Customers where email = %s', [email])
         data2 = cursor.fetchall()
 
-        if len(result) == 0 and len(data2) == 0:
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        data3 = cursor.fetchall()
+
+        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
             error = 'Email not registered'
             return render_template('login.html', error = error)
         else:
-            result = result[0]
-            password_match = result['password']
+            if len(data) != 0:
+                result = data[0]
+                password_match = result['password']
+            elif len(data2) != 0:
+                result = data2[0]
+                password_match = result['password']
+            else:
+                result = data3[0]
+                password_match = result['password']
             
             if (password == password_match):
                 session['logged_in'] = True
                 session['email'] = email
-                session['firstName'] = result['firstName']
                 
-                if len(result) == 0:
+                if len(data) != 0:
+                    session['userType'] = 'iatauser'
+                    session['firstName'] = result['firstName']
+                elif len(data2) != 0:
                     session['userType'] = 'customer'
                     session['firstName'] = result['firstName']
                 else:
-                    session['userType'] = 'iatauser'
+                    session['userType'] = 'hoteluser'
+                    session['userSubType'] = result['userType']
                     session['firstName'] = result['firstName']
+
+                print(session)
 
                 flash('You are now logged in', 'success')
                 return render_template('index.html')
@@ -222,7 +254,10 @@ def passwordupdatereq():
     cursor.execute('SELECT * From Customers where email = %s', [email])
     data2 = cursor.fetchall()
 
-    if len(data1) == 0 and len(data2) == 0:
+    cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+    data3 = cursor.fetchall()
+
+    if len(data1) == 0 and len(data2) == 0 and len(data3) == 0:
         flash('Email not registered', 'danger')
         return render_template('login.html', title='Login')
     else:
@@ -242,7 +277,6 @@ def passwordupdatereq():
 @app.route('/passwordupdate/<token>', methods = ['GET', 'POST'])
 def passwordupdate(token):
     email = confirm_token(token)
-
     return render_template('forgotpassword.html', email = email)
 
 @app.route('/passwordupdatef', methods = ['GET', 'POST'])
@@ -257,11 +291,15 @@ def passwordupdatef():
     cursor.execute('SELECT * From Customers where email = %s', [email])
     data2 = cursor.fetchall()
 
-    if len(data1) == 0:
-        cursor.execute('UPDATE Customers SET password = %s where email = %s', [password, email])
-    else:
-        cursor.execute('UPDATE IATAUsers SET password = %s where email = %s', [password, email])
+    cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+    data3 = cursor.fetchall()
 
+    if len(data2) != 0:
+        cursor.execute('UPDATE Customers SET password = %s where email = %s', [password, email])
+    elif len(data1) != 0:
+        cursor.execute('UPDATE IATAUsers SET password = %s where email = %s', [password, email])
+    else:
+        cursor.execute('UPDATE hotelUsers SET password = %s where email = %s', [password, email])
     mysql.connection.commit()
     cursor.close()
     flash('Your password has been updated', 'success')
@@ -280,7 +318,47 @@ def hoteladduser():
 
 @app.route('/registerhotelusers', methods = ['GET', 'POST'])
 def registerhotelusers():
-    return 'h'
+    if request.method == 'POST':
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+        phoneN = request.form['phoneN']
+        address = request.form['address']
+        country = request.form['country']
+        city = request.form['city']
+        userType = request.form['userType']
+
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * From Customers where email = %s', [email])
+        data = cursor.fetchall()
+        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
+        data2 = cursor.fetchall()
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        data3 = cursor.fetchall()
+
+        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
+            token = generate_confirmation_token(email)
+            msg = Message(
+                'Confirm Email',
+                sender='koolbhavya.epic@gmail.com',
+                recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body = 'Confirm your email by clicking this link:- {}'.format(
+                link)
+            mail.send(msg)
+            cursor.execute("INSERT INTO hotelUsers(firstName, lastName, email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (firstName, lastName, email, password, phoneN, address, country, city, userType))
+        else:
+            flash('Email Already Registered', 'danger')
+            return render_template('hoteladduser.html', title="Register")
+
+        mysql.connection.commit()
+        cursor.close()
+
+        flash('You are now registered and can log in', 'success')
+        return render_template('login.html', title='Login')
+
 
 
 if __name__ == "__main__":

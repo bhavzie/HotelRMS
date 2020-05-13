@@ -44,4 +44,9 @@ $(document).ready(function () {
         $(".core-menu").slideToggle("fast");
     });
 
+    $('.dropdown-menu li').on('click', function () {
+        var getValue = $(this).text();
+        $('.dropdown-select').text(getValue);
+    });
 }); 
+
