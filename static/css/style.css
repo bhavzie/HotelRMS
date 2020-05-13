@@ -353,8 +353,8 @@ html {
   position: relative;
   color: #fff;
   font-weight: 700;
-  min-width: 300px;
-  font-size: 15px;
+  width: 270px;
+  font-size: 12px;
   background-color: #222;
   padding: 17px 60px;
   margin: 0 auto;

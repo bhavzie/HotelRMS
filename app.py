@@ -275,6 +275,4 @@ def signOut():
 if __name__ == "__main__":
     app.run(debug = True)
 
-'''
-Change navbar after login (adding menu bars) 
-'''
+
