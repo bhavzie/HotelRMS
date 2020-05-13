@@ -74,7 +74,7 @@
                         <a href='#'>Hotel</a>
                         <ul>
                             <li>
-                                <a href = '#'>Add</a>
+                                <a href = '/hoteladduser'>Add</a>
                             </li>
                             <li>
                                 <a href='#'>Edit</a>
@@ -111,11 +111,28 @@
         <ul class = 'menu navbar-nav ml-auto'>
             <li>
                 <a href="#">
-                    Welcome {{ session.firstName }}
-                    <ul>
-                        <li><a href = '/signOut'>
-                            Sign-Out
-                        </a></li>
+                    Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
+                    <ul class = 'sub-menu'>
+                        <li>
+                            <a href = '#'>
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                FAQ
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                User Guide
+                            </a>
+                        </li>
+                        <li>
+                            <a href = '/signOut'>
+                                Sign-Out
+                            </a>
+                        </li>
                     </ul>
                 </a>
             </li>

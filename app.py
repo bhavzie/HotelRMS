@@ -34,7 +34,8 @@ def confirm_token(token, expiration=3600):
         return False
     return email
 
-@app.route('/confirm_email/<token>')
+
+@app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
     email = confirm_token(token)
 
@@ -204,6 +205,7 @@ def login():
             else:
                 error = 'Passwords did not match'
                 return render_template('login.html', error = error)
+    return render_template('login.html', title = 'Login')
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
@@ -266,13 +268,34 @@ def passwordupdatef():
     return render_template('login.html', title = 'Login')
 
 @is_logged_in
-@app.route('/signOut')
+@app.route('/signOut', methods=['GET', 'POST'])
 def signOut():
     session.clear()
     flash('You are now logged out', 'success')
     return render_template('login.html', title = 'Login')
 
+@app.route('/hoteladduser', methods = ['GET', 'POST'])
+def hoteladduser():
+    return render_template('hoteladduser.html', title = 'AddUser')
+
+@app.route('/registerhotelusers', methods = ['GET', 'POST'])
+def registerhotelusers():
+    return 'h'
+
+
 if __name__ == "__main__":
     app.run(debug = True)
 
 
+'''
+    access management
+
+    hotel users admin => all
+
+    hotel dev admin => ui management, create hotel users
+
+    iata => req, user-management(add, edit), analytics(only dashboard)
+
+    others => req, analytics(only dashboard)
+
+'''
