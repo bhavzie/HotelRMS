@@ -4,10 +4,10 @@
     <div class="wrap-login">
         <div class='loginH'>
             <div class='text-center'>
-                <p>Add Hotel Users</p><i class="fas fa-user-plus"></i>
+                <p>Add Developer</p><i class="fas fa-user-plus"></i>
             </div>
         </div>
-        <form action="{{ url_for('registerhotelusers') }}" method="POST">
+        <form action="{{ url_for('registerdeveloper') }}" method="POST">
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
                 <input type="text" name="firstName" class="form-control text-center" required
@@ -30,25 +30,6 @@
                 </small>
             </div>
             <div class="formhelp mb-5">
-                <i class="fas fa-user-tag fa-lg"></i>
-                <select class = 'form-control text-center'
-                    name = 'userType' required
-                >
-                    <option selected disabled>
-                        User Type
-                    </option>
-                    <option value = 'hotelAdmin'>
-                        Hotel Admin
-                    </option>
-                    <option value = 'revenue'>
-                        Revenue Management
-                    </option>
-                    <option value = 'reservation'>
-                        Reservations
-                    </option>
-                </select>
-            </div>
-            <div class="formhelp mb-5">
                 <i class="fas fa-key fa-lg"></i>
                 <input type="password" name="password" class="form-control text-center" required id='password'
                     placeholder="Password&#42;" onfocus="this.placeholder = ''"
@@ -61,29 +42,6 @@
                     onfocusout="this.placeholder = 'Confirm Password&#42;'" minlength="4" onkeyup='checkp();'
                     maxlength="12">
                 <span id='msg' class='form-text text-muted'>
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-mobile fa-lg"></i>
-                <input type="text" name="phoneN" class="form-control text-center" required
-                    placeholder="Enter Phone Number&#42;" onfocus="this.placeholder = ''"
-                    onfocusout="this.placeholder = 'Enter Phone Number&#42;'">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-address-book fa-lg"></i>
-                <textarea name="address" class="form-control text-center" required placeholder="Enter Address&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Address&#42;'"></textarea>
-            </div>
-            <div class="formhelp mb-5">
-                <i class="far fa-flag"></i>
-                <input type="text" name="country" class="form-control text-center" required placeholder="Country&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'" minlength="4"
-                    maxlength="12">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-city fa-lg"></i>
-                <input type="text" name="city" class="form-control text-center" required placeholder="City&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City&#42;'" minlength="4"
-                    maxlength="12">
             </div>
             <div class="row">
                 <div class="col-sm-12 mt-3">

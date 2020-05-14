@@ -45,20 +45,20 @@ def confirm_email(token):
     else:
         # DB ADD the Verified Email Flag
         cursor = mysql.connection.cursor()
-        cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * From Customers where email = %s', [email])
+        cursor.execute('SELECT * FROM users where email = %s', [email])
         data = cursor.fetchall()
-        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
-        data2 = cursor.fetchall()
-        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-        data3 = cursor.fetchall()
+        data = data[0]
 
-        if len(data) != 0:
+
+
+        if data['userType'] == 'customer':
             cursor.execute('UPDATE Customers SET email_verified = 1 WHERE email = %s', [email])
-        elif len(data2) != 0:
+        elif data['userType'] == 'iatauser':
             cursor.execute('UPDATE IATAUsers SET email_verified = 1 WHERE email = %s', [email])
-        else:
+        elif data['userType'] == 'hoteluser':
             cursor.execute('UPDATE hotelUsers SET email_verified = 1 WHERE email = %s', [email])
+        elif data['userType'] == 'developer':
+            cursor.execute('UPDATE developers SET email_verified = 1 WHERE email = %s', [email])
 
         mysql.connection.commit()
         cursor.close()
@@ -78,7 +78,17 @@ def is_logged_in(f):
     return wrap
 
 
+
+
 @app.route('/', methods = ['GET', 'POST'])
+def f():
+    try:
+        if session['logged_in'] == True:
+            return render_template('index.html', title = 'Home')
+    except:
+        return render_template('login.html', title = 'Login')
+
+
 @app.route('/signIn', methods=['GET', 'POST'])
 def index():
     return render_template('login.html', title = 'Login')
@@ -113,14 +123,11 @@ def registerI():
         
         
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
+        cursor.execute('SELECT * From users where email = %s', [email])
         data = cursor.fetchall()
-        cursor.execute('SELECT * From Customers where email = %s', [email])
-        data2 = cursor.fetchall()
-        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-        data3 = cursor.fetchall()
 
-        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
+
+        if len(data) == 0:
             token = generate_confirmation_token(email)
             msg = Message(
             'Confirm Email',
@@ -131,6 +138,7 @@ def registerI():
             mail.send(msg)
 
             cursor.execute("INSERT INTO IATAUsers(firstName, lastName, email, password, IATACode, agencyName, phone, address, country, city) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (firstName, lastName, email, password, iatacode, agencyName, phoneN, address, country, city))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)', (firstName, email, password, 'iatauser'))
         else:
             flash('Email Already Registered', 'danger')
             return render_template('registerIata.html', title = "Register")
@@ -155,14 +163,10 @@ def registerC():
         city = request.form['city']
 
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * From Customers where email = %s', [email])
+        cursor.execute('SELECT * From users where email = %s', [email])
         data = cursor.fetchall()
-        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
-        data2 = cursor.fetchall()
-        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-        data3 = cursor.fetchall()
 
-        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
+        if len(data) == 0:
             token = generate_confirmation_token(email)
             msg = Message(
             'Confirm Email',
@@ -173,6 +177,8 @@ def registerC():
             mail.send(msg)
             cursor.execute("INSERT INTO Customers(firstName, lastName, email, password, phone, address, country, city) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
                            (firstName, lastName, email, password, phoneN, address, country, city))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
+                           (firstName, email, password, 'customer'))
         else:
             flash('Email Already Registered', 'danger')
             return render_template('rcustomer.html', title="Register")
@@ -192,43 +198,37 @@ def login():
         password = request.form['password']
 
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * From IATAUsers where email = %s", [email]) 
+        cursor.execute('SELECT * From users where email = %s', [email])
         data = cursor.fetchall()
-        
-        cursor.execute('SELECT * From Customers where email = %s', [email])
-        data2 = cursor.fetchall()
 
-        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-        data3 = cursor.fetchall()
-
-        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
+        if len(data) == 0:
             error = 'Email not registered'
             return render_template('login.html', error = error)
         else:
-            if len(data) != 0:
-                result = data[0]
-                password_match = result['password']
-            elif len(data2) != 0:
-                result = data2[0]
-                password_match = result['password']
-            else:
-                result = data3[0]
-                password_match = result['password']
+            data = data[0]
+            password_match = data['password']
             
             if (password == password_match):
                 session['logged_in'] = True
                 session['email'] = email
+                session['userType'] = data['userType']
+                session['firstName'] = data['firstName']
+
+                ''' 
+                    * userType:-
+                    * For Others = 'customer'
+                    * For IATA = 'iatauser'
+                    * For Hotel = 'hoteluser' & 
+                        userSubType = 
+                            1) hotelAdmin
+                            2) revenue
+                            3) reservation
+
+                    * For developer = 'developer'
+                '''
                 
-                if len(data) != 0:
-                    session['userType'] = 'iatauser'
-                    session['firstName'] = result['firstName']
-                elif len(data2) != 0:
-                    session['userType'] = 'customer'
-                    session['firstName'] = result['firstName']
-                else:
-                    session['userType'] = 'hoteluser'
-                    session['userSubType'] = result['userType']
-                    session['firstName'] = result['firstName']
+                if session['userType'] == 'hoteluser':
+                    session['userSubType'] = data['userSubType']
 
                 print(session)
 
@@ -237,6 +237,7 @@ def login():
             else:
                 error = 'Passwords did not match'
                 return render_template('login.html', error = error)
+
     return render_template('login.html', title = 'Login')
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
@@ -248,16 +249,10 @@ def passwordupdatereq():
     email = request.form['email']
 
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From IATAUsers where email = %s', [email])
-    data1 = cursor.fetchall()
+    cursor.execute('SELECT * From users where email = %s', [email])
+    data = cursor.fetchall()
 
-    cursor.execute('SELECT * From Customers where email = %s', [email])
-    data2 = cursor.fetchall()
-
-    cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-    data3 = cursor.fetchall()
-
-    if len(data1) == 0 and len(data2) == 0 and len(data3) == 0:
+    if len(data) == 0:
         flash('Email not registered', 'danger')
         return render_template('login.html', title='Login')
     else:
@@ -285,21 +280,21 @@ def passwordupdatef():
     password = request.form['password']
 
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From IATAUsers where email = %s', [email])
-    data1 = cursor.fetchall()
+    cursor.execute('SELECT * From users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
 
-    cursor.execute('SELECT * From Customers where email = %s', [email])
-    data2 = cursor.fetchall()
+    cursor.execute('UPDATE users SET password = %s where email = %s', [password, email])
 
-    cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-    data3 = cursor.fetchall()
-
-    if len(data2) != 0:
+    if data['userType'] == 'customer':
         cursor.execute('UPDATE Customers SET password = %s where email = %s', [password, email])
-    elif len(data1) != 0:
+    elif data['userType'] == 'iatauser':
         cursor.execute('UPDATE IATAUsers SET password = %s where email = %s', [password, email])
-    else:
+    elif data['userType'] == 'hotelUser':
         cursor.execute('UPDATE hotelUsers SET password = %s where email = %s', [password, email])
+    elif data['userType'] == 'developer':
+        cursor.execute('UPDATE developers SET password = %s where email = %s', [password, email])
+    
     mysql.connection.commit()
     cursor.close()
     flash('Your password has been updated', 'success')
@@ -330,14 +325,10 @@ def registerhotelusers():
         userType = request.form['userType']
 
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * From Customers where email = %s', [email])
+        cursor.execute('SELECT * From users where email = %s', [email])
         data = cursor.fetchall()
-        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
-        data2 = cursor.fetchall()
-        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
-        data3 = cursor.fetchall()
 
-        if len(data) == 0 and len(data2) == 0 and len(data3) == 0:
+        if len(data) == 0:
             token = generate_confirmation_token(email)
             msg = Message(
                 'Confirm Email',
@@ -347,8 +338,8 @@ def registerhotelusers():
             msg.body = 'Confirm your email by clicking this link:- {}'.format(
                 link)
             mail.send(msg)
-            cursor.execute("INSERT INTO hotelUsers(firstName, lastName, email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                           (firstName, lastName, email, password, phoneN, address, country, city, userType))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType))
+            cursor.execute('INSERT INTO hotelUsers(firstName, lastName, email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)', (firstName, lastName, email, password, phoneN, address, country, city, userType))
         else:
             flash('Email Already Registered', 'danger')
             return render_template('hoteladduser.html', title="Register")
@@ -356,9 +347,58 @@ def registerhotelusers():
         mysql.connection.commit()
         cursor.close()
 
+        flash('New Hotel user has been added', 'success')
+        return render_template('index.html')
+
+@app.route('/adddeveloper', methods = ['GET', 'POST'])
+def adddeeloper():
+    return render_template('adddeveloper.html', title =  'Add')
+
+@app.route('/registerdeveloper', methods = ['GET', 'POST'])
+def registerdeveloper():
+    if request.method == 'POST':
+
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
+
+
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * From users where email = %s', [email])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+
+            token = generate_confirmation_token(email)
+            msg = Message(
+                    'Confirm Email',
+                    sender='koolbhavya.epic@gmail.com',
+                    recipients=[email])
+            link = url_for('confirm_email', token=token, _external=True)
+            msg.body = 'Confirm your email by clicking this link:- {}'.format(
+                    link)
+            mail.send(msg)
+
+            cursor = mysql.connection.cursor()
+            cursor.execute('INSERT INTO developers(firstName, lastName, email, password) values(%s, %s, %s, %s)',
+            (firstName, lastName, email, password))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
+                           (firstName, email, password, 'developer'))
+        
+        else:
+            flash('Email Already Registered', 'danger')
+            return render_template('adddeveloper.html', title="Register")
+
+
+
+        mysql.connection.commit()
+        cursor.close()
+
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
-
+        
+    return render_template('login.html', title='Login')
 
 
 if __name__ == "__main__":
@@ -367,9 +407,8 @@ if __name__ == "__main__":
 
 '''
 
+    TODOS
 
-    hotel dev admin => ui management, create hotel users
-
-    master database => user
+    hoteluser => ui management
 
 '''
