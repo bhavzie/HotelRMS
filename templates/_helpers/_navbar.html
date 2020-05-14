@@ -1,290 +1,432 @@
-<nav class = 'navbar navbar-expand-md navbar-dark bg-dark  fixed-top'>
-    <a class = 'navbar-brand'>Brand Name</a>
+<nav class='navbar navbar-expand-md navbar-dark bg-dark  fixed-top'>
+    <a class='navbar-brand'>Brand Name</a>
     {% if session.logged_in %}
 
     <div class='collapse navbar-collapse w-100 order-3 dual-collapse2 mr-3'>
         {% if session.userType == 'hoteluser' %}
-            <ul class = 'menu navbar-nav mx-auto'> 
-                <li>
-                    <a class="homer" href="#">
-                        Request
-                    </a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Create</a>
-                            <ul>
-                                <li><a href = '#'>Adhoc</a></li>
-                                <li><a href='#'>Series</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Manage</a></li>
-                    </ul>
-                </li>
+        <ul class='menu navbar-nav mx-auto'>
+            <li>
+                <a class="homer" href="#">
+                    Request
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Create</a>
+                        <ul>
+                            <li><a href='#'>Adhoc</a></li>
+                            <li><a href='#'>Series</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Manage</a></li>
+                </ul>
+            </li>
 
-                <li>
-                    <a href="#">
-                        Yield Manager
-                    </a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Rate Grid</a></li>
-                        <li>
-                            <a href="#">Discount</a>
-                            <ul>
-                                <li><a href="#">Create & View</a></li>
-                                <li><a href="#">Map</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+            <li>
+                <a href="#">
+                    Yield Manager
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Rate Grid</a></li>
+                    <li>
+                        <a href="#">Discount</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
 
-                <li>
-                    <a href="#">
-                        Business Rules
-                    </a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Request</a>
-                            <ul>
-                                <li><a href = '#'>Create & View</a></li>
-                                <li><a href='#'>Map</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Contact</a>
-                            <ul>
-                                <li><a href="#">Create & View</a></li>
-                                <li><a href="#">Map</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Time Limit</a>
-                            <ul>
-                                <li><a href="#">Create & View</a></li>
-                                <li><a href="#">Map</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Negotiation</a></li>
-                        <li><a href="#">Autopilot</a></li>
-                    </ul>
-                </li>
+            <li>
+                <a href="#">
+                    Business Rules
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Request</a>
+                        <ul>
+                            <li><a href='#'>Create & View</a></li>
+                            <li><a href='#'>Map</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Time Limit</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Negotiation</a></li>
+                    <li><a href="#">Autopilot</a></li>
+                </ul>
+            </li>
 
-                <li>
-                    <a href="#">
-                        User Management
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a href='#'>Hotel</a>
-                            <ul>
-                                <li>
-                                    <a href = '/hoteladduser'>Add</a>
-                                </li>
-                                <li>
-                                    <a href='#'>Edit</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">Customer</a>
-                                                    <ul>
-                                <li>
-                                    <a href = '#'>Add</a>
-                                </li>
-                                <li>
-                                    <a href='#'>Edit</a>
-                                </li>
-                                <li>
-                                    <a href='#'>Upload</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li><a href="#">Analytics</a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Conversion Report</a></li>
-                        <li><a href="#">Top Performing Customers</a></li>
-                        <li><a href="#">Pending Report</a></li>
-                        <li><a href="#">TAT Report</a></li>
-                    </ul>
-                </li>
-
-
-                <li>
-                    <a href='#'>Developers</a>
-                    <ul>
-                        <li>
-                            <a href='/adddeveloper'>Add</a>
-                        </li>
-                    </ul>
-                </li>
-
-
-            </ul>
-            <ul class = 'menu navbar-nav ml-auto'>
-                <li>
-                    <a href="#">
-                        Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
-                        <ul class = 'sub-menu'>
+            <li>
+                <a href="#">
+                    User Management
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href='#'>Hotel</a>
+                        <ul>
                             <li>
-                                <a href = '#'>
-                                    My Profile
-                                </a>
+                                <a href='/hoteladduser'>Add</a>
                             </li>
                             <li>
-                                <a href='#'>
-                                    FAQ
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    User Guide
-                                </a>
-                            </li>
-                            <li>
-                                <a href = '/signOut'>
-                                    Sign-Out
-                                </a>
+                                <a href='#'>Edit</a>
                             </li>
                         </ul>
-                    </a>
-                </li>
-            </ul>
-        {% elif session.userType == 'iatauser' %}
-            <ul class='menu navbar-nav mx-auto'>
-                <li>
-                    <a class="homer" href="#">
-                        Request
-                    </a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Create</a>
-                            <ul>
-                                <li><a href='#'>Adhoc</a></li>
-                                <li><a href='#'>Series</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Manage</a></li>
-                    </ul>
-                </li>
+                    </li>
+                    <li>
+                        <a href="#">Customer</a>
+                        <ul>
+                            <li>
+                                <a href='#'>Add</a>
+                            </li>
+                            <li>
+                                <a href='#'>Edit</a>
+                            </li>
+                            <li>
+                                <a href='#'>Upload</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
 
-                <li>
-                    <a href="#">
-                        User Management
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a href='#'>Add</a>
-                        </li>
-                        <li>
-                            <a href="#">Edit</a>
-                        </li>
-                    </ul>
-                </li>
-                
-                
+            <li><a href="#">Analytics</a>
+                <ul class="sub-menu">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Conversion Report</a></li>
+                    <li><a href="#">Top Performing Customers</a></li>
+                    <li><a href="#">Pending Report</a></li>
+                    <li><a href="#">TAT Report</a></li>
+                </ul>
+            </li>
 
-                <li><a href="#">Analytics</a>
-                    <ul class="sub-menu">
+
+
+        </ul>
+        <ul class='menu navbar-nav ml-auto'>
+            <li>
+                <a href="#">
+                    Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
+                    <ul class='sub-menu'>
                         <li>
-                            <a href="#">
-                                Dashboard
+                            <a href='#'>
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                FAQ
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                User Guide
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/signOut'>
+                                Sign-Out
                             </a>
                         </li>
                     </ul>
-                </li>
-            </ul>
+                </a>
+            </li>
+        </ul>
 
-            <ul class='menu navbar-nav ml-auto'>
-                <li>
-                    <a href="#">
-                        Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
-                        <ul class='sub-menu'>
+        {% elif session.userType == 'developer' %}
+
+        <ul class='menu navbar-nav mx-auto'>
+            <li>
+                <a class="homer" href="#">
+                    Request
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Create</a>
+                        <ul>
+                            <li><a href='#'>Adhoc</a></li>
+                            <li><a href='#'>Series</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Manage</a></li>
+                </ul>
+            </li>
+        
+            <li>
+                <a href="#">
+                    Yield Manager
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Rate Grid</a></li>
+                    <li>
+                        <a href="#">Discount</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        
+            <li>
+                <a href="#">
+                    Business Rules
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Request</a>
+                        <ul>
+                            <li><a href='#'>Create & View</a></li>
+                            <li><a href='#'>Map</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Time Limit</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Negotiation</a></li>
+                    <li><a href="#">Autopilot</a></li>
+                </ul>
+            </li>
+        
+            <li>
+                <a href="#">
+                    User Management
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href='#'>Hotel</a>
+                        <ul>
                             <li>
-                                <a href='#'>
-                                    My Profile
-                                </a>
+                                <a href='/hoteladduser'>Add</a>
                             </li>
                             <li>
-                                <a href='#'>
-                                    FAQ
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    User Guide
-                                </a>
-                            </li>
-                            <li>
-                                <a href='/signOut'>
-                                    Sign-Out
-                                </a>
+                                <a href='#'>Edit</a>
                             </li>
                         </ul>
-                    </a>
-                </li>
-            </ul>
+                    </li>
+                    <li>
+                        <a href="#">Customer</a>
+                        <ul>
+                            <li>
+                                <a href='#'>Add</a>
+                            </li>
+                            <li>
+                                <a href='#'>Edit</a>
+                            </li>
+                            <li>
+                                <a href='#'>Upload</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        
+            <li><a href="#">Analytics</a>
+                <ul class="sub-menu">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Conversion Report</a></li>
+                    <li><a href="#">Top Performing Customers</a></li>
+                    <li><a href="#">Pending Report</a></li>
+                    <li><a href="#">TAT Report</a></li>
+                </ul>
+            </li>
+        
+        
+            <li>
+                <a href='#'>Developers</a>
+                <ul>
+                    <li>
+                        <a href='/adddeveloper'>Add</a>
+                    </li>
+                </ul>
+            </li>
+        
+        
+        </ul>
+        <ul class='menu navbar-nav ml-auto'>
+            <li>
+                <a href="#">
+                    Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
+                    <ul class='sub-menu'>
+                        <li>
+                            <a href='#'>
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                FAQ
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                User Guide
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/signOut'>
+                                Sign-Out
+                            </a>
+                        </li>
+                    </ul>
+                </a>
+            </li>
+        </ul>
+
+
+        {% elif session.userType == 'iatauser' %}
+        <ul class='menu navbar-nav mx-auto'>
+            <li>
+                <a class="homer" href="#">
+                    Request
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Create</a>
+                        <ul>
+                            <li><a href='#'>Adhoc</a></li>
+                            <li><a href='#'>Series</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Manage</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#">
+                    User Management
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href='#'>Add</a>
+                    </li>
+                    <li>
+                        <a href="#">Edit</a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+            <li><a href="#">Analytics</a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class='menu navbar-nav ml-auto'>
+            <li>
+                <a href="#">
+                    Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
+                    <ul class='sub-menu'>
+                        <li>
+                            <a href='#'>
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                FAQ
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                User Guide
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/signOut'>
+                                Sign-Out
+                            </a>
+                        </li>
+                    </ul>
+                </a>
+            </li>
+        </ul>
 
         {% elif session.userType == 'customer' %}
-            <ul class='menu navbar-nav mx-auto'>
-                <li>
-                    <a class="homer" href="#">
-                        Request
-                    </a>
-                    <ul class="sub-menu">
-                        <li><a href="#">Create</a>
-                            <ul>
-                                <li><a href='#'>Adhoc</a></li>
-                                <li><a href='#'>Series</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Manage</a></li>
-                    </ul>
-                </li>
+        <ul class='menu navbar-nav mx-auto'>
+            <li>
+                <a class="homer" href="#">
+                    Request
+                </a>
+                <ul class="sub-menu">
+                    <li><a href="#">Create</a>
+                        <ul>
+                            <li><a href='#'>Adhoc</a></li>
+                            <li><a href='#'>Series</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Manage</a></li>
+                </ul>
+            </li>
 
 
-                <li><a href="#">Analytics</a>
-                    <ul class="sub-menu">
+            <li><a href="#">Analytics</a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class='menu navbar-nav ml-auto'>
+            <li>
+                <a href="#">
+                    Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
+                    <ul class='sub-menu'>
                         <li>
-                            <a href="#">
-                                Dashboard
+                            <a href='#'>
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                FAQ
+                            </a>
+                        </li>
+                        <li>
+                            <a href='#'>
+                                User Guide
+                            </a>
+                        </li>
+                        <li>
+                            <a href='/signOut'>
+                                Sign-Out
                             </a>
                         </li>
                     </ul>
-                </li>
-            </ul>
-
-            <ul class='menu navbar-nav ml-auto'>
-                <li>
-                    <a href="#">
-                        Welcome! {{ session.firstName }} <i class="fas fa-user-circle"></i>
-                        <ul class='sub-menu'>
-                            <li>
-                                <a href='#'>
-                                    My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    FAQ
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    User Guide
-                                </a>
-                            </li>
-                            <li>
-                                <a href='/signOut'>
-                                    Sign-Out
-                                </a>
-                            </li>
-                        </ul>
-                    </a>
-                </li>
-            </ul>
+                </a>
+            </li>
+        </ul>
 
         {% endif %}
-    
+
     </div>
     {% endif %}
 </nav>
