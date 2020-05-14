@@ -401,6 +401,15 @@ def registerdeveloper():
     return render_template('login.html', title='Login')
 
 
+@app.route('/hoteladdusertype', methods = ["GET", "POST"])
+def hoteladdusertype():
+    return render_template('hoteladdusertype.html', title = 'Register')
+
+@app.route('/addusertype', methods = ["GET", 'POST'])
+def addusertype():
+    return 'h'
+
+
 if __name__ == "__main__":
     app.run(debug = True)
 

@@ -1,0 +1,159 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container-login">
+    <div class="wrap-login spread">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Register</p><i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+        <form action="{{ url_for('addusertype') }}" method="POST">
+            <div class="formhelp mb-5">
+                <i class="fas fa-user-tie fa-lg"></i>
+                <input type="text" name="usertype" class="form-control text-center" required
+                    placeholder="Enter User Type&#42;" onfocus="this.placeholder = ''"
+                    onfocusout="this.placeholder = 'Enter User Type&#42;'" minlength="4" maxlength="12">
+            </div>
+
+            <div class = 'check mb-5'>
+                <div class="checkbox">
+                    <span class='checklabel'>
+                        Request :
+                    </span>
+                    <input type="checkbox" value="" onchange="handleChange(this)">
+                    
+                    
+                </div>
+                <div class = 'checkboxdiv'>
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="" disabled><span class='checkl'>Create</span>
+                    </div>
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="" disabled><span class='checkl'>Manage</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class='check mb-5'>
+                <div class="checkbox">
+                    <span class='checklabel'>
+                        Yield Manager :
+                    </span>
+                    <input type="checkbox" value="" onchange="handleChange(this)">
+                       
+                </div>
+                <div class='checkboxdiv'>
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="" disabled><span class='checkl'>Rate Grid</span>
+                    </div>
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="" disabled><span class='checkl'>Discount</span>
+                    </div>
+            
+                </div>
+            </div>
+
+        <div class='check mb-5'>
+            <div class="checkbox">
+                <span class='checklabel'>
+                    Business Rules :
+                </span>
+                <input type="checkbox" value="" onchange="handleChange(this)">
+                
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>Request</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>Contact</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>Contact</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>Time Limit</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>Negotiation</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>AutoPilot
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class='check mb-5'>
+            <div class="checkbox">
+                <span class='checklabel'>
+                    User Management :
+                </span>
+                <input type="checkbox" value="" onchange="handleChange(this)">
+                
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        Hotel
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        Customer
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class='check mb-5'>
+            <div class="checkbox">
+                <span class='checklabel'>
+                    Analytics :
+                </span>
+                <input type="checkbox" value="" onchange="handleChange(this)"
+                >
+               
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class = 'checkl'>
+                        Dashboard
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        Conversion Rate
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        Top Performing Customers
+                    </span>        
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        Pending Reports
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="" disabled><span class='checkl'>
+                        TAT Report
+                    </span>
+                </div>
+            </div>
+        </div>
+            
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Sign Up <i
+                                class="fas fa-user-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

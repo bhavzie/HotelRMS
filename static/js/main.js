@@ -27,6 +27,21 @@ $(document).ready(function () {
 });
 
 
+function handleChange(checkbox) {
+    
+    const check = checkbox.parentElement.parentElement
+    
+    let checkboxes = check.getElementsByClassName('checkbox-inline')
+    
+    for (var i=0; i<checkboxes.length; i++) {
+        checkboxes[i].childNodes[1].disabled = !checkbox.checked
+        checkboxes[i].childNodes[1].checked = false
+    }
+
+}
+
+
+
 $(document).ready(function () {
     //the trigger on hover when cursor directed to this class
     $(".core-menu li").hover(
