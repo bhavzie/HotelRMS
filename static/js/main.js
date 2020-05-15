@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 function handleChange(checkbox) {
     
-    const check = checkbox.parentElement.parentElement
+    const check = checkbox.parentElement.parentElement.parentElement
     
     let checkboxes = check.getElementsByClassName('checkbox-inline')
     
