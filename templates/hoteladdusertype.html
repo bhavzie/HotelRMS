@@ -4,7 +4,7 @@
     <div class="wrap-login spread">
         <div class='loginH'>
             <div class='text-center'>
-                <p>Register</p><i class="fas fa-user-plus"></i>
+                <p>Add User Type</p><i class="fas fa-user-plus"></i>
             </div>
         </div>
         <form action="{{ url_for('addusertype') }}" method="POST">
@@ -12,7 +12,7 @@
                 <i class="fas fa-user-tie fa-lg"></i>
                 <input type="text" name="usertype" class="form-control text-center" required
                     placeholder="Enter User Type&#42;" onfocus="this.placeholder = ''"
-                    onfocusout="this.placeholder = 'Enter User Type&#42;'" minlength="4" maxlength="12">
+                    onfocusout="this.placeholder = 'Enter User Type&#42;'" minlength="4" maxlength="20">
             </div>
             
 
@@ -20,8 +20,9 @@
                 <div class="form-check checkbox-slider--b-flat">
                     <label>
                         <input type="checkbox"
-                            value = ""
+                            value = "True"
                             onchange="handleChange(this)"
+                            name = 'requestc'
                         >
                         <span style = 'font-weight: bold;'>REQUEST</span>
                     </label>
@@ -30,10 +31,14 @@
                 <div class = 'checkboxdiv'>
                     <div class="checkbox-inline">
                         <input type="checkbox"
-                         value="" disabled><span class='checkl'>Create</span>
+                         value="True" disabled
+                         name = 'requestcreate'
+                         ><span class='checkl'>Create</span>
                     </div>
                     <div class="checkbox-inline">
-                        <input type="checkbox" value="" disabled><span class='checkl'>Manage</span>
+                        <input type="checkbox" value="True" disabled
+                        name = 'requestmanage'
+                        ><span class='checkl'>Manage</span>
                     </div>
                 </div>
             </div>
@@ -41,16 +46,23 @@
             <div class='check mb-5'>
                 <div class="form-check checkbox-slider--b-flat">
                     <label>
-                        <input type="checkbox" value="" onchange="handleChange(this)">
+                        <input type="checkbox" value="True" onchange="handleChange(this)"
+                        name = 'yield'
+                        >
                         <span style = 'font-weight: bold;'>YIELD MANAGER</span>
                     </label>
                 </div>
                 <div class='checkboxdiv'>
                     <div class="checkbox-inline">
-                        <input type="checkbox" value="" disabled><span class='checkl'>Rate Grid</span>
+                        <input type="checkbox" value="True" disabled
+                        
+                        name = 'yieldr'
+                        ><span class='checkl'>Rate Grid</span>
                     </div>
                     <div class="checkbox-inline">
-                        <input type="checkbox" value="" disabled><span class='checkl'>Discount</span>
+                        <input type="checkbox" value="True" disabled
+                        name = 'yieldd'
+                        ><span class='checkl'>Discount</span>
                     </div>
             
                 </div>
@@ -59,28 +71,37 @@
         <div class='check mb-5'>
             <div class="form-check checkbox-slider--b-flat">
                 <label>
-                    <input type="checkbox" value="" onchange="handleChange(this)">
+                    <input type="checkbox" value="True" onchange="handleChange(this)"
+                    name = 'business'
+                    >
                     <span style = 'font-weight: bold;'>BUSINESS RULES</span>
                 </label>
             </div>
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>Request</span>
+                    <input type="checkbox" value="True" disabled
+                    name = 'businessr'
+                    ><span class='checkl'>Request</span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>Contact</span>
+                    <input type="checkbox" value="True" disabled
+                    name = 'businessc'
+                    ><span class='checkl'>Contact</span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>Contact</span>
+                    <input type="checkbox" value="True" disabled
+                    name = 'businesst'
+                    ><span class='checkl'>Time Limit</span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>Time Limit</span>
+                    <input type="checkbox" value="True" disabled
+                    name = 'businessn'
+                    ><span class='checkl'>Negotiation</span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>Negotiation</span>
-                </div>
-                <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>AutoPilot
+                    <input type="checkbox" value="True" disabled
+                    name = 'businessa'
+                    ><span class='checkl'>AutoPilot
                     </span>
                 </div>
             </div>
@@ -89,18 +110,24 @@
         <div class='check mb-5'>
             <div class="form-check checkbox-slider--b-flat">
                 <label>
-                    <input type="checkbox" value="" onchange="handleChange(this)">
+                    <input type="checkbox" value="True" onchange="handleChange(this)"
+                    name = 'user'
+                    >
                     <span style = 'font-weight: bold;'>USER MANAGEMENT</span>
                 </label>
             </div>
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'userh'
+                    ><span class='checkl'>
                         Hotel
                     </span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'userc'
+                    ><span class='checkl'>
                         Customer
                     </span>
                 </div>
@@ -110,44 +137,63 @@
         <div class='check mb-5'>
             <div class="form-check checkbox-slider--b-flat">
                 <label>
-                    <input type="checkbox" value="" onchange="handleChange(this)">
+                    <input type="checkbox" value="True" onchange="handleChange(this)"
+                    name = 'analytics'
+                    >
                     <span style = 'font-weight: bold;'>ANALYTICS</span>
                 </label>
             </div>
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class = 'checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'analyticsd'
+                    ><span class = 'checkl'>
                         Dashboard
                     </span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'analyticsc'
+                    ><span class='checkl'>
                         Conversion Rate
                     </span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'analyticst'
+                    ><span class='checkl'>
                         Top Performing Customers
                     </span>        
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'analyticsp'
+                    ><span class='checkl'>
                         Pending Reports
                     </span>
                 </div>
                 <div class="checkbox-inline">
-                    <input type="checkbox" value="" disabled><span class='checkl'>
+                    <input type="checkbox" value="True" disabled
+                    name = 'analyticsta'
+                    ><span class='checkl'>
                         TAT Report
                     </span>
                 </div>
             </div>
         </div>
-            
+        <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="True" onchange="handleChange(this)" name='developers'>
+                    <span style='font-weight: bold;'>DEVELOPERS</span>
+                </label>
+            </div>
+        </div>
 
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Sign Up <i
+                        <button type="submit" id='subm' class="btnLogin">Add User Type <i
                                 class="fas fa-user-plus"></i></button>
                     </div>
                 </div>

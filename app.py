@@ -380,7 +380,6 @@ def registerdeveloper():
                     link)
             mail.send(msg)
 
-            cursor = mysql.connection.cursor()
             cursor.execute('INSERT INTO developers(firstName, lastName, email, password) values(%s, %s, %s, %s)',
             (firstName, lastName, email, password))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
@@ -405,10 +404,65 @@ def registerdeveloper():
 def hoteladdusertype():
     return render_template('hoteladdusertype.html', title = 'Register')
 
+def getValC(value):
+    if value is None:
+        return 0
+    else:
+        return 1
+
+
+
 @app.route('/addusertype', methods = ["GET", 'POST'])
 def addusertype():
-    return 'h'
+    requestc = getValC(request.form.get('requestc'))
+    requestcr = getValC(request.form.get('requestcreate'))
+    requestm = getValC(request.form.get('requestmanage'))
+    
+    yieldc = getValC(request.form.get('yield'))
+    yieldr = getValC(request.form.get('yieldr'))
+    yieldd = getValC(request.form.get('yieldd'))
 
+    business = getValC(request.form.get('business'))
+    businessr = getValC(request.form.get('businessr'))
+    businessc = getValC(request.form.get('businessc'))
+    businesst = getValC(request.form.get('businesst'))
+    businessn = getValC(request.form.get('businessn'))
+    businessa = getValC(request.form.get('businessa'))
+
+    user = getValC(request.form.get('user'))
+    userc = getValC(request.form.get('userc'))
+    userh = getValC(request.form.get('userh'))
+    
+    analytics = getValC(request.form.get('analytics'))
+    analyticsd = getValC(request.form.get('analyticsd'))
+    analyticsc = getValC(request.form.get('analyticsc'))
+    analyticst = getValC(request.form.get('analyticst'))
+    analyticsp = getValC(request.form.get('analyticsp'))
+    analyticsta = getValC(request.form.get('analyticsta'))
+
+    userType = request.form['usertype']
+    developers = getValC(request.form.get('developers'))
+
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From menuAccess where userType = %s', [userType])
+    data = cursor.fetchall()
+
+    if len(data) == 0:
+        cursor.execute('INSERT INTO menuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsTop, analyticsPending, analyticsTAT, analyticsConversion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                       userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticst, analyticsp, analyticsta, analyticsc])
+
+    else:
+        flash('UserType Already Registered', 'danger')
+        return render_template('hoteladdusertype.html', title="Register")
+
+
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('New userType added', 'success')
+    return render_template('index.html', title='UserType')
 
 if __name__ == "__main__":
     app.run(debug = True)
@@ -418,6 +472,6 @@ if __name__ == "__main__":
 
     TODOS
 
-    hoteluser => ui management
+    hoteluser => ui management navbar
 
 '''
