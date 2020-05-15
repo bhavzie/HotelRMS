@@ -37,15 +37,11 @@
                     <option selected disabled>
                         User Type
                     </option>
-                    <option value = 'hotelAdmin'>
-                        Hotel Admin
-                    </option>
-                    <option value = 'revenue'>
-                        Revenue Management
-                    </option>
-                    <option value = 'reservation'>
-                        Reservations
-                    </option>
+                    {% for value in subtypes %}
+                        <option value = {{ value }}>
+                            {{ value }}
+                        </option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="formhelp mb-5">

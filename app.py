@@ -226,11 +226,66 @@ def login():
 
                     * For developer = 'developer'
                 '''
+                menuParams = {
+                    'request': True,
+                    'requestCreate': True,
+                    'requestManage': True,
+                    'yield': True,
+                    'yieldRate': True,
+                    'yieldDiscount': True,
+                    'business': True,
+                    'businessRequest': True,
+                    'businessContact': True,
+                    'businessTime': True,
+                    'businessNegotiation': True,
+                    'businessAuto': True,
+                    'userM': True,
+                    'userMHotel': True,
+                    'userMCustomer': True,
+                    'developers': True,
+                    'analytics': True,
+                    'analyticsDashboard': True,
+                    'analyticsConversion': True,
+                    'analyticsTop': True,
+                    'analyticsPending': True,
+                    'analyticsTAT': True,
+                }
+
                 
                 if session['userType'] == 'hoteluser':
                     session['userSubType'] = data['userSubType']
+                    userSubType = data['userSubType']
+                    cursor.execute("SELECT * FROM menuAccess where userType = %s", [userSubType])
+                    d = cursor.fetchall()
 
-                print(session)
+                    if len(d) != 0:
+                        d = d[0]
+                        menuParams['request'] = getValC2(d['request'])
+                        menuParams['requestCreate'] = getValC2(d['requestCreate'])
+                        menuParams['requestManage'] = getValC2(d['requestManage'])
+                        menuParams['yield'] = getValC2(d['yield'])
+                        menuParams['yieldRate'] = getValC2(d['yieldRate'])
+                        menuParams['yieldDiscount'] = getValC2(d['yieldDiscount'])
+                        menuParams['business'] = getValC2(d['business'])
+                        menuParams['businessRequest'] = getValC2(d['businessRequest'])
+                        menuParams['businessContact'] = getValC2(d['businessContact'])
+                        menuParams['businessTime'] = getValC2(d['businessTime'])
+                        menuParams['businessNegotiation'] = getValC2(d['businessNegotiation'])
+                        menuParams['businessAuto'] = getValC2(d['businessAuto'])
+                        menuParams['userM'] = getValC2(d['userM'])
+                        menuParams['userMHotel'] = getValC2(d['userMHotel'])
+                        menuParams['userMCustomer'] = getValC2(d['userMCustomer'])
+                        menuParams['userMCustomer'] = getValC2(d['userMCustomer'])
+                        menuParams['developers'] = getValC2(d['developers'])
+                        menuParams['analytics'] = getValC2(d['analytics'])
+                        menuParams['analyticsDashboard'] = getValC2(d['analyticsDashboard'])
+                        menuParams['analyticsConversion'] = getValC2(d['analyticsConversion'])
+                        menuParams['analyticsTop'] = getValC2(d['analyticsTop'])
+                        menuParams['analyticsPending'] = getValC2(d['analyticsPending'])
+                        menuParams['analyticsTAT'] = getValC2(d['analyticsTAT'])
+
+                    session['menuParams'] = menuParams
+
 
                 flash('You are now logged in', 'success')
                 return render_template('index.html')
@@ -309,7 +364,20 @@ def signOut():
 
 @app.route('/hoteladduser', methods = ['GET', 'POST'])
 def hoteladduser():
-    return render_template('hoteladduser.html', title = 'AddUser')
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT userType FROM menuAccess")
+    data = cursor.fetchall()
+    subtypes = []
+
+    for d in data:
+        subtypes.append(d['userType'])
+
+    if 'Revenue Management' not in subtypes:
+        subtypes.append('Revenue Management')
+    if 'Reservations' not in subtypes:
+        subtypes.append('Reservation')
+
+    return render_template('hoteladduser.html', title = 'AddUser', subtypes = subtypes)
 
 @app.route('/registerhotelusers', methods = ['GET', 'POST'])
 def registerhotelusers():
@@ -405,10 +473,16 @@ def hoteladdusertype():
     return render_template('hoteladdusertype.html', title = 'Register')
 
 def getValC(value):
-    if value is None:
+    if value == None:
         return 0
     else:
         return 1
+
+def getValC2(value):
+    if value == 1:
+        return True
+    else:
+        return False
 
 
 

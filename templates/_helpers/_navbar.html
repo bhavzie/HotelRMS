@@ -5,112 +5,165 @@
     <div class='collapse navbar-collapse w-100 order-3 dual-collapse2 mr-3'>
         {% if session.userType == 'hoteluser' %}
         <ul class='menu navbar-nav mx-auto'>
-            <li>
-                <a class="homer" href="#">
-                    Request
-                </a>
-                <ul class="sub-menu">
-                    <li><a href="#">Create</a>
-                        <ul>
-                            <li><a href='#'>Adhoc</a></li>
-                            <li><a href='#'>Series</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Manage</a></li>
-                </ul>
-            </li>
+            {% if session.menuParams['request'] %}
+                <li>
+                    <a class="homer" href="#">
+                        Request
+                    </a>
+                    <ul class="sub-menu">
+                        {% if session.menuParams['requestCreate']  %}
+                            <li><a href="#">Create</a>
+                                <ul>
+                                    <li><a href='#'>Adhoc</a></li>
+                                    <li><a href='#'>Series</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if session.menuParams['requestManage']  %}
+                            <li><a href="#">Manage</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
 
-            <li>
-                <a href="#">
-                    Yield Manager
-                </a>
-                <ul class="sub-menu">
-                    <li><a href="#">Rate Grid</a></li>
-                    <li>
-                        <a href="#">Discount</a>
-                        <ul>
-                            <li><a href="#">Create & View</a></li>
-                            <li><a href="#">Map</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+            {% if session.menuParams['yield'] %}
+                <li>
+                    <a href="#">
+                        Yield Manager
+                    </a>
+                    <ul class="sub-menu">
+                        {% if session.menuParams['yieldRate'] %}
+                            <li><a href="#">Rate Grid</a></li>
+                        {% endif %}
+                        {% if session.menuParams['yieldDiscount'] %}
+                            <li>
+                                <a href="#">Discount</a>
+                                <ul>
+                                    <li><a href="#">Create & View</a></li>
+                                    <li><a href="#">Map</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+                
+            {% if session.menuParams['business'] %}
+                <li>
+                    <a href="#">
+                        Business Rules
+                    </a>
+                    <ul class="sub-menu">
+                    {% if session.menuParams['businessRequest'] %}
+                        <li><a href="#">Request</a>
+                                <ul>
+                                    <li><a href='#'>Create & View</a></li>
+                                    <li><a href='#'>Map</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% if session.menuParams['businessContact'] %}
+                        <li>
+                            <a href="#">Contact</a>
+                            <ul>
+                                <li><a href="#">Create & View</a></li>
+                                <li><a href="#">Map</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if session.menuParams['businessTime'] %}
+                        <li>
+                            <a href="#">Time Limit</a>
+                            <ul>
+                                <li><a href="#">Create & View</a></li>
+                                <li><a href="#">Map</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if session.menuParams['businessNegotiation'] %}
+                        <li><a href="#">Negotiation</a></li>
+                    {% endif %}
+                    {% if session.menuParams['businessAuto'] %}
+                        <li><a href="#">Autopilot</a></li>
+                    {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            
+            {% if session.menuParams['userM'] %}
+                <li>
+                    <a href="#">
+                        User Management
+                    </a>
+                    <ul class="sub-menu">
+                        {% if session.menuParams['userMHotel'] %}
+                            <li>
+                                <a href='#'>Hotel</a>
+                                <ul>
+                                    <li>
+                                        <a href='/hoteladduser'>Add User</a>
+                                    </li>
+                                    <li>
+                                        <a href='/hoteladdusertype'>Add userType</a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>Edit</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if session.menuParams['userMCustomer'] %}
+                            <li>
+                                <a href="#">Customer</a>
+                                <ul>
+                                    <li>
+                                        <a href='#'>Add</a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>Upload</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
 
-            <li>
-                <a href="#">
-                    Business Rules
-                </a>
-                <ul class="sub-menu">
-                    <li><a href="#">Request</a>
-                        <ul>
-                            <li><a href='#'>Create & View</a></li>
-                            <li><a href='#'>Map</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                        <ul>
-                            <li><a href="#">Create & View</a></li>
-                            <li><a href="#">Map</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Time Limit</a>
-                        <ul>
-                            <li><a href="#">Create & View</a></li>
-                            <li><a href="#">Map</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">Negotiation</a></li>
-                    <li><a href="#">Autopilot</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="#">
-                    User Management
-                </a>
-                <ul class="sub-menu">
-                    <li>
-                        <a href='#'>Hotel</a>
-                        <ul>
-                            <li>
-                                <a href='/hoteladduser'>Add User</a>
-                            </li>
-                            <li>
-                                <a href='/hoteladdusertype'>Add userType</a>
-                            </li>
-                            <li>
-                                <a href='#'>Edit</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Customer</a>
-                        <ul>
-                            <li>
-                                <a href='#'>Add</a>
-                            </li>
-                            <li>
-                                <a href='#'>Edit</a>
-                            </li>
-                            <li>
-                                <a href='#'>Upload</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-
-            <li><a href="#">Analytics</a>
-                <ul class="sub-menu">
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Conversion Report</a></li>
-                    <li><a href="#">Top Performing Customers</a></li>
-                    <li><a href="#">Pending Report</a></li>
-                    <li><a href="#">TAT Report</a></li>
-                </ul>
-            </li>
+            {% if session.menuParams['analytics'] %}
+                <li><a href="#">Analytics</a>
+                    <ul class="sub-menu">
+                        {% if session.menuParams['analyticsDashboard'] %}
+                            <li><a href="#">Dashboard</a></li>
+                        {% endif %}
+                        {% if session.menuParams['analyticsConversion'] %}
+                            <li><a href="#">Conversion Report</a></li>
+                        {% endif %}
+                        {% if session.menuParams['analyticsTop'] %}
+                            <li><a href="#">Top Performing Customers</a></li>
+                        {% endif %}
+                        {% if session.menuParams['analyticsPending'] %}
+                            <li><a href="#">Pending Report</a></li>
+                        {% endif %}
+                        {% if session.menuParams['analyticsTAT'] %}
+                            <li><a href="#">TAT Report</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            
+            {% if session.menuParams['developers'] %}
+                <li>
+                    <a href='#'>Developers</a>
+                    <ul>
+                        <li>
+                            <a href='/adddeveloper'>Add</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
 
 
 
