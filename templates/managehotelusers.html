@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login spread">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Manage Users</p><i class="fas fa-user"></i>
+            </div>
+        </div>
+        {% if data %}
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col"> Email</th>
+                            <th scope="col">UserType</th>
+                            <th scope = 'col'>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                        <tr>
+                            <td> {{ d['firstName'] }} </td>
+                            <td>
+                                 <a class = 'btn btn-outline-info' href = '/showprofile/{{d["email"]}}'>
+                                    {{ d['email'] }}
+                                </a>
+                            </td>
+                            <td> {{ d['userType'] }} </td>
+                            <td>
+                                <a class = 'btn btn-outline-warning' href = "{{ url_for('editUser', email = d['email'] ) }}"
+                                >Edit<i class="fas fa-edit"></i></a>
+                                <button
+                                class = 'btn btn-outline-danger'
+                                >Deactivate<i class="fas fa-user-slash"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

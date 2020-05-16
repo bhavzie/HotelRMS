@@ -290,6 +290,10 @@ html {
   padding: 25px;
 }
 
+.spread {
+  width: 1024px;
+}
+
 .xwrap {
   min-height: 550px !important;
 }
@@ -463,4 +467,10 @@ hr {
     float: right;
   }
 
+  .infog {
+    position: relative;
+    border-bottom: 1px solid #000;
+    padding: 5px;
+  }
+  
   

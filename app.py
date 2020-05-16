@@ -538,6 +538,32 @@ def addusertype():
     flash('New userType added', 'success')
     return render_template('index.html', title='UserType')
 
+
+@app.route('/managehotelusers', methods = ['GET', 'POST'])
+def managehotelusers():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT firstName, email, userType FROM hotelUsers')
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    return render_template('managehotelusers.html', title = 'Users', data = data)
+
+
+@app.route('/showprofile/<email>', methods = ['GET', 'POST'])
+def showprofile(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
+
+    data = cursor.fetchall()
+    cursor.close()
+    data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
+    return render_template('showprofile.html', title = 'Profile', data = data[0])
+
+@app.route('/editUser/<email>', methods = ["GET", "POST"])
+def editUser(email):
+    return email
+
 if __name__ == "__main__":
     app.run(debug = True)
 
@@ -546,6 +572,8 @@ if __name__ == "__main__":
 
     TODOS
 
-    hoteluser => ui management navbar
+    edit deactivate buttons
+    activate decativate
+    email ver
 
 '''
