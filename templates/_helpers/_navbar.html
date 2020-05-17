@@ -4,6 +4,7 @@
 
     <div class='collapse navbar-collapse w-100 order-3 dual-collapse2 mr-3'>
         {% if session.userType == 'hoteluser' %}
+        {% if session.active %}
         <ul class='menu navbar-nav mx-auto'>
             {% if session.menuParams['request'] %}
                 <li>
@@ -163,6 +164,8 @@
                         </li>
                     </ul>
                 </li>
+
+            {% endif %}
             {% endif %}
 
 

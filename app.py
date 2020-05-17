@@ -257,6 +257,10 @@ def login():
                     userSubType = data['userSubType']
                     cursor.execute("SELECT * FROM menuAccess where userType = %s", [userSubType])
                     d = cursor.fetchall()
+                    cursor.execute("SELECT * FROM hotelUsers where email = %s", [email])
+                    dog = cursor.fetchall()
+                    dog = dog[0]
+                    session['active'] = getValC2(dog['active'])
 
                     if len(d) != 0:
                         d = d[0]
@@ -285,8 +289,11 @@ def login():
                         menuParams['analyticsTAT'] = getValC2(d['analyticsTAT'])
 
                     session['menuParams'] = menuParams
+                
 
 
+                print(session)
+                
                 flash('You are now logged in', 'success')
                 return render_template('index.html')
             else:
@@ -558,11 +565,73 @@ def showprofile(email):
     data = cursor.fetchall()
     cursor.close()
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
+    data[0]['active'] = 'Yes' if data[0]['active'] else 'No'
     return render_template('showprofile.html', title = 'Profile', data = data[0])
 
 @app.route('/editUser/<email>', methods = ["GET", "POST"])
 def editUser(email):
-    return email
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
+
+    data = cursor.fetchall()
+    cursor.execute("SELECT userType FROM menuAccess")
+    data1 = cursor.fetchall()
+    subtypes = []
+
+    for d in data1:
+        subtypes.append(d['userType'])
+
+    if 'Revenue Management' not in subtypes:
+        subtypes.append('Revenue Management')
+    if 'Reservations' not in subtypes:
+        subtypes.append('Reservation')
+
+    data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
+    return render_template('editUser.html', title = 'Edit', data = data[0], subtypes = subtypes)
+
+@app.route('/submitEditUser', methods = ['GET', 'POST'])
+def submitEditUser():
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    email = request.form['email']
+    phone = request.form['phoneN']
+    address = request.form['address']
+    country = request.form['country']
+    city = request.form['city']
+    userType = request.form['userType']
+    email_verified = getValC(request.form.get('email_verified'))
+    oldemail = request.form['oldemail']
+    active = getValC(request.form.get('active'))
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From users where email = %s', [email])
+    data = cursor.fetchall()
+
+    if len(data) == 0 or data[0]['email'] == oldemail:
+        token = generate_confirmation_token(email)
+        msg = Message(
+            'Confirm Email',
+            sender='koolbhavya.epic@gmail.com',
+            recipients=[email])
+        link = url_for('confirm_email', token=token, _external=True)
+        msg.body = 'Confirm your email by clicking this link:- {}'.format(
+            link)
+        mail.send(msg)
+        cursor.execute('Update hotelUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, userType = %s, email_verified = %s, active = %s WHERE email = %s',(firstName, lastName, email, phone, address, country, city, userType, email_verified, active, oldemail))
+        cursor.execute('Update users SET firstName = %s,  email = %s, userSubType = %s WHERE email = %s', (firstName, email, userType, oldemail))
+    else:
+        flash('Email Already Registered', 'danger')
+        cursor.execute('SELECT firstName, email, userType FROM hotelUsers')
+
+        data = cursor.fetchall()
+        cursor.close()
+
+        return render_template('managehotelusers.html', title='Users', data=data)
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Hotel user has been edited', 'success')
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(debug = True)

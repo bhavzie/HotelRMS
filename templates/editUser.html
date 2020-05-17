@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login spread">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Edit Profile for {{ data['firstName'] }}</p>
+                <i class="fas fa-edit"></i>
+            </div>
+        </div>
+        {% if data %}
+        <form action="{{ url_for('submitEditUser') }}" method="POST">
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>First Name : </span><br>
+                <input type = 'text' class='form-control mt-3 text-center' 
+                    value="{{ data['firstName'] }}"
+                    name = 'firstName'
+                    required
+                    />
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Last Name : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['lastName'] }}" name='lastName' required />
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Email : </span><br>
+                <input type='text' value="{{ data['email'] }}" name='oldemail' hidden />
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['email'] }}" name='email' required />
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>UserType : </span><br>
+                <select class='form-control text-center' name='userType' required>
+                    {% for value in subtypes %}
+                    {% if value != data['userType'] %}
+                    <option value={{ value }}>
+                        {{ value }}
+                    </option>
+                    {% else %}
+                    <option selected value={{ value }}>
+                        {{ value }}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Phone : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['phone'] }}" name='phoneN' required />
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Address : </span><br>
+                <textarea name="address" class="form-control text-cente mt-3" required
+                
+                >
+                {{ data['address'] }}   
+            </textarea>
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>City : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['city'] }}" name='city' required />
+            </div>
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Country : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['country'] }}" name='country' required />
+            </div>
+            <div class='check mb-5 text-center'>
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        {% if data['email_verified'] == 'No' %}
+                        <input type="checkbox" value="True" onchange="handleChange(this)" name='email_verified'>
+                        {% else %}
+                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='email_verified'>
+                        {% endif %}
+                        <span style='font-weight: bold;'>Email Verified?</span>
+                    </label>
+                </div>
+            </div>
+            <div class='check mb-5 text-center'>
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        {% if data['active'] == 'No' %}
+                        <input type="checkbox" value="True" onchange="handleChange(this)" name='active'>
+                        {% else %}
+                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='active'>
+                        {% endif %}
+                        <span style='font-weight: bold;'>User Active?</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Edit <i class="fas fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
