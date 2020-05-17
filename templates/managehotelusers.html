@@ -32,9 +32,8 @@
                             <td>
                                 <a class = 'btn btn-outline-warning' href = "{{ url_for('editUser', email = d['email'] ) }}"
                                 >Edit<i class="fas fa-edit"></i></a>
-                                <button
-                                class = 'btn btn-outline-danger'
-                                >Deactivate<i class="fas fa-user-slash"></i></button>
+                                <a class = 'btn btn-outline-danger' href = "{{ url_for('deactivateUser', email = d['email'] ) }}"
+                                >Deactivate<i class="fas fa-user-slash"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

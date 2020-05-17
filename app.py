@@ -633,6 +633,107 @@ def submitEditUser():
     flash('Hotel user has been edited', 'success')
     return render_template('index.html')
 
+@app.route('/deactivateUser/<email>', methods = ['GET', 'POST'])
+def deactivateUser(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE hotelUsers SET active = 0 where email = %s", [email])
+    mysql.connection.commit()
+    cursor.close()
+
+    flash("User has been de-activated", 'success')
+    return render_template('index.html')
+
+@app.route('/myprofile/<email>', methods = ['GET', 'POST'])
+def myprofile(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT userType FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    
+    data = data[0]['userType']
+    result = []
+    if data == 'hoteluser':
+        cursor.execute('SELECT * From hotelUsers where email = %s', [email])
+        result = cursor.fetchall()
+    elif data == 'customer':
+        cursor.execute('SELECT * From Customers where email = %s', [email])
+        result = cursor.fetchall()
+    elif data == 'iatauser':
+        cursor.execute('SELECT * From iatauser where email = %s', [email])
+        result = cursor.fetchall()
+    elif data == 'developer':
+        cursor.execute('SELECT * From developers where email = %s', [email])
+        result = cursor.fetchall()
+    
+    result = result[0]
+    result['email_verified'] = "Yes" if result['email_verified'] else 'No'
+    if 'active' in result.keys():
+        result['active'] = "Yes" if result['active'] else 'No'
+
+    return render_template('myProfile.html', data = result)
+
+
+@app.route('/submitEditUserAll', methods=['GET', 'POST'])
+def submitEditUserAll():
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    email = request.form['email']
+    phone = request.form['phoneN']
+    address = request.form['address']
+    country = request.form['country']
+    city = request.form['city']
+    oldemail = request.form['oldemail']
+    password = request.form['password']
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From users where email = %s', [email])
+    data = cursor.fetchall()
+
+
+    if len(data) == 0 or data[0]['email'] == oldemail:
+        token = generate_confirmation_token(email)
+        msg = Message(
+            'Confirm Email',
+            sender='koolbhavya.epic@gmail.com',
+            recipients=[email])
+        link = url_for('confirm_email', token=token, _external=True)
+        msg.body = 'Confirm your email by clicking this link:- {}'.format(
+            link)
+        mail.send(msg)
+
+        cursor.execute('SELECT userType From users where email = %s', [oldemail])
+        data = cursor.fetchall()
+
+        data = data[0]['userType']
+        if data == 'hoteluser':
+            cursor.execute('Update hotelUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
+                           (firstName, lastName, email, phone, address, country, city, password, oldemail))
+        elif data == 'customer':
+            cursor.execute('Update Customers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
+                           (firstName, lastName, email, phone, address, country, city,password, oldemail))
+        elif data == 'iatauser':
+            cursor.execute('Update IATAUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
+                           (firstName, lastName, email, phone, address, country, city,password, oldemail))
+        elif data == 'developer':
+            cursor.execute('Update developers SET firstName = %s, lastName = %s, email = %s, password = %s WHERE email = %s',
+                           (firstName, lastName, email, password, oldemail))
+
+        cursor.execute('Update users SET firstName = %s, email = %s, password = %s WHERE email = %s',
+                       (firstName, email, password, oldemail))
+    else:
+        flash('Email Already Registered', 'danger')
+        return render_template('index.html')
+    
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Hotel user has been edited', 'success')
+    return render_template('index.html')
+
+
+
+    return 'h'
+
+
 if __name__ == "__main__":
     app.run(debug = True)
 
@@ -641,8 +742,5 @@ if __name__ == "__main__":
 
     TODOS
 
-    edit deactivate buttons
-    activate decativate
-    email ver
 
 '''
