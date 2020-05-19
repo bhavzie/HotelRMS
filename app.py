@@ -80,6 +80,12 @@ def is_logged_in(f):
 
 
 
+
+
+
+
+
+
 @app.route('/', methods = ['GET', 'POST'])
 def f():
     try:
@@ -95,7 +101,11 @@ def index():
 
 @app.route('/home', methods = ['GET', 'POST'])
 def home():
-    return render_template('index.html', title = 'Home')
+    try:
+        if session['logged_in'] == True:
+            return render_template('index.html', title = 'Home')
+    except:
+        return render_template('login.html', title = 'Login')
 
 
 @app.route('/iatar', methods=['GET', 'POST'])
@@ -110,17 +120,14 @@ def customerr():
 @app.route('/registerI', methods = ['GET', 'POST'])
 def registerI():
     if request.method == 'POST':
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
+        name = request.form['namev']
         email = request.form['email']
         password = request.form['password']
-        iatacode = request.form['IATACode']
         agencyName = request.form['agencyName']
         phoneN = request.form['phoneN']
-        address = request.form['address']
-        country = request.form['country']
-        city = request.form['city']
-        
+        country = request.form.get('country')
+        firstName = name.split(' ')[0]    
+        address = ''
         
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -137,7 +144,7 @@ def registerI():
             msg.body = 'Confirm your email by clicking this link:- {}'.format(link)
             mail.send(msg)
 
-            cursor.execute("INSERT INTO IATAUsers(firstName, lastName, email, password, IATACode, agencyName, phone, address, country, city) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (firstName, lastName, email, password, iatacode, agencyName, phoneN, address, country, city))
+            cursor.execute("INSERT INTO IATAUsers(name, email, password, agencyName, phone, country) VALUES(%s, %s, %s, %s, %s,  %s, %s)", (name, email, password, agencyName, phoneN, country, address))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)', (firstName, email, password, 'iatauser'))
         else:
             flash('Email Already Registered', 'danger')
@@ -153,14 +160,18 @@ def registerI():
 @app.route('/registerC', methods = ['GET', 'POST'])
 def registerC():
     if request.method == 'POST':
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
+        name = request.form['name']
         email = request.form['email']
         password = request.form['password']
         phoneN = request.form['phoneN']
-        address = request.form['address']
-        country = request.form['country']
-        city = request.form['city']
+        country = request.form.get('country')
+        address = ''
+        userType = request.form.get('userType')
+        agencyName = request.form.get('agencyName')
+
+
+
+        firstName = name.split(' ')[0]
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -175,8 +186,8 @@ def registerC():
             link = url_for('confirm_email', token=token, _external=True)
             msg.body = 'Confirm your email by clicking this link:- {}'.format(link)
             mail.send(msg)
-            cursor.execute("INSERT INTO Customers(firstName, lastName, email, password, phone, address, country, city) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
-                           (firstName, lastName, email, password, phoneN, address, country, city))
+            cursor.execute("INSERT INTO Customers(name, email, password, phone, country, address, userType, agencyName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
+                           (name, email, password, phoneN, country, address, userType, agencyName))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
                            (firstName, email, password, 'customer'))
         else:
@@ -245,10 +256,9 @@ def login():
                     'developers': True,
                     'analytics': True,
                     'analyticsDashboard': True,
-                    'analyticsConversion': True,
-                    'analyticsTop': True,
-                    'analyticsPending': True,
-                    'analyticsTAT': True,
+                    'analyticsbb': True,
+                    'analyticsp': True,
+                    'analyticsr': True,
                 }
 
                 
@@ -283,10 +293,9 @@ def login():
                         menuParams['developers'] = getValC2(d['developers'])
                         menuParams['analytics'] = getValC2(d['analytics'])
                         menuParams['analyticsDashboard'] = getValC2(d['analyticsDashboard'])
-                        menuParams['analyticsConversion'] = getValC2(d['analyticsConversion'])
-                        menuParams['analyticsTop'] = getValC2(d['analyticsTop'])
-                        menuParams['analyticsPending'] = getValC2(d['analyticsPending'])
-                        menuParams['analyticsTAT'] = getValC2(d['analyticsTAT'])
+                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
+                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
+                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
 
                     session['menuParams'] = menuParams
                 
@@ -389,15 +398,15 @@ def hoteladduser():
 @app.route('/registerhotelusers', methods = ['GET', 'POST'])
 def registerhotelusers():
     if request.method == 'POST':
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
+        name = request.form['name']
         email = request.form['email']
         password = request.form['password']
         phoneN = request.form['phoneN']
-        address = request.form['address']
-        country = request.form['country']
-        city = request.form['city']
+        address = request.form.get('address')
+        country = request.form.get('country')
+        city = request.form.get('city')
         userType = request.form['userType']
+        firstName = name.split(' ')[0]
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -414,7 +423,8 @@ def registerhotelusers():
                 link)
             mail.send(msg)
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType))
-            cursor.execute('INSERT INTO hotelUsers(firstName, lastName, email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)', (firstName, lastName, email, password, phoneN, address, country, city, userType))
+
+            cursor.execute('INSERT INTO hotelUsers(name,  email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)', (name,  email, password, phoneN, address, country, city, userType))
         else:
             flash('Email Already Registered', 'danger')
             return render_template('hoteladduser.html', title="Register")
@@ -433,11 +443,10 @@ def adddeeloper():
 def registerdeveloper():
     if request.method == 'POST':
 
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
+        name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-
+        firstName = name.split(' ')[0]
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -455,8 +464,8 @@ def registerdeveloper():
                     link)
             mail.send(msg)
 
-            cursor.execute('INSERT INTO developers(firstName, lastName, email, password) values(%s, %s, %s, %s)',
-            (firstName, lastName, email, password))
+            cursor.execute('INSERT INTO developers(name, email, password) values(%s, %s, %s)',
+            (name, email, password))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
                            (firstName, email, password, 'developer'))
         
@@ -516,10 +525,9 @@ def addusertype():
     
     analytics = getValC(request.form.get('analytics'))
     analyticsd = getValC(request.form.get('analyticsd'))
-    analyticsc = getValC(request.form.get('analyticsc'))
-    analyticst = getValC(request.form.get('analyticst'))
+    analyticsbb = getValC(request.form.get('analyticsbb'))
     analyticsp = getValC(request.form.get('analyticsp'))
-    analyticsta = getValC(request.form.get('analyticsta'))
+    analyticsr = getValC(request.form.get('analyticsr'))
 
     userType = request.form['usertype']
     developers = getValC(request.form.get('developers'))
@@ -530,8 +538,8 @@ def addusertype():
     data = cursor.fetchall()
 
     if len(data) == 0:
-        cursor.execute('INSERT INTO menuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsTop, analyticsPending, analyticsTAT, analyticsConversion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                       userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticst, analyticsp, analyticsta, analyticsc])
+        cursor.execute('INSERT INTO menuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsbb, analyticsp, analyticsr) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                       userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticsbb, analyticsp, analyticsr])
 
     else:
         flash('UserType Already Registered', 'danger')
@@ -549,10 +557,14 @@ def addusertype():
 @app.route('/managehotelusers', methods = ['GET', 'POST'])
 def managehotelusers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT firstName, email, userType FROM hotelUsers')
+    cursor.execute('SELECT name, email, userType FROM hotelUsers')
 
-    data = cursor.fetchall()
+    result = cursor.fetchall()
     cursor.close()
+    data = []
+    for res in result:
+        res['firstName'] = res['name'].split()[0]
+        data.append(res)
 
     return render_template('managehotelusers.html', title = 'Users', data = data)
 
@@ -565,6 +577,7 @@ def showprofile(email):
     data = cursor.fetchall()
     cursor.close()
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
+    data[0]['firstName'] = data[0]['name'].split(' ')[0]
     data[0]['active'] = 'Yes' if data[0]['active'] else 'No'
     return render_template('showprofile.html', title = 'Profile', data = data[0])
 
@@ -591,42 +604,24 @@ def editUser(email):
 
 @app.route('/submitEditUser', methods = ['GET', 'POST'])
 def submitEditUser():
-    firstName = request.form['firstName']
-    lastName = request.form['lastName']
-    email = request.form['email']
+    name = request.form['name']
     phone = request.form['phoneN']
-    address = request.form['address']
-    country = request.form['country']
-    city = request.form['city']
+    address = request.form.get('address')
+    country = request.form.get('country')
+    city = request.form.get('city')
     userType = request.form['userType']
     email_verified = getValC(request.form.get('email_verified'))
     oldemail = request.form['oldemail']
     active = getValC(request.form.get('active'))
+    firstName = name.split()[0]
 
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From users where email = %s', [email])
-    data = cursor.fetchall()
 
-    if len(data) == 0 or data[0]['email'] == oldemail:
-        token = generate_confirmation_token(email)
-        msg = Message(
-            'Confirm Email',
-            sender='koolbhavya.epic@gmail.com',
-            recipients=[email])
-        link = url_for('confirm_email', token=token, _external=True)
-        msg.body = 'Confirm your email by clicking this link:- {}'.format(
-            link)
-        mail.send(msg)
-        cursor.execute('Update hotelUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, userType = %s, email_verified = %s, active = %s WHERE email = %s',(firstName, lastName, email, phone, address, country, city, userType, email_verified, active, oldemail))
-        cursor.execute('Update users SET firstName = %s,  email = %s, userSubType = %s WHERE email = %s', (firstName, email, userType, oldemail))
-    else:
-        flash('Email Already Registered', 'danger')
-        cursor.execute('SELECT firstName, email, userType FROM hotelUsers')
+    cursor.execute('Update hotelUsers SET name = %s,  phone = %s, address = %s, country = %s, city = %s, userType = %s, email_verified = %s, active = %s WHERE email = %s',(name, phone, address, country, city, userType, email_verified, active, oldemail))
 
-        data = cursor.fetchall()
-        cursor.close()
 
-        return render_template('managehotelusers.html', title='Users', data=data)
+    cursor.execute('Update users SET firstName = %s,  userSubType = %s WHERE email = %s', (firstName, userType, oldemail))
+
     mysql.connection.commit()
     cursor.close()
 
@@ -658,7 +653,7 @@ def myprofile(email):
         cursor.execute('SELECT * From Customers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'iatauser':
-        cursor.execute('SELECT * From iatauser where email = %s', [email])
+        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'developer':
         cursor.execute('SELECT * From developers where email = %s', [email])
@@ -669,59 +664,45 @@ def myprofile(email):
     if 'active' in result.keys():
         result['active'] = "Yes" if result['active'] else 'No'
 
+    result['firstName'] = result['name'].split(' ')[0]
+    
+
     return render_template('myProfile.html', data = result)
 
 
 @app.route('/submitEditUserAll', methods=['GET', 'POST'])
 def submitEditUserAll():
-    firstName = request.form['firstName']
-    lastName = request.form['lastName']
-    email = request.form['email']
+    name = request.form['name']
     phone = request.form['phoneN']
-    address = request.form['address']
-    country = request.form['country']
-    city = request.form['city']
+    address = request.form.get('address')
+    country = request.form.get('country')
     oldemail = request.form['oldemail']
     password = request.form['password']
+    agencyName = request.form.get('agencyName')
 
+
+    firstName = name.split(' ')[0]
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From users where email = %s', [email])
+
+    cursor.execute('SELECT userType From users where email = %s', [oldemail])
     data = cursor.fetchall()
 
+    data = data[0]['userType']
+    if data == 'hoteluser':
+        cursor.execute('Update hotelUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s WHERE email = %s',
+                        (name, phone, address, country, password, oldemail))
+    elif data == 'customer':
+        cursor.execute('Update Customers SET name = %s, phone = %s, address = %s, country = %s, password = %s WHERE email = %s',
+                        (name, phone, address, country,password, oldemail))
+    elif data == 'iatauser':
+        cursor.execute('Update IATAUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s, agencyName = %s WHERE email = %s',
+                        (name, phone, address, country, password, agencyName, oldemail))
+    elif data == 'developer':
+        cursor.execute('Update developers SET name = %s, password = %s, phone = %s, address = %s WHERE email = %s',
+                        (name, password, phone, address, oldemail))
 
-    if len(data) == 0 or data[0]['email'] == oldemail:
-        token = generate_confirmation_token(email)
-        msg = Message(
-            'Confirm Email',
-            sender='koolbhavya.epic@gmail.com',
-            recipients=[email])
-        link = url_for('confirm_email', token=token, _external=True)
-        msg.body = 'Confirm your email by clicking this link:- {}'.format(
-            link)
-        mail.send(msg)
-
-        cursor.execute('SELECT userType From users where email = %s', [oldemail])
-        data = cursor.fetchall()
-
-        data = data[0]['userType']
-        if data == 'hoteluser':
-            cursor.execute('Update hotelUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
-                           (firstName, lastName, email, phone, address, country, city, password, oldemail))
-        elif data == 'customer':
-            cursor.execute('Update Customers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
-                           (firstName, lastName, email, phone, address, country, city,password, oldemail))
-        elif data == 'iatauser':
-            cursor.execute('Update IATAUsers SET firstName = %s, lastName = %s, email = %s, phone = %s, address = %s, country = %s, city = %s, password = %s WHERE email = %s',
-                           (firstName, lastName, email, phone, address, country, city,password, oldemail))
-        elif data == 'developer':
-            cursor.execute('Update developers SET firstName = %s, lastName = %s, email = %s, password = %s WHERE email = %s',
-                           (firstName, lastName, email, password, oldemail))
-
-        cursor.execute('Update users SET firstName = %s, email = %s, password = %s WHERE email = %s',
-                       (firstName, email, password, oldemail))
-    else:
-        flash('Email Already Registered', 'danger')
-        return render_template('index.html')
+    cursor.execute('Update users SET firstName = %s, password = %s WHERE email = %s',
+                    (firstName, password, oldemail))
     
     mysql.connection.commit()
     cursor.close()
@@ -729,9 +710,6 @@ def submitEditUserAll():
     flash('Hotel user has been edited', 'success')
     return render_template('index.html')
 
-
-
-    return 'h'
 
 
 if __name__ == "__main__":
@@ -742,5 +720,6 @@ if __name__ == "__main__":
 
     TODOS
 
+        invite email option
 
 '''

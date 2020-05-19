@@ -18,6 +18,15 @@ const checkp = () => {
     }
 }
 
+function ssd(selectobj) {
+    const val = selectobj.value
+
+    if (val == 'tour') {
+        const ggg = document.getElementById('ggg')
+        ggg.style.display = 'block';
+    }
+}
+
 $(document).ready(function () {
 
     setTimeout(function(){

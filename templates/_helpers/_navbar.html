@@ -1,5 +1,9 @@
 <nav class='navbar navbar-expand-md navbar-dark bg-dark  fixed-top'>
-    <a class='navbar-brand'>Brand Name</a>
+    <a class='navbar-brand'>
+        <img src = '../../static/images/TROMPAR_Logo.png'
+         class = 'nvimg'
+        >
+    </a>
     {% if session.logged_in %}
 
     <div class='collapse navbar-collapse w-100 order-3 dual-collapse2 mr-3'>
@@ -7,7 +11,7 @@
         {% if session.active %}
         <ul class='menu navbar-nav mx-auto'>
             {% if session.menuParams['request'] %}
-                <li>
+                <li class = 'lilink'>
                     <a class="homer" href="#">
                         Request
                     </a>
@@ -28,7 +32,7 @@
             {% endif %}
 
             {% if session.menuParams['yield'] %}
-                <li>
+                <li class = 'lilink'>
                     <a href="#">
                         Yield Manager
                     </a>
@@ -50,7 +54,7 @@
             {% endif %}
                 
             {% if session.menuParams['business'] %}
-                <li>
+                <li class = 'lilink'>
                     <a href="#">
                         Business Rules
                     </a>
@@ -92,7 +96,7 @@
             {% endif %}
             
             {% if session.menuParams['userM'] %}
-                <li>
+                <li class = 'lilink'>
                     <a href="#">
                         User Management
                     </a>
@@ -131,29 +135,140 @@
             {% endif %}
 
             {% if session.menuParams['analytics'] %}
-                <li><a href="#">Analytics</a>
+                <li class = 'lilink'><a href="#">Analytics</a>
                     <ul class="sub-menu">
                         {% if session.menuParams['analyticsDashboard'] %}
-                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#">Dashboard</a>
+                                <ul>
+                                    <li>
+                                        <a href="#">
+                                            Requests
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Status
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Category
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Lead Time
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Revenue
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Room Nights
+                                        </a>
+                                    </li>
+                                </ul>
+                            
+                            </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsConversion'] %}
-                            <li><a href="#">Conversion Report</a></li>
+                        {% if session.menuParams['analyticsbb'] %}
+                            <li><a href="#">Buying Behaviour</a>
+                                <ul>
+                                    <li>
+                                        <a href = '#'>
+                                            Booking Lead Time
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Response Rate
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Group Category
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Request Time
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Conversion Rate
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsTop'] %}
-                            <li><a href="#">Top Performing Customers</a></li>
+                        {% if session.menuParams['analyticsp'] %}
+                            <li><a href="#">Performance</a>
+                                <ul>
+                                    <li>
+                                        <a href = '#'>
+                                            Hotel
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Customer
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Pending
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Time Limit Expiration
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                            </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsPending'] %}
-                            <li><a href="#">Pending Report</a></li>
-                        {% endif %}
-                        {% if session.menuParams['analyticsTAT'] %}
-                            <li><a href="#">TAT Report</a></li>
+                        {% if session.menuParams['analyticsr'] %}
+                            <li><a href="#">Revenue</a>
+                                <ul>
+                                    <li>
+                                        <a href = '#'>
+                                            Booked
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Potential
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Performance
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Rate Variance
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='#'>
+                                            Average Group Rate
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         {% endif %}
                     </ul>
                 </li>
             {% endif %}
             
             {% if session.menuParams['developers'] %}
-                <li>
+                <li class = 'lilink'>
                     <a href='#'>Developers</a>
                     <ul>
                         <li>
@@ -204,7 +319,7 @@
         {% elif session.userType == 'developer' %}
 
         <ul class='menu navbar-nav mx-auto'>
-            <li>
+            <li class = 'lilink'>
                 <a class="homer" href="#">
                     Request
                 </a>
@@ -219,7 +334,7 @@
                 </ul>
             </li>
         
-            <li>
+            <li class = 'lilink'>
                 <a href="#">
                     Yield Manager
                 </a>
@@ -235,16 +350,12 @@
                 </ul>
             </li>
         
-            <li>
+            <li class = 'lilink'>
                 <a href="#">
                     Business Rules
                 </a>
-                <ul class="sub-menu">
-                    <li><a href="#">Request</a>
-                        <ul>
-                            <li><a href='#'>Create & View</a></li>
-                            <li><a href='#'>Map</a></li>
-                        </ul>
+                <ul class="sub-menu">Add User Type
+
                     </li>
                     <li>
                         <a href="#">Contact</a>
@@ -265,7 +376,7 @@
                 </ul>
             </li>
         
-            <li>
+            <li class = 'lilink'>
                 <a href="#">
                     User Management
                 </a>
@@ -298,18 +409,131 @@
                 </ul>
             </li>
         
-            <li><a href="#">Analytics</a>
+            <li class = 'lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Conversion Report</a></li>
-                    <li><a href="#">Top Performing Customers</a></li>
-                    <li><a href="#">Pending Report</a></li>
-                    <li><a href="#">TAT Report</a></li>
+                    <li><a href="#">Dashboard</a>
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    Requests
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Status
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Category
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Lead Time
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Revenue
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Room Nights
+                                </a>
+                            </li>
+                        </ul>
+            
+                    </li>
+                    <li><a href="#">Buying Behaviour</a>
+                        <ul>
+                            <li>
+                                <a href='#'>
+                                    Booking Lead Time
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Response Rate
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Group Category
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Request Time
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Conversion Rate
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Performance</a>
+                        <ul>
+                            <li>
+                                <a href='#'>
+                                    Hotel
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Customer
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Pending
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Time Limit Expiration
+                                </a>
+                            </li>
+                        </ul>
+            
+                    </li>
+                    <li><a href="#">Revenue</a>
+                        <ul>
+                            <li>
+                                <a href='#'>
+                                    Booked
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Potential
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Performance
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Rate Variance
+                                </a>
+                            </li>
+                            <li>
+                                <a href='#'>
+                                    Average Group Rate
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         
         
-            <li>
+            <li class = 'lilink'>
                 <a href='#'>Developers</a>
                 <ul>
                     <li>
@@ -356,7 +580,7 @@
 
         {% elif session.userType == 'iatauser' %}
         <ul class='menu navbar-nav mx-auto'>
-            <li>
+            <li class = 'lilink'>
                 <a class="homer" href="#">
                     Request
                 </a>
@@ -371,7 +595,7 @@
                 </ul>
             </li>
 
-            <li>
+            <li class = 'lilink'>
                 <a href="#">
                     User Management
                 </a>
@@ -387,7 +611,7 @@
 
 
 
-            <li><a href="#">Analytics</a>
+            <li class = 'lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
                     <li>
                         <a href="#">
@@ -430,7 +654,7 @@
 
         {% elif session.userType == 'customer' %}
         <ul class='menu navbar-nav mx-auto'>
-            <li>
+            <li class = 'lilink'>
                 <a class="homer" href="#">
                     Request
                 </a>
@@ -446,7 +670,7 @@
             </li>
 
 
-            <li><a href="#">Analytics</a>
+            <li class = 'lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
                     <li>
                         <a href="#">

@@ -1,5 +1,5 @@
 /* b612-mono-regular - latin */
-@font-face {
+@font-face {  
   font-family: 'B612 Mono';
   font-style: normal;
   font-weight: 400;
@@ -473,4 +473,11 @@ hr {
     padding: 5px;
   }
   
-  
+  .lilink{
+    margin-right: 35px;
+  }
+
+  .nvimg {
+    height: 28px;
+    background-color: #f0f0f0;
+  }

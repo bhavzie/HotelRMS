@@ -12,21 +12,19 @@
         >
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
-                <input type="text" name="firstName" class="form-control text-center" required placeholder="Enter First Name&#42;"
+                <input type="text" name="namev" class="form-control text-center" required placeholder="Enter Full Name&#42;"
                     onfocus="this.placeholder = ''"
-                onfocusout = "this.placeholder = 'Enter First Name&#42;'"    
+                onfocusout = "this.placeholder = 'Enter Full Name&#42;'"    
                 minlength="4"
-                maxlength="12"
+                maxlength="25"
+                required
                 >
             </div>
             <div class="formhelp mb-5">
-                <i class="fas fa-user-tie fa-lg"></i>
-                <input type="text" name="lastName" class="form-control text-center" required placeholder="Enter Last Name&#42;"
-                    onfocus="this.placeholder = ''"
-                    onfocusout = "this.placeholder = 'Enter Last Name&#42;'"
-                minlength="4"
-                maxlength="12"    
-                    >
+                <i class="fas fa-asterisk fa-lg"></i>
+                <input type="text" name="agencyName" class="form-control text-center" required
+                    placeholder="Enter Travel Agency Name&#42;" onfocus="this.placeholder = ''"
+                    onfocusout="this.placeholder = 'Enter Travel Agency Name&#42;'" minlength="4" maxlength="25">
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-envelope fa-lg"></i>
@@ -45,7 +43,7 @@
                     placeholder="Password&#42;" onfocus="this.placeholder = ''"
                     onfocusout = "this.placeholder = 'Password&#42;'"
                     minlength="4"
-                    maxlength="12"
+                    maxlength="25"
 
                     onkeyup= 'checkp();'
                     >
@@ -57,53 +55,26 @@
                 onfocus="this.placeholder = ''"
                     onfocusout = "this.placeholder = 'Confirm Password&#42;'"
                     minlength="4"
-                    maxlength="12"
+                    maxlength="25"
                     onkeyup= 'checkp();'
                     >
                 <span id='msg' class='form-text text-muted'>
                 </span>
             </div>
             <div class="formhelp mb-5">
-                <i class="fas fa-asterisk fa-lg"></i>
-                <input type="text" name="IATACode" class="form-control text-center" required placeholder="Enter IATA Code&#42;"
-                    onfocus="this.placeholder = ''"
-                    onfocusout = "this.placeholder = 'Enter IATA Code&#42;'"
-                    >
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-asterisk fa-lg"></i>
-                <input type="text" name="agencyName" class="form-control text-center" required placeholder="Enter Travel Agency Name&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Travel Agency Name&#42;'"
-                minlength="4"
-                maxlength="12"    
-                    >
-            </div>
-            <div class="formhelp mb-5">
                 <i class="fas fa-mobile fa-lg"></i>
-                <input type="text" name="phoneN" class="form-control text-center" required
-                    placeholder="Enter Phone Number&#42;" onfocus="this.placeholder = ''"
-                    onfocusout="this.placeholder = 'Enter Phone Number&#42;'">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-address-book fa-lg"></i>
-                <textarea name="address" class="form-control text-center" required placeholder="Enter Address&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Address&#42;'"></textarea>
+                <input type="text" name="phoneN" class="form-control text-center" required placeholder="Enter Phone Number&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Phone Number&#42;'">
             </div>
             <div class="formhelp mb-5">
                 <i class="far fa-flag"></i>
-                <input type="text" name="country" class="form-control text-center" required placeholder="Country&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'"
-                    minlength="4"
-                    maxlength="12"
-                    >
+                <input type="text" name="country" class="form-control text-center" placeholder="Country"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country'" minlength="4" maxlength="25">
+                    <small id='smallID' class='form-text text-muted'>
+                        Fields marked with * are mandatory.
+                    </small>
             </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-city fa-lg"></i>
-                <input type="text" name="city" class="form-control text-center" required placeholder="City&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City&#42;'"
-                    minlength="4"
-                    maxlength="12">
-            </div>
+            
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">

@@ -12,12 +12,8 @@
         {% if data %}
         <form action="{{ url_for('editUser', email = data['email'] ) }}" method="POST">
             <div class="infog mb-5">
-                <span class = 'btn btn-primary'>First Name : </span><br>
-                <div class = 'mt-3 text-center'>{{ data['firstName'] }}</div>
-            </div>
-            <div class="infog mb-5">
-                <span class='btn btn-primary'>Last Name : </span><br>
-                <div class='mt-3 text-center'>{{ data['lastName'] }}</div>
+                <span class = 'btn btn-primary'>Name : </span><br>
+                <div class = 'mt-3 text-center'>{{ data['name'] }}</div>
             </div>
             <div class="infog mb-5">
                 <span class='btn btn-primary'>Email : </span><br>
@@ -34,10 +30,6 @@
             <div class="infog mb-5">
                 <span class='btn btn-primary'>Address : </span><br>
                 <div class='mt-3 text-center'>{{ data['address'] }}</div>
-            </div>
-            <div class="infog mb-5">
-                <span class='btn btn-primary'>City : </span><br>
-                <div class='mt-3 text-center'>{{ data['city'] }}</div>
             </div>
             <div class="infog mb-5">
                 <span class='btn btn-primary'>Country : </span><br>
