@@ -22,6 +22,10 @@
                 <input type='text' class='form-control mt-3 text-center' value="{{ data['phone'] }}" name='phoneN'
                     required />
             </div>
+            <div class="infog mb-5">
+                <span class='btn btn-primary'>Email : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['email'] }}" readonly>
+            </div>
             {% if data['agencyName'] %}
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Agency Name : </span><br>
@@ -43,7 +47,13 @@
                 <span class='btn btn-primary'>Password : </span><br>
                 <input type='password' class='form-control mt-3 text-center' value="{{ data['password'] }}" name='password' required />
             </div>
-
+            {% if data['organizationName'] %}
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Organization Name : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['organizationName'] }}" name='organizationName'
+                    required />
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">

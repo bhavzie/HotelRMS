@@ -20,10 +20,18 @@ const checkp = () => {
 
 function ssd(selectobj) {
     const val = selectobj.value
+    const fff = document.getElementById('fff')
+    const ggg = document.getElementById('ggg')
 
     if (val == 'tour') {
-        const ggg = document.getElementById('ggg')
         ggg.style.display = 'block';
+        fff.style.display = 'none';
+    } else if(val == 'corporate') {
+        fff.style.display = 'block';
+        ggg.style.display = 'none';
+    } else{
+        ggg.style.display = 'none';
+        fff.style.display = 'none';
     }
 }
 
@@ -32,6 +40,8 @@ $(document).ready(function () {
     setTimeout(function(){
         $("div.alert").remove();
     }, 3000);
+
+    $('#tableusers').DataTable();
 
 });
 

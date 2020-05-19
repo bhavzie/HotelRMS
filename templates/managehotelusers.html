@@ -10,7 +10,7 @@
         </div>
         {% if data %}
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+                <table id = 'tableusers' class="table table-bordered table-hover">
                     <caption>List of users</caption>
                     <thead class="thead-dark">
                         <tr>
@@ -33,8 +33,13 @@
                             <td>
                                 <a class = 'btn btn-warning' href = "{{ url_for('editUser', email = d['email'] ) }}"
                                 >Edit<i class="fas fa-edit"></i></a>
+                                {% if d['active'] == 1 %}
                                 <a class = 'btn btn-danger' href = "{{ url_for('deactivateUser', email = d['email'] ) }}"
                                 >Deactivate<i class="fas fa-user-slash"></i></a>
+                                {% else %}
+                                <a class='btn btn-danger' href="{{ url_for('activateUser', email = d['email'] ) }}">Activate<i
+                                        class="fas fa-user-slash"></i></a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}

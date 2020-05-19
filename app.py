@@ -168,7 +168,7 @@ def registerC():
         address = ''
         userType = request.form.get('userType')
         agencyName = request.form.get('agencyName')
-
+        organizationName = request.form.get('organizationName')
 
 
         firstName = name.split(' ')[0]
@@ -186,8 +186,8 @@ def registerC():
             link = url_for('confirm_email', token=token, _external=True)
             msg.body = 'Confirm your email by clicking this link:- {}'.format(link)
             mail.send(msg)
-            cursor.execute("INSERT INTO Customers(name, email, password, phone, country, address, userType, agencyName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)",
-                           (name, email, password, phoneN, country, address, userType, agencyName))
+            cursor.execute("INSERT INTO Customers(name, email, password, phone, country, address, userType, agencyName, organizationName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                           (name, email, password, phoneN, country, address, userType, agencyName, organizationName))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
                            (firstName, email, password, 'customer'))
         else:
@@ -557,7 +557,7 @@ def addusertype():
 @app.route('/managehotelusers', methods = ['GET', 'POST'])
 def managehotelusers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT name, email, userType FROM hotelUsers')
+    cursor.execute('SELECT name, email, userType, active FROM hotelUsers')
 
     result = cursor.fetchall()
     cursor.close()
@@ -565,6 +565,8 @@ def managehotelusers():
     for res in result:
         res['firstName'] = res['name'].split()[0]
         data.append(res)
+    
+    print(data)
 
     return render_template('managehotelusers.html', title = 'Users', data = data)
 
@@ -638,6 +640,19 @@ def deactivateUser(email):
     flash("User has been de-activated", 'success')
     return render_template('index.html')
 
+
+@app.route('/activateUser/<email>', methods=['GET', 'POST'])
+def activateUser(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        "UPDATE hotelUsers SET active = 1 where email = %s", [email])
+    mysql.connection.commit()
+    cursor.close()
+
+    flash("User has been activated", 'success')
+    return render_template('index.html')
+
+
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
 def myprofile(email):
     cursor = mysql.connection.cursor()
@@ -679,7 +694,7 @@ def submitEditUserAll():
     oldemail = request.form['oldemail']
     password = request.form['password']
     agencyName = request.form.get('agencyName')
-
+    organizationName = request.form.get('organizationName')
 
     firstName = name.split(' ')[0]
     cursor = mysql.connection.cursor()
@@ -692,8 +707,8 @@ def submitEditUserAll():
         cursor.execute('Update hotelUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s WHERE email = %s',
                         (name, phone, address, country, password, oldemail))
     elif data == 'customer':
-        cursor.execute('Update Customers SET name = %s, phone = %s, address = %s, country = %s, password = %s WHERE email = %s',
-                        (name, phone, address, country,password, oldemail))
+        cursor.execute('Update Customers SET name = %s, phone = %s, address = %s, country = %s, password = %s, organizationName = %s WHERE email = %s',
+                        (name, phone, address, country,password, organizationName, oldemail))
     elif data == 'iatauser':
         cursor.execute('Update IATAUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s, agencyName = %s WHERE email = %s',
                         (name, phone, address, country, password, agencyName, oldemail))
@@ -721,5 +736,7 @@ if __name__ == "__main__":
     TODOS
 
         invite email option
+        edit usertype
+        navbar db
 
 '''
