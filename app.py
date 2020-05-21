@@ -237,35 +237,53 @@ def login():
 
                     * For developer = 'developer'
                 '''
-                menuParams = {
+                
+                menuParams = {}
+                
+                if session['userType'] == 'hoteluser':
+                    menuParams = {
                     'request': True,
                     'requestCreate': True,
                     'requestManage': True,
+                    'requestcreateadhoc': True,
+                    'requestcreateseries': True,
                     'yield': True,
                     'yieldRate': True,
                     'yieldDiscount': True,
+                    'yielddiscountcreate': True,
+                    'yielddiscountmap': True,
                     'business': True,
                     'businessRequest': True,
+                    'businessRequestcreate': True,
+                    'businessRequestmap': True,
                     'businessContact': True,
+                    'businesscontactcreate': True,
+                    'businesscontactmap': True,
                     'businessTime': True,
+                    'businessTimecreate': True,
+                    'businessTimemap': True,
                     'businessNegotiation': True,
                     'businessAuto': True,
+                    'businessRooms': True,
                     'userM': True,
                     'userMHotel': True,
+                    'userMHoteladd': True,
+                    'userMHoteledit': True,
                     'userMCustomer': True,
+                    'userMCustomeradd': True,
+                    'userMCustomeredit': True,
+                    'userMCustomerupload': True,
                     'developers': True,
                     'analytics': True,
                     'analyticsDashboard': True,
                     'analyticsbb': True,
                     'analyticsp': True,
                     'analyticsr': True,
-                }
-
-                
-                if session['userType'] == 'hoteluser':
+                    }
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
-                    cursor.execute("SELECT * FROM menuAccess where userType = %s", [userSubType])
+                    cursor.execute(
+                        "SELECT * FROM hotelmenuAccess where userType = %s", [userSubType])
                     d = cursor.fetchall()
                     cursor.execute("SELECT * FROM hotelUsers where email = %s", [email])
                     dog = cursor.fetchall()
@@ -296,10 +314,103 @@ def login():
                         menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
                         menuParams['analyticsp'] = getValC2(d['analyticsp'])
                         menuParams['analyticsr'] = getValC2(d['analyticsr'])
+                        
+                        menuParams['requestcreateadhoc'] = getValC2(d['requestcreateadhoc'])
+                        menuParams['requestcreateseries'] = getValC2(d['requestcreateseries'])
+                        menuParams['yielddiscountcreate'] = getValC2(d['yielddiscountcreate'])
+                        menuParams['yielddiscountmap'] = getValC2(d['yielddiscountmap'])
+                        menuParams['businessRequestcreate'] = getValC2(d['businessRequestcreate'])
+                        menuParams['businessRequestmap'] = getValC2(d['businessRequestmap'])
+                        menuParams['businesscontactcreate'] = getValC2(d['businesscontactcreate'])
+                        menuParams['businesscontactmap'] = getValC2(d['businesscontactmap'])
+                        menuParams['businessTimemap'] = getValC2(d['businessTimemap'])
+                        menuParams['businessRooms'] = getValC2(d['businessRooms'])
+                        menuParams['businessTimecreate'] = getValC2(d['businessTimecreate'])
+                        menuParams['userMHoteladd'] = getValC2(d['userMHoteladd'])
+                        menuParams['userMHoteledit'] = getValC2(d['userMHoteledit'])
+                        menuParams['userMCustomeradd'] = getValC2(
+                        d['userMCustomeradd'])
+                        menuParams['userMCustomeredit'] = getValC2(d['userMCustomeredit'])
+                        menuParams['userMCustomerupload'] = getValC2(
+                            d['userMCustomerupload'])
 
                     session['menuParams'] = menuParams
-                
 
+
+                elif session['userType'] == 'iatauser':
+                    menuParams = {
+                    'request': True,
+                    'requestCreate': True,
+                    'requestManage': True,
+                    'requestcreateadhoc': True,
+                    'requestcreateseries': True,
+                    'userM': True,
+                    'userMadd': True,
+                    'userMedit': True,
+                    'analytics': True,
+                    'analyticsDashboard': True,
+                    'analyticsbb': True,
+                    'analyticsp': True,
+                    'analyticsr': True,
+                    }
+                    cursor.execute("SELECT * FROM iatamenuAccess")
+                    d = cursor.fetchall()
+                    if len(d) != 0:
+                        d = d[0]
+                        menuParams['request'] = getValC2(d['request'])
+                        menuParams['requestCreate'] = getValC2(
+                            d['requestCreate'])
+                        menuParams['requestManage'] = getValC2(
+                            d['requestManage'])
+                        menuParams['userM'] = getValC2(d['userM'])
+                        menuParams['userMadd'] = getValC2(d['userMadd'])
+                        menuParams['userMedit'] = getValC2(d['userMedit'])
+                        menuParams['analytics'] = getValC2(d['analytics'])
+                        menuParams['analyticsDashboard'] = getValC2(d['analyticsDashboard'])
+                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
+                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
+                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
+                        
+                        menuParams['requestcreateadhoc'] = getValC2(d['requestcreateadhoc'])
+                        menuParams['requestcreateseries'] = getValC2(d['requestcreateseries'])
+                    
+                    session['menuParams'] = menuParams
+
+                elif session['userType'] == 'customer':
+                    menuParams = {
+                        'request': True,
+                        'requestCreate': True,
+                        'requestManage': True,
+                        'requestcreateadhoc': True,
+                        'requestcreateseries': True,
+                        'analytics': True,
+                        'analyticsDashboard': True,
+                        'analyticsbb': True,
+                        'analyticsp': True,
+                        'analyticsr': True,
+                    }
+                    cursor.execute("SELECT * FROM iatamenuAccess")
+                    d = cursor.fetchall()
+                    if len(d) != 0:
+                        d = d[0]
+                        menuParams['request'] = getValC2(d['request'])
+                        menuParams['requestCreate'] = getValC2(
+                            d['requestCreate'])
+                        menuParams['requestManage'] = getValC2(
+                            d['requestManage'])
+                        menuParams['analytics'] = getValC2(d['analytics'])
+                        menuParams['analyticsDashboard'] = getValC2(
+                            d['analyticsDashboard'])
+                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
+                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
+                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
+
+                        menuParams['requestcreateadhoc'] = getValC2(
+                            d['requestcreateadhoc'])
+                        menuParams['requestcreateseries'] = getValC2(
+                            d['requestcreateseries'])
+
+                    session['menuParams'] = menuParams
 
                 print(session)
                 
@@ -381,7 +492,7 @@ def signOut():
 @app.route('/hoteladduser', methods = ['GET', 'POST'])
 def hoteladduser():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT userType FROM menuAccess")
+    cursor.execute("SELECT userType FROM hotelmenuAccess")
     data = cursor.fetchall()
     subtypes = []
 
@@ -533,13 +644,33 @@ def addusertype():
     developers = getValC(request.form.get('developers'))
 
 
+    requestcreateadhoc = getValC(request.form.get('requestcreateadhoc'))
+    requestcreateseries = getValC(request.form.get('requestcreateseries'))
+    yielddiscountcreate = getValC(request.form.get('yielddiscountcreate'))
+    yielddiscountmap = getValC(request.form.get('yielddiscountmap'))
+
+    businessRequestcreate = getValC(request.form.get('businessRequestcreate'))
+    businessRequestmap = getValC(request.form.get('businessRequestmap'))
+    businesscontactcreate = getValC(request.form.get('businesscontactcreate'))
+    businesscontactmap = getValC(request.form.get('businesscontactmap'))
+    businessTimemap = getValC(request.form.get('businessTimemap'))
+
+    businessRooms = getValC(request.form.get('businessRooms'))
+    businessTimecreate = getValC(request.form.get('businessTimecreate'))
+    userMHoteladd = getValC(request.form.get('userMHoteladd'))
+    userMHoteledit = getValC(request.form.get('userMHoteledit'))
+    userMCustomeradd = getValC(request.form.get('userMCustomeradd'))
+    userMCustomeredit = getValC(request.form.get('userMCustomeredit'))
+    userMCustomerupload = getValC(request.form.get('userMCustomerupload'))
+
+
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From menuAccess where userType = %s', [userType])
+    cursor.execute('SELECT * From hotelmenuAccess where userType = %s', [userType])
     data = cursor.fetchall()
 
     if len(data) == 0:
-        cursor.execute('INSERT INTO menuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsbb, analyticsp, analyticsr) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                       userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticsbb, analyticsp, analyticsr])
+        cursor.execute('INSERT INTO hotelmenuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsbb, analyticsp, analyticsr, requestcreateadhoc, requestcreateseries, yielddiscountcreate, yielddiscountmap, businessRequestcreate, businessRequestmap, businesscontactcreate, businesscontactmap, businessTimemap, businessRooms, businessTimecreate, userMHoteladd, userMHoteledit, userMCustomeradd, userMCustomeredit, userMCustomerupload ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                       userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticsbb, analyticsp, analyticsr, requestcreateadhoc, requestcreateseries, yielddiscountcreate, yielddiscountmap, businessRequestcreate, businessRequestmap,  businesscontactcreate, businesscontactmap,  businessTimemap, businessRooms, businessTimecreate, userMHoteladd, userMHoteledit, userMCustomeradd, userMCustomeredit, userMCustomerupload])
 
     else:
         flash('UserType Already Registered', 'danger')
@@ -589,7 +720,7 @@ def editUser(email):
     cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
 
     data = cursor.fetchall()
-    cursor.execute("SELECT userType FROM menuAccess")
+    cursor.execute("SELECT userType FROM hotelmenuAccess")
     data1 = cursor.fetchall()
     subtypes = []
 
@@ -725,6 +856,145 @@ def submitEditUserAll():
     flash('Hotel user has been edited', 'success')
     return render_template('index.html')
 
+@app.route('/inviteemail', methods = ['GET', 'POST'])
+def inviteemail():
+    email = request.form['email']
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From users where email = %s', [email])
+    data = cursor.fetchall()
+
+    if len(data) != 0:
+        flash('Email already registered', 'danger')
+        return render_template('login.html', title='Login')
+    else:
+        token = generate_confirmation_token(email)
+        msg = Message(
+            'Invite to TROMPAR',
+            sender='koolbhavya.epic@gmail.com',
+            recipients=[email])
+        link = url_for('addhoteluserinv', token=token, _external=True)
+        msg.body = 'Kindly fill the form to complete registration:- {}'.format(
+            link)
+        mail.send(msg)
+
+        flash('Invitation sent to email', 'success')
+        return render_template('index.html', title='Login')
+
+
+@app.route('/addhoteluserinv<token>', methods = ['GET', 'POST'])
+def addhoteluserinv(token):
+    email = confirm_token(token)
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT userType FROM hotelmenuAccess")
+    data = cursor.fetchall()
+    subtypes = []
+
+    for d in data:
+        subtypes.append(d['userType'])
+
+    if 'Revenue Management' not in subtypes:
+        subtypes.append('Revenue Management')
+    if 'Reservations' not in subtypes:
+        subtypes.append('Reservation')
+    return render_template('addhoteluserinv.html', title = 'Register', email = email, subtypes = subtypes)
+
+
+@app.route('/iatanav', methods = ['GET', 'POST'])
+def iatanav():
+    requestc = getValC(request.form.get('requestc'))
+    requestcr = getValC(request.form.get('requestcreate'))
+    requestm = getValC(request.form.get('requestmanage'))
+
+    user = getValC(request.form.get('user'))
+    useredit = getValC(request.form.get('userc'))
+    useradd = getValC(request.form.get('userh'))
+
+    analytics = getValC(request.form.get('analytics'))
+    analyticsd = getValC(request.form.get('analyticsd'))
+    analyticsbb = getValC(request.form.get('analyticsbb'))
+    analyticsp = getValC(request.form.get('analyticsp'))
+    analyticsr = getValC(request.form.get('analyticsr'))
+
+    requestcreateadhoc = getValC(request.form.get('requestcreateadhoc'))
+    requestcreateseries = getValC(request.form.get('requestcreateseries'))
+    
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'SELECT * From iatamenuAccess')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        cursor.execute('INSERT INTO iatamenuAccess(request, requestCreate, requestManage, userM, userMadd, userMedit, requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            requestc, requestcr, requestm, user, useradd, useredit, requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsd, analyticsp
+        ])
+    else:
+        flash('UserType Already Registered', 'danger')
+        return render_template('hoteladdusertype.html', title="Register")
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('New userType added', 'success')
+    return render_template('index.html', title='UserType')
+
+
+@app.route('/customernav', methods = ['GET', 'POST'])
+def customernav():
+    requestc = getValC(request.form.get('requestc'))
+    requestcr = getValC(request.form.get('requestcreate'))
+    requestm = getValC(request.form.get('requestmanage'))
+    
+    analytics = getValC(request.form.get('analytics'))
+    analyticsd = getValC(request.form.get('analyticsd'))
+    analyticsbb = getValC(request.form.get('analyticsbb'))
+    analyticsp = getValC(request.form.get('analyticsp'))
+    analyticsr = getValC(request.form.get('analyticsr'))
+
+    requestcreateadhoc = getValC(request.form.get('requestcreateadhoc'))
+    requestcreateseries = getValC(request.form.get('requestcreateseries'))
+
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'SELECT * From customermenuAccess')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        cursor.execute('INSERT INTO customermenuAccess(request, requestCreate, requestManage,  requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        requestc, requestcr, requestm,  requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsd, analyticsp
+        ])
+    else:
+        flash('UserType Already Registered', 'danger')
+        return render_template('hoteladdusertype.html', title="Register")
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('New userType added', 'success')
+    return render_template('index.html', title='UserType')
+
+
+@app.route('/edituserType', methods = ['GET', 'POST'])
+def edituserType():
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'SELECT * From customermenuAccess')
+    datac = cursor.fetchall()
+    datac = datac[0]
+    
+    cursor.execute(
+        'SELECT * From iatamenuAccess')
+    datai = cursor.fetchall()
+    datai = datai[0]
+
+    cursor.execute(
+        'SELECT * From hotelmenuAccess')
+    datah = cursor.fetchall()
+    datah = datah[0]
+
+    return render_template('editusertype.html', datac= datac, datai = datai, datah=datah)
+
+@app.route('/customernavupdate', methods = ['GET', 'POST'])
+def customernavupdate():
+    return 'h'  
+
 
 
 if __name__ == "__main__":
@@ -735,8 +1005,9 @@ if __name__ == "__main__":
 
     TODOS
 
-        invite email option
-        edit usertype
-        navbar db
+    marked on top
+    country madatory
+
+    invite usertype param
 
 '''

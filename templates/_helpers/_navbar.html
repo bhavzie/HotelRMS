@@ -19,8 +19,12 @@
                         {% if session.menuParams['requestCreate']  %}
                             <li><a href="#">Create</a>
                                 <ul>
+                                    {% if session.menuParams['requestcreateadhoc'] %}
                                     <li><a href='#'>Adhoc</a></li>
+                                    {% endif %}
+                                    {% if session.menuParams['requestcreateseries'] %}
                                     <li><a href='#'>Series</a></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
@@ -44,8 +48,12 @@
                             <li>
                                 <a href="#">Discount</a>
                                 <ul>
+                                    {% if session.menuParams['yielddiscountcreate'] %}
                                     <li><a href="#">Create & View</a></li>
+                                    {% endif %}
+                                    {% if session.menuParams['yielddiscountmap'] %}
                                     <li><a href="#">Map</a></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
@@ -62,8 +70,13 @@
                     {% if session.menuParams['businessRequest'] %}
                         <li><a href="#">Request</a>
                                 <ul>
+
+                                    {% if session.menuParams['businessRequestcreate'] %}
                                     <li><a href='#'>Create & View</a></li>
+                                    {% endif %}
+                                    {% if session.menuParams['businessRequestmap'] %}
                                     <li><a href='#'>Map</a></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
@@ -71,8 +84,13 @@
                         <li>
                             <a href="#">Contact</a>
                             <ul>
+
+                                    {% if session.menuParams['businesscontactcreate'] %}
                                 <li><a href="#">Create & View</a></li>
+                                {% endif %}
+                                {% if session.menuParams['businesscontactmap'] %}
                                 <li><a href="#">Map</a></li>
+                                {%endif%}
                             </ul>
                         </li>
                     {% endif %}
@@ -80,8 +98,14 @@
                         <li>
                             <a href="#">Time Limit</a>
                             <ul>
+
+                                    {% if session.menuParams['businessTimecreate'] %}
                                 <li><a href="#">Create & View</a></li>
+                                {%endif%}
+
+                                    {% if session.menuParams['businessTimemap'] %}
                                 <li><a href="#">Map</a></li>
+                                {%endif%}
                             </ul>
                         </li>
                     {% endif %}
@@ -91,6 +115,10 @@
                     {% if session.menuParams['businessAuto'] %}
                         <li><a href="#">Autopilot</a></li>
                     {% endif %}
+
+                    {% if session.menuParams['businessRooms'] %}
+                        <li><a href = '#'>Rooms</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
@@ -105,12 +133,18 @@
                             <li>
                                 <a href='#'>Hotel</a>
                                 <ul>
+
+                                    {% if session.menuParams['userMHoteladd'] %}
                                     <li>
-                                        <a href='/hoteladduser'>Add User</a>
+                                        <a href='/hoteladduser'>Add</a>
                                     </li>
+                                    {%endif%}
+
+                                    {% if session.menuParams['userMHoteledit'] %}
                                     <li>
                                         <a href='/managehotelusers'>Edit</a>
                                     </li>
+                                    {%endif%}
                                 </ul>
                             </li>
                         {% endif %}
@@ -118,15 +152,24 @@
                             <li>
                                 <a href="#">Customer</a>
                                 <ul>
+
+                                    {% if session.menuParams['userMCustomeradd'] %}
                                     <li>
                                         <a href='#'>Add</a>
                                     </li>
+                                    {%endif%}
+
+                                    {% if session.menuParams['userMCustomeredit'] %}
                                     <li>
                                         <a href='#'>Edit</a>
                                     </li>
+                                    {%endif%}
+
+                                    {% if session.menuParams['userMCustomerupload'] %}
                                     <li>
                                         <a href='#'>Upload</a>
                                     </li>
+                                    {%endif%}
                                 </ul>
                             </li>
                         {% endif %}
@@ -139,128 +182,20 @@
                     <ul class="sub-menu">
                         {% if session.menuParams['analyticsDashboard'] %}
                             <li><a href="#">Dashboard</a>
-                                <ul>
-                                    <li>
-                                        <a href="#">
-                                            Requests
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Status
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Category
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Lead Time
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Revenue
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Room Nights
-                                        </a>
-                                    </li>
-                                </ul>
-                            
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsbb'] %}
                             <li><a href="#">Buying Behaviour</a>
-                                <ul>
-                                    <li>
-                                        <a href = '#'>
-                                            Booking Lead Time
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Response Rate
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Group Category
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Request Time
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Conversion Rate
-                                        </a>
-                                    </li>
-                                </ul>
+                               
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsp'] %}
                             <li><a href="#">Performance</a>
-                                <ul>
-                                    <li>
-                                        <a href = '#'>
-                                            Hotel
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Customer
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Pending
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Time Limit Expiration
-                                        </a>
-                                    </li>
-                                </ul>
                                 
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsr'] %}
                             <li><a href="#">Revenue</a>
-                                <ul>
-                                    <li>
-                                        <a href = '#'>
-                                            Booked
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Potential
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Performance
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Rate Variance
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='#'>
-                                            Average Group Rate
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                         {% endif %}
                     </ul>
@@ -272,10 +207,13 @@
                     <a href='#'>Developers</a>
                     <ul>
                         <li>
-                            <a href='/adddeveloper'>Add</a>
+                            <a href='/adddeveloper'>Add User</a>
                         </li>
                         <li>
                             <a href='/hoteladdusertype'>Add UserType</a>
+                        </li>
+                        <li>
+                            <a href='/edituserType'>Edit UserType</a>
                         </li>
                     </ul>
                 </li>
@@ -385,11 +323,12 @@
                         <a href='#'>Hotel</a>
                         <ul>
                             <li>
-                                <a href='/hoteladduser'>Add User</a>
+                                <a href='/hoteladduser'>Add</a>
                             </li>
                             <li>
                                 <a href='/managehotelusers'>Edit</a>
                             </li>
+                            
                         </ul>
                     </li>
                     <li>
@@ -412,122 +351,17 @@
             <li class = 'lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
                     <li><a href="#">Dashboard</a>
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Requests
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Status
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Category
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Lead Time
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Revenue
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Room Nights
-                                </a>
-                            </li>
-                        </ul>
             
                     </li>
                     <li><a href="#">Buying Behaviour</a>
-                        <ul>
-                            <li>
-                                <a href='#'>
-                                    Booking Lead Time
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Response Rate
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Group Category
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Request Time
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Conversion Rate
-                                </a>
-                            </li>
-                        </ul>
+                      
                     </li>
                     <li><a href="#">Performance</a>
-                        <ul>
-                            <li>
-                                <a href='#'>
-                                    Hotel
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Customer
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Pending
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Time Limit Expiration
-                                </a>
-                            </li>
-                        </ul>
+                       
             
                     </li>
                     <li><a href="#">Revenue</a>
-                        <ul>
-                            <li>
-                                <a href='#'>
-                                    Booked
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Potential
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Performance
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Rate Variance
-                                </a>
-                            </li>
-                            <li>
-                                <a href='#'>
-                                    Average Group Rate
-                                </a>
-                            </li>
-                        </ul>
+                      
                     </li>
                 </ul>
             </li>
@@ -537,10 +371,13 @@
                 <a href='#'>Developers</a>
                 <ul>
                     <li>
-                        <a href='/adddeveloper'>Add</a>
+                        <a href='/adddeveloper'>Add User</a>
                     </li>
                     <li>
                         <a href='/hoteladdusertype'>Add UserType</a>
+                    </li>
+                    <li>
+                        <a href='/edituserType'>Edit UserType</a>
                     </li>
                 </ul>
             </li>
@@ -580,46 +417,78 @@
 
         {% elif session.userType == 'iatauser' %}
         <ul class='menu navbar-nav mx-auto'>
+            {% if session.menuParams['request'] %}
             <li class = 'lilink'>
                 <a class="homer" href="#">
                     Request
                 </a>
                 <ul class="sub-menu">
+
+                {% if session.menuParams['requestCreate'] %}
                     <li><a href="#">Create</a>
                         <ul>
+
+            {% if session.menuParams['requestcreateadhoc'] %}
                             <li><a href='#'>Adhoc</a></li>
+                            {%endif%}
+            {% if session.menuParams['requestcreateseries'] %}
                             <li><a href='#'>Series</a></li>
+            {%endif%}
                         </ul>
                     </li>
+                    {%endif%}
+                    {% if session.menuParams['requestManage'] %}
                     <li><a href="#">Manage</a></li>
+                    {%endif%}
                 </ul>
             </li>
-
+            {%endif%}
+            
+            {%if session.menuParams['userM']%}
             <li class = 'lilink'>
                 <a href="#">
                     User Management
                 </a>
                 <ul class="sub-menu">
+                    {%if session.menuParams['userMadd']%}
                     <li>
-                        <a href='#'>Add</a>
+                        <a href="#">Add</a>
                     </li>
+                    {%endif%}
+                    {%if session.menuParams['userMedit']%}
                     <li>
                         <a href="#">Edit</a>
                     </li>
+                    {%endif%}
                 </ul>
             </li>
+            {%endif%}
 
-
-
-            <li class = 'lilink'><a href="#">Analytics</a>
+            {% if session.menuParams['analytics'] %}
+            <li class='lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
-                    <li>
-                        <a href="#">
-                            Dashboard
-                        </a>
+                    {% if session.menuParams['analyticsDashboard'] %}
+                    <li><a href="#">Dashboard</a>
                     </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsbb'] %}
+                    <li><a href="#">Buying Behaviour</a>
+            
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsp'] %}
+                    <li><a href="#">Performance</a>
+            
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsr'] %}
+                    <li><a href="#">Revenue</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </li>
+            {% endif %}
+
         </ul>
 
         <ul class='menu navbar-nav ml-auto'>
@@ -654,31 +523,59 @@
 
         {% elif session.userType == 'customer' %}
         <ul class='menu navbar-nav mx-auto'>
-            <li class = 'lilink'>
+
+            {% if session.menuParams['request'] %}
+            <li class='lilink'>
                 <a class="homer" href="#">
                     Request
                 </a>
                 <ul class="sub-menu">
+            
+                    {% if session.menuParams['requestCreate'] %}
                     <li><a href="#">Create</a>
                         <ul>
+            
+                            {% if session.menuParams['requestcreateadhoc'] %}
                             <li><a href='#'>Adhoc</a></li>
+                            {%endif%}
+                            {% if session.menuParams['requestcreateseries'] %}
                             <li><a href='#'>Series</a></li>
+                            {%endif%}
                         </ul>
                     </li>
+                    {%endif%}
+                    {% if session.menuParams['requestManage'] %}
                     <li><a href="#">Manage</a></li>
+                    {%endif%}
                 </ul>
             </li>
+            {%endif%}
 
-
-            <li class = 'lilink'><a href="#">Analytics</a>
+            {% if session.menuParams['analytics'] %}
+            <li class='lilink'><a href="#">Analytics</a>
                 <ul class="sub-menu">
-                    <li>
-                        <a href="#">
-                            Dashboard
-                        </a>
+                    {% if session.menuParams['analyticsDashboard'] %}
+                    <li><a href="#">Dashboard</a>
                     </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsbb'] %}
+                    <li><a href="#">Buying Behaviour</a>
+            
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsp'] %}
+                    <li><a href="#">Performance</a>
+            
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsr'] %}
+                    <li><a href="#">Revenue</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </li>
+            {% endif %}
+
         </ul>
 
         <ul class='menu navbar-nav ml-auto'>

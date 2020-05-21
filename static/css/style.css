@@ -24,6 +24,7 @@
 
 html {
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 .navbar-brand {
@@ -294,6 +295,11 @@ html {
   width: 1024px;
 }
 
+.spread2 {
+  width: 1200px;
+}
+
+
 .xwrap {
   min-height: 550px !important;
 }
@@ -481,3 +487,8 @@ hr {
     height: 28px;
     background-color: rgba(54, 25, 25, 0);
   }
+
+  .im {
+    margin-bottom: 30px !important;
+  }
+

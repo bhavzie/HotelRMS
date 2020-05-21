@@ -35,6 +35,28 @@ function ssd(selectobj) {
     }
 }
 
+function gfg(selectobj) {
+    const val = selectobj.value
+    const fff = document.getElementById('form1')
+    const ggg = document.getElementById('form2')
+    const iii = document.getElementById('form3')
+
+    if (val == 'hoteluser') {
+        fff.style.display = 'block';
+        ggg.style.display = 'none';
+        iii.style.display = 'none';
+    } else if (val == 'customer') {
+        fff.style.display = 'none';
+        ggg.style.display = 'none';
+        iii.style.display = 'block';
+    } else if (val === 'iatauser') {
+        fff.style.display = 'none';
+        ggg.style.display = 'block';
+        iii.style.display = 'none';
+    }
+}
+
+
 $(document).ready(function () {
 
     setTimeout(function(){
@@ -43,20 +65,43 @@ $(document).ready(function () {
 
     $('#tableusers').DataTable();
 
+    $('#form2').hide()
+
+    $('#form3').hide()
 });
 
 
 function handleChange(checkbox) {
     
     const check = checkbox.parentElement.parentElement.parentElement
+
     
     let checkboxes = check.getElementsByClassName('checkbox-inline')
-    
+    let cc = check.getElementsByClassName('cc')
+
     for (var i=0; i<checkboxes.length; i++) {
         checkboxes[i].childNodes[1].disabled = !checkbox.checked
         checkboxes[i].childNodes[1].checked = false
     }
 
+    for (var i = 0; i < cc.length; i++) {
+        cc[i].childNodes[1].checked = false
+    }
+
+
+}
+
+function hchange(checkbox) {
+    const check = checkbox.parentElement.parentElement
+
+    let checkboxes = checkbox.parentElement.nextSibling.nextSibling
+    let subcheckboxes = checkboxes.getElementsByClassName('cc')
+
+
+    for (var i =0; i<subcheckboxes.length;i++) {
+        subcheckboxes[i].childNodes[1].disabled = !checkbox.checked
+        subcheckboxes[i].childNodes[1].checked = false
+    }
 }
 
 

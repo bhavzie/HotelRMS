@@ -2,14 +2,11 @@
 {% block content %}
 <div class="container-login">
     <div class="wrap-login">
-        <div class='loginH im'>
+        <div class='loginH'>
             <div class='text-center'>
-                <p>Add Hotel Users</p><i class="fas fa-user-plus"></i>
+                <p>Register</p><i class="fas fa-user-plus"></i>
             </div>
         </div>
-        <a href = '#form7' class = 'btn btn-info mb-5'>
-            Invite via Email?
-        </a>
         <form action="{{ url_for('registerhotelusers') }}" method="POST">
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
@@ -19,25 +16,22 @@
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-envelope fa-lg"></i>
-                <input type="email" name="email" class="form-control text-center" required
-                    placeholder="Email Address&#42;" onfocus="this.placeholder = ''"
-                    onfocusout="this.placeholder = 'Email Address&#42;'">
+                <input type="email" name="email" class="form-control text-center" readonly value = "{{ email }}"
+                   >
                 <small id='smallID' class='form-text text-muted'>
                     We'll never share your email with anyone else.
                 </small>
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tag fa-lg"></i>
-                <select class = 'form-control text-center'
-                    name = 'userType' required
-                >
+                <select class='form-control text-center' name='userType' required>
                     <option selected disabled>
                         User Type
                     </option>
                     {% for value in subtypes %}
-                        <option value = {{ value }}>
-                            {{ value }}
-                        </option>
+                    <option value={{ value }}>
+                        {{ value }}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
@@ -63,20 +57,19 @@
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-address-book fa-lg"></i>
-                <textarea name="address" class="form-control text-center"  placeholder="Enter Address"
+                <textarea name="address" class="form-control text-center" placeholder="Enter Address"
                     onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Address'"></textarea>
             </div>
             <div class="formhelp mb-5">
                 <i class="far fa-flag"></i>
-                <input type="text" name="country" class="form-control text-center"  placeholder="Country"
+                <input type="text" name="country" class="form-control text-center" placeholder="Country"
                     onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country'" minlength="4"
                     maxlength="35">
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-city fa-lg"></i>
-                <input type="text" name="city" class="form-control text-center"  placeholder="City"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City'" minlength="4"
-                    maxlength="12">
+                <input type="text" name="city" class="form-control text-center" placeholder="City"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City'" minlength="4" maxlength="12">
                 <small id='smallID' class='form-text text-muted'>
                     Fields marked with * are mandatory.
                 </small>
@@ -91,28 +84,6 @@
             </div>
         </form>
         <hr>
-        <form action="{{ url_for('inviteemail') }}" method="POST" style = 'margin-top: 80px;' id = 'form7'>
-            <div class='loginH'>
-                <div class='text-center'>
-                    <p>Invite via Email</p><i class="fas fa-envelope-open"></i>
-                </div>
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-envelope fa-lg"></i>
-                <input type="email" name="email" class="form-control text-center" required placeholder="Email Address&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Email Address&#42;'">
-                <small id='smallID' class='form-text text-muted'>
-                    We'll never share your email with anyone else.
-                </small>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 mt-3">
-                    <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Invite<i class="fas fa-user-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
 {% endblock %}

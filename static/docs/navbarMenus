@@ -1,0 +1,92 @@
+
+
+
+hoteluser, developer =>
+    request
+        create
+            adhoc
+            series
+        manage
+    
+    yield
+        rate grid
+        discount
+            create
+            map
+
+    business
+        request
+            create
+            map
+        contact
+            create
+            map
+        time
+            create
+            map
+        negotiation
+        autopilot
+
+    userm
+        hotel
+            add
+            edit
+        customer
+            add
+            edit
+            upload
+    
+    analytics
+        dashboard
+            requests
+            status
+            category
+            leadtime
+            revenue
+            room nights
+        buying
+            response
+            group
+            request
+            conversion
+        performance
+            hotel
+            customer
+            pending
+            timelimit
+        revenue
+            booked
+            potential
+            performance
+            rate
+            average
+    developer
+        add
+        add usertype
+        edit usertype
+    
+    
+    iata =>
+        request
+            create
+                adhoc
+                series
+            manage
+        
+        userm
+            add
+            edit
+
+        analytics
+            dashboard
+            all
+
+    
+    customer =>
+        request
+            adhoc
+            series
+        manage
+
+        analytics
+            dashboard
