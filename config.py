@@ -10,9 +10,11 @@ class Config(object):
     MAIL_USE_TLS = False
     MAIL_USERNAME = 'koolbhavya.epic@gmail.com'
     MAIL_PASSWORD = 'lasxavunqnhxsjef'
+    MAIL_SENDER = 'koolbhavya.epic@gmail.com'
     SECURITY_PASSWORD_SALT = 'mysaltvariable'
     MYSQL_HOST = 'localhost'
     MYSQL_USER = 'dbuser'
     MYSQL_PASSWORD = 'password'
     MYSQL_DB = 'testHotel'
     MYSQL_CURSORCLASS = 'DictCursor'
+    

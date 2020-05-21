@@ -1,12 +1,9 @@
 from flask import Flask, render_template, flash, request, session, url_for, session
 from config import Config
 from functools import wraps
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-from flask_mail import Mail, Message
-from wtforms import Form, StringField, TextAreaField, BooleanField, PasswordField, validators
-from wtforms.fields.html5 import EmailField
-from wtforms.widgets import TextArea
 from flask_mysqldb import MySQL
+from functions import *
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,30 +11,24 @@ app.config.from_object(Config)
 mail = Mail(app)
 mysql = MySQL(app)
 
+# Decorators
 
-# Email Confirmations
-def generate_confirmation_token(email):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("Unauthorized, Please Login", 'danger')
+            return render_template('login.html', title='Login')
+    return wrap
 
-def confirm_token(token, expiration=3600):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    try:
-        email = serializer.loads(
-            token,
-            salt=app.config['SECURITY_PASSWORD_SALT'],
-            max_age=expiration
-        )
-    except SignatureExpired:
-        return 'The Token is expired'
-    except:
-        return False
-    return email
 
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
-    email = confirm_token(token)
+    email = confirmToken(token)
 
     if (email == False):
         flash('Your email could not be verified', 'danger')
@@ -48,8 +39,6 @@ def confirm_email(token):
         cursor.execute('SELECT * FROM users where email = %s', [email])
         data = cursor.fetchall()
         data = data[0]
-
-
 
         if data['userType'] == 'customer':
             cursor.execute('UPDATE Customers SET email_verified = 1 WHERE email = %s', [email])
@@ -66,40 +55,9 @@ def confirm_email(token):
         flash('Your email has been successfully verified', 'success')
         return render_template('login.html', title = 'Login')
 
-# Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("Unauthorized, Please Login", 'danger')
-            return render_template('login.html', title = 'Login')
-    return wrap
-
-
-
-
-
-
-
-
-
 
 @app.route('/', methods = ['GET', 'POST'])
-def f():
-    try:
-        if session['logged_in'] == True:
-            return render_template('index.html', title = 'Home')
-    except:
-        return render_template('login.html', title = 'Login')
-
-
-@app.route('/signIn', methods=['GET', 'POST'])
-def index():
-    return render_template('login.html', title = 'Login')
-
-@app.route('/home', methods = ['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     try:
         if session['logged_in'] == True:
@@ -107,6 +65,9 @@ def home():
     except:
         return render_template('login.html', title = 'Login')
 
+@app.route('/signIn', methods=['GET', 'POST'])
+def index():
+    return render_template('login.html', title = 'Login')
 
 @app.route('/iatar', methods=['GET', 'POST'])
 def iatar():
@@ -135,16 +96,19 @@ def registerI():
 
 
         if len(data) == 0:
-            token = generate_confirmation_token(email)
-            msg = Message(
-            'Confirm Email',
-            sender='koolbhavya.epic@gmail.com',
-            recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body = 'Confirm your email by clicking this link:- {}'.format(link)
-            mail.send(msg)
+            token = generateConfirmationToken(email)
 
-            cursor.execute("INSERT INTO IATAUsers(name, email, password, agencyName, phone, country) VALUES(%s, %s, %s, %s, %s,  %s, %s)", (name, email, password, agencyName, phoneN, country, address))
+            sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv = token,
+                bodyv = 'Confirm your email by clicking this link ',
+                senderv = 'koolbhavya.epic@gmail.com'
+            )
+
+            cursor.execute("INSERT INTO IATAUsers(name, email, password, agencyName, phone, country, address) VALUES(%s, %s, %s, %s, %s,  %s, %s)", (name, email, password, agencyName, phoneN, country, address))
+
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)', (firstName, email, password, 'iatauser'))
         else:
             flash('Email Already Registered', 'danger')
@@ -178,14 +142,16 @@ def registerC():
         data = cursor.fetchall()
 
         if len(data) == 0:
-            token = generate_confirmation_token(email)
-            msg = Message(
-            'Confirm Email',
-            sender='koolbhavya.epic@gmail.com',
-            recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body = 'Confirm your email by clicking this link:- {}'.format(link)
-            mail.send(msg)
+            token = generateConfirmationToken(email)
+            sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+                senderv='koolbhavya.epic@gmail.com'
+            )
+
             cursor.execute("INSERT INTO Customers(name, email, password, phone, country, address, userType, agencyName, organizationName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (name, email, password, phoneN, country, address, userType, agencyName, organizationName))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
@@ -438,14 +404,15 @@ def passwordupdatereq():
         flash('Email not registered', 'danger')
         return render_template('login.html', title='Login')
     else:
-        token = generate_confirmation_token(email)
-        msg = Message(
-            'Update Password',
-            sender = 'koolbhavya.epic@gmail.com',
-            recipients = [email])
-        link = url_for('passwordupdate', token = token, _external=True)
-        msg.body = 'Change your password by clicking this link:- {}'.format(link)
-        mail.send(msg)
+        token = generateConfirmationToken(email)
+        sendMail(
+            subjectv='Update Password',
+            recipientsv=email,
+            linkv='passwordupdate',
+            tokenv=token,
+            bodyv='Change your password by clicking this link ',
+            senderv='koolbhavya.epic@gmail.com'
+        )
 
         flash('Kindly Check your email', 'success')
         return render_template('login.html', title = 'Login')
@@ -453,7 +420,7 @@ def passwordupdatereq():
 
 @app.route('/passwordupdate/<token>', methods = ['GET', 'POST'])
 def passwordupdate(token):
-    email = confirm_token(token)
+    email = confirmToken(token)
     return render_template('forgotpassword.html', email = email)
 
 @app.route('/passwordupdatef', methods = ['GET', 'POST'])
@@ -524,15 +491,16 @@ def registerhotelusers():
         data = cursor.fetchall()
 
         if len(data) == 0:
-            token = generate_confirmation_token(email)
-            msg = Message(
-                'Confirm Email',
-                sender='koolbhavya.epic@gmail.com',
-                recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body = 'Confirm your email by clicking this link:- {}'.format(
-                link)
-            mail.send(msg)
+            token = generateConfirmationToken(email)
+            sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+                senderv='koolbhavya.epic@gmail.com'
+            )
+
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType))
 
             cursor.execute('INSERT INTO hotelUsers(name,  email, password, phone, address, country, city, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)', (name,  email, password, phoneN, address, country, city, userType))
@@ -564,16 +532,15 @@ def registerdeveloper():
         data = cursor.fetchall()
 
         if len(data) == 0:
-
-            token = generate_confirmation_token(email)
-            msg = Message(
-                    'Confirm Email',
-                    sender='koolbhavya.epic@gmail.com',
-                    recipients=[email])
-            link = url_for('confirm_email', token=token, _external=True)
-            msg.body = 'Confirm your email by clicking this link:- {}'.format(
-                    link)
-            mail.send(msg)
+            token = generateConfirmationToken(email)
+            sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+                senderv='koolbhavya.epic@gmail.com'
+            )
 
             cursor.execute('INSERT INTO developers(name, email, password) values(%s, %s, %s)',
             (name, email, password))
@@ -598,19 +565,6 @@ def registerdeveloper():
 @app.route('/hoteladdusertype', methods = ["GET", "POST"])
 def hoteladdusertype():
     return render_template('hoteladdusertype.html', title = 'Register')
-
-def getValC(value):
-    if value == None:
-        return 0
-    else:
-        return 1
-
-def getValC2(value):
-    if value == 1:
-        return True
-    else:
-        return False
-
 
 
 @app.route('/addusertype', methods = ["GET", 'POST'])
@@ -867,15 +821,16 @@ def inviteemail():
         flash('Email already registered', 'danger')
         return render_template('login.html', title='Login')
     else:
-        token = generate_confirmation_token(email)
-        msg = Message(
-            'Invite to TROMPAR',
-            sender='koolbhavya.epic@gmail.com',
-            recipients=[email])
-        link = url_for('addhoteluserinv', token=token, _external=True)
-        msg.body = 'Kindly fill the form to complete registration:- {}'.format(
-            link)
-        mail.send(msg)
+        token = generateConfirmationToken(email)
+
+        sendMail(
+            subjectv='Invite to TROMPAR',
+            recipientsv=email,
+            linkv='addhoteluserinv',
+            tokenv=token,
+            bodyv='Kindly fill the form to complete registration',
+            senderv='koolbhavya.epic@gmail.com'
+        )
 
         flash('Invitation sent to email', 'success')
         return render_template('index.html', title='Login')
@@ -883,7 +838,7 @@ def inviteemail():
 
 @app.route('/addhoteluserinv<token>', methods = ['GET', 'POST'])
 def addhoteluserinv(token):
-    email = confirm_token(token)
+    email = confirmToken(token)
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT userType FROM hotelmenuAccess")
     data = cursor.fetchall()

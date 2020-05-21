@@ -29,7 +29,7 @@ html {
 
 .navbar-brand {
   font-size: 25px !important;
-  margin-bottom: 6px;
+  margin-bottom: 6px !important;
 }
 
 .menu {
@@ -482,11 +482,9 @@ hr {
   .lilink{
     margin-right: 35px;
   }
+  
 
-  .nvimg {
-    height: 28px;
-    background-color: rgba(54, 25, 25, 0);
-  }
+
 
   .im {
     margin-bottom: 30px !important;
