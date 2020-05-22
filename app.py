@@ -25,7 +25,6 @@ def is_logged_in(f):
     return wrap
 
 
-
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
     email = confirmToken(token)
@@ -211,40 +210,45 @@ def login():
                     'request': True,
                     'requestCreate': True,
                     'requestManage': True,
-                    'requestcreateadhoc': True,
-                    'requestcreateseries': True,
-                    'yield': True,
-                    'yieldRate': True,
-                    'yieldDiscount': True,
-                    'yielddiscountcreate': True,
-                    'yielddiscountmap': True,
-                    'business': True,
-                    'businessRequest': True,
-                    'businessRequestcreate': True,
-                    'businessRequestmap': True,
-                    'businessContact': True,
-                    'businesscontactcreate': True,
-                    'businesscontactmap': True,
-                    'businessTime': True,
-                    'businessTimecreate': True,
-                    'businessTimemap': True,
-                    'businessNegotiation': True,
-                    'businessAuto': True,
-                    'businessRooms': True,
-                    'userM': True,
-                    'userMHotel': True,
-                    'userMHoteladd': True,
-                    'userMHoteledit': True,
-                    'userMCustomer': True,
-                    'userMCustomeradd': True,
-                    'userMCustomeredit': True,
-                    'userMCustomerupload': True,
-                    'developers': True,
+                    'requestCreateAdhoc': True,
+                    'requestCreateSeries': True,
+                    'strategy': True,
+                    'strategyRooms': True,
+                    'strategyRate': True,
+                    'strategyDiscount': True,
+                    'strategyDiscountCreate': True,
+                    'strategyDiscountMap': True,
+                    'strategyForecast': True,
+                    'settings': True,
+                    'settingsRequest': True,
+                    'settingsRequestCreate': True,
+                    'settingsRequestMap': True,
+                    'settingsContact': True,
+                    'settingsContactCreate': True,
+                    'settingsContactMap': True,
+                    'settingsTime': True,
+                    'settingsTimeCreate': True,
+                    'settingsTimeMap': True,
+                    'settingsNegotiation': True,
+                    'settingsAutopilot': True,
+                    'users': True,
+                    'usersHotel': True,
+                    'usersHotelAdd': True,
+                    'usersHotelEdit': True,
+                    'usersCustomer': True,
+                    'usersCustomerAdd': True,
+                    'usersCustomerEdit': True,
+                    'usersCustomerUpload': True,
                     'analytics': True,
                     'analyticsDashboard': True,
-                    'analyticsbb': True,
-                    'analyticsp': True,
-                    'analyticsr': True,
+                    'analyticsBehavior': True,
+                    'analyticsPerformance': True,
+                    'analyticsRevenue': True,
+                    'analyticsTracking': True,
+                    'help': True,
+                    'helpUserGuide': True,
+                    'helpFaq': True,
+                    'helpTicketing': True
                     }
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
@@ -261,44 +265,75 @@ def login():
                         menuParams['request'] = getValC2(d['request'])
                         menuParams['requestCreate'] = getValC2(d['requestCreate'])
                         menuParams['requestManage'] = getValC2(d['requestManage'])
-                        menuParams['yield'] = getValC2(d['yield'])
-                        menuParams['yieldRate'] = getValC2(d['yieldRate'])
-                        menuParams['yieldDiscount'] = getValC2(d['yieldDiscount'])
-                        menuParams['business'] = getValC2(d['business'])
-                        menuParams['businessRequest'] = getValC2(d['businessRequest'])
-                        menuParams['businessContact'] = getValC2(d['businessContact'])
-                        menuParams['businessTime'] = getValC2(d['businessTime'])
-                        menuParams['businessNegotiation'] = getValC2(d['businessNegotiation'])
-                        menuParams['businessAuto'] = getValC2(d['businessAuto'])
-                        menuParams['userM'] = getValC2(d['userM'])
-                        menuParams['userMHotel'] = getValC2(d['userMHotel'])
-                        menuParams['userMCustomer'] = getValC2(d['userMCustomer'])
-                        menuParams['userMCustomer'] = getValC2(d['userMCustomer'])
-                        menuParams['developers'] = getValC2(d['developers'])
-                        menuParams['analytics'] = getValC2(d['analytics'])
-                        menuParams['analyticsDashboard'] = getValC2(d['analyticsDashboard'])
-                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
-                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
-                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
-                        
-                        menuParams['requestcreateadhoc'] = getValC2(d['requestcreateadhoc'])
-                        menuParams['requestcreateseries'] = getValC2(d['requestcreateseries'])
-                        menuParams['yielddiscountcreate'] = getValC2(d['yielddiscountcreate'])
-                        menuParams['yielddiscountmap'] = getValC2(d['yielddiscountmap'])
-                        menuParams['businessRequestcreate'] = getValC2(d['businessRequestcreate'])
-                        menuParams['businessRequestmap'] = getValC2(d['businessRequestmap'])
-                        menuParams['businesscontactcreate'] = getValC2(d['businesscontactcreate'])
-                        menuParams['businesscontactmap'] = getValC2(d['businesscontactmap'])
-                        menuParams['businessTimemap'] = getValC2(d['businessTimemap'])
-                        menuParams['businessRooms'] = getValC2(d['businessRooms'])
-                        menuParams['businessTimecreate'] = getValC2(d['businessTimecreate'])
-                        menuParams['userMHoteladd'] = getValC2(d['userMHoteladd'])
-                        menuParams['userMHoteledit'] = getValC2(d['userMHoteledit'])
-                        menuParams['userMCustomeradd'] = getValC2(
-                        d['userMCustomeradd'])
-                        menuParams['userMCustomeredit'] = getValC2(d['userMCustomeredit'])
-                        menuParams['userMCustomerupload'] = getValC2(
-                            d['userMCustomerupload'])
+                        menuParams['requestCreateAdhoc'] = getValC2(
+                            d['requestCreateAdhoc'])
+                        menuParams['requestCreateSeries'] = getValC2(d['requestCreateSeries'])
+                        menuParams['strategy'] = getValC2(d['strategy'])
+                        menuParams['strategyRooms'] = getValC2(d['strategyRooms'])
+                        menuParams['strategyRate'] = getValC2(d['strategyRate'])
+                        menuParams['strategyDiscount'] = getValC2(d['strategyDiscount'])
+                        menuParams['strategyDiscountCreate'] = getValC2(d['strategyDiscountCreate'])
+                        menuParams['strategyDiscountMap'] = getValC2(d['strategyDiscountMap'])
+                        menuParams['strategyForecast'] = getValC2(d['strategyForecast'])
+                        menuParams['settingsRequest'] = getValC2(d['settingsRequest'])
+                        menuParams['settingsRequestCreate'] = getValC2(d['settingsRequestCreate'])
+                        menuParams['settingsRequestMap'] = getValC2(d['settingsRequestMap'])
+                        menuParams['settingsContactCreate'] = getValC2(
+                        d['settingsContactCreate'])
+                        menuParams['settingsContactMap'] = getValC2(
+                        d['settingsContactMap'])
+                        menuParams['settingsTime'] = getValC2(
+                        d['settingsTime'])
+                        menuParams['settingsTimeCreate'] = getValC2(
+                        d['settingsTimeCreate'])
+                        menuParams['settingsTimeMap'] = getValC2(
+                        d['settingsTimeMap'])
+                        menuParams['settingsNegotiation'] = getValC2(
+                        d['settingsNegotiation'])
+                        menuParams['settingsAutopilot'] = getValC2(
+                        d['settingsAutopilot'])
+                        menuParams['usersHotel'] = getValC2(
+                        d['usersHotel'])
+                        menuParams['usersHotelAdd'] = getValC2(
+                        d['usersHotelAdd'])
+                        menuParams['usersCustomer'] = getValC2(
+                        d['usersCustomer'])
+                        menuParams['usersCustomerAdd'] = getValC2(
+                        d['usersCustomerAdd'])
+                        menuParams['usersCustomerEdit'] = getValC2(
+                            d['usersCustomerEdit'])
+                        menuParams['usersCustomerUpload'] = getValC2(
+                        d['usersCustomerUpload'])
+                        menuParams['analytics'] = getValC2(
+                        d['analytics'])
+                        menuParams['analyticsDashboard'] = getValC2(
+                        d['analyticsDashboard'])
+                        menuParams['analyticsBehavior'] = getValC2(
+                        d['analyticsBehavior'])
+                        menuParams['analyticsPerformance'] = getValC2(
+                        d['analyticsPerformance'])
+                        menuParams['analyticsRevenue'] = getValC2(
+                        d['analyticsRevenue'])
+                        menuParams['analyticsTracking'] = getValC2(
+                        d['analyticsTracking'])
+                        menuParams['help'] = getValC2(
+                        d['help'])
+                        menuParams['helpUserGuide'] = getValC2(
+                        d['helpUserGuide'])
+                        menuParams['helpFaq'] = getValC2(
+                            d['helpFaq'])
+                        menuParams['helpTicketing'] = getValC2(
+                            d['helpTicketing'])
+                        menuParams['settings'] = getValC2(
+                            d['settings'])
+                        menuParams['settingsContact'] = getValC2(
+                            d['settingsContact'])
+                        menuParams['users'] = getValC2(
+                                d['users'])
+                        menuParams['usersHotelEdit'] = getValC2(
+                                d['usersHotelEdit'])
+                                                
+    
 
                     session['menuParams'] = menuParams
 

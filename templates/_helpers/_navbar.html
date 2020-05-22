@@ -4,9 +4,8 @@
     </a>
     {% if session.logged_in %}
 
-    <div class='collapse navbar-collapse w-100 order-3 dual-collapse2 mr-3'>
+    <div class='collapse navbar-collapse w-100 order-1 order-md-0 dual-collapse2'>
         {% if session.userType == 'hoteluser' %}
-        {% if session.active %}
         <ul class='menu navbar-nav mx-auto'>
             {% if session.menuParams['request'] %}
                 <li class = 'lilink'>
@@ -17,10 +16,10 @@
                         {% if session.menuParams['requestCreate']  %}
                             <li><a href="#">Create</a>
                                 <ul>
-                                    {% if session.menuParams['requestcreateadhoc'] %}
+                                    {% if session.menuParams['requestCreateAdhoc'] %}
                                     <li><a href='#'>Adhoc</a></li>
                                     {% endif %}
-                                    {% if session.menuParams['requestcreateseries'] %}
+                                    {% if session.menuParams['requestCreateSeries'] %}
                                     <li><a href='#'>Series</a></li>
                                     {% endif %}
                                 </ul>
@@ -33,112 +32,116 @@
                 </li>
             {% endif %}
 
-            {% if session.menuParams['yield'] %}
+            {% if session.menuParams['strategy'] %}
                 <li class = 'lilink'>
                     <a href="#">
-                        Yield Manager
+                        Strategy
                     </a>
                     <ul class="sub-menu">
-                        {% if session.menuParams['yieldRate'] %}
-                            <li><a href="#">Rate Grid</a></li>
+                        {% if session.menuParams['strategyRooms'] %}
+<li><a href="#">Rooms</a></li>
                         {% endif %}
-                        {% if session.menuParams['yieldDiscount'] %}
+                        {% if session.menuParams['strategyRate'] %}
+                            <li><a href="#">Rate</a></li>
+                        {% endif %}
+                        {% if session.menuParams['strategyDiscount'] %}
                             <li>
                                 <a href="#">Discount</a>
                                 <ul>
-                                    {% if session.menuParams['yielddiscountcreate'] %}
+                                    {% if session.menuParams['strategyDiscountCreate'] %}
                                     <li><a href="#">Create & View</a></li>
                                     {% endif %}
-                                    {% if session.menuParams['yielddiscountmap'] %}
+                                    {% if session.menuParams['strategyDiscountMap'] %}
                                     <li><a href="#">Map</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
+                        {% if session.menuParams['strategyForecast'] %}
+                        <li><a href="#">Forecast</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
                 
-            {% if session.menuParams['business'] %}
+            {% if session.menuParams['settings'] %}
                 <li class = 'lilink'>
                     <a href="#">
-                        Business Rules
+                        Settings
                     </a>
                     <ul class="sub-menu">
-                    {% if session.menuParams['businessRequest'] %}
+                    {% if session.menuParams['settingsRequest'] %}
                         <li><a href="#">Request</a>
                                 <ul>
 
-                                    {% if session.menuParams['businessRequestcreate'] %}
+                                    {% if session.menuParams['settingsRequestCreate'] %}
                                     <li><a href='#'>Create & View</a></li>
                                     {% endif %}
-                                    {% if session.menuParams['businessRequestmap'] %}
+                                    {% if session.menuParams['settingsRequestMap'] %}
                                     <li><a href='#'>Map</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
-                    {% if session.menuParams['businessContact'] %}
+                    {% if session.menuParams['settingsContact'] %}
                         <li>
-                            <a href="#">Contact</a>
+                            <a href="#">Contract</a>
                             <ul>
 
-                                    {% if session.menuParams['businesscontactcreate'] %}
+                                    {% if session.menuParams['settingsContactCreate'] %}
                                 <li><a href="#">Create & View</a></li>
                                 {% endif %}
-                                {% if session.menuParams['businesscontactmap'] %}
+                                {% if session.menuParams['settingsContactMap'] %}
                                 <li><a href="#">Map</a></li>
                                 {%endif%}
                             </ul>
                         </li>
                     {% endif %}
-                    {% if session.menuParams['businessTime'] %}
+                    {% if session.menuParams['settingsTime'] %}
                         <li>
                             <a href="#">Time Limit</a>
                             <ul>
 
-                                    {% if session.menuParams['businessTimecreate'] %}
+                                    {% if session.menuParams['settingsTimeCreate'] %}
                                 <li><a href="#">Create & View</a></li>
                                 {%endif%}
 
-                                    {% if session.menuParams['businessTimemap'] %}
+                                    {% if session.menuParams['settingsTimeMap'] %}
                                 <li><a href="#">Map</a></li>
                                 {%endif%}
                             </ul>
                         </li>
                     {% endif %}
-                    {% if session.menuParams['businessNegotiation'] %}
+                    {% if session.menuParams['settingsNegotiation'] %}
                         <li><a href="#">Negotiation</a></li>
                     {% endif %}
-                    {% if session.menuParams['businessAuto'] %}
+                    {% if session.menuParams['settingsAutopilot'] %}
                         <li><a href="#">Autopilot</a></li>
                     {% endif %}
 
-                    {% if session.menuParams['businessRooms'] %}
-                        <li><a href = '#'>Rooms</a></li>
-                        {% endif %}
+                  
                     </ul>
                 </li>
             {% endif %}
             
-            {% if session.menuParams['userM'] %}
+            {% if session.menuParams['users'] %}
                 <li class = 'lilink'>
                     <a href="#">
-                        User Management
+                        Users
                     </a>
                     <ul class="sub-menu">
-                        {% if session.menuParams['userMHotel'] %}
+                        {% if session.menuParams['usersHotel'] %}
                             <li>
                                 <a href='#'>Hotel</a>
                                 <ul>
 
-                                    {% if session.menuParams['userMHoteladd'] %}
+                                    {% if session.menuParams['usersHotelAdd'] %}
                                     <li>
                                         <a href='/hoteladduser'>Add</a>
                                     </li>
                                     {%endif%}
 
-                                    {% if session.menuParams['userMHoteledit'] %}
+                                    {% if session.menuParams['usersHotelEdit'] %}
                                     <li>
                                         <a href='/managehotelusers'>Edit</a>
                                     </li>
@@ -146,24 +149,24 @@
                                 </ul>
                             </li>
                         {% endif %}
-                        {% if session.menuParams['userMCustomer'] %}
+                        {% if session.menuParams['usersCustomer'] %}
                             <li>
                                 <a href="#">Customer</a>
                                 <ul>
 
-                                    {% if session.menuParams['userMCustomeradd'] %}
+                                    {% if session.menuParams['usersCustomerAdd'] %}
                                     <li>
                                         <a href='#'>Add</a>
                                     </li>
                                     {%endif%}
 
-                                    {% if session.menuParams['userMCustomeredit'] %}
+                                    {% if session.menuParams['usersCustomerEdit'] %}
                                     <li>
                                         <a href='#'>Edit</a>
                                     </li>
                                     {%endif%}
 
-                                    {% if session.menuParams['userMCustomerupload'] %}
+                                    {% if session.menuParams['usersCustomerUpload'] %}
                                     <li>
                                         <a href='#'>Upload</a>
                                     </li>
@@ -182,22 +185,49 @@
                             <li><a href="#">Dashboard</a>
                             </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsbb'] %}
-                            <li><a href="#">Buying Behaviour</a>
+                        {% if session.menuParams['analyticsBehavior'] %}
+                            <li><a href="#">Behaviour</a>
                                
                             </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsp'] %}
+                        {% if session.menuParams['analyticsPerformance'] %}
                             <li><a href="#">Performance</a>
                                 
                             </li>
                         {% endif %}
-                        {% if session.menuParams['analyticsr'] %}
+                        {% if session.menuParams['analyticsRevenue'] %}
                             <li><a href="#">Revenue</a>
                             </li>
                         {% endif %}
+                        {% if session.menuParams['analyticsTracking'] %}
+                        <li><a href="#">Tracking</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
+            {% endif %}
+
+
+            {% if session.menuParams['help'] %}
+            <li class='lilink'><a href="#">Help</a>
+                <ul class="sub-menu">
+                    {% if session.menuParams['helpUserGuide'] %}
+                    <li><a href="#">User Guide</a>
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['helpFaq'] %}
+                    <li><a href="#">FAQ</a>
+            
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['helpTicketing'] %}
+                    <li><a href="#">Ticketing</a>
+            
+                    </li>
+                    {% endif %}
+                    
+                </ul>
+            </li>
             {% endif %}
             
             {% if session.menuParams['developers'] %}
@@ -217,7 +247,6 @@
                 </li>
 
             {% endif %}
-            {% endif %}
 
 
 
@@ -230,16 +259,6 @@
                         <li>
                             <a href="{{ url_for('myprofile', email = session.email) }}">
                                 My Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                User Guide
                             </a>
                         </li>
                         <li>

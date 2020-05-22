@@ -2,8 +2,10 @@ from flask import Flask, render_template, flash, request, session, url_for, sess
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_mail import Mail, Message
 from app import app
+from flask_mysqldb import MySQL
 
 mail = Mail(app)
+mysql = MySQL(app)
 
 # Email Confirmations
 def generateConfirmationToken(email):
@@ -34,6 +36,20 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     link = url_for(linkv, token=tokenv, _external=True)
     msg.body = bodyv + ' ' + link
     mail.send(msg)
+
+
+
+# DB Queries
+def dbQueryInsert(table, myDict):
+    placeholders = ', '.join(['%s'] * len(myDict))
+    columns = ', '.join(myDict.keys())
+    values = myDict.values()
+    sql = 'Insert into %s ( %s ) VALUES ( %s )' %(table, columns, placeholders)
+    cursor = mysql.connection.cursor()
+    cursor.execute(sql, myDict.values())
+
+    mysql.connection.commit()
+    cursor.close()
 
 
 # Mapping 1 => True, 0 => False and vice-versa
