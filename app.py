@@ -40,9 +40,9 @@ def confirm_email(token):
         data = data[0]
 
         if data['userType'] == 'customer':
-            cursor.execute('UPDATE Customers SET email_verified = 1 WHERE email = %s', [email])
+            cursor.execute('UPDATE customers SET email_verified = 1 WHERE email = %s', [email])
         elif data['userType'] == 'iatauser':
-            cursor.execute('UPDATE IATAUsers SET email_verified = 1 WHERE email = %s', [email])
+            cursor.execute('UPDATE iataUsers SET email_verified = 1 WHERE email = %s', [email])
         elif data['userType'] == 'hoteluser':
             cursor.execute('UPDATE hotelUsers SET email_verified = 1 WHERE email = %s', [email])
         elif data['userType'] == 'developer':
@@ -68,12 +68,12 @@ def home():
 def index():
     return render_template('login.html', title = 'Login')
 
-@app.route('/iatar', methods=['GET', 'POST'])
+@app.route('/iataRegistration', methods=['GET', 'POST'])
 def iatar():
     return render_template('registerIata.html', title = 'Register')
 
 
-@app.route('/customerr', methods=['GET', 'POST'])
+@app.route('/customerRegistration', methods=['GET', 'POST'])
 def customerr():
     return render_template('rcustomer.html', title = 'Register')
 
@@ -106,7 +106,7 @@ def registerI():
                 senderv = 'koolbhavya.epic@gmail.com'
             )
 
-            cursor.execute("INSERT INTO IATAUsers(name, email, password, agencyName, phone, country, address) VALUES(%s, %s, %s, %s, %s,  %s, %s)", (name, email, password, agencyName, phoneN, country, address))
+            cursor.execute("INSERT INTO iataUsers(name, email, password, agencyName, phone, country, address) VALUES(%s, %s, %s, %s, %s,  %s, %s)", (name, email, password, agencyName, phoneN, country, address))
 
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)', (firstName, email, password, 'iatauser'))
         else:
@@ -151,7 +151,7 @@ def registerC():
                 senderv='koolbhavya.epic@gmail.com'
             )
 
-            cursor.execute("INSERT INTO Customers(name, email, password, phone, country, address, userType, agencyName, organizationName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            cursor.execute("INSERT INTO customers(name, email, password, phone, country, address, userType, agencyName, organizationName) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (name, email, password, phoneN, country, address, userType, agencyName, organizationName))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
                            (firstName, email, password, 'customer'))
@@ -253,7 +253,7 @@ def login():
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
                     cursor.execute(
-                        "SELECT * FROM hotelmenuAccess where userType = %s", [userSubType])
+                        "SELECT * FROM hotelMenuAccess where userType = %s", [userSubType])
                     d = cursor.fetchall()
                     cursor.execute("SELECT * FROM hotelUsers where email = %s", [email])
                     dog = cursor.fetchall()
@@ -343,18 +343,22 @@ def login():
                     'request': True,
                     'requestCreate': True,
                     'requestManage': True,
-                    'requestcreateadhoc': True,
-                    'requestcreateseries': True,
-                    'userM': True,
-                    'userMadd': True,
-                    'userMedit': True,
+                    'requestCreateAdhoc': True,
+                    'requestCreateSeries': True,
+                    'users': True,
+                    'usersAdd': True,
+                    'usersEdit': True,
                     'analytics': True,
                     'analyticsDashboard': True,
-                    'analyticsbb': True,
-                    'analyticsp': True,
-                    'analyticsr': True,
+                    'analyticsRequest': True,
+                    'analyticsPerformance': True,
+                    'analyticsTracking': True,
+                    'help': True,
+                    'helpUserGuide': True,
+                    'helpFaq': True,
+                    'helpTicketing': True
                     }
-                    cursor.execute("SELECT * FROM iatamenuAccess")
+                    cursor.execute("SELECT * FROM iataMenuAccess")
                     d = cursor.fetchall()
                     if len(d) != 0:
                         d = d[0]
@@ -363,17 +367,25 @@ def login():
                             d['requestCreate'])
                         menuParams['requestManage'] = getValC2(
                             d['requestManage'])
-                        menuParams['userM'] = getValC2(d['userM'])
-                        menuParams['userMadd'] = getValC2(d['userMadd'])
-                        menuParams['userMedit'] = getValC2(d['userMedit'])
+                        menuParams['users'] = getValC2(d['users'])
+                        menuParams['usersAdd'] = getValC2(d['usersAdd'])
+                        menuParams['usersEdit'] = getValC2(d['usersEdit'])
                         menuParams['analytics'] = getValC2(d['analytics'])
                         menuParams['analyticsDashboard'] = getValC2(d['analyticsDashboard'])
-                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
-                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
-                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
+                        menuParams['analyticsRequest'] = getValC2(d['analyticsRequest'])
+                        menuParams['analyticsTracking'] = getValC2(d['analyticsTracking'])
+                        menuParams['analyticsPerformance'] = getValC2(d['analyticsPerformance'])
                         
-                        menuParams['requestcreateadhoc'] = getValC2(d['requestcreateadhoc'])
-                        menuParams['requestcreateseries'] = getValC2(d['requestcreateseries'])
+                        menuParams['requestCreateAdhoc'] = getValC2(d['requestCreateAdhoc'])
+                        menuParams['requestCreateSeries'] = getValC2(d['requestCreateSeries'])
+                        menuParams['help'] = getValC2(
+                        d['help'])
+                        menuParams['helpUserGuide'] = getValC2(
+                            d['helpUserGuide'])
+                        menuParams['helpFaq'] = getValC2(
+                            d['helpFaq'])
+                        menuParams['helpTicketing'] = getValC2(
+                        d['helpTicketing'])
                     
                     session['menuParams'] = menuParams
 
@@ -382,15 +394,19 @@ def login():
                         'request': True,
                         'requestCreate': True,
                         'requestManage': True,
-                        'requestcreateadhoc': True,
-                        'requestcreateseries': True,
+                        'requestCreateAdhoc': True,
+                        'requestCreateSeries': True,
                         'analytics': True,
                         'analyticsDashboard': True,
-                        'analyticsbb': True,
-                        'analyticsp': True,
-                        'analyticsr': True,
+                        'analyticsRequest': True,
+                        'analyticsPerformance': True,
+                        'analyticsTracking': True,
+                        'help': True,
+                        'helpUserGuide': True,
+                        'helpFaq': True,
+                        'helpTicketing': True
                     }
-                    cursor.execute("SELECT * FROM iatamenuAccess")
+                    cursor.execute("SELECT * FROM customerMenuAccess")
                     d = cursor.fetchall()
                     if len(d) != 0:
                         d = d[0]
@@ -399,17 +415,24 @@ def login():
                             d['requestCreate'])
                         menuParams['requestManage'] = getValC2(
                             d['requestManage'])
+                        menuParams['requestCreateAdhoc'] = getValC2(
+                            d['requestCreateAdhoc'])
+                        menuParams['requestCreateSeries'] = getValC2(
+                            d['requestCreateSeries'])
                         menuParams['analytics'] = getValC2(d['analytics'])
                         menuParams['analyticsDashboard'] = getValC2(
                             d['analyticsDashboard'])
-                        menuParams['analyticsbb'] = getValC2(d['analyticsbb'])
-                        menuParams['analyticsp'] = getValC2(d['analyticsp'])
-                        menuParams['analyticsr'] = getValC2(d['analyticsr'])
-
-                        menuParams['requestcreateadhoc'] = getValC2(
-                            d['requestcreateadhoc'])
-                        menuParams['requestcreateseries'] = getValC2(
-                            d['requestcreateseries'])
+                        menuParams['analyticsRequest'] = getValC2(d['analyticsRequest'])
+                        menuParams['analyticsPerformance'] = getValC2(d['analyticsPerformance'])
+                        menuParams['analyticsTracking'] = getValC2(d['analyticsTracking'])
+                        menuParams['help'] = getValC2(
+                            d['help'])
+                        menuParams['helpUserGuide'] = getValC2(
+                            d['helpUserGuide'])
+                        menuParams['helpFaq'] = getValC2(
+                            d['helpFaq'])
+                        menuParams['helpTicketing'] = getValC2(
+                            d['helpTicketing'])
 
                     session['menuParams'] = menuParams
 
@@ -471,9 +494,9 @@ def passwordupdatef():
     cursor.execute('UPDATE users SET password = %s where email = %s', [password, email])
 
     if data['userType'] == 'customer':
-        cursor.execute('UPDATE Customers SET password = %s where email = %s', [password, email])
+        cursor.execute('UPDATE customers SET password = %s where email = %s', [password, email])
     elif data['userType'] == 'iatauser':
-        cursor.execute('UPDATE IATAUsers SET password = %s where email = %s', [password, email])
+        cursor.execute('UPDATE iataUsers SET password = %s where email = %s', [password, email])
     elif data['userType'] == 'hotelUser':
         cursor.execute('UPDATE hotelUsers SET password = %s where email = %s', [password, email])
     elif data['userType'] == 'developer':
@@ -494,7 +517,7 @@ def signOut():
 @app.route('/hoteladduser', methods = ['GET', 'POST'])
 def hoteladduser():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT userType FROM hotelmenuAccess")
+    cursor.execute("SELECT userType FROM hotelMenuAccess")
     data = cursor.fetchall()
     subtypes = []
 
@@ -604,6 +627,8 @@ def hoteladdusertype():
 
 @app.route('/addusertype', methods = ["GET", 'POST'])
 def addusertype():
+
+    
     requestc = getValC(request.form.get('requestc'))
     requestcr = getValC(request.form.get('requestcreate'))
     requestm = getValC(request.form.get('requestmanage'))
@@ -654,11 +679,11 @@ def addusertype():
 
 
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From hotelmenuAccess where userType = %s', [userType])
+    cursor.execute('SELECT * From hotelMenuAccess where userType = %s', [userType])
     data = cursor.fetchall()
 
     if len(data) == 0:
-        cursor.execute('INSERT INTO hotelmenuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsbb, analyticsp, analyticsr, requestcreateadhoc, requestcreateseries, yielddiscountcreate, yielddiscountmap, businessRequestcreate, businessRequestmap, businesscontactcreate, businesscontactmap, businessTimemap, businessRooms, businessTimecreate, userMHoteladd, userMHoteledit, userMCustomeradd, userMCustomeredit, userMCustomerupload ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO hotelMenuAccess(userType,request, requestCreate, requestManage, yield, yieldRate, yieldDiscount, business, businessRequest, businessContact, businessTime, businessNegotiation, businessAuto, userM, userMHotel, userMCustomer, developers, analytics, analyticsDashboard, analyticsbb, analyticsp, analyticsr, requestcreateadhoc, requestcreateseries, yielddiscountcreate, yielddiscountmap, businessRequestcreate, businessRequestmap, businesscontactcreate, businesscontactmap, businessTimemap, businessRooms, businessTimecreate, userMHoteladd, userMHoteledit, userMCustomeradd, userMCustomeredit, userMCustomerupload ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                        userType, requestc, requestcr, requestm, yieldc, yieldr, yieldd, business, businessr, businessc, businesst, businessn, businessa, user, userh, userc, developers, analytics, analyticsd, analyticsbb, analyticsp, analyticsr, requestcreateadhoc, requestcreateseries, yielddiscountcreate, yielddiscountmap, businessRequestcreate, businessRequestmap,  businesscontactcreate, businesscontactmap,  businessTimemap, businessRooms, businessTimecreate, userMHoteladd, userMHoteledit, userMCustomeradd, userMCustomeredit, userMCustomerupload])
 
     else:
@@ -709,7 +734,7 @@ def editUser(email):
     cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
 
     data = cursor.fetchall()
-    cursor.execute("SELECT userType FROM hotelmenuAccess")
+    cursor.execute("SELECT userType FROM hotelMenuAccess")
     data1 = cursor.fetchall()
     subtypes = []
 
@@ -785,10 +810,10 @@ def myprofile(email):
         cursor.execute('SELECT * From hotelUsers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'customer':
-        cursor.execute('SELECT * From Customers where email = %s', [email])
+        cursor.execute('SELECT * From customers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'iatauser':
-        cursor.execute('SELECT * From IATAUsers where email = %s', [email])
+        cursor.execute('SELECT * From iataUsers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'developer':
         cursor.execute('SELECT * From developers where email = %s', [email])
@@ -827,10 +852,10 @@ def submitEditUserAll():
         cursor.execute('Update hotelUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s WHERE email = %s',
                         (name, phone, address, country, password, oldemail))
     elif data == 'customer':
-        cursor.execute('Update Customers SET name = %s, phone = %s, address = %s, country = %s, password = %s, organizationName = %s WHERE email = %s',
+        cursor.execute('Update customers SET name = %s, phone = %s, address = %s, country = %s, password = %s, organizationName = %s WHERE email = %s',
                         (name, phone, address, country,password, organizationName, oldemail))
     elif data == 'iatauser':
-        cursor.execute('Update IATAUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s, agencyName = %s WHERE email = %s',
+        cursor.execute('Update iataUsers SET name = %s, phone = %s, address = %s, country = %s, password = %s, agencyName = %s WHERE email = %s',
                         (name, phone, address, country, password, agencyName, oldemail))
     elif data == 'developer':
         cursor.execute('Update developers SET name = %s, password = %s, phone = %s, address = %s WHERE email = %s',
@@ -875,7 +900,7 @@ def inviteemail():
 def addhoteluserinv(token):
     email = confirmToken(token)
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT userType FROM hotelmenuAccess")
+    cursor.execute("SELECT userType FROM hotelMenuAccess")
     data = cursor.fetchall()
     subtypes = []
 
@@ -910,10 +935,10 @@ def iatanav():
     
     cursor = mysql.connection.cursor()
     cursor.execute(
-        'SELECT * From iatamenuAccess')
+        'SELECT * From iataMenuAccess')
     data = cursor.fetchall()
     if len(data) == 0:
-        cursor.execute('INSERT INTO iatamenuAccess(request, requestCreate, requestManage, userM, userMadd, userMedit, requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO iataMenuAccess(request, requestCreate, requestManage, userM, userMadd, userMedit, requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             requestc, requestcr, requestm, user, useradd, useredit, requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsd, analyticsp
         ])
     else:
@@ -944,10 +969,10 @@ def customernav():
 
     cursor = mysql.connection.cursor()
     cursor.execute(
-        'SELECT * From customermenuAccess')
+        'SELECT * From customerMenuAccess')
     data = cursor.fetchall()
     if len(data) == 0:
-        cursor.execute('INSERT INTO customermenuAccess(request, requestCreate, requestManage,  requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO customerMenuAccess(request, requestCreate, requestManage,  requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsDashboard, analyticsp) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
         requestc, requestcr, requestm,  requestcreateadhoc, requestcreateseries, analytics, analyticsr, analyticsbb, analyticsd, analyticsp
         ])
     else:
@@ -965,17 +990,17 @@ def customernav():
 def edituserType():
     cursor = mysql.connection.cursor()
     cursor.execute(
-        'SELECT * From customermenuAccess')
+        'SELECT * From customerMenuAccess')
     datac = cursor.fetchall()
     datac = datac[0]
     
     cursor.execute(
-        'SELECT * From iatamenuAccess')
+        'SELECT * From iataMenuAccess')
     datai = cursor.fetchall()
     datai = datai[0]
 
     cursor.execute(
-        'SELECT * From hotelmenuAccess')
+        'SELECT * From hotelMenuAccess')
     datah = cursor.fetchall()
     datah = datah[0]
 
@@ -993,11 +1018,5 @@ if __name__ == "__main__":
 
 '''
 
-    TODOS
-
-    marked on top
-    country madatory
-
-    invite usertype param
 
 '''

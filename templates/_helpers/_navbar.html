@@ -1,9 +1,9 @@
 <nav class='navbar navbar-expand-md navbar-dark bg-dark  fixed-top'>
     <a class='navbar-brand'>
-        TROMPAR
+        T R <i class="fas fa-arrow-circle-up"></i> M P A R
     </a>
+    
     {% if session.logged_in %}
-
     <div class='collapse navbar-collapse w-100 order-1 order-md-0 dual-collapse2'>
         {% if session.userType == 'hoteluser' %}
         <ul class='menu navbar-nav mx-auto'>
@@ -14,19 +14,34 @@
                     </a>
                     <ul class="sub-menu">
                         {% if session.menuParams['requestCreate']  %}
-                            <li><a href="#">Create</a>
+                            <li>
+                                <a href="#">
+                                    Create
+                                </a>
                                 <ul>
                                     {% if session.menuParams['requestCreateAdhoc'] %}
-                                    <li><a href='#'>Adhoc</a></li>
+                                        <li>
+                                            <a href='#'>
+                                                Adhoc
+                                            </a>
+                                        </li>
                                     {% endif %}
                                     {% if session.menuParams['requestCreateSeries'] %}
-                                    <li><a href='#'>Series</a></li>
+                                        <li>
+                                            <a href='#'>
+                                                Series
+                                            </a>
+                                        </li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
                         {% if session.menuParams['requestManage']  %}
-                            <li><a href="#">Manage</a></li>
+                            <li>
+                                <a href="#">
+                                    Manage
+                                </a>
+                            </li>
                         {% endif %}
                     </ul>
                 </li>
@@ -39,26 +54,46 @@
                     </a>
                     <ul class="sub-menu">
                         {% if session.menuParams['strategyRooms'] %}
-<li><a href="#">Rooms</a></li>
+                            <li>
+                                <a href="#">
+                                    Rooms
+                                </a>
+                            </li>
                         {% endif %}
                         {% if session.menuParams['strategyRate'] %}
-                            <li><a href="#">Rate</a></li>
+                            <li>
+                                <a href="#">
+                                    Rate
+                                </a>
+                            </li>
                         {% endif %}
                         {% if session.menuParams['strategyDiscount'] %}
                             <li>
                                 <a href="#">Discount</a>
                                 <ul>
                                     {% if session.menuParams['strategyDiscountCreate'] %}
-                                    <li><a href="#">Create & View</a></li>
+                                        <li>
+                                            <a href="#">
+                                                Create & View
+                                            </a>
+                                        </li>
                                     {% endif %}
                                     {% if session.menuParams['strategyDiscountMap'] %}
-                                    <li><a href="#">Map</a></li>
+                                        <li>
+                                            <a href="#">
+                                                Map
+                                            </a>
+                                        </li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
                         {% if session.menuParams['strategyForecast'] %}
-                        <li><a href="#">Forecast</a></li>
+                            <li>
+                                <a href="#">
+                                    Forecast
+                                </a>
+                            </li>
                         {% endif %}
                     </ul>
                 </li>
@@ -71,28 +106,46 @@
                     </a>
                     <ul class="sub-menu">
                     {% if session.menuParams['settingsRequest'] %}
-                        <li><a href="#">Request</a>
+                        <li>
+                            <a href="#">
+                                Request
+                            </a>
                                 <ul>
 
                                     {% if session.menuParams['settingsRequestCreate'] %}
-                                    <li><a href='#'>Create & View</a></li>
+                                        <li>
+                                            <a href='#'>
+                                                Create & View
+                                            </a>
+                                        </li>
                                     {% endif %}
                                     {% if session.menuParams['settingsRequestMap'] %}
-                                    <li><a href='#'>Map</a></li>
+                                        <li>
+                                            <a href='#'>
+                                                Map
+                                            </a>
+                                        </li>
                                     {% endif %}
                                 </ul>
                             </li>
-                        {% endif %}
+                    {% endif %}
                     {% if session.menuParams['settingsContact'] %}
                         <li>
                             <a href="#">Contract</a>
                             <ul>
-
-                                    {% if session.menuParams['settingsContactCreate'] %}
-                                <li><a href="#">Create & View</a></li>
+                                {% if session.menuParams['settingsContactCreate'] %}
+                                    <li>
+                                        <a href="#">
+                                            Create & View
+                                        </a>
+                                    </li>
                                 {% endif %}
                                 {% if session.menuParams['settingsContactMap'] %}
-                                <li><a href="#">Map</a></li>
+                                    <li>
+                                        <a href="#">
+                                            Map
+                                        </a>
+                                    </li>
                                 {%endif%}
                             </ul>
                         </li>
@@ -101,25 +154,38 @@
                         <li>
                             <a href="#">Time Limit</a>
                             <ul>
-
-                                    {% if session.menuParams['settingsTimeCreate'] %}
-                                <li><a href="#">Create & View</a></li>
+                                {% if session.menuParams['settingsTimeCreate'] %}
+                                    <li>
+                                        <a href="#">
+                                            Create& View
+                                        </a>
+                                    </li>
                                 {%endif%}
 
                                     {% if session.menuParams['settingsTimeMap'] %}
-                                <li><a href="#">Map</a></li>
+                                <li>
+                                    <a href="#">
+                                        Map
+                                    </a>
+                                </li>
                                 {%endif%}
                             </ul>
                         </li>
                     {% endif %}
                     {% if session.menuParams['settingsNegotiation'] %}
-                        <li><a href="#">Negotiation</a></li>
+                        <li>
+                            <a href="#">
+                                Negotiation
+                            </a>
+                        </li>
                     {% endif %}
                     {% if session.menuParams['settingsAutopilot'] %}
-                        <li><a href="#">Autopilot</a></li>
+                        <li>
+                            <a href="#">
+                                Autopilot
+                            </a>
+                        </li>
                     {% endif %}
-
-                  
                     </ul>
                 </li>
             {% endif %}
@@ -137,13 +203,17 @@
 
                                     {% if session.menuParams['usersHotelAdd'] %}
                                     <li>
-                                        <a href='/hoteladduser'>Add</a>
+                                        <a href='/hoteladduser'>
+                                            Add
+                                        </a>
                                     </li>
                                     {%endif%}
 
                                     {% if session.menuParams['usersHotelEdit'] %}
                                     <li>
-                                        <a href='/managehotelusers'>Edit</a>
+                                        <a href='/managehotelusers'>
+                                            Edit
+                                        </a>
                                     </li>
                                     {%endif%}
                                 </ul>
@@ -151,24 +221,32 @@
                         {% endif %}
                         {% if session.menuParams['usersCustomer'] %}
                             <li>
-                                <a href="#">Customer</a>
+                                <a href="#">
+                                    Customer
+                                </a>
                                 <ul>
 
                                     {% if session.menuParams['usersCustomerAdd'] %}
                                     <li>
-                                        <a href='#'>Add</a>
+                                        <a href='#'>
+                                            Add
+                                        </a>
                                     </li>
                                     {%endif%}
 
                                     {% if session.menuParams['usersCustomerEdit'] %}
                                     <li>
-                                        <a href='#'>Edit</a>
+                                        <a href='#'>
+                                            Edit
+                                        </a>
                                     </li>
                                     {%endif%}
 
                                     {% if session.menuParams['usersCustomerUpload'] %}
                                     <li>
-                                        <a href='#'>Upload</a>
+                                        <a href='#'>
+                                            Upload
+                                        </a>
                                     </li>
                                     {%endif%}
                                 </ul>
@@ -179,28 +257,42 @@
             {% endif %}
 
             {% if session.menuParams['analytics'] %}
-                <li class = 'lilink'><a href="#">Analytics</a>
+                <li class = 'lilink'>
+                    <a href="#">Analytics</a>
                     <ul class="sub-menu">
                         {% if session.menuParams['analyticsDashboard'] %}
-                            <li><a href="#">Dashboard</a>
+                            <li>
+                                <a href="#">
+                                    Dashboard
+                                </a>
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsBehavior'] %}
-                            <li><a href="#">Behaviour</a>
-                               
+                            <li>
+                                <a href="#">
+                                    Behaviour
+                                </a>
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsPerformance'] %}
-                            <li><a href="#">Performance</a>
-                                
+                            <li>
+                                <a href="#">
+                                    Performance
+                                </a>
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsRevenue'] %}
-                            <li><a href="#">Revenue</a>
+                            <li>
+                                <a href="#">
+                                    Revenue
+                                </a>
                             </li>
                         {% endif %}
                         {% if session.menuParams['analyticsTracking'] %}
-                        <li><a href="#">Tracking</a>
+                        <li>
+                            <a href="#">
+                                Tracking
+                            </a>
                         </li>
                         {% endif %}
                     </ul>
@@ -209,46 +301,36 @@
 
 
             {% if session.menuParams['help'] %}
-            <li class='lilink'><a href="#">Help</a>
+            <li class='lilink'>
+                <a href="#">
+                    Help
+                </a>
                 <ul class="sub-menu">
                     {% if session.menuParams['helpUserGuide'] %}
-                    <li><a href="#">User Guide</a>
-                    </li>
+                        <li>
+                            <a href="#">
+                                User Guide
+                            </a>
+                        </li>
                     {% endif %}
                     {% if session.menuParams['helpFaq'] %}
-                    <li><a href="#">FAQ</a>
-            
-                    </li>
+                        <li>
+                            <a href="#">
+                                FAQ
+                            </a>
+                       </li>
                     {% endif %}
                     {% if session.menuParams['helpTicketing'] %}
-                    <li><a href="#">Ticketing</a>
-            
+                     <li>
+                         <a href="#">
+                             Ticketing
+                            </a>
                     </li>
                     {% endif %}
                     
                 </ul>
             </li>
             {% endif %}
-            
-            {% if session.menuParams['developers'] %}
-                <li class = 'lilink'>
-                    <a href='#'>Developers</a>
-                    <ul>
-                        <li>
-                            <a href='/adddeveloper'>Add User</a>
-                        </li>
-                        <li>
-                            <a href='/hoteladdusertype'>Add UserType</a>
-                        </li>
-                        <li>
-                            <a href='/edituserType'>Edit UserType</a>
-                        </li>
-                    </ul>
-                </li>
-
-            {% endif %}
-
-
 
         </ul>
         <ul class='menu navbar-nav ml-auto'>
@@ -291,10 +373,11 @@
         
             <li class = 'lilink'>
                 <a href="#">
-                    Yield Manager
+                    Strategy
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#">Rate Grid</a></li>
+                    <li><a href = '#'>Rooms</a></li>
+                    <li><a href="#">Rate</a></li>
                     <li>
                         <a href="#">Discount</a>
                         <ul>
@@ -302,18 +385,24 @@
                             <li><a href="#">Map</a></li>
                         </ul>
                     </li>
+                    <li><a href = '#'>Forecast</a></li>
                 </ul>
             </li>
         
             <li class = 'lilink'>
                 <a href="#">
-                    Business Rules
+                    Settings
                 </a>
-                <ul class="sub-menu">Add User Type
-
+                <ul class="sub-menu">
+                    <li>
+                        <a href = '#'>Request</a>
+                        <ul>
+                            <li><a href="#">Create & View</a></li>
+                            <li><a href="#">Map</a></li>
+                        </ul>
                     </li>
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="#">Contract</a>
                         <ul>
                             <li><a href="#">Create & View</a></li>
                             <li><a href="#">Map</a></li>
@@ -333,7 +422,7 @@
         
             <li class = 'lilink'>
                 <a href="#">
-                    User Management
+                    Users
                 </a>
                 <ul class="sub-menu">
                     <li>
@@ -370,7 +459,7 @@
                     <li><a href="#">Dashboard</a>
             
                     </li>
-                    <li><a href="#">Buying Behaviour</a>
+                    <li><a href="#">Behaviour</a>
                       
                     </li>
                     <li><a href="#">Performance</a>
@@ -380,8 +469,29 @@
                     <li><a href="#">Revenue</a>
                       
                     </li>
+
+                    <li><a href="#">Tracking</a>
+                    
+                    </li>
                 </ul>
             </li>
+
+            <li class='lilink'><a href="#">Help</a>
+                <ul class="sub-menu">
+                    <li><a href="#">User Guide</a>
+            
+                    </li>
+                    <li><a href="#">FAQ</a>
+            
+                    </li>
+                    <li><a href="#">Ticketing</a>
+            
+            
+                    </li>
+                </ul>
+            </li>
+
+
         
         
             <li class = 'lilink'>
@@ -412,16 +522,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href='#'>
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                User Guide
-                            </a>
-                        </li>
-                        <li>
                             <a href='/signOut'>
                                 Sign-Out
                             </a>
@@ -445,10 +545,10 @@
                     <li><a href="#">Create</a>
                         <ul>
 
-            {% if session.menuParams['requestcreateadhoc'] %}
+            {% if session.menuParams['requestCreateAdhoc'] %}
                             <li><a href='#'>Adhoc</a></li>
                             {%endif%}
-            {% if session.menuParams['requestcreateseries'] %}
+            {% if session.menuParams['requestCreateSeries'] %}
                             <li><a href='#'>Series</a></li>
             {%endif%}
                         </ul>
@@ -461,18 +561,18 @@
             </li>
             {%endif%}
             
-            {%if session.menuParams['userM']%}
+            {%if session.menuParams['users']%}
             <li class = 'lilink'>
                 <a href="#">
-                    User Management
+                    Users
                 </a>
                 <ul class="sub-menu">
-                    {%if session.menuParams['userMadd']%}
+                    {%if session.menuParams['usersAdd']%}
                     <li>
                         <a href="#">Add</a>
                     </li>
                     {%endif%}
-                    {%if session.menuParams['userMedit']%}
+                    {%if session.menuParams['usersEdit']%}
                     <li>
                         <a href="#">Edit</a>
                     </li>
@@ -480,28 +580,73 @@
                 </ul>
             </li>
             {%endif%}
-
+            
             {% if session.menuParams['analytics'] %}
-            <li class='lilink'><a href="#">Analytics</a>
+            <li class='lilink'>
+                <a href="#">Analytics</a>
                 <ul class="sub-menu">
                     {% if session.menuParams['analyticsDashboard'] %}
-                    <li><a href="#">Dashboard</a>
+                    <li>
+                        <a href="#">
+                            Dashboard
+                        </a>
                     </li>
                     {% endif %}
-                    {% if session.menuParams['analyticsbb'] %}
-                    <li><a href="#">Buying Behaviour</a>
+                    {% if session.menuParams['analyticsRequest'] %}
+                    <li>
+                        <a href="#">
+                            30 Days Request
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsPerformance'] %}
+                    <li>
+                        <a href="#">
+                            Performance
+                        </a>
+                    </li>
+                    {% endif %}
             
+                    {% if session.menuParams['analyticsTracking'] %}
+                    <li>
+                        <a href="#">
+                            Tracking
+                        </a>
                     </li>
                     {% endif %}
-                    {% if session.menuParams['analyticsp'] %}
-                    <li><a href="#">Performance</a>
+                </ul>
+            </li>
+            {% endif %}
             
+            
+            {% if session.menuParams['help'] %}
+            <li class='lilink'>
+                <a href="#">
+                    Help
+                </a>
+                <ul class="sub-menu">
+                    {% if session.menuParams['helpUserGuide'] %}
+                    <li>
+                        <a href="#">
+                            User Guide
+                        </a>
                     </li>
                     {% endif %}
-                    {% if session.menuParams['analyticsr'] %}
-                    <li><a href="#">Revenue</a>
+                    {% if session.menuParams['helpFaq'] %}
+                    <li>
+                        <a href="#">
+                            FAQ
+                        </a>
                     </li>
                     {% endif %}
+                    {% if session.menuParams['helpTicketing'] %}
+                    <li>
+                        <a href="#">
+                            Ticketing
+                        </a>
+                    </li>
+                    {% endif %}
+            
                 </ul>
             </li>
             {% endif %}
@@ -516,16 +661,6 @@
                         <li>
                             <a href="{{ url_for('myprofile', email = session.email) }}">
                                 My Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                User Guide
                             </a>
                         </li>
                         <li>
@@ -552,10 +687,10 @@
                     <li><a href="#">Create</a>
                         <ul>
             
-                            {% if session.menuParams['requestcreateadhoc'] %}
+                            {% if session.menuParams['requestCreateAdhoc'] %}
                             <li><a href='#'>Adhoc</a></li>
                             {%endif%}
-                            {% if session.menuParams['requestcreateseries'] %}
+                            {% if session.menuParams['requestCreateSeries'] %}
                             <li><a href='#'>Series</a></li>
                             {%endif%}
                         </ul>
@@ -567,28 +702,73 @@
                 </ul>
             </li>
             {%endif%}
-
+            
             {% if session.menuParams['analytics'] %}
-            <li class='lilink'><a href="#">Analytics</a>
+            <li class='lilink'>
+                <a href="#">Analytics</a>
                 <ul class="sub-menu">
                     {% if session.menuParams['analyticsDashboard'] %}
-                    <li><a href="#">Dashboard</a>
+                    <li>
+                        <a href="#">
+                            Dashboard
+                        </a>
                     </li>
                     {% endif %}
-                    {% if session.menuParams['analyticsbb'] %}
-                    <li><a href="#">Buying Behaviour</a>
+                    {% if session.menuParams['analyticsRequest'] %}
+                    <li>
+                        <a href="#">
+                            30 Days Request
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if session.menuParams['analyticsPerformance'] %}
+                    <li>
+                        <a href="#">
+                            Performance
+                        </a>
+                    </li>
+                    {% endif %}
+                   
+                    {% if session.menuParams['analyticsTracking'] %}
+                    <li>
+                        <a href="#">
+                            Tracking
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
             
-                    </li>
-                    {% endif %}
-                    {% if session.menuParams['analyticsp'] %}
-                    <li><a href="#">Performance</a>
             
+            {% if session.menuParams['help'] %}
+            <li class='lilink'>
+                <a href="#">
+                    Help
+                </a>
+                <ul class="sub-menu">
+                    {% if session.menuParams['helpUserGuide'] %}
+                    <li>
+                        <a href="#">
+                            User Guide
+                        </a>
                     </li>
                     {% endif %}
-                    {% if session.menuParams['analyticsr'] %}
-                    <li><a href="#">Revenue</a>
+                    {% if session.menuParams['helpFaq'] %}
+                    <li>
+                        <a href="#">
+                            FAQ
+                        </a>
                     </li>
                     {% endif %}
+                    {% if session.menuParams['helpTicketing'] %}
+                    <li>
+                        <a href="#">
+                            Ticketing
+                        </a>
+                    </li>
+                    {% endif %}
+            
                 </ul>
             </li>
             {% endif %}
@@ -603,16 +783,6 @@
                         <li>
                             <a href="{{ url_for('myprofile', email = session.email) }}">
                                 My Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                FAQ
-                            </a>
-                        </li>
-                        <li>
-                            <a href='#'>
-                                User Guide
                             </a>
                         </li>
                         <li>

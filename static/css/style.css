@@ -28,9 +28,10 @@ html {
 }
 
 .navbar-brand {
-  font-size: 25px !important;
   margin-bottom: 6px !important;
+  font-size: 25px !important;
 }
+
 
 .menu {
     display: block;
@@ -65,7 +66,7 @@ html {
     opacity: 0;
     margin: 0;
     padding: 0;
-    width: 170px;
+    width: 200px;
     position: absolute;
     left: 0px;
     background: #fff;
@@ -117,7 +118,7 @@ html {
 }
 
 .menu ul ul {
-    left: 169px;
+    left: 200px;
     top: 0px;
     visibility: hidden;
     opacity: 0;
@@ -146,87 +147,6 @@ html {
     transform: translate(0,0);
 }
 
-/*
-  Media Queries
-*/
-
-@media (min-width: 768px) and (max-width: 979px) {
-    .mainWrap {
-        width: 768px;
-    }
-
-    .menu ul {
-        top: 37px;
-    }
-
-    .menu li a {
-        font-size: 12px;
-    }
-
-    a.homer {
-        background: #374147;
-    }
-}
-
-@media (max-width: 767px) {
-    .mainWrap {
-        width: auto;
-        padding: 50px 20px;
-    }
-
-    .menu {
-        display: none;
-    }
-
-    .responsive-menu {
-        display: block;
-    }
-
-    nav {
-        margin: 0;
-        background: none;
-    }
-
-    .menu li {
-        display: block;
-        margin: 0;
-    }
-
-    .menu li a {
-        background: #fff;
-        color: #797979;
-    }
-
-    .menu li a:hover,.menu li:hover>a {
-        background: #9ca3da;
-        color: #fff;
-    }
-
-    .menu ul {
-        visibility: hidden;
-        opacity: 0;
-        top: 0;
-        left: 0;
-        width: 100%;
-        transform: initial;
-    }
-
-    .menu li:hover>ul {
-        visibility: visible;
-        opacity: 1;
-        position: relative;
-        transform: initial;
-    }
-
-    .menu ul ul {
-        left: 0;
-        transform: initial;
-    }
-
-    .menu li>ul ul:hover {
-        transform: initial;
-    }
-}
 
 .btn1 {
   cursor: pointer;
@@ -400,10 +320,8 @@ button:hover {
 }
 
 .notReg {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .nrg {

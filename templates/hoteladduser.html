@@ -12,6 +12,9 @@
         </a>
         <form action="{{ url_for('registerhotelusers') }}" method="POST">
             <div class="formhelp mb-5">
+                <small id='smallID' class='form-text text-muted mb-5'>
+                    Fields marked with * are mandatory.
+                </small>
                 <i class="fas fa-user-tie fa-lg"></i>
                 <input type="text" name="name" class="form-control text-center" required
                     placeholder="Enter Full Name&#42;" onfocus="this.placeholder = ''"
@@ -22,9 +25,6 @@
                 <input type="email" name="email" class="form-control text-center" required
                     placeholder="Email Address&#42;" onfocus="this.placeholder = ''"
                     onfocusout="this.placeholder = 'Email Address&#42;'">
-                <small id='smallID' class='form-text text-muted'>
-                    We'll never share your email with anyone else.
-                </small>
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tag fa-lg"></i>
@@ -77,15 +77,11 @@
                 <input type="text" name="city" class="form-control text-center"  placeholder="City"
                     onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City'" minlength="4"
                     maxlength="12">
-                <small id='smallID' class='form-text text-muted'>
-                    Fields marked with * are mandatory.
-                </small>
             </div>
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Sign Up <i
-                                class="fas fa-user-plus"></i></button>
+                        <button type="submit" id='subm' class="btnLogin">Sign Up</button>
                     </div>
                 </div>
             </div>
@@ -101,14 +97,11 @@
                 <i class="fas fa-envelope fa-lg"></i>
                 <input type="email" name="email" class="form-control text-center" required placeholder="Email Address&#42;"
                     onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Email Address&#42;'">
-                <small id='smallID' class='form-text text-muted'>
-                    We'll never share your email with anyone else.
-                </small>
             </div>
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Invite<i class="fas fa-user-plus"></i></button>
+                        <button type="submit" id='subm' class="btnLogin">Invite</button>
                     </div>
                 </div>
             </div>
