@@ -4,31 +4,23 @@
     <div class="wrap-login">
         <div class='loginH'>
             <div class='text-center'>
-                <p>
-                    Register as IATA
-                </p><i class="fas fa-user-plus"></i>
+                <p>Register as a business</p><i class="fas fa-user-plus"></i>
             </div>
         </div>
-        <form action="{{ url_for('registerI') }}" method="POST">
+        <form action="{{ url_for('registerC') }}" method="POST">
             <small id='smallID' class='form-text text-muted mb-5'>
                 Fields marked with * are mandatory.
             </small>
             <div class="formhelp mb-5">
                 <i class="fas fa-asterisk fa-lg"></i>
-                <input type="text" name="agencyName" class="form-control text-center" placeholder="Agency Name&#42"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Agency Name&#42'" minlength="4"
-                    required maxlength="25">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="far fa-flag"></i>
-                <input type="text" name="country" class="form-control text-center" placeholder="Country&#42"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42'" minlength="4" required
+                <input type="text" name="organizationName" class="form-control text-center" placeholder="Organization Name &#42"
+                    onfocus="this.placeholder = ''" required onfocusout="this.placeholder = 'Organization Name&#42'" minlength="4"
                     maxlength="25">
             </div>
             <div class="formhelp mb-5">
-                <i class="fas fa-asterisk fa-lg"></i>
-                <input type="text" name="iataCode" class="form-control text-center" required placeholder="Enter IATA Code&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter IATA Code&#42;'">
+                <i class="far fa-flag"></i>
+                <input type="text" name="country" required class="form-control text-center" placeholder="Country&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'" minlength="4" maxlength="25">
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
@@ -64,7 +56,6 @@
                 <input type="text" name="phone" class="form-control text-center" placeholder="Enter Phone Number"
                     onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Phone Number'">
             </div>
-
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">

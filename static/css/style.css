@@ -32,6 +32,16 @@ html {
   font-size: 25px !important;
 }
 
+footer {
+  height: 70px;
+  background-color: #343a40 !important;
+  display: flex;  
+  flex-direction: column;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .menu {
     display: block;
@@ -209,6 +219,11 @@ html {
   max-height: 100%;
   margin-bottom: 20px;
   padding: 25px;
+}
+
+.lim {
+  min-height: 500px !important;
+  height: 500px !important;
 }
 
 .spread {

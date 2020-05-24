@@ -13,36 +13,46 @@
         <form action="{{ url_for('submitEditUserAll') }}" method="POST">
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Name : </span><br>
-                <input type='text' class='form-control mt-3 text-center' value="{{ data['name'] }}"
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['fullName'] }}"
                     name='name' required />
-            </div>
-                <input type='text' value="{{ data['email'] }}" name='oldemail' hidden />
-            <div class="formhelp mb-5">
-                <span class='btn btn-primary'>Phone : </span><br>
-                <input type='text' class='form-control mt-3 text-center' value="{{ data['phone'] }}" name='phoneN'
-                    required />
             </div>
             <div class="infog mb-5">
                 <span class='btn btn-primary'>Email : </span><br>
-                <input type='text' class='form-control mt-3 text-center' value="{{ data['email'] }}" readonly>
+                <input type='text' name = 'email' class='form-control mt-3 text-center' value="{{ data['email'] }}" readonly>
             </div>
+            {% if data['phone'] %}
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Phone : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['phone'] }}" name='phone'
+                    required />
+            </div>
+            {%endif%}
             {% if data['agencyName'] %}
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Agency Name : </span><br>
-                <input type='text' class='form-control mt-3 text-center' value="{{ data['agencyName'] }}" name='agencyName' required />
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['agencyName'] }}" name='agencyName' readonly />
             </div>
             {% endif %}
+            {% if data['iataCode'] %}
             <div class="formhelp mb-5">
-                <span class='btn btn-primary'>Address : </span><br>
-                <textarea name="address" class="form-control text-center mt-3">
-                {{ data['address'] }}   
-            </textarea>
+                <span class='btn btn-primary'>IATA Code : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['iataCode'] }}" name='iataCode' readonly />
             </div>
+            {%endif%}
+            {% if data['country'] %}
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Country : </span><br>
-                <input type='text' class='form-control mt-3 text-center' value="{{ data['country'] }}" name='country'
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['country'] }}" name='country' required
                  />
             </div>
+            {% endif %}
+            {% if data['userType'] %}
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>UserType : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['userType'] }}" name='userType' readonly/>
+            </div>
+            {%endif%}
+            
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Password : </span><br>
                 <input type='password' class='form-control mt-3 text-center' value="{{ data['password'] }}" name='password' required />
@@ -51,7 +61,7 @@
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Organization Name : </span><br>
                 <input type='text' class='form-control mt-3 text-center' value="{{ data['organizationName'] }}" name='organizationName'
-                    required />
+                    readonly />
             </div>
             {% endif %}
             <div class="row">

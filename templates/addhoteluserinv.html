@@ -10,7 +10,7 @@
         <form action="{{ url_for('registerhotelusers') }}" method="POST">
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
-                <input type="text" name="name" class="form-control text-center" required
+                <input type="text" name="fullName" class="form-control text-center" required
                     placeholder="Enter Full Name&#42;" onfocus="this.placeholder = ''"
                     onfocusout="this.placeholder = 'Enter Full Name&#42;'" minlength="4" maxlength="35">
             </div>
@@ -18,22 +18,10 @@
                 <i class="fas fa-envelope fa-lg"></i>
                 <input type="email" name="email" class="form-control text-center" readonly value = "{{ email }}"
                    >
-                <small id='smallID' class='form-text text-muted'>
-                    We'll never share your email with anyone else.
-                </small>
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tag fa-lg"></i>
-                <select class='form-control text-center' name='userType' required>
-                    <option selected disabled>
-                        User Type
-                    </option>
-                    {% for value in subtypes %}
-                    <option value={{ value }}>
-                        {{ value }}
-                    </option>
-                    {% endfor %}
-                </select>
+                <input type = 'text' name = 'userType' class = 'form-control text-center' readonly value = "{{ userType }}">
             </div>
             <div class="formhelp mb-5">
                 <i class="fas fa-key fa-lg"></i>
@@ -49,31 +37,6 @@
                     maxlength="35">
                 <span id='msg' class='form-text text-muted'>
             </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-mobile fa-lg"></i>
-                <input type="text" name="phoneN" class="form-control text-center" required
-                    placeholder="Enter Phone Number&#42;" onfocus="this.placeholder = ''"
-                    onfocusout="this.placeholder = 'Enter Phone Number&#42;'">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-address-book fa-lg"></i>
-                <textarea name="address" class="form-control text-center" placeholder="Enter Address"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Address'"></textarea>
-            </div>
-            <div class="formhelp mb-5">
-                <i class="far fa-flag"></i>
-                <input type="text" name="country" class="form-control text-center" placeholder="Country"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country'" minlength="4"
-                    maxlength="35">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-city fa-lg"></i>
-                <input type="text" name="city" class="form-control text-center" placeholder="City"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'City'" minlength="4" maxlength="12">
-                <small id='smallID' class='form-text text-muted'>
-                    Fields marked with * are mandatory.
-                </small>
-            </div>
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
@@ -83,7 +46,6 @@
                 </div>
             </div>
         </form>
-        <hr>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container-login">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Edit User Type</p><i class="fas fa-edit"></i>
+            </div>
+        </div>
+
+ <form action="{{ url_for('submiteditusertype') }}" method="POST" id = 'formE'>
+    <input type='hidden' name='userType' value="{{ userType  }}">
+    <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="{{ datah['request'] }}" onchange="handleChange(this)" name='request'
+                    >
+                    <span style='font-weight: bold;'>REQUEST</span>
+                    
+                </label>
+            </div>
+        
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['requestCreate'] }}"  name='requestCreate' onchange="hchange(this)"><span
+                        class='checkl'>Create</span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['requestCreateAdhoc'] }}"  name='requestCreateAdhoc'><span class='checkl'>Adhoc</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['requestCreateSeries'] }}"  name='requestCreateSeries'><span
+                            class='checkl'>Series</span>
+                    </div>
+                </div>
+        
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['requestManage'] }}"  name='requestManage'><span class='checkl'>Manage</span>
+                </div>
+            </div>
+        
+        </div>
+        
+        <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="{{ datah['strategy'] }}" onchange="handleChange(this)" name='strategy'>
+                    <span style='font-weight: bold;'>Strategy</span>
+                </label>
+            </div>
+            <div class='checkboxdiv'>
+        
+        
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['strategyRooms'] }}"  name='strategyRooms'><span class='checkl'>Rooms</span>
+                </div>
+        
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['strategyRate'] }}"  name='strategyRate'><span class='checkl'>Rate</span>
+                </div>
+        
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['strategyDiscount'] }}"  name='strategyDiscount' onchange="hchange(this)"><span
+                        class='checkl'>Discount</span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['strategyDiscountCreate'] }}"  name='strategyDiscountCreate'><span class='checkl'>Create &
+                            View</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['strategyDiscountMap'] }}"  name='strategyDiscountMap'><span class='checkl'>Map</span>
+                    </div>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['strategyForecast'] }}"  name='strategyForecast'><span class='checkl'>Forecast</span>
+                </div>
+        
+            </div>
+        </div>
+        
+        <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="{{ datah['settings'] }}" onchange="handleChange(this)" name='settings'>
+                    <span style='font-weight: bold;'>SETTINGS</span>
+                </label>
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{datah['settingsRequest']}}"  name='settingsRequest' onchange="hchange(this)"><span
+                        class='checkl'>Request</span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsRequestCreate'] }}"  name='settingsRequestCreate'><span
+                            class='checkl'>Create</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsRequestMap'] }}"  name='settingsRequestMap'><span class='checkl'>Map</span>
+                    </div>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['settingsContact'] }}"  name='settingsContact' onchange="hchange(this)"><span
+                        class='checkl'>Contact</span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsContactCreate'] }}"  name='settingsContactCreate'><span
+                            class='checkl'>Create</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsContactMap'] }}"  name='settingsContactMap'><span class='checkl'>Map</span>
+                    </div>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['settingsTime'] }}"  name='settingsTime' onchange="hchange(this)"><span
+                        class='checkl'>Time Limit</span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsTimeCreate'] }}"  name='settingsTimeCreate'><span
+                            class='checkl'>Create</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['settingsTimeMap'] }}"  name='settingsTimeMap'><span class='checkl'>Map</span>
+                    </div>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['settingsNegotiation'] }}"  name='settingsNegotiation'><span
+                        class='checkl'>Negotiation</span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['settingsAutopilot'] }}"  name='settingsAutopilot'><span class='checkl'>AutoPilot
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="{{ datah['users'] }}" onchange="handleChange(this)" name='users'>
+                    <span style='font-weight: bold;'>USERS</span>
+                </label>
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['usersHotel'] }}"  name='usersHotel' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Hotel
+                    </span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['usersHotelAdd'] }}"  name='usersHotelAdd'><span class='checkl'>Add</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['usersHotelEdit'] }}"  name='usersHotelEdit'><span class='checkl'>Edit</span>
+                    </div>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['usersCustomer']}}"  name='usersCustomer' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Customer
+                    </span>
+                </div>
+                <div class="subcheckbox ml-5">
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{datah['usersCustomerAdd'] }}"  name='usersCustomerAdd'><span class='checkl'>Add</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['usersCustomerEdit'] }}"  name='usersCustomerEdit'><span class='checkl'>Edit</span>
+                    </div>
+                    <div class="cc ml-5">
+                        <input type="checkbox" value="{{ datah['usersCustomerUpload'] }}"  name='usersCustomerUpload'><span
+                            class='checkl'>Upload</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class='check mb-5'>
+            <div class="form-check checkbox-slider--b-flat">
+                <label>
+                    <input type="checkbox" value="{{ datah['analytics'] }}" onchange="handleChange(this)" name='analytics'>
+                    <span style='font-weight: bold;'>ANALYTICS</span>
+                </label>
+            </div>
+            <div class='checkboxdiv'>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsDashboard'] }}"  name='analyticsDashboard' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Dashboard
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsBehavior'] }}"  name='analyticsBehavior' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Behavior
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsPerformance'] }}"  name='analyticsPerformance' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Performance
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsRevenue'] }}"  name='analyticsRevenue' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Revenue
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsTracking'] }}"  name='analyticsTracking' onchange="hchange(this)"><span
+                        class='checkl'>
+                        Tracking
+                    </span>
+                </div>
+            </div>
+        </div>
+       <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Edit User Type</button>
+                    </div>
+                </div>
+            </div>
+            </form>
+    </div>
+    </div>
+    {% endblock %}

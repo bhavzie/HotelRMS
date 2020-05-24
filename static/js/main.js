@@ -18,44 +18,16 @@ const checkp = () => {
     }
 }
 
-function ssd(selectobj) {
-    const val = selectobj.value
-    const fff = document.getElementById('fff')
-    const ggg = document.getElementById('ggg')
 
-    if (val == 'tour') {
-        ggg.style.display = 'block';
-        fff.style.display = 'none';
-    } else if(val == 'corporate') {
-        fff.style.display = 'block';
-        ggg.style.display = 'none';
-    } else{
-        ggg.style.display = 'none';
-        fff.style.display = 'none';
-    }
-}
+const forme = document.getElementById('formE')
+const checkboxes = [...forme.getElementsByTagName('input')]
 
-function gfg(selectobj) {
-    const val = selectobj.value
-    const fff = document.getElementById('form1')
-    const ggg = document.getElementById('form2')
-    const iii = document.getElementById('form3')
 
-    if (val == 'hoteluser') {
-        fff.style.display = 'block';
-        ggg.style.display = 'none';
-        iii.style.display = 'none';
-    } else if (val == 'customer') {
-        fff.style.display = 'none';
-        ggg.style.display = 'none';
-        iii.style.display = 'block';
-    } else if (val === 'iatauser') {
-        fff.style.display = 'none';
-        ggg.style.display = 'block';
-        iii.style.display = 'none';
-    }
-}
-
+checkboxes.forEach(checkbox => {
+    if (checkbox.value == 1) {
+        checkbox.checked = true
+    }  
+})
 
 $(document).ready(function () {
 
@@ -64,10 +36,9 @@ $(document).ready(function () {
     }, 3000);
 
     $('#tableusers').DataTable();
+    
 
-    $('#form2').hide()
 
-    $('#form3').hide()
 });
 
 
@@ -103,7 +74,6 @@ function hchange(checkbox) {
         subcheckboxes[i].childNodes[1].checked = false
     }
 }
-
 
 
 $(document).ready(function () {

@@ -7,28 +7,11 @@
                 <p>Add User Type</p><i class="fas fa-user-plus"></i>
             </div>
         </div>
-        <div class="formhelp mb-5">
-            <i class="fas fa-user-tag fa-lg"></i>
-            <select class='form-control text-center' name='userType' id='gege' onchange="gfg(this)" required>
-                <option selected disabled>
-                    User Type
-                </option>
-                <option value="hoteluser">
-                    Hotel User
-                </option>
-                <option value="iatauser">
-                    IATA User
-                </option>
-                <option value="customer">
-                    Customer
-                </option>
-            </select>
-        </div>
 
-        <form action="{{ url_for('addusertype') }}" method="POST" id = 'form1'>
+        <form action="{{ url_for('addusertype') }}" method="POST">
             <div class="formhelp mb-5">
                 <i class="fas fa-user-tie fa-lg"></i>
-                <input type="text" name="usertype" class="form-control text-center" required
+                <input type="text" name="userType" class="form-control text-center" required
                     placeholder="Enter User Type&#42;" onfocus="this.placeholder = ''"
                     onfocusout="this.placeholder = 'Enter User Type&#42;'" minlength="4" maxlength="20">
             </div>
@@ -40,7 +23,7 @@
                         <input type="checkbox"
                             value = "True"
                             onchange="handleChange(this)"
-                            name = 'requestc'
+                            name = 'request'
                         >
                         <span style = 'font-weight: bold;'>REQUEST</span>
                     </label>
@@ -50,22 +33,22 @@
                     <div class="checkbox-inline">
                         <input type="checkbox"
                          value="True" disabled
-                         name = 'requestcreate'
+                         name = 'requestCreate'
                          onchange="hchange(this)"
                          ><span class='checkl'>Create</span>
                     </div>
                     <div class="subcheckbox ml-5">
                         <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='requestcreateadhoc'><span class='checkl'>Adhoc</span>
+                        <input type="checkbox" value="True" disabled name='requestCreateAdhoc'><span class='checkl'>Adhoc</span>
                         </div>
                         <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='requestcreateseries'><span class='checkl'>Series</span>
+                        <input type="checkbox" value="True" disabled name='requestCreateSeries'><span class='checkl'>Series</span>
                         </div>
                     </div>
 
                     <div class="checkbox-inline">
                         <input type="checkbox" value="True" disabled
-                        name = 'requestmanage'
+                        name = 'requestManage'
                         ><span class='checkl'>Manage</span>
                     </div>
                 </div>
@@ -76,32 +59,42 @@
                 <div class="form-check checkbox-slider--b-flat">
                     <label>
                         <input type="checkbox" value="True" onchange="handleChange(this)"
-                        name = 'yield'
+                        name = 'strategy'
                         >
-                        <span style = 'font-weight: bold;'>YIELD MANAGER</span>
+                        <span style = 'font-weight: bold;'>Strategy</span>
                     </label>
                 </div>
                 <div class='checkboxdiv'>
+                    
+
                     <div class="checkbox-inline">
                         <input type="checkbox" value="True" disabled
                         
-                        name = 'yieldr'
-                        ><span class='checkl'>Rate Grid</span>
+                        name = 'strategyRooms'
+                        ><span class='checkl'>Rooms</span>
+                    </div>
+
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="True" disabled name='strategyRate'><span class='checkl'>Rate</span>
                     </div>
                     
                     <div class="checkbox-inline">
                         <input type="checkbox" value="True" disabled
-                        name = 'yieldd' onchange="hchange(this)"
+                        name = 'strategyDiscount' onchange="hchange(this)"
                         ><span class='checkl'>Discount</span>
                     </div>
                     <div class="subcheckbox ml-5">
                         <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='yielddiscountcreate'><span class='checkl'>Create & View</span>
+                            <input type="checkbox" value="True" disabled name='strategyDiscountCreate'><span class='checkl'>Create & View</span>
                         </div>
                         <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='yielddiscountmap'><span class='checkl'>Map</span>
+                            <input type="checkbox" value="True" disabled name='strategyDiscountMap'><span class='checkl'>Map</span>
                         </div>
                     </div>
+                    <div class="checkbox-inline">
+                        <input type="checkbox" value="True" disabled name='strategyForecast'><span class='checkl'>Forecast</span>
+                    </div>
+
                 </div>
             </div>
 
@@ -109,64 +102,60 @@
             <div class="form-check checkbox-slider--b-flat">
                 <label>
                     <input type="checkbox" value="True" onchange="handleChange(this)"
-                    name = 'business'
+                    name = 'settings'
                     >
-                    <span style = 'font-weight: bold;'>BUSINESS RULES</span>
+                    <span style = 'font-weight: bold;'>SETTINGS</span>
                 </label>
             </div>
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'businessr' onchange="hchange(this)"
+                    name = 'settingsRequest' onchange="hchange(this)"
                     ><span class='checkl'>Request</span>
                 </div>
                 <div class="subcheckbox ml-5">
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businessRequestcreate'><span class='checkl'>Create</span>
+                        <input type="checkbox" value="True" disabled name='settingsRequestCreate'><span class='checkl'>Create</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businessRequestmap'><span class='checkl'>Map</span>
+                        <input type="checkbox" value="True" disabled name='settingsRequestMap'><span class='checkl'>Map</span>
                     </div>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'businessc' onchange="hchange(this)"
+                    name = 'settingsContact' onchange="hchange(this)"
                     ><span class='checkl'>Contact</span>
                 </div>
                 <div class="subcheckbox ml-5">
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businesscontactcreate'><span class='checkl'>Create</span>
+                        <input type="checkbox" value="True" disabled name='settingsContactCreate'><span class='checkl'>Create</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businesscontactmap'><span class='checkl'>Map</span>
+                        <input type="checkbox" value="True" disabled name='settingsContactMap'><span class='checkl'>Map</span>
                     </div>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'businesst' onchange="hchange(this)"
+                    name = 'settingsTime' onchange="hchange(this)"
                     ><span class='checkl'>Time Limit</span>
                 </div>
                 <div class="subcheckbox ml-5">
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businessTimecreate'><span class='checkl'>Create</span>
+                        <input type="checkbox" value="True" disabled name='settingsTimeCreate'><span class='checkl'>Create</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='businessTimemap'><span class='checkl'>Map</span>
+                        <input type="checkbox" value="True" disabled name='settingsTimeMap'><span class='checkl'>Map</span>
                     </div>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'businessn'
+                    name = 'settingsNegotiation'
                     ><span class='checkl'>Negotiation</span>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'businessa'
+                    name = 'settingsAutopilot'
                     ><span class='checkl'>AutoPilot
-                    </span>
-                </div>
-                <div class="checkbox-inline">
-                    <input type="checkbox" value="True" disabled name='businessRooms'><span class='checkl'>Rooms
                     </span>
                 </div>
             </div>
@@ -176,43 +165,43 @@
             <div class="form-check checkbox-slider--b-flat">
                 <label>
                     <input type="checkbox" value="True" onchange="handleChange(this)"
-                    name = 'user'
+                    name = 'users'
                     >
-                    <span style = 'font-weight: bold;'>USER MANAGEMENT</span>
+                    <span style = 'font-weight: bold;'>USERS</span>
                 </label>
             </div>
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'userh' onchange="hchange(this)"
+                    name = 'usersHotel' onchange="hchange(this)"
                     ><span class='checkl'>
                         Hotel
                     </span>
                 </div>
                 <div class="subcheckbox ml-5">
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='userMHoteladd'><span class='checkl'>Add</span>
+                        <input type="checkbox" value="True" disabled name='usersHotelAdd'><span class='checkl'>Add</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='userMHoteledit'><span class='checkl'>Edit</span>
+                        <input type="checkbox" value="True" disabled name='usersHotelEdit'><span class='checkl'>Edit</span>
                     </div>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'userc' onchange="hchange(this)"
+                    name = 'usersCustomer' onchange="hchange(this)"
                     ><span class='checkl'>
                         Customer
                     </span>
                 </div>
                 <div class="subcheckbox ml-5">
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='userMCustomeradd'><span class='checkl'>Add</span>
+                        <input type="checkbox" value="True" disabled name='usersCustomerAdd'><span class='checkl'>Add</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='userMCustomeredit'><span class='checkl'>Edit</span>
+                        <input type="checkbox" value="True" disabled name='usersCustomerEdit'><span class='checkl'>Edit</span>
                     </div>
                     <div class="cc ml-5">
-                        <input type="checkbox" value="True" disabled name='userMCustomerupload'><span class='checkl'>Upload</span>
+                        <input type="checkbox" value="True" disabled name='usersCustomerUpload'><span class='checkl'>Upload</span>
                     </div>
                 </div>
             </div>
@@ -230,43 +219,40 @@
             <div class='checkboxdiv'>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'analyticsd' onchange="hchange(this)"
+                    name = 'analyticsDashboard' onchange="hchange(this)"
                     ><span class = 'checkl'>
                         Dashboard
                     </span>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'analyticsbb' onchange="hchange(this)"
+                    name = 'analyticsBehavior' onchange="hchange(this)"
                     ><span class='checkl'>
-                        Buying Behavior
+                        Behavior
                     </span>
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'analyticsp' onchange="hchange(this)"
+                    name = 'analyticsPerformance' onchange="hchange(this)"
                     ><span class='checkl'>
                         Performance
                     </span>        
                 </div>
                 <div class="checkbox-inline">
                     <input type="checkbox" value="True" disabled
-                    name = 'analyticsr' onchange="hchange(this)"
+                    name = 'analyticsRevenue' onchange="hchange(this)"
                     ><span class='checkl'>
                         Revenue
+                    </span>
+                </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="True" disabled name='analyticsTracking' onchange="hchange(this)"><span class='checkl'>
+                        Tracking
                     </span>
                 </div>
             </div>
         </div>
 
-        <div class='check mb-5'>
-            <div class="form-check checkbox-slider--b-flat">
-                <label>
-                    <input type="checkbox" value="True" onchange="handleChange(this)" name='developers'>
-                    <span style='font-weight: bold;'>DEVELOPERS</span>
-                </label>
-            </div>
-        </div>
 
             <div class="row">
                 <div class="col-sm-12 mt-3">
@@ -278,178 +264,7 @@
             </div>
         </form>
 
-        <form action="{{ url_for('iatanav') }}" method="POST" id='form2'>
-            <div class='check mb-5'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='requestc'>
-                        <span style='font-weight: bold;'>REQUEST</span>
-                    </label>
-                </div>
-            
-                <div class='checkboxdiv'>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='requestcreate' onchange="hchange(this)"><span
-                            class='checkl'>Create</span>
-                    </div>
-                    <div class="subcheckbox ml-5">
-                        <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='requestcreateadhoc'><span class='checkl'>Adhoc</span>
-                        </div>
-                        <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='requestcreateseries'><span
-                                class='checkl'>Series</span>
-                        </div>
-                    </div>
-            
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='requestmanage'><span class='checkl'>Manage</span>
-                    </div>
-                </div>
-            
-            </div>
-
-            <div class='check mb-5'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='user'>
-                        <span style='font-weight: bold;'>USER MANAGEMENT</span>
-                    </label>
-                </div>
-                <div class='checkboxdiv'>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='userh' onchange="hchange(this)"><span class='checkl'>
-                            Add
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='userc' onchange="hchange(this)"><span class='checkl'>
-                            Edit
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class='check mb-5'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='analytics'>
-                        <span style='font-weight: bold;'>ANALYTICS</span>
-                    </label>
-                </div>
-                <div class='checkboxdiv'>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsd' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Dashboard
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsbb' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Buying Behavior
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsp' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Performance
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsr' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Revenue
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12 mt-3">
-                    <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Add User Type <i class="fas fa-user-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-
-        </form>
-
-        <form action="{{ url_for('customernav') }}" method="POST" id='form3'>
-            <div class='check mb-5'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='requestc'>
-                        <span style='font-weight: bold;'>REQUEST</span>
-                    </label>
-                </div>
-            
-                <div class='checkboxdiv'>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='requestcreate' onchange="hchange(this)"><span
-                            class='checkl'>Create</span>
-                    </div>
-                    <div class="subcheckbox ml-5">
-                        <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='requestcreateadhoc'><span class='checkl'>Adhoc</span>
-                        </div>
-                        <div class="cc ml-5">
-                            <input type="checkbox" value="True" disabled name='requestcreateseries'><span
-                                class='checkl'>Series</span>
-                        </div>
-                    </div>
-            
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='requestmanage'><span class='checkl'>Manage</span>
-                    </div>
-                </div>
-            
-            </div>
-
-            <div class='check mb-5'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='analytics'>
-                        <span style='font-weight: bold;'>ANALYTICS</span>
-                    </label>
-                </div>
-                <div class='checkboxdiv'>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsd' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Dashboard
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsbb' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Buying Behavior
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsp' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Performance
-                        </span>
-                    </div>
-                    <div class="checkbox-inline">
-                        <input type="checkbox" value="True" disabled name='analyticsr' onchange="hchange(this)"><span
-                            class='checkl'>
-                            Revenue
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-12 mt-3">
-                    <div class="text-center">
-                        <button type="submit" id='subm' class="btnLogin">Add User Type <i class="fas fa-user-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-
-        </form>
+     
 
     </div>
 </div>
