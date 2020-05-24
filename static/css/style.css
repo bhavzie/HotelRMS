@@ -33,13 +33,14 @@ html {
 }
 
 footer {
-  height: 70px;
+  height: 80px;
   background-color: #343a40 !important;
-  display: flex;  
-  flex-direction: column;
-  color: #fff;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+}
+
+footer img {
+  height: 80px;
+  width: 200px;
 }
 
 
