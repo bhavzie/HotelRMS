@@ -231,4 +231,16 @@
             </form>
     </div>
     </div>
+
+    <script>
+    const forme = document.getElementById('formE')
+        const checkboxes = [...forme.getElementsByTagName('input')]
+
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.value == 1) {
+                checkbox.checked = true
+            }
+        })
+    </script>
     {% endblock %}

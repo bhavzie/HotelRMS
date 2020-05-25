@@ -19,16 +19,6 @@ const checkp = () => {
 }
 
 
-const forme = document.getElementById('formE')
-const checkboxes = [...forme.getElementsByTagName('input')]
-
-
-checkboxes.forEach(checkbox => {
-    if (checkbox.value == 1) {
-        checkbox.checked = true
-    }  
-})
-
 $(document).ready(function () {
 
     setTimeout(function(){
@@ -36,8 +26,10 @@ $(document).ready(function () {
     }, 3000);
 
     $('#tableusers').DataTable();
-    
 
+
+
+    
 
 });
 

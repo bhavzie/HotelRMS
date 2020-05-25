@@ -1,9 +1,8 @@
-from flask import Flask, render_template, flash, request, session, url_for, session
+from flask import Flask, render_template, flash, request, session, url_for, session, jsonify
 from config import Config
 from functools import wraps
 from flask_mysqldb import MySQL
 from functions import *
-
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -533,7 +532,6 @@ def login():
 
                     session['menuParams'] = menuParams
 
-                print(session)
                 
                 flash('You are now logged in', 'success')
                 return render_template('index.html')
@@ -1085,8 +1083,19 @@ def submiteditusertype():
     flash('UserType updated!', 'success')
     return render_template('index.html', title='UserType')
 
+# Users Module Finished
 
 
+@app.route('/strategyRooms', methods = ['GET', 'POST'])
+def strategyRooms():
+    return render_template('strategyRooms.html')
+
+@app.route('/strategyRoomsSubmit', methods = ['GET', 'POST'])
+def strategyRoomsSubmit():
+    inp = request.json
+    print(inp)
+    flash('Your Room data has been entered', 'success')
+    return ('', 204)
 
 if __name__ == "__main__":
     app.run(debug = True)

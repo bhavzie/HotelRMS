@@ -1,0 +1,100 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login  ">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Rooms</p>
+            </div>
+        </div>
+    <form action="{{ url_for('strategyRoomsSubmit') }}" method="POST" onsubmit="aj(event)">
+        <table class="table table-striped table-bordered" id = 'tab1'>
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Room Count</th>
+                    <th>Single</th>
+                    <th>Double</th>
+                    <th>Triple</th>
+                    <th>Quadruple</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable>1 Bed</td>
+                    <td onkeyup = "sds(event)" contenteditable class = 'ro'>50</td>
+                    <td contenteditable>YES</td>
+                    <td contenteditable>YES</td>
+                    <td contenteditable>NO</td>
+                    <td contenteditable>NO</td>
+                </tr>
+                <tr>
+                    <td contenteditable>2 Bed</td>
+                    <td onkeyup = "sds(event)" contenteditable class = 'ro'>50</td>
+                    <td contenteditable>YES</td>
+                    <td contenteditable>YES</td>
+                    <td contenteditable>YES</td>
+                    <td contenteditable>YES</td>
+                </tr>
+                <tr>
+                    <td>Total Rooms</td>
+                    <td id = 'totalr'></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-sm-12 mt-3">
+                <div class="text-center">
+                    <button type="submit" id='subm' class="btnLogin">Edit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+
+<script>
+    
+    sds()
+
+    function sds(e) {
+        const ro = document.getElementsByClassName('ro')
+        const tr = document.getElementById('totalr')
+        
+        let sum = 0
+        for (let i =0; i< ro.length; i++) {
+            sum += parseInt(ro[i].childNodes[0].textContent)    
+        }
+
+        tr.textContent = sum
+    }
+
+    function aj(e) {
+
+        let oTable = document.getElementById('tab1');
+        let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
+        console.log(JSON.stringify(data));
+
+        fetch('/strategyRoomsSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+
+        e.preventDefault()
+
+    }
+
+</script>
+
+{% endblock %}
