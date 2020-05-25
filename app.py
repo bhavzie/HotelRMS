@@ -675,10 +675,10 @@ def adddeeloper():
 def registerdeveloper():
     if request.method == 'POST':
 
-        name = request.form['name']
+        fullName = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        firstName = name.split(' ')[0]
+        firstName = fullName.split(' ')[0]
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -695,8 +695,8 @@ def registerdeveloper():
                 senderv='koolbhavya.epic@gmail.com'
             )
 
-            cursor.execute('INSERT INTO developers(name, email, password) values(%s, %s, %s)',
-            (name, email, password))
+            cursor.execute('INSERT INTO developers(fullName, email, password) values(%s, %s, %s)',
+            (fullName, email, password))
             cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
                            (firstName, email, password, 'developer'))
         
@@ -829,7 +829,7 @@ def editUser(email):
 
     if 'revenue' not in subtypes:
         subtypes.append('revenue')
-    if 'reservations' not in subtypes:
+    if 'reservation' not in subtypes:
         subtypes.append('reservation')
     if 'hotelAdmin' not in subtypes:
         subtypes.append('hotelAdmin')

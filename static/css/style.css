@@ -33,14 +33,14 @@ html {
 }
 
 footer {
-  height: 80px;
+  height: 60px;
   background-color: #343a40 !important;
   text-align: center;
 }
 
 footer img {
-  height: 80px;
-  width: 200px;
+  height: 60px;
+  width: 100px;
 }
 
 

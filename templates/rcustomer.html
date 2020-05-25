@@ -29,6 +29,16 @@
                 </small>
             </div>
             <div class="formhelp mb-5">
+                <i class="fas fa-mobile fa-lg"></i>
+                <input type="text" name="phone" class="form-control text-center" placeholder="Enter Phone Number"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Phone Number'">
+            </div>
+            <div class="formhelp mb-5">
+                <i class="far fa-flag"></i>
+                <input type="text" name="country" required class="form-control text-center" placeholder="Country&#42;"
+                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'" minlength="4" maxlength="25">
+            </div>
+            <div class="formhelp mb-5">
                 <i class="fas fa-key fa-lg"></i>
                 <input type="password" name="password" class="form-control text-center" required
                     id = 'password'
@@ -49,18 +59,6 @@
                     onkeyup= 'checkp();'
                     maxlength="25">
                     <span id='msg' class='form-text text-muted'>
-            </div>
-            <div class="formhelp mb-5">
-                <i class="fas fa-mobile fa-lg"></i>
-                <input type="text" name="phone" class="form-control text-center" placeholder="Enter Phone Number"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Enter Phone Number'">
-            </div>
-            <div class="formhelp mb-5">
-                <i class="far fa-flag"></i>
-                <input type="text" name="country" required class="form-control text-center" placeholder="Country&#42;"
-                    onfocus="this.placeholder = ''" onfocusout="this.placeholder = 'Country&#42;'"
-                    minlength="4"
-                    maxlength="25">
             </div>
             <div class="row">
                 <div class="col-sm-12 mt-3">
