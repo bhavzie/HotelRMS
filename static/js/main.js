@@ -27,6 +27,7 @@ $(document).ready(function () {
 
     $('#tableusers').DataTable();
 
+    $('#tab1').DataTable();
 
 
     

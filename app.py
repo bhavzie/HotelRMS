@@ -1088,14 +1088,60 @@ def submiteditusertype():
 
 @app.route('/strategyRooms', methods = ['GET', 'POST'])
 def strategyRooms():
-    return render_template('strategyRooms.html')
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From room')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        return render_template('strategyRooms.html')
+    else:
+        totalRooms = 0
+        for d in data:
+            totalRooms += int(d['count'])
+
+        return render_template('editstrategyRooms.html', data = data, totalRooms = totalRooms)
 
 @app.route('/strategyRoomsSubmit', methods = ['GET', 'POST'])
 def strategyRoomsSubmit():
     inp = request.json
-    print(inp)
+    inp.remove(inp[0])
+    for i in inp:
+        i.pop()
+
+    cursor = mysql.connection.cursor()
+    
+    for i in inp:
+        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad) VALUES(%s, %s, %s, %s, %s, %s)" , [i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5])])
+    
+    mysql.connection.commit()
+    cursor.close()
+
     flash('Your Room data has been entered', 'success')
     return ('', 204)
+
+
+@app.route('/editstrategyRoomsSubmit', methods = ['GET', 'POST'])
+def editstrategyRoomsSubmit():
+    inp = request.json
+    if len(inp) == 0:
+        return render_template('index.html')
+    inp.remove(inp[0])
+    for i in inp:
+        i.pop()
+        cursor = mysql.connection.cursor()
+        cursor.execute('DELETE FROM room')
+        mysql.connection.commit()
+
+    for i in inp:
+        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad) VALUES(%s, %s, %s, %s, %s, %s)", [
+                       i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5])])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Room data has been updated', 'success')
+    return ('', 204)
+
+
 
 if __name__ == "__main__":
     app.run(debug = True)

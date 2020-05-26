@@ -2,51 +2,86 @@
 {% block content %}
 
 <div class="container-login">
-    <div class="wrap-login  ">
+    <div class="wrap-login  spread2">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Rooms</p>
             </div>
         </div>
+    <!-- <div class="d-flex mb-4">
+        <div>
+            <button type = 'button' class="btn btn-info" onclick="addRow()">Add Row</button>
+        </div>
+    </div> -->
     <form action="{{ url_for('strategyRoomsSubmit') }}" method="POST" onsubmit="aj(event)">
-        <table class="table table-striped table-bordered" id = 'tab1'>
-            <thead>
+        <div class="formhelp mb-5">
+            <i class="fas fa-asterisk fa-lg"></i>
+            <input type="number" name="totalRooms" class="form-control text-center" placeholder="Total Rooms&#42"
+                onfocus="this.placeholder = ''" required onfocusout="this.placeholder = 'Total Rooms&#42'" min = '1'
+                id = 'tot' onchange="upd()"
+                >
+            <div id='msg2'></div>
+        </div>
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover" id = 'tab1'>
+            <caption>Room Matrix</caption>
+            <thead class="thead-dark">
                 <tr>
                     <th>Room Type</th>
                     <th>Room Count</th>
                     <th>Single</th>
                     <th>Double</th>
                     <th>Triple</th>
-                    <th>Quadruple</th>
+                    <th>Quad</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td contenteditable>1 Bed</td>
-                    <td onkeyup = "sds(event)" contenteditable class = 'ro'>50</td>
-                    <td contenteditable>YES</td>
-                    <td contenteditable>YES</td>
-                    <td contenteditable>NO</td>
-                    <td contenteditable>NO</td>
+                    <td>1 Bed</td>
+                    <td><input type = 'number' min = '1' class = 'ro'></td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'single' checked>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'double' checked>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'triple'>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'quad'>
+                    </td>
+                    <td>
+                        <button type = 'button' class='btn btn-danger del'>Delete</button>
+                    </td>
                 </tr>
                 <tr>
-                    <td contenteditable>2 Bed</td>
-                    <td onkeyup = "sds(event)" contenteditable class = 'ro'>50</td>
-                    <td contenteditable>YES</td>
-                    <td contenteditable>YES</td>
-                    <td contenteditable>YES</td>
-                    <td contenteditable>YES</td>
-                </tr>
-                <tr>
-                    <td>Total Rooms</td>
-                    <td id = 'totalr'></td>
+                    <td>2 Bed</td>
+                    <td><input type='number' min='1' class='ro'></td>
+                    <td>
+                        <input type="checkbox" value='' class='single'>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'double' checked>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'triple'>
+                    </td>
+                    <td>
+                        <input type="checkbox" value = '' class = 'quad'>
+                    </td>
+                    <td>
+                        <button type = 'button' class='btn btn-danger del'>Delete</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
+        </div>
         <div class="row">
             <div class="col-sm-12 mt-3">
                 <div class="text-center">
-                    <button type="submit" id='subm' class="btnLogin">Edit</button>
+                    <button type="submit" id='subm' class="btnLogin">Add</button>
                 </div>
             </div>
         </div>
@@ -55,28 +90,115 @@
 </div>
 
 <script>
-    
-    sds()
+    bindButtons()
+
+    function bindButtons() {
+        const table1 = document.getElementById('tab1')
+        const buttons = document.querySelectorAll('.del')
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.parentElement.remove();
+            })
+        })
+    }
+
+    function upd() {
+        const ro = document.getElementsByClassName('ro')
+        const tot = document.getElementById('tot').value
+        if (tot % 2 == 0) {
+            for (let i = 0; i < ro.length; i++) {
+                ro[i].value = tot/2
+            }
+        } else {
+            ro[0].value = Math.floor(tot/2)
+            ro[1].value = parseInt(ro[0].value) + 1
+        }
+    }
+
+
+   /*  function addRow() {
+        const table1 = document.getElementById('tab1')
+        const rowCount = table1.rows.length
+        const x = table1.rows[rowCount - 1]
+        const clone = x.cloneNode(true)
+        table1.appendChild(clone)
+        bindButtons()
+    } */
+
 
     function sds(e) {
         const ro = document.getElementsByClassName('ro')
-        const tr = document.getElementById('totalr')
-        
+        const tot = document.getElementById('tot')
+
         let sum = 0
         for (let i =0; i< ro.length; i++) {
-            sum += parseInt(ro[i].childNodes[0].textContent)    
+            sum += parseInt(ro[i].value)    
         }
-
-        tr.textContent = sum
+        if (sum > tot.value) {
+            document.getElementById('subm').disable
+            let msg2 = document.getElementById('msg2')
+            msg2.style.display = 'block';
+            msg2.innerHTML = 'The Total Rooms entered is lesser than the sum of the rooms below!'
+            msg2.style.setProperty('color', 'red', 'important');
+            return false
+        } else {
+             document.getElementById('subm').disable = false
+             let msg2 = document.getElementById('msg2')
+             msg2.style.display = 'none';
+             return true
+        }
     }
 
     function aj(e) {
+        if (!sds()) return ''
 
         let oTable = document.getElementById('tab1');
         let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
+        const ro = document.getElementsByClassName('ro')
+        for (let i=0; i < ro.length; i++) {
+            data[i+1][1] = ro[i].value
+        }
+        
+
+         const single = document.getElementsByClassName('single')
+         for (let i=0; i < single.length; i++) {
+             if (single[i].checked) {
+                data[i+1][2] = "1"
+             } else {
+                 data[i+1][2] = "0"
+             }
+         }
+
+        const double = document.getElementsByClassName('double')
+        for (let i = 0; i < double.length; i++) {
+            if (double[i].checked) {
+                data[i + 1][3] = "1"
+            } else {
+                data[i + 1][3] = "0"
+            }
+        }
+
+        const triple = document.getElementsByClassName('triple')
+        for (let i = 0; i < triple.length; i++) {
+            if (triple[i].checked) {
+                data[i + 1][4] = "1"
+            } else {
+                data[i + 1][4] = "0"
+            }
+        }
+
+        const quad = document.getElementsByClassName('quad')
+        for (let i = 0; i < quad.length; i++) {
+            if (quad[i].checked) {
+                data[i + 1][5] = "1"
+            } else {
+                data[i + 1][5] = "0"
+            }
+        }
+        
         console.log(JSON.stringify(data));
 
-        fetch('/strategyRoomsSubmit', {
+         fetch('/strategyRoomsSubmit', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

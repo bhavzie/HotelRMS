@@ -43,6 +43,10 @@ footer img {
   width: 100px;
 }
 
+td {
+  text-align: center; /* center checkbox horizontally */
+  vertical-align: middle; /* center checkbox vertically */
+}
 
 .menu {
     display: block;

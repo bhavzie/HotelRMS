@@ -1,0 +1,240 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login  spread2">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Rooms</p>
+            </div>
+        </div>
+        <div class="d-flex mb-4">
+        <div>
+            <button type = 'button' class="btn btn-info" onclick="edit()">Edit</button>
+        </div>
+    </div>
+        <form action="{{ url_for('strategyRoomsSubmit') }}" method="POST" onsubmit="aj(event)" id = 'formE'>
+            <div class="formhelp mb-5">
+                <i class="fas fa-asterisk fa-lg"></i>
+                <input type="number" name="totalRooms" class="form-control text-center" placeholder="Total Rooms&#42"
+                    onfocus="this.placeholder = ''" required onfocusout="this.placeholder = 'Total Rooms&#42'" min='1'
+                    id='tot' disabled onchange="upd()" value = "{{ totalRooms }}">
+                <div id='msg2'></div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id='tab1'>
+                    <caption>Room Matrix</caption>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Room Type</th>
+                            <th>Room Count</th>
+                            <th>Single</th>
+                            <th>Double</th>
+                            <th>Triple</th>
+                            <th>Quad</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if data[0] %}
+                        <tr>
+                            <td>1 Bed</td>
+                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[0]['count'] }}"></td>
+                            <td>
+                                <input type="checkbox" class='single' disabled value = "{{ data[0]['single'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='double' disabled value = "{{ data[0]['doublev'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='triple' disabled value = "{{ data[0]['triple'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='quad' disabled value = "{{ data[0]['quad'] }}">
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-danger del' disabled>Delete</button>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if data[1] %}
+                        <tr>
+                            <td>2 Bed</td>
+                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[1]['count'] }}"></td>
+                            <td>
+                                <input type="checkbox" class='single' disabled value = "{{ data[1]['single'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='double' disabled value = "{{ data[1]['doublev'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='triple' disabled value = "{{ data[1]['triple'] }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" class='quad' disabled value = "{{ data[1]['quad'] }}">
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-danger del' disabled>Delete</button>
+                            </td>   
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Submit Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    bindButtons()
+
+        const forme = document.getElementById('formE')
+        const checkboxes = [...forme.getElementsByTagName('input')]
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.type == 'checkbox' && checkbox.value == 1) {
+                checkbox.checked = true
+            }
+        })
+
+    function bindButtons() {
+        const table1 = document.getElementById('tab1')
+        const buttons = document.querySelectorAll('.del')
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.parentElement.remove();
+            })
+        })
+    }
+
+    function upd() {
+        const ro = document.getElementsByClassName('ro')
+        const tot = document.getElementById('tot').value
+        if (tot % 2 == 0) {
+            for (let i = 0; i < ro.length; i++) {
+                ro[i].value = tot / 2
+            }
+        } else {
+            ro[0].value = Math.floor(tot / 2)
+            ro[1].value = parseInt(ro[0].value) + 1
+        }
+    }
+
+
+    function edit() {
+        const forme = document.getElementById('formE')
+        const checkboxes = [...forme.getElementsByTagName('input')]
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.disabled) {
+                checkbox.disabled = false
+            }
+        })
+
+        const buttons = document.querySelectorAll('.del')
+        buttons.forEach(button => {
+            button.disabled = false
+        })
+    }
+
+    function sds(e) {
+        const ro = document.getElementsByClassName('ro')
+        const tot = document.getElementById('tot')
+
+        let sum = 0
+        for (let i = 0; i < ro.length; i++) {
+            sum += parseInt(ro[i].value)
+        }
+        if (sum > tot.value) {
+            document.getElementById('subm').disable
+            let msg2 = document.getElementById('msg2')
+            msg2.style.display = 'block';
+            msg2.innerHTML = 'The Total Rooms entered is lesser than the sum of the rooms below!'
+            msg2.style.setProperty('color', 'red', 'important');
+            return false
+        } else {
+            document.getElementById('subm').disable = false
+            let msg2 = document.getElementById('msg2')
+            msg2.style.display = 'none';
+            return true
+        }
+    }
+
+    function aj(e) {
+        if (!sds()) return ''
+
+        let oTable = document.getElementById('tab1');
+        let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
+        const ro = document.getElementsByClassName('ro')
+        for (let i = 0; i < ro.length; i++) {
+            data[i + 1][1] = ro[i].value
+        }
+
+
+        const single = document.getElementsByClassName('single')
+        for (let i = 0; i < single.length; i++) {
+            if (single[i].checked) {
+                data[i + 1][2] = "1"
+            } else {
+                data[i + 1][2] = "0"
+            }
+        }
+
+        const double = document.getElementsByClassName('double')
+        for (let i = 0; i < double.length; i++) {
+            if (double[i].checked) {
+                data[i + 1][3] = "1"
+            } else {
+                data[i + 1][3] = "0"
+            }
+        }
+
+        const triple = document.getElementsByClassName('triple')
+        for (let i = 0; i < triple.length; i++) {
+            if (triple[i].checked) {
+                data[i + 1][4] = "1"
+            } else {
+                data[i + 1][4] = "0"
+            }
+        }
+
+        const quad = document.getElementsByClassName('quad')
+        for (let i = 0; i < quad.length; i++) {
+            if (quad[i].checked) {
+                data[i + 1][5] = "1"
+            } else {
+                data[i + 1][5] = "0"
+            }
+        }
+
+        console.log(JSON.stringify(data));
+
+        fetch('/editstrategyRoomsSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+
+        e.preventDefault()
+
+    }
+
+</script>
+
+{% endblock %}
