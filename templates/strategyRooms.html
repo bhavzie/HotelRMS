@@ -39,7 +39,7 @@
             <tbody>
                 <tr>
                     <td>1 Bed</td>
-                    <td><input type = 'number' min = '1' class = 'ro'></td>
+                    <td><input type = 'number' min = '1' class = 'ro' onchange="upd2()"></td>
                     <td>
                         <input type="checkbox" value = '' class = 'single' checked>
                     </td>
@@ -58,7 +58,7 @@
                 </tr>
                 <tr>
                     <td>2 Bed</td>
-                    <td><input type='number' min='1' class='ro'></td>
+                    <td><input type='number' min='1' class='ro' onchange="upd2()"></td>
                     <td>
                         <input type="checkbox" value='' class='single'>
                     </td>
@@ -101,6 +101,18 @@
             })
         })
     }
+
+    function upd2(e) {
+            const ro = document.getElementsByClassName('ro')
+            const tot = document.getElementById('tot').value
+
+            if (ro[0] == e.target) {
+                ro[1].value = tot - ro[0].value
+            } else {
+                ro[0].value = tot - ro[0].value
+            }
+
+        }
 
     function upd() {
         const ro = document.getElementsByClassName('ro')

@@ -37,7 +37,7 @@
                                 <a class = 'btn btn-danger' href = "{{ url_for('deactivateUser', email = d['email'] ) }}"
                                 >Deactivate<i class="fas fa-user-slash"></i></a>
                                 {% else %}
-                                <a class='btn btn-danger' href="{{ url_for('activateUser', email = d['email'] ) }}">Activate<i
+                                <a class='btn btn-success' href="{{ url_for('activateUser', email = d['email'] ) }}">Activate<i
                                         class="fas fa-user-slash"></i></a>
                                 {% endif %}
                             </td>

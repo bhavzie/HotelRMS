@@ -39,7 +39,7 @@
                         {% if data[0] %}
                         <tr>
                             <td>1 Bed</td>
-                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[0]['count'] }}"></td>
+                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[0]['count'] }}" onchange="upd2(event)"></td>
                             <td>
                                 <input type="checkbox" class='single' disabled value = "{{ data[0]['single'] }}">
                             </td>
@@ -60,7 +60,7 @@
                         {% if data[1] %}
                         <tr>
                             <td>2 Bed</td>
-                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[1]['count'] }}"></td>
+                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[1]['count'] }}" onchange="upd2(event)"></td>
                             <td>
                                 <input type="checkbox" class='single' disabled value = "{{ data[1]['single'] }}">
                             </td>
@@ -112,6 +112,18 @@
                 button.parentElement.parentElement.remove();
             })
         })
+    }
+
+    function upd2(e) {
+        const ro = document.getElementsByClassName('ro')
+        const tot = document.getElementById('tot').value
+
+        if (ro[0] == e.target) {
+            ro[1].value = tot - ro[0].value
+        } else {
+            ro[0].value = tot - ro[0].value
+        }
+
     }
 
     function upd() {
