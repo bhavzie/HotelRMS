@@ -432,3 +432,20 @@ input[disabled] {
   color: #000000;
   border-color: #000;
 }
+
+
+button.multiselect {
+  border: 1px solid #ced4da;
+}
+
+td {
+  white-space: normal !important; 
+  word-wrap: break-word;  
+}
+table {
+  table-layout: fixed;
+}
+
+input[type=number]{
+    width: 80px;
+} 
