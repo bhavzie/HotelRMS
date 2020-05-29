@@ -1,0 +1,396 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Rate Grid</p>
+            </div>
+        </div>
+        <div class="d-flex mb-4">
+            <div>
+                <button type = 'button' class="btn btn-info" onclick="addRow()">Add Row</button>
+            </div>
+        </div>
+        <form action="" method="POST" onsubmit="aj(event)" id = 'formE'>
+            <div id='msg2'></div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id='tab2'>
+                    <caption>Rate Grid</caption>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>DOW</th>
+                            <th>Room Type</th>
+                            <th>Single Occupancy Rate</th>
+                            <th>Double Occupancy Rate</th>
+                            <th>Triple Occupancy Rate</th>
+                            <th>Quad Occupancy Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" style="vertical-align : middle;text-align:center;">
+                                <div class="input-group date datepicker-group startD" data-provide="datepicker" style = 'position: relative;'>
+                                    <input type="text" class="form-control startDate" onchange="hd(event)" required>
+                                    <div class="input-group-addon" style = 'position: absolute; right: 0; margin-top:4px;'>
+                                     <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </td>
+                            <td rowspan="2" style="vertical-align : middle;text-align:center;">
+                                <div class="input-group date datepicker-group endD" data-provide="datepicker" style = 'position: relative;'>
+                                    <input type="text" class="form-control endDate" required>
+                                    <div class="input-group-addon" style = 'position: absolute; right: 0; margin-top:4px;'>
+                                       <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                </div>
+                            </td>
+                            <td rowspan = '2' style="vertical-align : middle;text-align:center;">
+                                    <select class = 'weekselect' multiple="multiple" required>
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+                                        <option value="Sunday">Sunday</option>
+                                    </select>
+                                    <button type = 'button' class = 'btn btn-info mt-3' onclick="rep(event)">Group Together</button>
+                            </td>
+                            <td>
+                                1 Bed
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[0]['single'] }}" class='single'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[0]['doublev'] }}" class='double'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[0]['triple'] }}" class='triple'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[0]['quad'] }}" class='quad'>
+                            <td rowspan="2" style="vertical-align : middle;text-align:center;">
+                                <button type='button' class='btn btn-danger del'>Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                2 Bed
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[1]['single'] }}" class='single'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[1]['doublev'] }}" class='double'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[1]['triple'] }}" class='triple'>
+                            </td>
+                            <td>
+                                <input type="number" value = "{{ data[1]['quad'] }}" class='quad'>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Add</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    bindButtons()
+
+    const forme = document.getElementById('formE')
+    const checkboxes = [...forme.getElementsByTagName('input')]
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.type == 'number' && checkbox.value != 1) {
+            checkbox.disabled = true
+            checkbox.value = 'NA'
+        }
+    })
+
+    function bindButtons() {
+        const table1 = document.getElementById('tab2')
+        const buttons = document.querySelectorAll('.del')
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.parentElement.parentElement.nextElementSibling.remove()
+                button.parentElement.parentElement.remove();
+
+            })
+        })
+    }
+
+
+    function hd(e) {
+        const x = e.target.parentElement.parentElement.nextElementSibling
+        var y = x.getElementsByClassName('datepicker-group')[0];
+
+        const dd = e.target.value
+        var datearray1 = dd.split("/");
+        z = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+        z = new Date(z)
+
+
+        $(y).datepicker({
+            format: "dd/mm/yyyy",
+            todayHighlight: true,
+            autoclose: true,
+        })
+        $(y).datepicker(
+            'setStartDate', z);
+        $(y).datepicker('setDate', z)
+    }
+
+    function addRow() {
+         const table1 = document.getElementById('tab2')
+         const rowCount = table1.rows.length
+         const x = table1.rows[rowCount - 1]
+         const y = table1.rows[rowCount - 2]
+         const clone = x.cloneNode(true)
+         const clone2 = y.cloneNode(true)
+        
+
+        //const sel = clone2.children[2].children[0].children[0] = ''
+        clone2.children[2].innerHTML = `<select class = 'weekselect' multiple="multiple" required> 
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+                                        <option value="Sunday">Sunday</option>
+                                    </select>
+                                    <button type = 'button' class = 'btn btn-info mt-3' onclick="rep(event)">Group Together</button> </td>`
+
+        table1.appendChild(clone2)
+        table1.appendChild(clone)
+
+        bindButtons()
+        $(".datepicker-group.startD").datepicker({
+            format: "dd/mm/yyyy",
+            todayHighlight: true,
+            autoclose: true,
+            startDate: "Start Date"
+        });
+
+        $('.weekselect').multiselect({
+            buttonText: function (options, select) {
+                if (options.length == 0) {
+                    return 'Select Day of the Week';
+                }
+                else {
+                    return 'Click to get selections'
+                }
+            }
+        })
+     }
+
+     function rep(e) {
+        const table1 = document.getElementById('tab2')
+        const rowCount = table1.rows.length
+
+        const tr1 = e.target.parentElement.parentElement
+        const tr2 = tr1.nextElementSibling
+        const clone = tr1.cloneNode(true)
+        const clone2 = tr2.cloneNode(true)
+
+        var selecte = tr1.children[2].children[0].children[0]
+        var selected = $(selecte).val()
+        if (selected.length == 7) {
+            return ''
+        }
+
+        let x = [...clone.children[2].children[0].children[0]]
+
+        let y = []
+        for (let i=0; i<x.length; i++) {
+            if ($.inArray(x[i].value, selected) >= 0)
+            {
+
+            } else {
+                y.push(x[i])
+            }
+        }
+        let st = ''
+        y.forEach(z => {
+            st += z.value + ' '
+        })
+
+        clone.children[2].innerHTML = st
+
+        
+
+        const bo = tr2.parentElement
+        bo.insertBefore(clone, tr2.nextSibling)
+        bo.insertBefore(clone2, tr2.nextSibling.nextSibling)
+        
+        bindButtons()
+
+     }
+
+
+    function sds(e) {
+        const d = [...document.getElementsByClassName('startDate')]
+        const f = [...document.getElementsByClassName('endDate')]
+
+        for (let i=0; i < d.length; i++) {
+
+            let x = d[i].value
+            let y = f[i].value
+
+
+            var datearray1 = x.split("/");
+            var datearray2 = y.split("/");
+            
+            x = datearray1[1] + '/' + datearray1[0] + '/' + datearray1[2];
+            y = datearray2[1] + '/' + datearray2[0] + '/' + datearray2[2];
+
+            x = Date.parse(x).toLocaleString
+            y = Date.parse(y).toLocaleString
+
+
+
+            if (x > y) {
+                document.getElementById('subm').disable
+                let msg2 = document.getElementById('msg2')
+                msg2.style.display = 'block';
+                msg2.innerHTML = 'The End Date is lower than the Start Date!'
+                msg2.style.setProperty('color', 'red', 'important');
+                return false
+            }
+        }
+        document.getElementById('subm').disable = false
+        let msg2 = document.getElementById('msg2')
+        msg2.style.display = 'none';
+        return true
+    }
+
+    function parseDate(x) {
+        return x.split("-").reverse().join("-");
+    }
+
+    function aj(e) {
+
+        e.preventDefault();
+
+        if (!sds()) {
+            return ''
+        }
+
+        let oTable = document.getElementById('tab2');
+        let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
+        
+        result = []
+
+        const d = [...document.getElementsByClassName('startDate')]
+        const f = [...document.getElementsByClassName('endDate')]
+        const sel = document.getElementsByClassName('weekselect')
+        
+        for (let i=1; i<data.length; i++) {
+            let resArr = []
+            if (i % 2 == 0) {   
+                resArr[0] = parseDate(d[i-2].value)
+                resArr[1] = parseDate(f[i-2].value)
+                const xd = [...$(sel[i-2]).val()] 
+            } else {
+                resArr[0] = parseDate(d[i-1].value)  
+                resArr[1] = parseDate(f[i-1].value)
+                const xd = [...$(sel[i-1]).val()]
+                console.log(xd)
+                if (xd.includes("Monday")) {
+                    resArr[2] = 1
+                } else {
+                    resArr[2] = 0
+                }
+            }
+            result.push(resArr)
+        }
+        console.log(result)
+
+        return ''
+
+        // values
+    }
+/* 
+
+        let oTable = document.getElementById('tab1');
+        let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
+        const ro = document.getElementsByClassName('ro')
+        for (let i = 0; i < ro.length; i++) {
+            data[i + 1][1] = ro[i].value
+        }
+
+
+        const single = document.getElementsByClassName('single')
+        for (let i = 0; i < single.length; i++) {
+            if (single[i].checked) {
+                data[i + 1][2] = "1"
+            } else {
+                data[i + 1][2] = "0"
+            }
+        }
+
+        const double = document.getElementsByClassName('double')
+        for (let i = 0; i < double.length; i++) {
+            if (double[i].checked) {
+                data[i + 1][3] = "1"
+            } else {
+                data[i + 1][3] = "0"
+            }
+        }
+
+        const triple = document.getElementsByClassName('triple')
+        for (let i = 0; i < triple.length; i++) {
+            if (triple[i].checked) {
+                data[i + 1][4] = "1"
+            } else {
+                data[i + 1][4] = "0"
+            }
+        }
+
+        const quad = document.getElementsByClassName('quad')
+        for (let i = 0; i < quad.length; i++) {
+            if (quad[i].checked) {
+                data[i + 1][5] = "1"
+            } else {
+                data[i + 1][5] = "0"
+            }
+        }
+
+        console.log(JSON.stringify(data));
+
+        fetch('/strategyRoomsSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+
+        e.preventDefault()
+ */
+
+</script>
+
+{% endblock %}

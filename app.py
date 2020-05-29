@@ -1143,5 +1143,23 @@ def editstrategyRoomsSubmit():
 
 
 
+@app.route('/strategyRate', methods = ['GET', 'POST'])
+def strategyRate():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From room')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        flash('Kindly fill types of Rooms first', 'danger')
+        return render_template('strategyRooms.html')
+    else:
+        return render_template('strategyRate.html', data = data)
+
+
+@app.route('/strategyRateSubmit', methods = ['GET', 'POST'])
+def strategyRateSubmit():
+    return 'hi'
+
+
+
 if __name__ == "__main__":
     app.run(debug = True)

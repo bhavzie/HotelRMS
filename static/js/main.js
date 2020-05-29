@@ -29,11 +29,8 @@ $(document).ready(function () {
 
     $('#tab1').DataTable();
 
-
-    
-
+    $('#example-getting-started').multiselect();
 });
-
 
 function handleChange(checkbox) {
     
@@ -89,6 +86,31 @@ $(document).ready(function () {
     $('.dropdown-menu li').on('click', function () {
         var getValue = $(this).text();
         $('.dropdown-select').text(getValue);
+    });
+
+
+
+    $(".datepicker-group.startD").datepicker({
+        format: "dd/mm/yyyy",
+        todayHighlight: true,
+        autoclose: true,
+        startDate: "Start Date",
+    });
+    $(".datepicker-group.endD").datepicker({
+        format: "dd/mm/yyyy",
+        todayHighlight: true,
+        autoclose: true,
+    });
+
+    $('.weekselect').multiselect({
+        buttonText: function (options, select) {
+            if (options.length == 0) {
+                return 'Select Day of the Week';
+            }
+            else {
+                return 'Click to get selections'
+            }
+        }
     });
 }); 
 

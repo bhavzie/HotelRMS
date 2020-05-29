@@ -239,6 +239,9 @@ td {
   width: 1200px;
 }
 
+.spread3 {
+  width: 100vw;
+}
 
 .xwrap {
   min-height: 550px !important;
@@ -407,9 +410,7 @@ hr {
   }
 
 
-  .checkbox input{
-    float: right;
-  }
+
 
   .infog {
     position: relative;
@@ -422,9 +423,12 @@ hr {
   }
   
 
+.table-responsive {
+  overflow-y: visible !important;
+}
 
-
-  .im {
-    margin-bottom: 30px !important;
-  }
-
+input[disabled] {
+  background-color: #F2F2F2 !important;
+  color: #000000;
+  border-color: #000;
+}

@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="container-login">
+<div class="home">
     <div class="wrap-login  spread2">
         <div class='loginH'>
             <div class='text-center'>
@@ -33,7 +33,6 @@
                     <th>Double</th>
                     <th>Triple</th>
                     <th>Quad</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,15 +51,12 @@
                     <td>
                         <input type="checkbox" value = '' class = 'quad'>
                     </td>
-                    <td>
-                        <button type = 'button' class='btn btn-danger del'>Delete</button>
-                    </td>
                 </tr>
                 <tr>
                     <td>2 Bed</td>
                     <td><input type='number' min='1' class='ro' onchange="upd2()"></td>
                     <td>
-                        <input type="checkbox" value='' class='single'>
+                        <input type="checkbox" value='' class='single' checked>
                     </td>
                     <td>
                         <input type="checkbox" value = '' class = 'double' checked>
@@ -70,9 +66,6 @@
                     </td>
                     <td>
                         <input type="checkbox" value = '' class = 'quad'>
-                    </td>
-                    <td>
-                        <button type = 'button' class='btn btn-danger del'>Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -219,7 +212,7 @@
             body: JSON.stringify(data)
         })
             .then(res => {
-                window.location.href = '/'
+                window.location.href = '/strategyRooms'
             })
             .catch((err) => {
                 console.log(err);
