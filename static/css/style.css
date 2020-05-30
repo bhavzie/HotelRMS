@@ -446,6 +446,25 @@ table {
   table-layout: fixed;
 }
 
-input[type=number]{
+.num {
     width: 80px;
-} 
+}
+
+.start-date {
+  width: 200px !important;
+}
+
+.end-date {
+  width: 200px !important;
+}
+
+.mg {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+button.multiselect {
+  height: 40px !important;
+}

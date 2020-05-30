@@ -3,6 +3,7 @@ from config import Config
 from functools import wraps
 from flask_mysqldb import MySQL
 from functions import *
+import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -1152,12 +1153,62 @@ def strategyRate():
         flash('Kindly fill types of Rooms first', 'danger')
         return render_template('strategyRooms.html')
     else:
-        return render_template('strategyRate.html', data = data)
+            cursor = mysql.connection.cursor()
+            cursor.execute('SELECT * From rate')
+            data1 = cursor.fetchall()
+            if len(data1) == 0:
+                return render_template('strategyRate.html')
+            else:
+                    for d in data1:
+                        dow = ""
+                        if (d['monday'] == '1'):
+                            dow += " Monday, "    
+                        if (d['tuesday'] == '1'):
+                            dow += " Tuesday, "
+                        if (d['wednesday'] == '1'):
+                            dow += "Wednesday, "
+                        if (d['thursday'] == '1'):
+                            dow += "Thursday, "
+                        if (d['friday'] == '1'):
+                            dow += "Friday, "
+                        if (d['saturday'] == '1'):
+                            dow += "Saturday, "
+                        if (d['sunday'] == '1'):
+                            dow += "Sunday"
 
+                        d['dow'] = dow
+
+                        d['startDate'] = d['startDate'].strftime('%Y-%m-%d')
+                        x = d['startDate'].split('-')
+                        strd = x[2] + "/" + x[1] + "/" + x[0]
+                        d['startDate'] = strd
+
+                        d['endDate'] = d['endDate'].strftime('%Y-%m-%d')
+                        x = d['endDate'].split('-')
+                        strd = x[2] + "/" + x[1] + "/" + x[0]
+                        d['endDate'] = strd
+                    return render_template('editstrategyRate.html', data = data1, data1 = data)
+
+        
 
 @app.route('/strategyRateSubmit', methods = ['GET', 'POST'])
 def strategyRateSubmit():
-    return 'hi'
+    inp = request.json
+    if len(inp) == 0:
+        return render_template('index.html')
+    
+    for i in inp:
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO rate(startDate, endDate, monday, tuesday, wednesday, thursday, friday, saturday, sunday, type, sor, dor, tor, qor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9][0], i[10], i[11], i[12], i[13]])
+
+        mysql.connection.commit()
+        cursor.close()
+
+    flash('Your Rate data has been updated', 'success')
+    return ('', 204)
+
+
+
 
 
 

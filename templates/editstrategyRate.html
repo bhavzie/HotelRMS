@@ -2,39 +2,39 @@
 {% block content %}
 
 <div class="home">
-    <div class="wrap-login spread3">
+    <div class="wrap-login  spread3">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Rate Grid</p>
             </div>
         </div>
-        <form id = 'formadd' class = 'inline mb-5' onsubmit="addRowSubmit(event)">
-                <div class = 'mg'>
-                    <div class="input-group-prepend col-sm">
-                        <span class="input-group-text  mb-2">Date range</span>
-                        <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 " id='startDateG'
-                            required>
-                        <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
-                    </div>
-                    <div class = 'col-sm mb-2'>
-                        <select class='weekselect' multiple="multiple" id = 'dowG' required>
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                        </select>
-                    </div>
-                    <div class="col-sm">
-                        <button type="submit" id='subm1' class="btn btn-info mb-2"
-                        >Add Row</button>
-                    </div>
+        <form id='formadd' class='inline mb-5' onsubmit="addRowSubmit(event)">
+            <div class='mg'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                        id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                        id='endDateG' required>
                 </div>
+                <div class='col-sm mb-2'>
+                    <select class='weekselect' multiple="multiple" id='dowG' required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <button type="submit" id='subm1' class="btn btn-info mb-2">Add Row</button>
+                </div>
+            </div>
         </form>
         <hr>
-        <form action="" method="POST" onsubmit="aj(event)" id = 'formE'>
+        <form action="{{ url_for('strategyRoomsSubmit') }}" method="POST" onsubmit="aj(event)" id='formE'>
             <div id='msg2'></div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id='tab2'>
@@ -53,7 +53,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
+                        {% if data %}
+                        {% for d in data %}
+                            <tr>
+                                <td>
+                                    {{ d['startDate'] }}
+                                </td>
+                                <td>
+                                    {{ d['endDate']}}
+                                </td>
+                                <td>
+                                   {{ d['dow'] }}                             
+                                </td>
+                                <td>
+                                    
+                                    {{ d['type'] }}  Bed
+                                </td>
+                                <td>
+                                    <input type="number" class='num 1' value = "{{ d['sor'] }}">
+                                </td>
+                                <td>
+                                    <input type="number" class='num 1' value="{{ d['dor'] }}">
+                                </td>
+                                <td>
+                                    <input type="number" class='num 1' value="{{ d['tor'] }}">
+                                </td>
+                                <td>
+                                    <input type="number" class='num 1' value="{{ d['qor'] }}">
+                                </td>
+                                <td>
+                                    <button type='button' class='btn btn-warning res'>Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -67,37 +100,38 @@
         </form>
     </div>
 </div>
+
 <script src="/static/js/jquery.js"></script>
 <script>
-    
 
-     $(document).ready(function () {
-            var $startDate = $('.start-date');
-            var $endDate = $('.end-date');
 
-            var d = new Date();
-            var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+    $(document).ready(function () {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
 
-            $startDate.datepicker({
-                autoHide: true,
-                format: "dd/mm/yyyy",
-                startDate: strDate,
-            });
-            $endDate.datepicker({
-                autoHide: true,
-                startDate: $startDate.datepicker('getDate'),
-                format: "dd/mm/yyyy",
-            });
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
 
-            $startDate.on('change', function () {
-                $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
-            });
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: strDate,
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            startDate: $startDate.datepicker('getDate'),
+            format: "dd/mm/yyyy",
+        });
 
-              $('.weekselect').multiselect({
-                  nonSelectedText: 'Select Day of the week',
-                  buttonWidth: '700px',
-                   numberDisplayed: 0,
-              })
+        $startDate.on('change', function () {
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+        });
+
+        $('.weekselect').multiselect({
+            nonSelectedText: 'Select Day of the week',
+            buttonWidth: '700px',
+            numberDisplayed: 0,
+        })
     });
 
     function bindButtons() {
@@ -125,7 +159,7 @@
         const sdg = document.getElementById('startDateG')
         const edg = document.getElementById('endDateG')
         const dowG = document.getElementById('dowG')
-        
+
         const tr1 = document.createElement('tr')
         tr1.innerHTML = `
                         <td rowspan = '2' style = 'vertical-align: middle; text-align:center'>
@@ -156,9 +190,9 @@
                             <button type='button' class='btn btn-warning res'>Delete</button>
                         </td>
                     `
-            
-            const tr2 = document.createElement('tr')
-            tr2.innerHTML = `
+
+        const tr2 = document.createElement('tr')
+        tr2.innerHTML = `
                     <tr>
                         <td>
                             2 Bed
@@ -178,15 +212,15 @@
                     </tr>
                     `
 
-                
-            const tab = document.getElementById('tab2')
-            const tbody = document.getElementById('tab2').tBodies[0]
-            tbody.appendChild(tr1)
-            tbody.appendChild(tr2)
-            bindButtons()
 
-             let msg2 = document.getElementById('msg2')
-             $(msg2).hide()
+        const tab = document.getElementById('tab2')
+        const tbody = document.getElementById('tab2').tBodies[0]
+        tbody.appendChild(tr1)
+        tbody.appendChild(tr2)
+        bindButtons()
+
+        let msg2 = document.getElementById('msg2')
+        $(msg2).hide()
 
 
         // Update form to only hold changed values
@@ -203,7 +237,7 @@
             sdg.disabled = true
             edg.disabled = true
 
-             $('#dowG option:selected').each(function (index, option) {
+            $('#dowG option:selected').each(function (index, option) {
                 $(option).remove();
             });
 
@@ -219,12 +253,12 @@
                     { label: 'Thursday', title: 'Thursday', value: 'Thursday' },
                     { label: 'Friday', title: 'Friday', value: 'Friday' },
                     { label: 'Saturday', title: 'Saturday', value: 'Saturday' },
-                    { label: 'Sunday', title: 'Sunday', value: 'Sunday'}
+                    { label: 'Sunday', title: 'Sunday', value: 'Sunday' }
                 ];
 
-                
+
                 $(dowG).multiselect('dataprovider', week)
-                
+
                 $('#dowG').val('').multiselect('rebuild')
             }
         }
@@ -259,12 +293,12 @@
             const single = document.getElementsByClassName('num')
 
             result = []
-            for (let i=1; i<data.length; i++) {
+            for (let i = 1; i < data.length; i++) {
                 const resArr = []
                 if (i % 2 == 0) {
-                    resArr[0] = parseDate(data[i-1][0])
-                    resArr[1] = parseDate(data[i-1][1])
-                    const days  = data[i-1][2]
+                    resArr[0] = parseDate(data[i - 1][0])
+                    resArr[1] = parseDate(data[i - 1][1])
+                    const days = data[i - 1][2]
                     resArr[2] = parseDay("Monday", days)
                     resArr[3] = parseDay("Tuesday", days)
                     resArr[4] = parseDay("Wednesday", days)
@@ -273,14 +307,14 @@
                     resArr[7] = parseDay("Saturday", days)
                     resArr[8] = parseDay("Sunday", days)
                     resArr[9] = data[i][0]
-                    resArr[10] = single[4*(i-1)].value
-                    resArr[11] = single[4*(i-1)+1].value
-                    resArr[12] = single[4*(i-1)+2].value
-                    resArr[13] = single[4*(i-1)+3].value
+                    resArr[10] = single[4 * (i - 1)].value
+                    resArr[11] = single[4 * (i - 1) + 1].value
+                    resArr[12] = single[4 * (i - 1) + 2].value
+                    resArr[13] = single[4 * (i - 1) + 3].value
                 } else {
                     resArr[0] = parseDate(data[i][0])
                     resArr[1] = parseDate(data[i][1])
-                    const days  = data[i][2]
+                    const days = data[i][2]
                     resArr[2] = parseDay("Monday", days)
                     resArr[3] = parseDay("Tuesday", days)
                     resArr[4] = parseDay("Wednesday", days)
@@ -289,10 +323,10 @@
                     resArr[7] = parseDay("Saturday", days)
                     resArr[8] = parseDay("Sunday", days)
                     resArr[9] = data[i][3]
-                    resArr[10] = single[4*(i-1)].value
-                    resArr[11] = single[4*(i-1) + 1].value
-                    resArr[12] = single[4*(i-1)+2].value
-                    resArr[13] = single[4*(i-1)+3].value
+                    resArr[10] = single[4 * (i - 1)].value
+                    resArr[11] = single[4 * (i - 1) + 1].value
+                    resArr[12] = single[4 * (i - 1) + 2].value
+                    resArr[13] = single[4 * (i - 1) + 3].value
                 }
 
 
@@ -304,7 +338,7 @@
             fetch('/strategyRateSubmit', {
                 method: 'POST',
                 headers: {
-                     'Accept': 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(result)
@@ -313,14 +347,14 @@
                 .then(res => {
                     window.location.href = '/'
                 })
-                .catch( err => {
+                .catch(err => {
                     console.log(err)
                 })
 
-        }   
+        }
     }
 
-   
+
 
 </script>
 

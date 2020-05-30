@@ -32,14 +32,13 @@
                             <th>Double</th>
                             <th>Triple</th>
                             <th>Quad</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% if data[0] %}
                         <tr>
                             <td>1 Bed</td>
-                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[0]['count'] }}" onchange="upd2(event)"></td>
+                            <td><input type='number' class = 'num' min='1' class='ro' disabled value = "{{ data[0]['count'] }}" onchange="upd2(event)"></td>
                             <td>
                                 <input type="checkbox" class='single' disabled value = "{{ data[0]['single'] }}">
                             </td>
@@ -52,15 +51,12 @@
                             <td>
                                 <input type="checkbox" class='quad' disabled value = "{{ data[0]['quad'] }}">
                             </td>
-                            <td>
-                                <button type='button' class='btn btn-danger del' disabled>Delete</button>
-                            </td>
                         </tr>
                         {% endif %}
                         {% if data[1] %}
                         <tr>
                             <td>2 Bed</td>
-                            <td><input type='number' min='1' class='ro' disabled value = "{{ data[1]['count'] }}" onchange="upd2(event)"></td>
+                            <td><input type='number' class = 'num' min='1' class='ro' disabled value = "{{ data[1]['count'] }}" onchange="upd2(event)"></td>
                             <td>
                                 <input type="checkbox" class='single' disabled value = "{{ data[1]['single'] }}">
                             </td>
@@ -72,9 +68,6 @@
                             </td>
                             <td>
                                 <input type="checkbox" class='quad' disabled value = "{{ data[1]['quad'] }}">
-                            </td>
-                            <td>
-                                <button type='button' class='btn btn-danger del' disabled>Delete</button>
                             </td>   
                         </tr>
                         {% endif %}
