@@ -5,7 +5,7 @@
     <div class="wrap-login  spread3">
         <div class='loginH'>
             <div class='text-center'>
-                <p>Rate Grid</p>
+                <p>Edit Rate Grid</p>
             </div>
         </div>
         <form id='formadd' class='inline mb-5' onsubmit="addRowSubmit(event)">
@@ -53,8 +53,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if data %}
-                        {% for d in data %}
+                        {% if data1 %}
+                        {% for d in data1 %}
                             <tr>
                                 <td>
                                     {{ d['startDate'] }}
@@ -66,23 +66,23 @@
                                    {{ d['dow'] }}                             
                                 </td>
                                 <td>
-                                    
                                     {{ d['type'] }}  Bed
                                 </td>
                                 <td>
-                                    <input type="number" class='num 1' value = "{{ d['sor'] }}">
+                                    <input type="number" class='num {{d["sor"]}}' value = "{{ d['sor'] }}" readonly min = '10'>
                                 </td>
                                 <td>
-                                    <input type="number" class='num 1' value="{{ d['dor'] }}">
+                                    <input type="number" class='num  {{d["dor"]}}' value="{{ d['dor'] }}" readonly min = '10'>
                                 </td>
                                 <td>
-                                    <input type="number" class='num 1' value="{{ d['tor'] }}">
+                                    <input type="number" class='num  {{d["tor"]}}' value="{{ d['tor'] }}" readonly min = '10'>
                                 </td>
                                 <td>
-                                    <input type="number" class='num 1' value="{{ d['qor'] }}">
+                                    <input type="number" class='num  {{d["qor"]}}' value="{{ d['qor'] }}" readonly min = '10'>
                                 </td>
                                 <td>
-                                    <button type='button' class='btn btn-warning res'>Delete</button>
+                                    <button type='button' class='btn btn-warning res2'>Delete</button>
+                                    <button type='button' class='btn btn-info res3'>Edit</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -108,7 +108,7 @@
     $(document).ready(function () {
         var $startDate = $('.start-date');
         var $endDate = $('.end-date');
-
+        $('#tab2').DataTable();
         var d = new Date();
         var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
 
@@ -132,7 +132,43 @@
             buttonWidth: '700px',
             numberDisplayed: 0,
         })
+
+        bindButtons()
+        bindButtons2()
     });
+
+    function bindButtons2() {
+            const buttons = [...document.getElementsByClassName('res2')];
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.parentElement.parentElement.remove()
+                })
+            })
+
+            const forme = document.getElementById('formE')
+            const checkboxes = [...forme.getElementsByTagName('input')]
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.type == 'number' && checkbox.value == '') {
+                    checkbox.disabled = true
+                    checkbox.value = ''
+                }
+            })
+
+            const buttons2 = [...document.getElementsByClassName('res3')];
+            buttons2.forEach(button => {
+                button.addEventListener('click', () => {
+                    let tr = button.parentElement.parentElement
+                    let trn = [...tr.getElementsByClassName('num')]
+                    trn.forEach(n => {
+                        if (!n.disabled) {
+                            n.removeAttribute('readonly')
+                        }
+                    })
+                })
+            })
+
+        }
 
     function bindButtons() {
         const buttons = [...document.getElementsByClassName('res')];
@@ -149,9 +185,37 @@
         checkboxes.forEach(checkbox => {
             if (checkbox.type == 'number' && checkbox.classList.contains('0')) {
                 checkbox.disabled = true
-                checkbox.value = '0'
+                checkbox.value = ''
             }
         })
+    }
+
+    function strDate(x) {
+        var dateParts = x.split("/");
+
+        var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        
+        return dateObject
+    }
+
+    function strDate2(x) {
+        var dateParts = x.split("-")
+
+        var dateObject = new Date(+dateParts[0], +dateParts[1] -1 , +dateParts[2])
+        return dateObject
+    }
+
+    function dateRangeOverlaps(a_start, a_end, b_start, b_end) {
+        if (a_start <= b_start && b_start <= a_end) return true;
+        if (a_start <= b_end && b_end <= a_end) return true;
+        if (b_start <= a_start && a_end < b_end) return true;
+        return false;
+    }
+
+    function convertDate(inputFormat) {
+        function pad(s) { return (s < 10) ? '0' + s : s; }
+        var d = new Date(inputFormat)
+        return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/')
     }
 
     function addRowSubmit(e) {
@@ -160,33 +224,74 @@
         const edg = document.getElementById('endDateG')
         const dowG = document.getElementById('dowG')
 
+        const se = strDate(sdg.value).setHours(0, 0, 0, 0)
+        const ee = strDate(edg.value).setHours(0, 0, 0, 0)
+        
+        
+        let pas = true
+        const dde = JSON.parse('{{ storedDates|tojson }}')
+        dde.forEach(date => {
+            let st = new Date(date['startDate'])
+            let en = new Date(date['endDate'])
+            st.setHours(0, 0, 0, 0)
+            en.setHours(0, 0, 0, 0)
+            
+
+            if (dateRangeOverlaps(st, en, se, ee)) {
+                let msg2 = document.getElementById('msg2')
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = `The date range entered overlaps with the already entered date range with start date :- ${st.toDateString()} and end date :- ${en.toDateString()}`
+                $(msg2).show()
+                pas = false
+                const tab2 = $('#tab2').DataTable()
+                tab2.search(convertDate(st)).draw()
+                // Where overlap show filter
+                
+            }
+        })
+
+        if (!pas)
+            return false
+        else 
+            $('#msg2').hide()
+            const tab22 = $('#tab2').DataTable()
+            tab22.search('').draw()
+
+        
+
+        
+
+
+        // convert strings to date and them compare
+        // then filter and show as error
+
         const tr1 = document.createElement('tr')
         tr1.innerHTML = `
-                        <td rowspan = '2' style = 'vertical-align: middle; text-align:center'>
+                        <td  style = 'vertical-align: middle; text-align:center'>
                             ${sdg.value}
                         </td>
-                        <td rowspan = '2' style = 'vertical-align: middle; text-align:center'>
+                        <td  style = 'vertical-align: middle; text-align:center'>
                             ${edg.value}
                         </td>
-                        <td rowspan = '2' style = 'vertical-align: middle; text-align:center'>
+                        <td  style = 'vertical-align: middle; text-align:center'>
                             ${$(dowG).val()}
                         </td>
                         <td>
                             1 Bed
                         </td>
                         <td>
-                            <input type="number" class = 'num {{ data[0]['single'] }}' required>
+                            <input type="number" class = 'num {{ data[0]['single'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['doublev'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['doublev'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['triple'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['triple'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['quad'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['quad'] }}' required min = '10'>
                             </td>
-                        <td rowspan="2" style="vertical-align : middle;text-align:center;">
+                        <td  style="vertical-align : middle;text-align:center;">
                             <button type='button' class='btn btn-warning res'>Delete</button>
                         </td>
                     `
@@ -194,29 +299,39 @@
         const tr2 = document.createElement('tr')
         tr2.innerHTML = `
                     <tr>
+                        <td  style = 'vertical-align: middle; text-align:center'>
+                            ${sdg.value}
+                        </td>
+                        <td  style = 'vertical-align: middle; text-align:center'>
+                            ${edg.value}
+                        </td>
+                        <td  style = 'vertical-align: middle; text-align:center'>
+                            ${$(dowG).val()}
+                        </td>
                         <td>
                             2 Bed
                         </td>
                         <td>
-                            <input type="number" class = 'num {{ data[1]['single'] }}' required>
+                            <input type="number" class = 'num {{ data[1]['single'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['doublev'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['doublev'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['triple'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['triple'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['quad'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['quad'] }}' required min = '10'>
                             </td>
+                        <td  style="vertical-align : middle;text-align:center;">
+                            <button type='button' class='btn btn-warning res'>Delete</button>
+                        </td>
                     </tr>
                     `
-
-
-        const tab = document.getElementById('tab2')
-        const tbody = document.getElementById('tab2').tBodies[0]
-        tbody.appendChild(tr1)
-        tbody.appendChild(tr2)
+        
+        const tab = $('#tab2').DataTable()
+        tab.row.add(tr1).draw()
+        tab.row.add(tr2).draw()
         bindButtons()
 
         let msg2 = document.getElementById('msg2')
@@ -246,6 +361,8 @@
             if ($(dowG).has('option').length == 0) {
                 sdg.disabled = false
                 edg.disabled = false
+                let msg2 = document.getElementById('msg2')
+                $(msg2).hide()
                 var week = [
                     { label: 'Monday', title: 'Monday', value: 'Monday' },
                     { label: 'Tuesday', title: 'Tuesday', value: 'Tuesday' },
@@ -279,11 +396,19 @@
     function aj(e) {
         e.preventDefault()
         const len = $('#tab2 tbody tr').length;
+        const dowG = document.getElementById('dowG')
+        const dl = $('#dowG option').length
 
         if (len == 0) {
             let msg2 = document.getElementById('msg2')
             msg2.style.setProperty('color', 'red', 'important');
             msg2.innerHTML = 'Kindly add atleast one row'
+            $(msg2).show()
+            return false
+        } else if (dl != 7 && dl != 0) {
+            let msg2 = document.getElementById('msg2')
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = 'Kindly add rate for all the days'
             $(msg2).show()
             return false
         } else {
@@ -306,7 +431,7 @@
                     resArr[6] = parseDay("Friday", days)
                     resArr[7] = parseDay("Saturday", days)
                     resArr[8] = parseDay("Sunday", days)
-                    resArr[9] = data[i][0]
+                    resArr[9] = data[i][3]
                     resArr[10] = single[4 * (i - 1)].value
                     resArr[11] = single[4 * (i - 1) + 1].value
                     resArr[12] = single[4 * (i - 1) + 2].value
@@ -345,7 +470,7 @@
 
             })
                 .then(res => {
-                    window.location.href = '/'
+                    window.location.href = '/strategyRate'
                 })
                 .catch(err => {
                     console.log(err)

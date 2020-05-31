@@ -468,3 +468,37 @@ table {
 button.multiselect {
   height: 40px !important;
 }
+
+.sect {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#tab4 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 50%;
+}
+
+#tab5 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 70%;
+}
+
+.tab7 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 70%;
+}
+
+.num2 {
+  width: 96px;
+}
+
+.mge {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}

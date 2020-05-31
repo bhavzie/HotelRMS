@@ -796,7 +796,6 @@ def managehotelusers():
         res['firstName'] = res['fullName'].split()[0]
         data.append(res)
     
-    print(data)
 
     return render_template('managehotelusers.html', title = 'Users', data = data)
 
@@ -1105,8 +1104,6 @@ def strategyRooms():
 def strategyRoomsSubmit():
     inp = request.json
     inp.remove(inp[0])
-    for i in inp:
-        i.pop()
 
     cursor = mysql.connection.cursor()
     
@@ -1126,11 +1123,10 @@ def editstrategyRoomsSubmit():
     if len(inp) == 0:
         return render_template('index.html')
     inp.remove(inp[0])
-    for i in inp:
-        i.pop()
-        cursor = mysql.connection.cursor()
-        cursor.execute('DELETE FROM room')
-        mysql.connection.commit()
+        
+    cursor = mysql.connection.cursor()
+    cursor.execute('DELETE FROM room')
+    mysql.connection.commit()
 
     for i in inp:
         cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad) VALUES(%s, %s, %s, %s, %s, %s)", [
@@ -1157,8 +1153,10 @@ def strategyRate():
             cursor.execute('SELECT * From rate')
             data1 = cursor.fetchall()
             if len(data1) == 0:
-                return render_template('strategyRate.html')
+                return render_template('strategyRate.html', data = data)
             else:
+                    cursor.execute('SELECT startDate, endDate from rate')
+                    storedDates = cursor.fetchall()
                     for d in data1:
                         dow = ""
                         if (d['monday'] == '1'):
@@ -1187,7 +1185,8 @@ def strategyRate():
                         x = d['endDate'].split('-')
                         strd = x[2] + "/" + x[1] + "/" + x[0]
                         d['endDate'] = strd
-                    return render_template('editstrategyRate.html', data = data1, data1 = data)
+                    
+                    return render_template('editstrategyRate.html', data = data, data1 = data1, storedDates = storedDates)
 
         
 
@@ -1197,18 +1196,21 @@ def strategyRateSubmit():
     if len(inp) == 0:
         return render_template('index.html')
     
+    cursor = mysql.connection.cursor()
+    cursor.execute('DELETE FROM rate')
+    mysql.connection.commit()
     for i in inp:
-        cursor = mysql.connection.cursor()
         cursor.execute("INSERT INTO rate(startDate, endDate, monday, tuesday, wednesday, thursday, friday, saturday, sunday, type, sor, dor, tor, qor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9][0], i[10], i[11], i[12], i[13]])
-
-        mysql.connection.commit()
-        cursor.close()
+    mysql.connection.commit()
+    cursor.close()
 
     flash('Your Rate data has been updated', 'success')
     return ('', 204)
 
 
-
+@app.route('/requestCreateAdhoc', methods = ['GET', 'POST'])
+def requestCreateAdhoc():
+    return render_template('requestCreateAdhoc.html')
 
 
 

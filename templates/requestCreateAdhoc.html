@@ -1,0 +1,306 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Create Adhoc Request</p>
+            </div>
+        </div>
+        <small id='smallID' class='form-text text-muted mb-5'>
+            Fields marked with * are mandatory.
+        </small>
+        <form action="" method="POST" onsubmit="aj(event)" id='formF'>
+            <div id='msg2'></div>
+            <div class = 'mge'>
+                <div class = 'mge1'>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-2 col-form-label">Category*</label>
+                    <div class="col-sm-10">
+                        <select class='form-control text-center' name='category' required style = 'max-width: 30%;'>
+                            <option disabled selected>
+                                Category
+                            </option>
+                        <option>
+                            Leisure
+                        </option>
+                        <option>
+                            Travel
+                        </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-2 col-form-label">Group Name*</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" style = 'max-width: 50%;' required>
+                    </div>
+                </div>
+                <div class = 'form-group mb-5'>
+                    <table class="table table-hover table-bordered table-sm" id='tab5'>
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Nights</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                            <input type="text" placeholder="Check-In" aria-label="First name" class=" start-date  mb-2 "
+                                id='startDateG' required>
+                                </td>
+                                <td>
+                            <input type="text" placeholder="Check-Out" aria-label="Last name" class=" end-date  mb-2"
+                                id='endDateG' required>
+                                </td>
+                                <td>
+                                    <input type='text' class = 'num2' id='nights' readonly>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id = 'ded'>
+
+                    </div>
+                </div>
+                </div>
+                <div class = 'mge2'>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-3 col-form-label">Commissionable<i class="fas fa-info-circle"></i></label>
+                    <div class = 'col-sm-1'>    
+                        <input type='checkbox' class = 'mt-2' id = 'ccom' onclick="ccomf()">
+                    </div>
+                    <div class="col-sm-7">
+                        <input type="number" class="form-control" style='max-width: 50%;' disabled id = 'ccomn' required>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-3 col-form-label">Group Block<i class="fas fa-info-circle"></i></label>
+                    <div class='col-sm-1'>
+                        <input type='checkbox' class='mt-2'>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-3 col-form-label">FOC<i class="fas fa-info-circle"></i></label>
+                    <div class='col-sm-1'>
+                        <input type='checkbox' class='mt-2' id = 'focc' onclick="foccf()">
+                    </div>
+                    <div class = 'col-sm-8'>
+                        <table class="table table-bordered table-hover table-sm" id='tab4'>
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Room Type</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1 Bed</td>
+                                    <td>
+                                        <input type='number' class='num foccc' min='1' name='foc1' disabled required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2 Bed</td>
+                                    <td>
+                                        <input type='number' class='num foccc' min='1' name='foc2' disabled required>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-4 col-form-label">Budget(excluding Taxes)<i class="fas fa-info-circle"></i></label>
+                    <div class="col-sm-6">
+                        <input type="number" class="form-control" style='max-width: 50%; display: inline-block' required> 
+                        <span>Rooms/Night</span>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-3 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
+                    <div class="col-sm-7">
+                        <select class='form-control text-center' name='payment' required style='max-width: 50%;'>
+                            <option disabled selected>
+                                Payment
+                            </option>
+                            <option>
+                                Bank Transfer
+                            </option>
+                            <option>
+                                Cheque
+                            </option>
+                            <option>
+                                Credit Card
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-3 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
+                    <div class="col-sm-5">
+                        <select class='form-control text-center' name='paymentT' required style='max-width: 60%;'>
+                            <option disabled selected>
+                                Payment
+                            </option>
+                            <option>
+                                Prior To Arrival
+                            </option>
+                            <option>
+                                Post Checkout
+                            </option>
+                            <option>
+                                At Checkout
+                            </option>
+                        </select>
+                    </div>
+                    <div class = 'col-sm-4'>
+                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;' required><span> Days</span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Comments</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows = '2'>
+
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+    function ccomf() {
+        const ccom = document.getElementById('ccom')
+        const ccomn = document.getElementById('ccomn')
+
+        if (ccom.checked) {
+            ccomn.disabled = false
+        } else {
+            ccomn.disabled = true
+        }
+    }
+
+    function foccf() {
+        const focc = document.getElementById('focc')
+        const foccc = [...document.getElementsByClassName('foccc')]
+
+        if (focc.checked) {
+            foccc.forEach(focc => {
+                focc.disabled = false
+            })
+        } else {
+            foccc.forEach(focc => {
+                focc.disabled = true
+            })
+        }
+    }
+
+
+    function calcNights() {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+        var ni = $('#nights')
+
+        if ($endDate.val() != '' && $startDate.val() != '') {
+            const ed = $endDate.val()
+            const sd = $startDate.val()
+
+            var dateParts1 = sd.split("/");
+            var dateParts2 = ed.split("/");
+
+            var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]); 
+            var dt2 = new Date(+dateParts2[2], dateParts2[1] - 1, +dateParts2[0]); 
+
+            const diff = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+
+            ni[0].value = diff
+
+            const tb5 = document.getElementById('ded')
+
+            for (let i=0; i<diff; i++) {
+                const tb = document.createElement('table')
+                tb.classList.add('table', 'table-hover', 'table-bordered', 'table-sm', 'tab7')
+                
+
+                const thead = document.createElement("tr")
+                thead.innerHTML = `   
+                                <tr>
+                                    <th>Occupancy</th>
+                                    <th>Room Type</th>
+                                    <th>Number of Rooms</th>
+                                </tr>
+                                `
+                thead.classList.add('thead-dark')
+                const thead2 = document.createElement("tr")
+                thead2.innerHTML = `
+                                        <td>
+                                            Single
+                                        </td>
+                                        <td>    
+                                            1 Bed
+                                        </td>
+                                        <td>
+                                            Count
+                                        </td>
+                                    `                
+                            
+                tb.appendChild(thead)
+                tb.appendChild(thead2)
+                tb5.appendChild(tb)
+            }
+
+
+
+
+
+        }   
+    }
+
+     $(document).ready(function () {
+            var $startDate = $('.start-date');
+            var $endDate = $('.end-date');
+
+            var d = new Date();
+            var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+            $startDate.datepicker({
+             autoHide: true,
+             format: "dd/mm/yyyy",
+             startDate: strDate,
+            });
+            $endDate.datepicker({
+                autoHide: true,
+                startDate: $startDate.datepicker('getDate'),
+                format: "dd/mm/yyyy",
+            });
+
+            $startDate.on('change', function () {
+                $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+                calcNights()
+            });
+
+            $endDate.on('change', function() {
+                calcNights()
+            })
+
+     });
+</script>
+
+{% endblock %}

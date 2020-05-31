@@ -115,7 +115,7 @@
         checkboxes.forEach(checkbox => {
             if (checkbox.type == 'number' && checkbox.classList.contains('0')) {
                 checkbox.disabled = true
-                checkbox.value = '0'
+                checkbox.value = ''
             }
         })
     }
@@ -141,16 +141,16 @@
                             1 Bed
                         </td>
                         <td>
-                            <input type="number" class = 'num {{ data[0]['single'] }}' required>
+                            <input type="number" class = 'num {{ data[0]['single'] }}' required min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['doublev'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['doublev'] }}' required  min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['triple'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['triple'] }}' required  min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[0]['quad'] }}' required>
+                                <input type="number" class = 'num {{ data[0]['quad'] }}' required  min = '10'>
                             </td>
                         <td rowspan="2" style="vertical-align : middle;text-align:center;">
                             <button type='button' class='btn btn-warning res'>Delete</button>
@@ -164,16 +164,16 @@
                             2 Bed
                         </td>
                         <td>
-                            <input type="number" class = 'num {{ data[1]['single'] }}' required>
+                            <input type="number" class = 'num {{ data[1]['single'] }}' required  min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['doublev'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['doublev'] }}' required  min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['triple'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['triple'] }}' required  min = '10'>
                             </td>
                             <td>
-                                <input type="number" class = 'num {{ data[1]['quad'] }}' required>
+                                <input type="number" class = 'num {{ data[1]['quad'] }}' required  min = '10'>
                             </td>
                     </tr>
                     `
@@ -203,6 +203,8 @@
             sdg.disabled = true
             edg.disabled = true
 
+
+
              $('#dowG option:selected').each(function (index, option) {
                 $(option).remove();
             });
@@ -212,6 +214,8 @@
             if ($(dowG).has('option').length == 0) {
                 sdg.disabled = false
                 edg.disabled = false
+                let msg2 = document.getElementById('msg2')
+                $(msg2).hide()
                 var week = [
                     { label: 'Monday', title: 'Monday', value: 'Monday' },
                     { label: 'Tuesday', title: 'Tuesday', value: 'Tuesday' },
@@ -245,6 +249,8 @@
     function aj(e) {
         e.preventDefault()
         const len = $('#tab2 tbody tr').length;
+        const dowG = document.getElementById('dowG')
+        const dl = $('#dowG option').length
 
         if (len == 0) {
             let msg2 = document.getElementById('msg2')
@@ -252,7 +258,14 @@
             msg2.innerHTML = 'Kindly add atleast one row'
             $(msg2).show()
             return false
-        } else {
+        } else if(dl != 7 && dl != 0) {
+            let msg2 = document.getElementById('msg2')
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = 'Kindly add rate for all the days'
+            $(msg2).show()
+            return false
+        }
+         else {
             let oTable = document.getElementById('tab2');
             let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText))
 
@@ -311,7 +324,7 @@
 
             })
                 .then(res => {
-                    window.location.href = '/'
+                    window.location.href = '/strategyRate'
                 })
                 .catch( err => {
                     console.log(err)

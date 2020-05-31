@@ -18,7 +18,7 @@
             <i class="fas fa-asterisk fa-lg"></i>
             <input type="number" name="totalRooms" class="form-control text-center" placeholder="Total Rooms&#42"
                 onfocus="this.placeholder = ''" required onfocusout="this.placeholder = 'Total Rooms&#42'" min = '1'
-                id = 'tot' onchange="upd()"
+                id = 'tot' onchange="upd(event)"
                 >
             <div id='msg2'></div>
         </div>
@@ -38,7 +38,7 @@
             <tbody>
                 <tr>
                     <td>1 Bed</td>
-                    <td><input type = 'number' class = 'num' min = '1' class = 'ro' onchange="upd2()"></td>
+                    <td><input type = 'number' class = 'num ro' min = '1' onchange="upd2(event)"></td>
                     <td>
                         <input type="checkbox" value = '' class = 'single' checked>
                     </td>
@@ -54,7 +54,7 @@
                 </tr>
                 <tr>
                     <td>2 Bed</td>
-                    <td><input type='number' class = 'num' min='1' class='ro' onchange="upd2()"></td>
+                    <td><input type='number' class = 'num ro' min='1' onchange="upd2(event)"></td>
                     <td>
                         <input type="checkbox" value='' class='single' checked>
                     </td>
@@ -99,17 +99,19 @@
             const ro = document.getElementsByClassName('ro')
             const tot = document.getElementById('tot').value
 
+
             if (ro[0] == e.target) {
                 ro[1].value = tot - ro[0].value
             } else {
-                ro[0].value = tot - ro[0].value
+                ro[0].value = tot - ro[1].value
             }
 
         }
 
-    function upd() {
+    function upd(e) {
         const ro = document.getElementsByClassName('ro')
         const tot = document.getElementById('tot').value
+
         if (tot % 2 == 0) {
             for (let i = 0; i < ro.length; i++) {
                 ro[i].value = tot/2

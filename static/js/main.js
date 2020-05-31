@@ -28,6 +28,8 @@ $(document).ready(function () {
     $('#tableusers').DataTable();
 
     $('#tab1').DataTable();
+
+
 });
 
 function handleChange(checkbox) {
