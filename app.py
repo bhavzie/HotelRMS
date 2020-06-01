@@ -1210,7 +1210,10 @@ def strategyRateSubmit():
 
 @app.route('/requestCreateAdhoc', methods = ['GET', 'POST'])
 def requestCreateAdhoc():
-    return render_template('requestCreateAdhoc.html')
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From room')
+    data = cursor.fetchall()
+    return render_template('requestCreateAdhoc.html', data = data)
 
 
 

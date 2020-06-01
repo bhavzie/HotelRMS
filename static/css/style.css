@@ -502,3 +502,7 @@ button.multiselect {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+.baddr:hover {
+  border: none !important;
+}
