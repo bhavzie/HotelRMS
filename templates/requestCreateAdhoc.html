@@ -81,7 +81,7 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Group Block<i class="fas fa-info-circle"></i></label>
                     <div class='col-sm-1'>
-                        <input type='checkbox' class='mt-2' name = 'groupBlock'>
+                        <input type='checkbox' class='mt-2' id = 'groupBlock'>
                     </div>
                 </div>
                 <div class="form-group row mb-5">
@@ -101,13 +101,13 @@
                                 <tr>
                                     <td>1 Bed</td>
                                     <td>
-                                        <input type='number' class='num foccc' min='1' name='foc1' disabled required>
+                                        <input type='number' class='num foccc' min='1' id='foc1' disabled required>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2 Bed</td>
                                     <td>
-                                        <input type='number' class='num foccc' min='1' name='foc2' disabled required>
+                                        <input type='number' class='num foccc' min='1' id='foc2' disabled required>
                                     </td>
                                 </tr>
                             </tbody>
@@ -117,17 +117,14 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-4 col-form-label">Budget(excluding Taxes)<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-6">
-                        <input type="number" class="form-control" style='max-width: 50%; display: inline-block' required name = 'budget' min = '100'> 
+                        <input type="number" class="form-control" style='max-width: 50%; display: inline-block' required id = 'budget' min = '10'> 
                         <span>$Rooms/Night</span>
                     </div>
                 </div>
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-7">
-                        <select class='form-control text-center' name='formPayment'  style='max-width: 50%;'>
-                            <option disabled selected>
-                                Form of Payment
-                            </option>
+                        <select class='form-control text-center payment' id='formPayment'  style='max-width: 60%;' multiple = 'multiple'>
                             <option value = 'bt'>
                                 Bank Transfer
                             </option>
@@ -143,7 +140,10 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-5">
-                        <select class='form-control text-center payment' multiple = 'multiple' name='paymentTerms'  style='max-width: 60%;' onchange="hdd(event)" id = 'dede'>
+                        <select class='form-control text-center' name='paymentTerms'  style='max-width: 60%;' onchange="hdd(event)" id = 'dede'>
+                            <option disabled selected>
+                                Payment Terms
+                            </option>
                             <option value = 'poa'>
                                 Prior To Arrival
                             </option>
@@ -156,13 +156,13 @@
                         </select>
                     </div>
                     <div class = 'col-sm-4'  id = 'dede22'>
-                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;'  name = 'paymentDays' required><span> Days</span>
+                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;'  name = 'paymentDays' id = 'dede33' disabled><span> Days</span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Comments</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows = '2' name = 'comments'>
+                        <textarea class="form-control" rows = '2' id = 'comments'>
 
                         </textarea>
                     </div>
@@ -190,9 +190,12 @@
         const option = dede.options[dede.selectedIndex].value
         const dede22 = document.getElementById('dede22')
         if (option === 'ac') {
+            $('#dede33').val('')
             $(dede22).hide()
         } else {
             $(dede22).show()
+            $('#dede33').removeAttr('disabled')
+            document.getElementById('dede33').required = true
         }
 
     }
@@ -357,9 +360,13 @@
 
     
     function calcNights() {
+
         var $startDate = $('.start-date');
         var $endDate = $('.end-date');
         var ni = $('#nights')
+        const tb5 = document.getElementById('ded')
+        ded.innerHTML = ''
+        
 
         if ($endDate.val() != '' && $startDate.val() != '') {
             const ed = $endDate.val()
@@ -451,7 +458,6 @@
                     butt2.innerHTML = 'Apply All'
                     butt2.addEventListener('click', () => {
                         let el = document.getElementById(i)
-                        console.log(el)
                         for (let j = 1; j<diff; j++) {
                             let bel = document.getElementById(j)
                             var copy = el.cloneNode(true);
@@ -508,14 +514,81 @@
 
      });
 
+      function parseDate(x) {
+            return x.split("-").reverse().join("/");
+    }
+
 
      function aj(e) {
-         e.preventDefault()
+        e.preventDefault()
+        const checkIn = $('.start-date').val();
+        
+        result = {}
 
-        const category = $('#category : selected').val()
-        const groupName = $('#groupName').val()
+         result['category'] = $('#category option:selected').val()
+         result['groupName'] = $('#groupName').val()
+         result['checkIn'] = $('.start-date').val();
+         result['checkOut'] = $('.end-date').val();
+         result['nights'] = $('#nights').val()
+         result['commissionable'] = $('#ccomn').val()
+         result['groupBlock'] = document.getElementById('groupBlock').checked
+         result['foc'] = document.getElementById('focc').checked
+         result['foc1'] = $('#foc1').val()
+         result['foc2'] = $('#foc2').val()
+         result['budget'] = $('#budget').val()
+         result['formPayment'] = $('#formPayment').val()
+         result['paymentTerms'] = $('#dede').val()
+         result['paymentDays'] = $('#dede33').val()
+         result['comments'] = $('#comments').val()
+
+        const tb5 = document.getElementById('ded')
+        const tables = [...tb5.getElementsByTagName('table')]
+        var dateParts1 = checkIn.split("/");
+        var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]);
+        let dobj = dt1
+        dobj.setDate(dobj.getDate() + 1)
+        table_result = []
+        tables.forEach(table => {
+            
+            let children = table.children
+            for (let i = 1; i<children.length; i++) {
+                let resArr = {}
+                resArr['date'] = parseDate(dobj.toISOString().slice(0, 10))
+                
+                let subchildren = children[i].children
+                
+                let weak = subchildren[0].children[0]
+                resArr['type'] = weak.options[weak.selectedIndex].value
+                let weak2 = subchildren[1].children[0]
+                resArr['occupancy'] = weak2.options[weak2.selectedIndex].value
+                resArr['count'] = subchildren[2].children[0].value
+                
+                table_result.push(resArr)
+
+
+            }
+
+            dobj.setDate(dobj.getDate() + 1)
+        })
+
+        result['table_result'] = table_result
 
         // get all values
+
+        fetch('/requestCreateAdhocSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch( err => {
+                console.log(err)
+            })
 
      }
 

@@ -1216,6 +1216,12 @@ def requestCreateAdhoc():
     return render_template('requestCreateAdhoc.html', data = data)
 
 
+@app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
+def requestCreateAdhocSubmit():
+    inp = request.json
+    print(inp)
+    flash('Your Request has been entered', 'success')
+    return ('', 204)
 
 if __name__ == "__main__":
     app.run(debug = True)
