@@ -506,3 +506,12 @@ button.multiselect {
 .baddr:hover {
   border: none !important;
 }
+
+.coll {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.aple {
+  margin-bottom: 5px;
+}

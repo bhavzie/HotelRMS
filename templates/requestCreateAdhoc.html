@@ -18,7 +18,7 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-2 col-form-label">Category*</label>
                     <div class="col-sm-10">
-                        <select class='form-control text-center' name='category' required style = 'max-width: 30%;'>
+                        <select class='form-control text-center' id='category' required style = 'max-width: 30%;'>
                             <option disabled selected>
                                 Category
                             </option>
@@ -34,7 +34,7 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-2 col-form-label">Group Name*</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" style = 'max-width: 50%;' required>
+                        <input type="text" class="form-control" style = 'max-width: 50%;' required id = 'groupName'>
                     </div>
                 </div>
                 <div class = 'form-group mb-5'>
@@ -70,23 +70,24 @@
                 <div class = 'mge2'>
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Commissionable<i class="fas fa-info-circle"></i></label>
+                    
                     <div class = 'col-sm-1'>    
                         <input type='checkbox' class = 'mt-2' id = 'ccom' onclick="ccomf()">
                     </div>
                     <div class="col-sm-7">
-                        <input type="number" class="form-control" style='max-width: 50%;' disabled id = 'ccomn' required>
+                        <input type="number" class="form-control" style='max-width: 50%;' disabled id = 'ccomn' required value = '' name = 'commissionable' placeholder="In Percentage">
                     </div>
                 </div>
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Group Block<i class="fas fa-info-circle"></i></label>
                     <div class='col-sm-1'>
-                        <input type='checkbox' class='mt-2'>
+                        <input type='checkbox' class='mt-2' name = 'groupBlock'>
                     </div>
                 </div>
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">FOC<i class="fas fa-info-circle"></i></label>
                     <div class='col-sm-1'>
-                        <input type='checkbox' class='mt-2' id = 'focc' onclick="foccf()">
+                        <input type='checkbox' class='mt-2' id = 'focc' onclick="foccf()" name = 'foc'>
                     </div>
                     <div class = 'col-sm-8'>
                         <table class="table table-bordered table-hover table-sm" id='tab4'>
@@ -116,24 +117,24 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-4 col-form-label">Budget(excluding Taxes)<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-6">
-                        <input type="number" class="form-control" style='max-width: 50%; display: inline-block' required> 
-                        <span>Rooms/Night</span>
+                        <input type="number" class="form-control" style='max-width: 50%; display: inline-block' required name = 'budget' min = '100'> 
+                        <span>$Rooms/Night</span>
                     </div>
                 </div>
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-7">
-                        <select class='form-control text-center' name='payment' required style='max-width: 50%;'>
+                        <select class='form-control text-center' name='formPayment'  style='max-width: 50%;'>
                             <option disabled selected>
-                                Payment
+                                Form of Payment
                             </option>
-                            <option>
+                            <option value = 'bt'>
                                 Bank Transfer
                             </option>
-                            <option>
+                            <option value = 'cq'>
                                 Cheque
                             </option>
-                            <option>
+                            <option value = 'cc'>
                                 Credit Card
                             </option>
                         </select>
@@ -142,10 +143,7 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-3 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
                     <div class="col-sm-5">
-                        <select class='form-control text-center' name='paymentT' required style='max-width: 60%;' onchange="hdd(event)" id = 'dede'>
-                            <option disabled selected>
-                                Payment
-                            </option>
+                        <select class='form-control text-center payment' multiple = 'multiple' name='paymentTerms'  style='max-width: 60%;' onchange="hdd(event)" id = 'dede'>
                             <option value = 'poa'>
                                 Prior To Arrival
                             </option>
@@ -158,13 +156,13 @@
                         </select>
                     </div>
                     <div class = 'col-sm-4'  id = 'dede22'>
-                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;' required><span> Days</span>
+                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;'  name = 'paymentDays' required><span> Days</span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Comments</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows = '2'>
+                        <textarea class="form-control" rows = '2' name = 'comments'>
 
                         </textarea>
                     </div>
@@ -193,7 +191,10 @@
         const dede22 = document.getElementById('dede22')
         if (option === 'ac') {
             $(dede22).hide()
+        } else {
+            $(dede22).show()
         }
+
     }
 
     function ccomf() {
@@ -222,6 +223,11 @@
         }
     }
 
+    function remr(e) {
+        const p = e.target.parentElement.parentElement.parentElement
+        $(p).remove()
+    }
+
     function addr(e) {
         const p = e.target.parentElement.parentElement.parentElement.parentElement
         const thead2 = document.createElement("tr")
@@ -233,7 +239,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <select>
+                                            <select class = 'seldom'>
                                                 <option class = "{{ data[0]['single'] }}">Single</option>
                                                 <option class = "{{ data[0]['double'] }}">Double</option>
                                                 <option class = "{{ data[0]['triple'] }}">Triple</option>
@@ -241,11 +247,14 @@
                                             </select>
                                         </td>
                                         <td>
-                                        <input type="number" class = 'num'  required min = '10'>
+                                        <input type="number" class = 'num'  required min = '10' max = '{{ data[0]['count'] }}'>
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle"></i>
+                                            </button>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                               <i class="fas fa-minus-circle"></i>
                                             </button>
                                         </td>
                                     `                
@@ -254,11 +263,15 @@
     }
 
     function setOptionssel() {
-        const sel = document.querySelectorAll('option')
-        sel.forEach(se => {
-            if ($(se).hasClass('0')) {
-                // remove for first time
-        }
+        const selects = [...document.getElementsByClassName('seldom')]
+        selects.forEach(select => {
+            const options = [...select.options]
+            options.forEach(option => {
+                if ($(option).hasClass('0')) {
+                    $(option).hide()
+                }
+            })
+            
         })
     }
 
@@ -283,36 +296,59 @@
         type2arr.push("{{ data[1]['triple'] }}")
         type2arr.push("{{ data[1]['quad'] }}")
 
+        let inp = e.target.parentElement.nextElementSibling.nextElementSibling.children[0]
+        if (selected == 1) {
+            inp.max = ("{{ data[0]['count'] }}")
+        } else {
+            inp.max = ("{{ data[1]['count'] }}")
+        }
+
         const p = e.target.parentElement.nextElementSibling.children[0]
 
         if (e.target.value == type1) {
             for (let i=0; i<p.options.length; i++) {
                 if (p.options[i].value == 'Single' && type1arr[0] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Single' && type1arr[0] == 1) {
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Double' && type1arr[1] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Double' && type1arr[1] == 1) {
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Triple' && type1arr[2] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else  if (p.options[i].value == 'Triple' && type1arr[2] == 1){
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Quad' && type1arr[3] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else  if (p.options[i].value == 'Quad' && type1arr[3] == 1){
+                    p.options[i].style.display = 'block'
                 }
             }
         } else {
             for (let i = 0; i < p.options.length; i++) {
-                if (p.options[i].value == 'Single' && type2arr[0] != 1) {
-                    p.remove(i)
+               if (p.options[i].value == 'Single' && type2arr[0] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Single' && type2arr[0] == 1) {
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Double' && type2arr[1] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Double' && type2arr[1] == 1) {
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Triple' && type2arr[2] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Triple' && type2arr[2] == 1) {
+                    p.options[i].style.display = 'block'
                 }
                 if (p.options[i].value == 'Quad' && type2arr[3] != 1) {
-                    p.remove(i)
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Quad' && type2arr[3] == 1) {
+                    p.options[i].style.display = 'block'
                 }
             }
         }
@@ -367,7 +403,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <select>
+                                            <select class = 'seldom'>
                                                 <option class = "{{ data[0]['single'] }}">Single</option>
                                                 <option class = "{{ data[0]['double'] }}">Double</option>
                                                 <option class = "{{ data[0]['triple'] }}">Triple</option>
@@ -375,35 +411,59 @@
                                             </select>
                                         </td>        
                                         <td>
-                                        <input type="number" class = 'num'  required min = '10'>
+                                        <input type="number" class = 'num'  required min = '10' max = '{{ data[0]['count'] }}'>
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle"></i>
                                             </button>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                               <i class="fas fa-minus-circle"></i>
+                                            </button>
                                         </td>
                                     `                
                 
                 const butt = document.createElement('button')
-                butt.classList.add('btn', 'btn-info')
+                butt.classList.add('btn', 'btn-info', 'coll')
                 butt.type = 'button'
                 butt.innerHTML = dobj.toDateString()
                 dobj.setDate(dobj.getDate() + 1)
 
-                setOptionssel()
 
                 butt.addEventListener('click', () => {
                     let el = document.getElementById(i)
-                    if (el.style.visibility == 'hidden') 
-                        el.style.visibility = 'visible'
+                    if (el.style.display == 'none') 
+                        el.style.display = 'table'
                     else
-                        el.style.visibility = 'hidden'
+                        el.style.display = 'none'
                 })
+
 
                 tb.appendChild(thead)
                 tb.appendChild(thead2)
                 tb5.appendChild(butt)
                 tb5.appendChild(tb)
+
+                if (i == 0) {
+                    const butt2 = document.createElement('button')
+                    butt2.classList.add('btn', 'btn-primary', 'aple')
+                    butt2.type = 'button'
+                    butt2.innerHTML = 'Apply All'
+                    butt2.addEventListener('click', () => {
+                        let el = document.getElementById(i)
+                        console.log(el)
+                        for (let j = 1; j<diff; j++) {
+                            let bel = document.getElementById(j)
+                            var copy = el.cloneNode(true);
+                            copy.setAttribute('id', j);
+                            bel.parentNode.replaceChild(copy, bel);
+                        }
+                    })
+
+                    tb5.appendChild(butt2)
+                }
+
+                 setOptionssel()
             }
 
 
@@ -439,7 +499,26 @@
                 calcNights()
             })
 
+            $('.payment').multiselect({
+                nonSelectedText: 'Select Form of Payment',
+                numberDisplayed: 0,
+                buttonWidth: '350px'
+            })
+
+
      });
+
+
+     function aj(e) {
+         e.preventDefault()
+
+        const category = $('#category : selected').val()
+        const groupName = $('#groupName').val()
+
+        // get all values
+
+     }
+
 </script>
 
 {% endblock %}
