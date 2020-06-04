@@ -1,9 +1,10 @@
-from flask import Flask, render_template, flash, request, session, url_for, session, jsonify
+from flask import Flask, render_template, flash, request, session, url_for, session, jsonify, redirect
 from config import Config
 from functools import wraps
 from flask_mysqldb import MySQL
 from functions import *
 import datetime
+import uuid
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -55,7 +56,7 @@ def confirm_email(token):
         return render_template('login.html', title = 'Login')
 
 
-@app.route('/', methods = ['GET', 'POST'])
+
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     try:
@@ -535,7 +536,7 @@ def login():
 
                 
                 flash('You are now logged in', 'success')
-                return render_template('index.html')
+                return redirect(url_for('home2'))
             else:
                 error = 'Passwords did not match'
                 return render_template('login.html', error = error)
@@ -1219,9 +1220,77 @@ def requestCreateAdhoc():
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
 def requestCreateAdhocSubmit():
     inp = request.json
-    print(inp)
+    cursor = mysql.connection.cursor()
+    username = session['email']
+    cursor.execute('SELECT userType from users where email = %s', [username])
+    userType = cursor.fetchall()
+    userType = userType[0]['userType']
+
+    if inp['commissionable'] == '':
+        inp['commissionable'] = 0
+
+    inp['groupBlock'] = 1 if inp['groupBlock'] == True else 0
+    inp['foc'] = 1 if inp['foc'] == True else 0
+
+    if inp['foc1'] == '':
+        inp['foc1'] = 0
+    if inp['foc2'] == '':
+        inp['foc2'] = 0
+    
+
+
+    if inp['paymentDays'] == '':
+        inp['paymentDays'] = 0
+    if inp['comments'] == '':
+        inp['comments'] = 0
+    
+    
+    cursor.execute('SELECT Count(*) from request')
+    count = cursor.fetchall()
+    count = count[0]['Count(*)'] + 1
+    id = "TR" + str(count)
+    today = datetime.date.today()
+    d1 = datetime.datetime.strptime(inp['checkIn'], "%Y/%m/%d").date()
+    lead = d1 - today
+    lead = lead.days
+    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, username, lead, 'NEW', userType   
+            ])
+
+    table = inp['table_result']
+    for t in table:
+        if (t['type'] == '1'):
+            cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [
+                t['date'], t['occupancy'], t['count'], id])
+        else:
+            cursor.execute(
+                'INSERT INTO request2Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'],  t['occupancy'], t['count'], id])
+
+    mysql.connection.commit()
+    cursor.close()
     flash('Your Request has been entered', 'success')
     return ('', 204)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def home2():
+    try:
+        if session['logged_in'] == True:
+            if session['userType'] == 'hoteluser' or session['userType'] == 'developer':
+                cursor = mysql.connection.cursor()
+                cursor.execute('SELECT * FROM request')
+                data = cursor.fetchall()
+                data = data[::-1]
+                return render_template('index2.html', title = 'Home', data = data)
+            return render_template('index.html', title='Home')
+    except:
+        return render_template('login.html', title='Login')
+
+
+@app.route('/showRequest/<token>', methods = ['GET', 'POST'])
+def showRequest(token):
+    print(token)
+    return 'hi'
 
 if __name__ == "__main__":
     app.run(debug = True)

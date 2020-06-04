@@ -29,8 +29,49 @@ $(document).ready(function () {
 
     $('#tab1').DataTable();
 
+    var table = $('#tab9').DataTable({
+        columns: [
+            { width: '10%' },
+            { width: '10%' },
+            { width: '10%' },
+            { width: '10%' },
+            { width: '20%' },
+            { width: '10%' },
+            { width: '10%' },
+            { width: '10%' },
+            { width: '10%' },
+        ],
+        "ordering": true,
+    });
+
+    table.column(1).visible(false)
+    table.column(0).order('desc').draw()
+
+    $('#categoryxdf').change(function () {
+        table.column(1).search(this.value).draw()
+    })
+
+    $('#datexdf').change(function() {
+        var date = new Date()
+        date.setDate(date.getDate() - this.value)
+        
+        //console.log(date)
+
+        table.column(5).filter(function(value, index) {
+            /* console.log(value[0])
+            var dateParts = value[0].split("/")
+            var valued = new Date(+dateParts[2], dateParts[1] -1, dateParts[0])
+
+            console.log(valued)
+ */
+            return false
+        })
+
+    })
 
 });
+
+
 
 function handleChange(checkbox) {
     
@@ -87,6 +128,25 @@ $(document).ready(function () {
         var getValue = $(this).text();
         $('.dropdown-select').text(getValue);
     });
+
+    (function (original) {
+        jQuery.fn.clone = function () {
+            var result = original.apply(this, arguments),
+                my_textareas = this.find('textarea').add(this.filter('textarea')),
+                result_textareas = result.find('textarea').add(result.filter('textarea')),
+                my_selects = this.find('select').add(this.filter('select')),
+                result_selects = result.find('select').add(result.filter('select'));
+
+            for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
+            for (var i = 0, l = my_selects.length; i < l; ++i) result_selects[i].selectedIndex = my_selects[i].selectedIndex;
+
+            return result;
+        };
+    })(jQuery.fn.clone);
+
+
+    
+    
 
 
 }); 

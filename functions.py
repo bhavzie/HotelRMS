@@ -65,3 +65,11 @@ def getValC2(value):
         return True
     else:
         return False
+
+
+
+
+def procArr(value):
+    if value is None:
+        return ''
+    return ' '.join(value)

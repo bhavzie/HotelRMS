@@ -18,15 +18,45 @@
                 <div class="form-group row mb-5">
                     <label class="col-sm-2 col-form-label">Category*</label>
                     <div class="col-sm-10">
-                        <select class='form-control text-center' id='category' required style = 'max-width: 30%;'>
+                        <select class='form-control text-center' id='category' required style = 'max-width: 60%;'>
                             <option disabled selected>
                                 Category
                             </option>
                         <option>
-                            Leisure
+                            Bachelor-ette party
                         </option>
                         <option>
-                            Travel
+                            Business meeting
+                        </option>
+                        <option>
+                            Corporate incentive travel
+                        </option>
+                        <option>
+                            Class re-union
+                        </option>
+                        <option>
+                            Family
+                        </option>
+                        <option>
+                            Military
+                        </option>
+                        <option>
+                            Music band
+                        </option>
+                        <option>
+                            Religious/Church event
+                        </option>
+                        <option>
+                            Sport team
+                        </option>
+                        <option>
+                            Theatre
+                        </option>
+                        <option>
+                            Wedding
+                        </option>
+                        <option>
+                            Other
                         </option>
                         </select>
                     </div>
@@ -439,8 +469,16 @@
 
                 butt.addEventListener('click', () => {
                     let el = document.getElementById(i)
-                    if (el.style.display == 'none') 
+                    if (el.style.display == 'none') {
                         el.style.display = 'table'
+                        const buttons = [...document.getElementsByClassName('coll')]
+                        buttons.forEach(button => {
+                            const tb = button.nextElementSibling
+                            if (tb.id != i) {
+                                 tb.style.display = 'none'
+                            }
+                        })
+                    }
                     else
                         el.style.display = 'none'
                 })
@@ -460,13 +498,15 @@
                         let el = document.getElementById(i)
                         for (let j = 1; j<diff; j++) {
                             let bel = document.getElementById(j)
-                            var copy = el.cloneNode(true);
-                            copy.setAttribute('id', j);
-                            bel.parentNode.replaceChild(copy, bel);
+                            var copy = $(el).clone(true);
+                            copy[0].setAttribute('id', j);
+                            bel.parentNode.replaceChild(copy[0], bel);
                         }
                     })
 
                     tb5.appendChild(butt2)
+                } else {
+                    butt.click()
                 }
 
                  setOptionssel()
@@ -518,6 +558,10 @@
             return x.split("-").reverse().join("/");
     }
 
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
 
      function aj(e) {
         e.preventDefault()
@@ -553,7 +597,7 @@
             let children = table.children
             for (let i = 1; i<children.length; i++) {
                 let resArr = {}
-                resArr['date'] = parseDate(dobj.toISOString().slice(0, 10))
+                resArr['date'] = parseDate2(parseDate(dobj.toISOString().slice(0, 10)))
                 
                 let subchildren = children[i].children
                 
@@ -570,7 +614,8 @@
 
             dobj.setDate(dobj.getDate() + 1)
         })
-
+        result['checkIn'] = parseDate2(result['checkIn'])
+        result['checkOut'] = parseDate2(result['checkOut'])
         result['table_result'] = table_result
 
         // get all values

@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class='home'>
+    <div class="wrap-login spread3">
+        <div class = 'row'>
+        <div class="col-sm-6 mb-5">
+            <select class='form-control text-center' id='categoryxdf' required style='max-width: 25%;'>
+                <option disabled selected>
+                    Category
+                </option>
+                <option>
+                    Bachelor-ette party
+                </option>
+                <option>
+                    Business meeting
+                </option>
+                <option>
+                    Corporate incentive travel
+                </option>
+                <option>
+                    Class re-union
+                </option>
+                <option>
+                    Family
+                </option>
+                <option>
+                    Military
+                </option>
+                <option>
+                    Music band
+                </option>
+                <option>
+                    Religious/Church event
+                </option>
+                <option>
+                    Sport team
+                </option>
+                <option>
+                    Theatre
+                </option>
+                <option>
+                    Wedding
+                </option>
+                <option>
+                    Other
+                </option>
+            </select>
+        </div>
+        <div class="col-sm-6 mb-5">
+            <select class='form-control text-center' id='datexdf' required style='max-width: 25%;'>
+                <option disabled selected>
+                    Date Range
+                </option>
+                <option value="7">
+                    Last 7 Days
+                </option>
+                <option value="15">
+                    Last 15 Days
+                </option>
+                <option value="31">
+                    Last 1 Month
+                </option>
+                <option value="90">
+                    Last 3 Months
+                </option>
+            </select>
+        </div>
+        </div>
+        <table class="table table-bordered table-hover" id='tab9'>
+                <caption>Request</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th style = 'width: 10%;' class = 'text-center no-sort'>Request ID</th>
+                        <th>Category</th>
+                        <th style = 'width: 10%;' class = 'text-center'>Customer Type</th>
+                        <th style = 'width: 10%;' class = 'text-center'>Group Name</th>
+                        <th class = 'text-center'>Customer Name</th>
+                        <th style = 'width: 10%;' class = 'text-center'>Check In Date</th>
+                        <th style = 'width: 10%;' class = 'text-center'>Lead Time</th>
+                        <th style = 'width: 10%' class = 'text-center'>Status</th>
+                        <th class = 'text-center'>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                   <tr>
+                       <td>
+                           {{ d['id'] }}
+                       </td>
+                       <td>
+                           {{ d['category'] }}
+                       </td>
+                       <td>
+                           {{ d['userType'] }}
+                        </td>
+                        <td>
+                            {{ d['groupName'] }}
+                        </td>
+                        <td>
+                            {{ d['createdFor'] }}
+                        </td>
+                        <td>
+                            {{ d['checkIn'] }}
+                        </td>
+                        <td>
+                            {{ d['leadTime'] }}
+                        </td>
+                        <td>
+                            {{ d['status'] }}
+                        </td>
+                        <td>
+                            <a href = '/showRequest/{{d["id"]}}' class = 'btn btn-info'><i class="fas fa-cog"></i></a>
+                            <button class = 'btn btn-info'><i class="fas fa-share-square"></i></button>
+                            <button class = 'btn btn-danger'><i class="fas fa-times-circle"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+{% endblock %}
