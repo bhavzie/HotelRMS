@@ -1248,13 +1248,17 @@ def requestCreateAdhocSubmit():
     cursor.execute('SELECT Count(*) from request')
     count = cursor.fetchall()
     count = count[0]['Count(*)'] + 1
-    id = "TR" + str(count)
+    if (count < 10):
+        id = "TR" + "00" + str(count)
+    elif (count < 99):
+        id = "TR" + "0" + str(count)
     today = datetime.date.today()
     d1 = datetime.datetime.strptime(inp['checkIn'], "%Y/%m/%d").date()
     lead = d1 - today
     lead = lead.days
-    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, username, lead, 'NEW', userType   
+    today = datetime.datetime.today()
+    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, username, lead, 'NEW', userType, today   
             ])
 
     table = inp['table_result']

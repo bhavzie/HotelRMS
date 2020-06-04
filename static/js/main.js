@@ -35,6 +35,7 @@ $(document).ready(function () {
             { width: '10%' },
             { width: '10%' },
             { width: '10%' },
+            { width: '10%' },
             { width: '20%' },
             { width: '10%' },
             { width: '10%' },
@@ -44,7 +45,8 @@ $(document).ready(function () {
         "ordering": true,
     });
 
-    table.column(1).visible(false)
+    table.column(1).visible(false).draw()
+    table.column(2).visible(false).draw()
     table.column(0).order('desc').draw()
 
     $('#categoryxdf').change(function () {
@@ -52,22 +54,27 @@ $(document).ready(function () {
     })
 
     $('#datexdf').change(function() {
-        var date = new Date()
-        date.setDate(date.getDate() - this.value)
-        
-        //console.log(date)
-
-        table.column(5).filter(function(value, index) {
-            /* console.log(value[0])
-            var dateParts = value[0].split("/")
-            var valued = new Date(+dateParts[2], dateParts[1] -1, dateParts[0])
-
-            console.log(valued)
- */
-            return false
-        })
-
+        table.draw()
     })
+
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var max = new Date()
+            max.setDate(max.getDate())
+            var sel = $('#datexdf').val()
+            if (sel == null) return true;
+            var min = new Date()
+            min.setDate(min.getDate() - sel)
+
+            var startDate = new Date(data[2]);
+
+            if (min == null && max == null) return true;
+            if (min == null && startDate <= max) return true;
+            if (max == null && startDate >= min) return true;
+            if (startDate <= max && startDate >= min) return true;
+            return false;
+        }
+    );
 
 });
 
