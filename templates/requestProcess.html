@@ -1,0 +1,136 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class = 'row'>
+            <div class = 'col-10'>
+                <div class = 'row'>
+                    <div class = 'col-5'>
+                        <div class = 'mb-4'>
+                            <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
+                        </div>
+                        <div class = 'mb-3'>
+                            <span>Name : {{ data['groupName'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>ID : {{ data['id'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Category : {{ data['category'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>LeadTime : {{ data['leadTime'] }} Days</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Room Nights : {{ data['nights'] }}</span>
+                        </div>
+                    </div>
+                    <div class = 'col-4'>
+                        <div class='mb-4'>
+                            <span class="badge badge-pill badge-primary">Last Opened : {{ data['createdOn'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Budget/RM/NT : ${{ data['budget'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Customer : {{ data['createdFor'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Type : {{ data['userType'] }}</span>
+                        </div>
+                        {% if data['formPayment'] %}
+                        <div class='mb-3'>
+                            <span>Form Of Payment : {{ data['formPayment'] }}</span>
+                        </div>
+                        {% endif %}
+                        {% if data['paymentTerms'] %}
+                        <div class='mb-3'>
+                            <span>Payment Terms : {{ data['paymentTerms'] }} 
+                                {% if data['paymentDays'] %}
+                                    {{ data['paymentDays'] }} Days
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                        {% if data['comments'] != '' %}
+                        <div class='mb-3'>
+                            <span>Comments : {{ data['comments'] }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class = 'row mt-5'>
+                    <div class = 'row col-8'>
+
+                        {% for i in range(length) %}
+                        <div class = 'col-3'>
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th style = 'width:60%'>Date</th>
+                                        <th style = 'width:50%'>{{ dates[i] }}</th>
+                                    </tr>   
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Current OCC</td>
+                                        <td>15%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Forecast</td>
+                                        <td>35%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Groups</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lead Time</td>
+                                        <td>{{ data['leadTime']|int + i }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class = 'col-8'>
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Occupancy</th>
+                                                <th>Room Type</th>
+                                                <th>Count</th>
+                                                <th>Rate/Room</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for day in result[i] %}
+                                                <tr>
+                                                    <td>{{day['occupancy']}}</td>
+                                                    <td>{{day['type']}}</td>
+                                                    <td>{{day['count']}}</td>
+                                                    <td>{{day['rate']}}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class = 'col-1'>
+                        <a href = '#'>Comments</a>
+                        <a href = '#'>Commission</a>
+                        <a href = '#'>FOC</a>
+                        <a href = '#'>History</a>
+                        <a href = '#'>Duplicate</a>
+                        <a href = '#'>Contract</a>
+                    </div>
+                </div>
+            </div>
+            <div class = 'col-2'>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

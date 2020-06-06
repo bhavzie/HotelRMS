@@ -1214,7 +1214,10 @@ def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
     data = cursor.fetchall()
-    return render_template('requestCreateAdhoc.html', data = data)
+    cursor.execute('SELECT email From users where userType != %s', ['hoteluser'])
+    users = cursor.fetchall()
+
+    return render_template('requestCreateAdhoc.html', data = data, users = users)
 
 
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
@@ -1222,7 +1225,7 @@ def requestCreateAdhocSubmit():
     inp = request.json
     cursor = mysql.connection.cursor()
     username = session['email']
-    cursor.execute('SELECT userType from users where email = %s', [username])
+    cursor.execute('SELECT userType from users where email = %s', [inp['createdFor']])
     userType = cursor.fetchall()
     userType = userType[0]['userType']
 
@@ -1258,7 +1261,7 @@ def requestCreateAdhocSubmit():
     lead = lead.days
     today = datetime.datetime.today()
     cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, username, lead, 'NEW', userType, today   
+                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, inp['createdFor'], lead, 'NEW', userType, today   
             ])
 
     table = inp['table_result']
@@ -1286,6 +1289,12 @@ def home2():
                 data = cursor.fetchall()
                 data = data[::-1]
                 return render_template('index2.html', title = 'Home', data = data)
+            else:
+                cursor = mysql.connection.cursor()
+                cursor.execute('SELECT * From request where createdFor = %s', [session['email']])
+                data = cursor.fetchall()
+                data = data[::-1]
+                return render_template('index2.html', title='Home', data=data)
             return render_template('index.html', title='Home')
     except:
         return render_template('login.html', title='Login')
@@ -1293,8 +1302,92 @@ def home2():
 
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 def showRequest(token):
-    print(token)
-    return 'hi'
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM request where id = %s', [token])
+    data = cursor.fetchall()
+    data = data[0]
+    data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+    string = ''
+    v = data['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            data['paymentTerms'] = string
+
+    string = ''
+    v = data['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string = 'Cheque'
+            data['formPayment'] = string
+
+    if data['comments'].isspace():
+        data['comments'] = ''
+
+    #print(data)
+    nights = data['nights']
+    curr_date = data['checkIn']
+    result = []
+    dates = []
+    for i in range(0, int(nights)):
+        tempResult = []
+        cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
+        resultPerDay1 = cursor.fetchall()
+        #print(resultPerDay1)
+        for r in resultPerDay1:
+            if (len(r) != 0):
+                dateToCheck = curr_date.strftime('%Y-%m-%d')
+                day = curr_date.strftime('%A')
+                day = day.lower()
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
+                cursor.execute(query, ['1', dateToCheck, dateToCheck])
+                pent = cursor.fetchall()
+                print(pent)
+                if r['occupancy'] == 'Single':
+                    r['rate'] = pent[0]['sor']
+                elif r['occupancy'] == 'Double':
+                    r['rate'] = pent[0]['dor']
+                elif r['occupancy'] == 'Triple':
+                    r['rate'] = pent[0]['tor']
+                elif r['occupancy'] == 'Quad':
+                    r['rate'] = pent[0]['qor']
+                
+                r['type'] = '1 Bed'
+                tempResult.append(r)
+        
+        cursor.execute(
+            'SELECT * FROM request2Bed where date = %s AND id = %s', [curr_date, token])
+        resultPerDay2 = cursor.fetchall()
+        #print(resultPerDay2)
+        for r in resultPerDay2:
+            if (len(r) != 0):
+                dateToCheck = curr_date.strftime('%Y-%m-%d')
+                day = curr_date.strftime('%A')
+                day = day.lower()
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                    day)
+                cursor.execute(query, ['2', dateToCheck, dateToCheck])
+                pent = cursor.fetchall()
+                print(pent)
+                if r['occupancy'] == 'Single':
+                    r['rate'] = pent[0]['sor']
+                elif r['occupancy'] == 'Double':
+                    r['rate'] = pent[0]['dor']
+                elif r['occupancy'] == 'Triple':
+                    r['rate'] = pent[0]['tor']
+                elif r['occupancy'] == 'Quad':
+                    r['rate'] = pent[0]['qor']
+                r['type'] = '2 Bed'
+
+                tempResult.append(r)
+
+        dates.append(curr_date.strftime('%B %d'))
+
+        result.append(tempResult)
+        curr_date = curr_date + datetime.timedelta(days = 1)
+    
+    #print(result)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates)
 
 if __name__ == "__main__":
     app.run(debug = True)

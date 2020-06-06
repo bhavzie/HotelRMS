@@ -78,6 +78,16 @@ $(document).ready(function () {
 
 });
 
+function clearfilters(e) {
+    $('#datexdf').val('Date Range')
+    $('#categoryxdf').val('Category')
+    var table = $('#tab9').DataTable()
+    table
+        .search('')
+        .columns().search('')
+        .draw();
+
+}
 
 
 function handleChange(checkbox) {
