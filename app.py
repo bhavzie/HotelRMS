@@ -6,7 +6,6 @@ from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
 import datetime
-import uuid
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -507,6 +506,15 @@ def login():
 
 
                 elif session['userType'] == 'iata':
+                    cursor.execute(
+                        "SELECT * FROM iataUsers where email = %s", [email])
+                    dog = cursor.fetchall()
+                    dog = dog[0]
+                    if (dog['active'] == 0):
+                        session.clear()
+                        flash(
+                            'You are de-activated. Kindly contact Super Admin!', 'danger')
+                        return render_template('login.html', title='Login')
                     menuParams = {
                     'request': True,
                     'requestCreate': True,
@@ -558,6 +566,13 @@ def login():
                     session['menuParams'] = menuParams
 
                 elif session['userType'] == 'customer':
+                    cursor.execute("SELECT * FROM customers where email = %s", [email])
+                    dog = cursor.fetchall()
+                    dog = dog[0]
+                    if (dog['active'] == 0):
+                        session.clear()
+                        flash('You are de-activated. Kindly contact Super Admin!', 'danger')
+                        return render_template('login.html', title = 'Login')
                     menuParams = {
                         'request': True,
                         'requestCreate': True,
@@ -883,6 +898,34 @@ def showprofile(email):
     data[0]['active'] = 'Yes' if data[0]['active'] else 'No'
     return render_template('showprofile.html', title = 'Profile', data = data[0])
 
+@app.route('/showprofileAll/<email>', methods = ['GET', 'POST'])
+def showprofileAll(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'developer'):
+        cursor.execute('SELECT active, email_verified from developers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'iata'):
+        cursor.execute(
+             'SELECT active, email_verified from iataUsers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'hoteluser'):
+        cursor.execute('SELECT active, email_verified from hotelUsers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'customer'):
+        cursor.execute('SELECT active, email_verified from customers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    data['email_verified'] = "Yes" if rr['email_verified'] else "No"
+    data['active'] = 'Yes' if rr['active'] else 'No'    
+    return render_template('showprofileAll.html', title = 'Profile', data = data)   
+
 @app.route('/editUser/<email>', methods = ["GET", "POST"])
 def editUser(email):
     cursor = mysql.connection.cursor()
@@ -906,6 +949,41 @@ def editUser(email):
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
     return render_template('editUser.html', title = 'Edit', data = data[0], subtypes = subtypes)
 
+@app.route('/editUserAll/<email>', methods = ['GET', 'POST'])
+def editUserAll(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'developer'):
+        cursor.execute(
+            'SELECT fullName, active, email_verified from developers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'iata'):
+        cursor.execute(
+            'SELECT fullName, active, email_verified from iataUsers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'hoteluser'):
+        cursor.execute(
+            'SELECT fullName, active, email_verified from hotelUsers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    elif (data['userType'] == 'customer'):
+        cursor.execute(
+            'SELECT fullName, active, email_verified from customers where email = %s', [email])
+        rr = cursor.fetchall()
+        rr = rr[0]
+    data['email_verified'] = "Yes" if rr['email_verified'] else "No"
+    data['active'] = 'Yes' if rr['active'] else 'No'
+    data['fullName'] = rr['fullName']
+
+    return render_template('editUserAll.html', data = data)
+
+
+
 @app.route('/submitEditUser', methods = ['GET', 'POST'])
 def submitEditUser():
     name = request.form['name']
@@ -928,10 +1006,69 @@ def submitEditUser():
     flash('Hotel user has been edited', 'success')
     return render_template('index.html')
 
+@app.route('/submitEditUserAll2', methods = ["GET", 'POST'])
+def submitEditUserAll2():
+    name = request.form['name']
+    email_verified = getValC(request.form.get('email_verified'))
+    active = getValC(request.form.get('active'))
+    firstName = name.split()[0]
+    email = request.form['email']
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'developer'):
+        cursor.execute('Update developers SET fullName = %s, email_verified = %s, active = %s where email = %s', [name, email_verified, active, email])
+    elif (data['userType'] == 'iata'):
+        cursor.execute('Update iataUsers SET fullName = %s, email_verified = %s, active = %s where email = %s', [
+                       name, email_verified, active, email])
+    elif (data['userType'] == 'hoteluser'):
+        cursor.execute('Update hotelUsers SET fullName = %s, email_verified = %s, active = %s where email = %s', [
+                       name, email_verified, active, email])
+    elif (data['userType'] == 'customer'):
+        cursor.execute('Update customers SET fullName = %s, email_verified = %s, active = %s where email = %s', [
+                       name, email_verified, active, email])
+
+    cursor.execute('Update users SET firstName = %s WHERE email = %s', (firstName, email))
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('User has been edited', 'success')
+    return render_template('index.html')
+
+
+
 @app.route('/deactivateUser/<email>', methods = ['GET', 'POST'])
 def deactivateUser(email):
     cursor = mysql.connection.cursor()
     cursor.execute("UPDATE hotelUsers SET active = 0 where email = %s", [email])
+    mysql.connection.commit()
+    cursor.close()
+
+    flash("User has been de-activated", 'success')
+    return render_template('index.html')
+
+
+@app.route('/deactivateUserAll/<email>', methods=['GET', 'POST'])
+def deactivateUserAll(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'developer'):
+        cursor.execute('Update developers SET active = 0 where email = %s', [
+                      email])
+    elif (data['userType'] == 'iata'):
+        cursor.execute('Update iataUsers SET active = 0 where email = %s', [
+                      email])
+    elif (data['userType'] == 'hoteluser'):
+        cursor.execute('Update hotelUsers SET active = 0 where email = %s', [
+                      email])
+    elif (data['userType'] == 'customer'):
+        cursor.execute('Update customers SET active = 0 where email = %s', [
+                      email])
+
     mysql.connection.commit()
     cursor.close()
 
@@ -949,6 +1086,34 @@ def activateUser(email):
 
     flash("User has been activated", 'success')
     return render_template('index.html')
+
+
+@app.route('/activateUserAll/<email>', methods=['GET', 'POST'])
+def activateUserAll(email):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'developer'):
+        cursor.execute('Update developers SET active = 1 where email = %s', [
+            email])
+    elif (data['userType'] == 'iata'):
+        cursor.execute('Update iataUsers SET active = 1 where email = %s', [
+            email])
+    elif (data['userType'] == 'hoteluser'):
+        cursor.execute('Update hotelUsers SET active = 1 where email = %s', [
+            email])
+    elif (data['userType'] == 'customer'):
+        cursor.execute('Update customers SET active = 1 where email = %s', [
+            email])
+
+    
+    mysql.connection.commit()
+    cursor.close()
+
+    flash("User has been activated", 'success')
+    return render_template('index.html')
+
 
 
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
@@ -1412,7 +1577,7 @@ def showRequest(token):
                 query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
                 cursor.execute(query, ['1', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
-                print(pent)
+                # print(pent)
                 if r['occupancy'] == 'Single':
                     r['rate'] = pent[0]['sor']
                 elif r['occupancy'] == 'Double':
@@ -1438,7 +1603,7 @@ def showRequest(token):
                     day)
                 cursor.execute(query, ['2', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
-                print(pent)
+                # print(pent)
                 if r['occupancy'] == 'Single':
                     r['rate'] = pent[0]['sor']
                 elif r['occupancy'] == 'Double':
@@ -1458,6 +1623,45 @@ def showRequest(token):
     
     #print(result)
     return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates)
+
+
+@app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
+def strategyDiscountCreate():
+    return render_template('strategyDiscountCreate.html')
+
+@app.route('/viewAllUsers', methods = ['GET', 'POST'])
+def viewAllUsers():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM users")
+    data = cursor.fetchall()
+
+    for r in data:
+        if (r['userType'] == 'developer'):
+            cursor.execute(
+                'SELECT active from developers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'iata'):
+            cursor.execute(
+                'SELECT active from iataUsers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'hoteluser'):
+            cursor.execute(
+                'SELECT active from hotelUsers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'customer'):
+            cursor.execute(
+                'SELECT active from customers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        r['active'] = rr['active']    
+    
+
+    cursor.close()
+    return render_template('manageAllUsers.html', data = data)
+
 
 if __name__ == "__main__":
     app.run(debug = True)

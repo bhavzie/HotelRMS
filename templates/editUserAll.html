@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Edit <span style='text-decoration: underline;'>{{ data['firstName'] }}</span></p>
+                <i class="fas fa-edit"></i>
+            </div>
+        </div>
+        {% if data %}
+        <form action="{{ url_for('submitEditUserAll2') }}" method="POST">
+            <div class="formhelp mb-5">
+                <span class='btn btn-primary'>Full Name : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['fullName'] }}" name='name'
+                    required />
+            </div>
+            <div class="infog mb-5">
+                <span class='btn btn-primary'>Email : </span><br>
+                <input type='text' class='form-control mt-3 text-center' value="{{ data['email'] }}" readonly
+                    name='email'>
+            </div>
+            <div class='check mb-5 text-center'>
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        {% if data['email_verified'] == 'No' %}
+                        <input type="checkbox" value="True" onchange="handleChange(this)" name='email_verified'>
+                        {% else %}
+                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='email_verified'>
+                        {% endif %}
+                        <span style='font-weight: bold;'>Email Verified?</span>
+                    </label>
+                </div>
+            </div>
+            <div class='check mb-5 text-center'>
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        {% if data['active'] == 'No' %}
+                        <input type="checkbox" value="True" onchange="handleChange(this)" name='active'>
+                        {% else %}
+                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='active'>
+                        {% endif %}
+                        <span style='font-weight: bold;'>User Active?</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

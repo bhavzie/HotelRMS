@@ -5,15 +5,15 @@
     <div class="wrap-login">
         <div class='loginH'>
             <div class='text-center'>
-                <p>Profile for <span style='text-decoration: underline;'>{{ data['fullName'] }}</span>
+                <p>Profile for <span style='text-decoration: underline;'>{{ data['firstName'] }}</span>
                 </p><i class="fas fa-user"></i>
             </div>
         </div>
         {% if data %}
-        <form action="{{ url_for('editUser', email = data['email'] ) }}" method="POST">
+        <form action="{{ url_for('editUserAll', email = data['email'] ) }}" method="POST">
             <div class="infog mb-5">
-                <span class = 'btn btn-primary'>Full Name : </span><br>
-                <div class = 'mt-3 text-center'>{{ data['fullName'] }}</div>
+                <span class='btn btn-primary'>Full Name : </span><br>
+                <div class='mt-3 text-center'>{{ data['firstName'] }}</div>
             </div>
             <div class="infog mb-5">
                 <span class='btn btn-primary'>Email : </span><br>

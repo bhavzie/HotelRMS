@@ -1,0 +1,345 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Discount Grid</p>
+            </div>
+        </div>
+        <form id='formadd' class='inline mb-5'>
+            <div class='mg'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name"
+                        class="form-control start-date  mb-2 " id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name"
+                        class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
+                </div>
+                <div class='col-sm mb-2'>
+                    <input type = 'text' class = 'form-control' placeholder="Discount ID" style="width: 40%;">
+                </div>
+            </div>
+        </form>
+        <div class = 'table-responsive'>
+            <table class = 'table table-bordered table-hover' id = 'tab12'>
+                <caption>Discount Grid</caption>
+                <thead class = 'thead-dark'>
+                    <tr>
+                        <th rowspan="2">
+                            Lead Time (Days)
+                        </th>
+                        <th>
+                            OCC(%)
+                        </th>   
+                        <th colspan = '2'>
+                            0 - 20%
+                        </th>
+                        <th colspan = '2'>
+                            21 - 40%
+                        </th>
+                        <th colspan = '2'>
+                            41 - 60%
+                        </th>
+                        <th colspan = '2'>
+                            61 - 80%
+                        </th>
+                        <th colspan = '2'>
+                            81 - 100%
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Allocation
+                        </th>
+                        <th>
+                            10(1-10)
+                        </th>
+                        <th>
+                            10(11-20)
+                        </th>
+                        <th>
+                            10(21-30)
+                        </th>
+                        <th>
+                            10(31-40)
+                        </th>
+                        <th>
+                            10(41-50)
+                        </th>
+                        <th>
+                            10(51-60)
+                        </th>
+                        <th>
+                            10(61-70)
+                        </th>
+                        <th>
+                            10(71-80)
+                        </th>
+                        <th>
+                            10(81-90)
+                        </th>
+                        <th>
+                            10(91-100)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            1 - 6
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>   
+                        <td>    
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class = 'form-control'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 
+                            7 - 13
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            14 - 29
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            30 - 59
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            60 - 179
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            180
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                        <td>
+                            <input type='number' step = 'any' class='form-control'>
+                        </td>
+                    </tr>        
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+            var $startDate = $('.start-date');
+            var $endDate = $('.end-date');
+
+            var d = new Date();
+            var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+
+            $startDate.datepicker({
+                autoHide: true,
+                format: "dd/mm/yyyy",
+                startDate: strDate,
+            });
+            $endDate.datepicker({
+                autoHide: true,
+                startDate: $startDate.datepicker('getDate'),
+                format: "dd/mm/yyyy",
+            });
+
+            $startDate.on('change', function () {
+                $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            });
+    })
+
+</script>
+
+{% endblock %}
