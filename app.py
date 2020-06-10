@@ -1575,9 +1575,10 @@ def showRequest(token):
                 day = curr_date.strftime('%A')
                 day = day.lower()
                 query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
+                print(dateToCheck)
                 cursor.execute(query, ['1', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
-                # print(pent)
+                print(pent)
                 if r['occupancy'] == 'Single':
                     r['rate'] = pent[0]['sor']
                 elif r['occupancy'] == 'Double':
@@ -1627,7 +1628,13 @@ def showRequest(token):
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
 def strategyDiscountCreate():
-    return render_template('strategyDiscountCreate.html')
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT count from room')
+    data = cursor.fetchall()
+    rooms = 0
+    for d in data:
+        rooms += int(d['count'])
+    return render_template('strategyDiscountCreate.html', rooms = rooms)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():

@@ -450,6 +450,12 @@ table {
     width: 80px;
 }
 
+.num3 {
+    width: 80px;
+    border: 1px solid black;
+}
+
+
 .start-date {
   width: 200px !important;
 }
@@ -517,3 +523,12 @@ button.multiselect {
   display: inline-block;
 }
 
+.tentative {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.rept {
+  font-size: 20px;
+}
