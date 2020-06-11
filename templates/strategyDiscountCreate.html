@@ -467,8 +467,8 @@
         const th2 = document.createElement('th')
 
         th2.innerHTML = `
-                        <input type = 'number' class = 'num3' min = ${min} max = ${max}>
-                        <input type='number' class='num3' min = ${min} max = ${max}>`
+                        <input type = 'number' class = 'num3' min = ${min} max = ${max} required>
+                        <input type='number' class='num3' min = ${min} max = ${max} required>`
 
         g.appendChild(th2)
 
@@ -543,8 +543,8 @@
             const th2 = document.createElement('th')
         
             th2.innerHTML = `
-                            <input type = 'number' class = 'num3' min = ${peep2} max = ${val} value = ${peep2}>
-                            <input type='number' class='num3'  min = ${peep2} max = ${val} value = ${val}>
+                            <input type = 'number' class = 'num3' min = ${peep2} max = ${val} value = ${peep2} required>
+                            <input type='number' class='num3'  min = ${peep2} max = ${val} value = ${val} required>
                             `
             theadr[1].append(th2)
         } else {
@@ -558,8 +558,8 @@
             const th2 = document.createElement('th')
 
             th2.innerHTML = `
-                            <input type = 'number' class = 'num3' min = ${peep + 1} max = ${val + peep} value = ${peep + 1}>
-                            <input type='number' class='num3'  min = ${peep + 1} max = ${val + peep} value = ${val + peep}>
+                            <input type = 'number' class = 'num3' min = ${peep + 1} max = ${val + peep} value = ${peep + 1} required>
+                            <input type='number' class='num3'  min = ${peep + 1} max = ${val + peep} value = ${val + peep} required>
                             `
             theadr[1].append(th2)
 
@@ -585,7 +585,7 @@
         const endDate = $('#endDateG').val()
         const discountId = $('#discountId').val()
 
-        result = []
+        result = {}
         result['startDate'] = startDate
         result['endDate'] = endDate
         result['discountId'] = discountId
@@ -597,10 +597,40 @@
         table_result = []
         if (table1.classList.contains('noSubmit')) {
             let children = table2.children
-            let tr = children[1].children[1]
-            console.log(tr)
-            let tbody = children[2]
-            console.log(tbody.children)
+            let tr = [...children[1].children[1].children]
+            let ranges = []
+
+            if (tr.length == 1) {
+                alert('Kindly add one row/column')
+                return false
+            }
+
+            for (let m = 1; m < tr.length; m++) {
+                let h = tr[m]
+                ranges.push(h.children[0].value + " - " + h.children[1].value)
+            }
+            result['ranges'] = ranges
+
+            let tbody = [...children[2].children]
+            leadtime = []
+            values = []
+
+            tbody.forEach(tr => {
+                leadtimecell = tr.children[0]
+                leadtime.push(leadtimecell.children[0].value + " - " + leadtimecell.children[1].value)
+
+                let inputs = tr.children
+                tempArr = []
+
+                for (let j=2; j<inputs.length; j++) {
+                    tempArr.push(inputs[j].children[0].value)
+                }
+                values.push(tempArr)
+            })
+            result['values'] = values
+            result['leadtime'] = leadtime
+
+
 
         } else if (table2.classList.contains('noSubmit')) {
             let children = table1.children
@@ -628,11 +658,29 @@
                 values.push(tempArr)
 
             })
-            result.push(values)
-            result.push(leadtime)
+
+            result['values'] = values
+            result['leadtime'] = leadtime
 
         }
-        //console.log(result)
+
+
+        console.log(JSON.stringify(result))
+
+        fetch('/strategyDiscountSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
 
     }
 

@@ -1669,6 +1669,12 @@ def viewAllUsers():
     cursor.close()
     return render_template('manageAllUsers.html', data = data)
 
+@app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
+def strategyDiscountSubmit():
+    inp = request.json
+    print(inp)
+    return ''
+
 
 if __name__ == "__main__":
     app.run(debug = True)
