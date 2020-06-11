@@ -1673,7 +1673,34 @@ def viewAllUsers():
 def strategyDiscountSubmit():
     inp = request.json
     print(inp)
-    return ''
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate) VALUES(%s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate']])
+
+    for jindex, l in enumerate(inp['leadtime']):
+        lead = l.split(' - ')
+        leadMin = lead[0]
+        if (len(lead) == 2):
+            leadMax = lead[1]
+        else:
+            leadMax = 365
+        discountId = inp['discountId']
+
+        for index, r in enumerate(inp['ranges']):
+            range = r.split(' - ')
+            roomMin = range[0]
+            roomMax = range[1]
+            values = inp['values']
+            value = values[jindex][index]
+            
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [discountId, leadMin, leadMax, roomMin, roomMax, value])
+
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your discount grid has been entered', 'success')
+    return ('', 204)
+  
 
 
 if __name__ == "__main__":

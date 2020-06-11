@@ -577,12 +577,16 @@
         
     }
 
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
 
     function addDiscount(e) {
         e.preventDefault()
 
-        const startDate = $('#startDateG').val()
-        const endDate = $('#endDateG').val()
+        const startDate = parseDate2($('#startDateG').val())
+        const endDate = parseDate2($('#endDateG').val())
         const discountId = $('#discountId').val()
 
         result = {}
