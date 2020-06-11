@@ -8,7 +8,7 @@
                 <p>Discount Grid</p>
             </div>
         </div>
-        <form id='formadd' class='inline mb-5'>
+        <form id='formadd' class='inline mb-5' onsubmit="addDiscount(event)">
             <div class='mg mb-5'>
                 <div class="input-group-prepend col-sm">
                     <span class="input-group-text  mb-2">Date range</span>
@@ -18,7 +18,7 @@
                         class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
                 </div>
                 <div class='col-sm mb-2'>
-                    <input type = 'text' class = 'form-control' placeholder="Discount ID" style="width: 40%;" required>
+                    <input type = 'text' class = 'form-control' min = '0' max = '100' placeholder="Discount ID" style="width: 40%;" required id = 'discountId'>
                 </div>
             </div>
         <div class = 'table-responsive'>
@@ -33,19 +33,19 @@
                             OCC(%)
                         </th>   
                         <th colspan = '2'>
-                            0 - 20%
+                            0 - 20% ({{ rooms * 20//100 }} Rooms)
                         </th>
                         <th colspan = '2'>
-                            21 - 40%
+                            21 - 40% ({{ rooms * 20//100 }} Rooms)
                         </th>
                         <th colspan = '2'>
-                            41 - 60%
+                            41 - 60% ({{ rooms * 20//100 }} Rooms)
                         </th>
                         <th colspan = '2'>
-                            61 - 80%
+                            61 - 80% ({{ rooms * 20//100 }} Rooms)
                         </th>
                         <th colspan = '2'>
-                            81 - 100%
+                            81 - 100% ({{ rooms * 20//100 }} Rooms)
                         </th>
                     </tr>
                     <tr>
@@ -53,34 +53,34 @@
                             Allocation
                         </th>
                         <th>
-                            10(1-10)
+                            1 - {{ (rooms * 20//100)//2 }}
                         </th>
                         <th>
-                            10(11-20)
+                            {{ (rooms * 20//100)//2 }} - {{ (rooms * 20//100) }}
                         </th>
                         <th>
-                            10(21-30)
+                            {{ rooms * 20//100 }} - {{ rooms * 20//100 + rooms * 20//200 }}
                         </th>
                         <th>
-                            10(31-40)
+                            {{ rooms * 20//100 + rooms * 20//200 }} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200  }}
                         </th>
                         <th>
-                            10(41-50)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200  }} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200  }}
                         </th>
                         <th>
-                            10(51-60)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200  }} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 }}
                         </th>
                         <th>
-                            10(61-70)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 }} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 }}
                         </th>
                         <th>
-                            10(71-80)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 }} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200}}
                         </th>
                         <th>
-                            10(81-90)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200}} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200}}
                         </th>
                         <th>
-                            10(91-100)
+                            {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200}} - {{ rooms * 20//100 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200 + rooms * 20//200}}
                         </th>
                     </tr>
                 </thead>
@@ -92,34 +92,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>   
                         <td>    
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class = 'form-control' >
+                            <input type='number' step = 'any' class = 'form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>
                     <tr>
@@ -129,34 +129,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>
                     <tr>
@@ -166,34 +166,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>
                     <tr>
@@ -203,34 +203,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>
                     <tr>
@@ -240,34 +240,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>
                     <tr>
@@ -277,34 +277,34 @@
                         <td>
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                         <td>
-                            <input type='number' step = 'any' class='form-control' >
+                            <input type='number' step = 'any' class='form-control' min = '0' max = '100' value = '0' >
                         </td>
                     </tr>        
                 </tbody>
@@ -356,8 +356,8 @@
                 <tbody>
                     <tr>
                         <td>
-                            <input type='number' class='num3'>
-                            <input type='number' class='num3'>`
+                            <input type='number' class='num3' min = '0'>
+                            <input type='number' class='num3' min = '0'>
                         </td>
                         <td>
 
@@ -383,6 +383,7 @@
 <script src="/static/js/jquery.js"></script>
 <script>
     $(document).ready(function () {
+        $('#tab13').addClass('noSubmit')
             $('#fc').hide()
             $('#lc').hide()
             $('#ar').hide()
@@ -414,12 +415,16 @@
     function createGrid1()
     {
         $('#tab12').hide()
+        $('#tab12').addClass('noSubmit')
+        $('#tab13').removeClass('noSubmit')
         $('#tab13').show()
         $('#createGrid11').hide()
         $('#createGrid12').show()
         $('#point').show()
     }
     function createGrid2() {
+        $('#tab13').addClass('noSubmit')
+        $('#tab12').removeClass('noSubmit')
         $('#tab12').show()
         $('#createGrid12').hide()
         $('#createGrid11').show()
@@ -452,7 +457,7 @@
         tbody.append(newTr)
     }
 
-    function addcolcol(e) {
+    function addcolcol(e, min, max) {
         const p = e.target.parentElement
 
         p.colSpan = p.colSpan + 1
@@ -462,8 +467,8 @@
         const th2 = document.createElement('th')
 
         th2.innerHTML = `
-                        <input type = 'number' class = 'num3'>
-                        <input type='number' class='num3'>`
+                        <input type = 'number' class = 'num3' min = ${min} max = ${max}>
+                        <input type='number' class='num3' min = ${min} max = ${max}>`
 
         g.appendChild(th2)
 
@@ -471,7 +476,7 @@
         [2]
         const td = document.createElement('td')
         td.innerHTML = `
-                        <input type = 'number' class = 'num3'>`
+                        <input type = 'number' class = 'num3' min = '0' max = '100'>`
         tbody = tbody.children[0]
         tbody.appendChild(td)
 
@@ -495,13 +500,11 @@
 
     }
 
+    var peep = 0
+
     function addcol() {
         const min = document.getElementById('mincol')
         const max = document.getElementById('maxcol')
-
-        $('#fc').show()
-        $('#adc').hide()
-        $('#lc').show()
 
         if (min.value == '') {
             alert('Enter Min value')
@@ -511,6 +514,12 @@
             alert('Enter Max value')
             return false
         }
+
+
+        $('#fc').show()
+        $('#adc').hide()
+        $('#lc').show()
+
         min.disabled = true
         max.disabled = true
 
@@ -521,31 +530,110 @@
         const rooms = "{{ rooms|safe }}"
         const diff = max.value - min.value + 1
         const val = Math.floor((rooms * diff) / 100);
-        th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
-            <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event)'>
-                            +
-                        </button>
-        `
 
-        theadr[0].append(th1)
+        if (peep == 0) {
+            const peep2 = peep +  parseInt(min.value)
+            th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
+                <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep2}, ${val})'>
+                                +
+                            </button>
+            `
+            theadr[0].append(th1)
 
-        const th2 = document.createElement('th')
-    
-        th2.innerHTML = `
-                        <input type = 'number' class = 'num3' min = ${min.value} max = ${max.value} value = ${min.value}>
-                        <input type='number' class='num3'  min = ${min.value} max = ${max.value} value = ${max.value}>
-                        `
-        theadr[1].append(th2)
+            const th2 = document.createElement('th')
+        
+            th2.innerHTML = `
+                            <input type = 'number' class = 'num3' min = ${peep2} max = ${val} value = ${peep2}>
+                            <input type='number' class='num3'  min = ${peep2} max = ${val} value = ${val}>
+                            `
+            theadr[1].append(th2)
+        } else {
+            th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
+                <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep + 1}, ${val + peep})'>
+                                +
+                            </button>
+            `
+            theadr[0].append(th1)
+
+            const th2 = document.createElement('th')
+
+            th2.innerHTML = `
+                            <input type = 'number' class = 'num3' min = ${peep + 1} max = ${val + peep} value = ${peep + 1}>
+                            <input type='number' class='num3'  min = ${peep + 1} max = ${val + peep} value = ${val + peep}>
+                            `
+            theadr[1].append(th2)
+
+        }
+        peep += val
 
         const tbody = table.children[2]
         const trchildren = [...tbody.children]
         trchildren.forEach(tr => {
             const td = document.createElement('td')
-            td.innerHTML = `<input type='number' step = 'any' class = 'num3' >`
+            td.innerHTML = `<input type='number' step = 'any' class = 'num3' min = '0' max = '100'>`
             tr.appendChild(td)
         })
 
         
+    }
+
+
+    function addDiscount(e) {
+        e.preventDefault()
+
+        const startDate = $('#startDateG').val()
+        const endDate = $('#endDateG').val()
+        const discountId = $('#discountId').val()
+
+        result = []
+        result['startDate'] = startDate
+        result['endDate'] = endDate
+        result['discountId'] = discountId
+
+
+        const table1 = document.getElementById('tab12')
+        const table2 = document.getElementById('tab13')
+        
+        table_result = []
+        if (table1.classList.contains('noSubmit')) {
+            let children = table2.children
+            let tr = children[1].children[1]
+            console.log(tr)
+            let tbody = children[2]
+            console.log(tbody.children)
+
+        } else if (table2.classList.contains('noSubmit')) {
+            let children = table1.children
+            let tr = [...children[1].children[1].children]
+            let ranges = []
+
+            for (let m = 1; m<tr.length; m++) {
+                ranges.push(tr[m].innerHTML.trim())
+            }
+
+            result['ranges'] = ranges
+            
+            let tbody = [...children[2].children]
+            leadtime = []
+            values = []
+            tbody.forEach(tr => {
+                leadtimecell = tr.children[0]
+                leadtime.push(leadtimecell.innerHTML.trim())
+
+                let inputs = tr.children
+                tempArr = []
+                for (let j=2; j<inputs.length; j++) {
+                    tempArr.push(inputs[j].children[0].value)
+                }
+                values.push(tempArr)
+
+            })
+            result.push(values)
+            result.push(leadtime)
+
+        }
+        //console.log(result)
+
     }
 
 </script>
