@@ -22,9 +22,40 @@
             </div>
         </div>
         <hr>
-        <div class = 'mb-5'>
+        <table class = 'table table-bordered table-hover'>
+            <thead class = 'thead-dark'>
+                <tr>
+                <th>
+                    Lead Time
+                </th>
+                <th>
+                    Allocation(Rooms)
+                </th>
+                {% for r in ranges %}
+                <th>
+                    {{ r }} 
+                </t>
+                {%  endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for k,v in result.items() %}
+                    <tr>
+                        <td>
+                            {{ k }}
+                        </td>
+                        <td>
 
-        </div>
+                        </td>
+                        {% for x in v%}
+                            <td>
+                                {{ x['value'] }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 </div>

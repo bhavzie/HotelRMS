@@ -1569,7 +1569,7 @@ def showRequest(token):
         tempResult = []
         cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
         resultPerDay1 = cursor.fetchall()
-        print(resultPerDay1)
+        #print(resultPerDay1)
         for r in resultPerDay1:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
@@ -1635,7 +1635,6 @@ def strategyDiscountCreate():
         rooms += int(d['count'])
     cursor.execute('SELECT * FROM discountMap') 
     discountGrids = cursor.fetchall()
-    print(discountGrids)
     return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
@@ -1714,9 +1713,38 @@ def showDiscountGrid(id):
 
     cursor.execute('SELECT * FROM discount where discountId = %s', [id])
     grid = cursor.fetchall()
-    print(grid)
+
+    ranges = []
+    range1 = {}
+    for l in grid:
+        key = l['roomMin'] + " - " + l['roomMax']
+        if key not in range1:
+            range1[key] = 0
+            ranges.append(key)
+        else:
+            break
+
+    print(ranges)
+
     
-    return render_template('showDiscountGrid1.html', grid = grid, data = data)
+    result = []
+    tup = {}
+    for d in grid:
+        l = []
+        min = d['leadMin']
+        max = d['leadMax']
+        key = str(min + " - " + max)
+        dic = {}
+        dic['min'] = d['roomMin']
+        dic['max'] = d['roomMax']
+        dic['value'] = d['value']
+        if key in tup:
+            tup[key].append(dic)
+        else:
+            tup[key] = [dic]
+    
+    result = tup
+    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result)
 
 
 if __name__ == "__main__":
