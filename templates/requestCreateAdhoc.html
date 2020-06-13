@@ -613,7 +613,9 @@
             let children = table.children
             for (let i = 1; i<children.length; i++) {
                 let resArr = {}
-                resArr['date'] = parseDate2(parseDate(dobj.toISOString().slice(0, 10)))
+                const offset = dobj.getTimezoneOffset()
+                dobj = new Date(dobj.getTime() + (offset * 60 * 1000))
+                resArr['date'] = dobj.toISOString().split('T')[0]
                 
                 let subchildren = children[i].children
                 
@@ -625,11 +627,11 @@
                 
                 table_result.push(resArr)
 
-
             }
 
             dobj.setDate(dobj.getDate() + 1)
         })
+
         result['checkIn'] = parseDate2(result['checkIn'])
         result['checkOut'] = parseDate2(result['checkOut'])
         result['table_result'] = table_result
