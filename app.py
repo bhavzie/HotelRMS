@@ -1500,6 +1500,8 @@ def requestCreateAdhocSubmit():
             ])
 
     table = inp['table_result']
+    print(table)
+    return ''
     for t in table:
         if (t['type'] == '1'):
             cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [
@@ -1575,10 +1577,8 @@ def showRequest(token):
                 day = curr_date.strftime('%A')
                 day = day.lower()
                 query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
-                print(dateToCheck)
                 cursor.execute(query, ['1', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
-                print(pent)
                 if r['occupancy'] == 'Single':
                     r['rate'] = pent[0]['sor']
                 elif r['occupancy'] == 'Double':
