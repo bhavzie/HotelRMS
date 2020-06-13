@@ -1500,8 +1500,6 @@ def requestCreateAdhocSubmit():
             ])
 
     table = inp['table_result']
-    print(table)
-    return ''
     for t in table:
         if (t['type'] == '1'):
             cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [
@@ -1561,16 +1559,17 @@ def showRequest(token):
     if data['comments'].isspace():
         data['comments'] = ''
 
-    #print(data)
     nights = data['nights']
     curr_date = data['checkIn']
     result = []
     dates = []
+
+
     for i in range(0, int(nights)):
         tempResult = []
         cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
         resultPerDay1 = cursor.fetchall()
-        #print(resultPerDay1)
+        print(resultPerDay1)
         for r in resultPerDay1:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
@@ -1634,7 +1633,10 @@ def strategyDiscountCreate():
     rooms = 0
     for d in data:
         rooms += int(d['count'])
-    return render_template('strategyDiscountCreate.html', rooms = rooms)
+    cursor.execute('SELECT * FROM discountMap') 
+    discountGrids = cursor.fetchall()
+    print(discountGrids)
+    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():
@@ -1701,6 +1703,20 @@ def strategyDiscountSubmit():
     flash('Your discount grid has been entered', 'success')
     return ('', 204)
   
+
+
+@app.route('/showDiscountGrid/<id>', methods = ['GET', 'POST'])
+def showDiscountGrid(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from discountMap where discountId = %s', [id])
+    data = cursor.fetchall()
+    data = data[0]
+
+    cursor.execute('SELECT * FROM discount where discountId = %s', [id])
+    grid = cursor.fetchall()
+    print(grid)
+    
+    return render_template('showDiscountGrid1.html', grid = grid, data = data)
 
 
 if __name__ == "__main__":

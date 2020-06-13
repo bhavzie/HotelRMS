@@ -8,7 +8,51 @@
                 <p>Discount Grid</p>
             </div>
         </div>
+        <div id = 'previous'>
+            <div class = 'mb-5'>
+                <table class='table table-bordered table-hover' id='tab12'>
+                    <caption>Created Discount Grid</caption>
+                    <thead class='thead-dark'>
+                        <tr>
+                            <th>
+                                Discount ID
+                            </th>
+                            <th>
+                                Start Date
+                            </th>
+                            <th>
+                                End Date
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grid in discountGrids %}
+                            <tr>
+                                <td>
+                                    {{ grid['discountId'] }}
+                                </td>
+                                <td>
+                                    {{ grid['startDate'] }}
+                                </td>
+                                <td>
+                                    {{ grid['endDate'] }}
+                                </td>
+                                <td>
+                                    <a class = 'btn btn-info' href = '{{ url_for("showDiscountGrid", id = grid["discountId"] ) }}'>View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>  
+            <button type = 'button' onclick = 'createsetup()' class = 'btn btn-primary'>Create Grid</button>
+        </div>
+        <div id = 'new'>
         <form id='formadd' class='inline mb-5' onsubmit="addDiscount(event)">
+            <button type='button' onclick='viewgrid()' class='btn btn-primary mb-5'>View Grids</button>
             <div class='mg mb-5'>
                 <div class="input-group-prepend col-sm">
                     <span class="input-group-text  mb-2">Date range</span>
@@ -376,14 +420,27 @@
             </div>
         </div>
         </form>
+        </div>
     </div>
 </div>
 
 
 <script src="/static/js/jquery.js"></script>
 <script>
+
+    function createsetup() {
+        $('#previous').hide()
+        $('#new').show()
+    }
+
+    function viewgrid() {
+        $('#new').hide()
+        $('#previous').show()
+    }
+
     $(document).ready(function () {
         $('#tab13').addClass('noSubmit')
+        $('#new').hide()
             $('#fc').hide()
             $('#lc').hide()
             $('#ar').hide()
