@@ -615,8 +615,8 @@
                 let resArr = {}
 
                 const date = dobj.getDate()
-                const month = dobj.getUTCMonth() + 1
-                const year = dobj.getUTCFullYear()
+                const month = dobj.getMonth() + 1
+                const year = dobj.getFullYear()
 
                 resArr['date'] = year + "/" + month + "/" + date
 
