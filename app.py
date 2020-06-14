@@ -1643,7 +1643,12 @@ def strategyDiscountCreate():
         rooms += int(d['count'])
     cursor.execute('SELECT * FROM discountMap') 
     discountGrids = cursor.fetchall()
-    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids)
+    cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE')
+    f = cursor.fetchall()
+    flag = False
+    if len(f) != 0:
+        flag = True
+    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():
