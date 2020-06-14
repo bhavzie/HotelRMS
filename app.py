@@ -1682,7 +1682,13 @@ def viewAllUsers():
 def strategyDiscountSubmit():
     inp = request.json
     print(inp)
+    occ = inp['occ']
+    print(occ)
+        
     cursor = mysql.connection.cursor()
+    for o in occ:
+        cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
+    
     cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate) VALUES(%s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate']])
 
     for jindex, l in enumerate(inp['leadtime']):
@@ -1722,6 +1728,10 @@ def showDiscountGrid(id):
     cursor.execute('SELECT * FROM discount where discountId = %s', [id])
     grid = cursor.fetchall()
 
+    cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
+    occ = cursor.fetchall()
+    print(occ)
+
     ranges = []
     range1 = {}
     for l in grid:
@@ -1752,7 +1762,7 @@ def showDiscountGrid(id):
             tup[key] = [dic]
     
     result = tup
-    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result)
+    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ)
 
 
 if __name__ == "__main__":

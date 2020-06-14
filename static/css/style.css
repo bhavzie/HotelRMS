@@ -528,3 +528,13 @@ button.multiselect {
   flex-direction: row;
   justify-content: space-around;
 }
+
+#tab55 {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#tab55 th {
+  word-wrap: break-word;
+}
+

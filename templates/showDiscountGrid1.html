@@ -22,20 +22,30 @@
             </div>
         </div>
         <hr>
-        <table class = 'table table-bordered table-hover'>
+        <table class = 'table table-bordered table-hover' id = 'tab55'>
             <thead class = 'thead-dark'>
                 <tr>
-                <th>
-                    Lead Time
-                </th>
-                <th>
-                    Allocation(Rooms)
-                </th>
-                {% for r in ranges %}
-                <th>
-                    {{ r }} 
-                </t>
-                {%  endfor %}
+                    <th style = 'width: 10%;' rowspan="2">
+                        Lead Time
+                    </th>
+                    <th>
+                        OCC(%)
+                    </th>
+                    {% for o in occ%}
+                        <th colspan = "{{ o['col'] }}">
+                            {{ o['occ'] }}
+                        </th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th style = 'width: 8%;'>
+                        Allocation (Rooms)
+                    </th style = 'width: 5%;'>
+                    {% for r in ranges %}
+                    <th>
+                        {{ r }} 
+                    </t>
+                    {%  endfor %}
                 </tr>
             </thead>
             <tbody>

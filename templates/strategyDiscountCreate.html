@@ -665,6 +665,14 @@
                 alert('Kindly add one row/column')
                 return false
             }
+            let to = [...children[1].children[0].children]
+            let occ = []
+            for (let m = 2; m <to.length; m++) {
+                let h = to[m]
+                let c = $(h).prop('colSpan')
+                occ.push({ 'occ': h.innerText, 'col': c })
+            }
+            result['occ'] = occ
 
             for (let m = 1; m < tr.length; m++) {
                 let h = tr[m]
@@ -697,6 +705,15 @@
             let children = table1.children
             let tr = [...children[1].children[1].children]
             let ranges = []
+
+            let to = [...children[1].children[0].children]
+            let occ = []
+            for (let m = 2; m < to.length; m++) {
+                let h = to[m]
+                let c = $(h).prop('colSpan')
+                occ.push({'occ': h.innerText, 'col': c})
+            }
+            result['occ'] = occ
 
             for (let m = 1; m<tr.length; m++) {
                 ranges.push(tr[m].innerHTML.trim())
@@ -737,7 +754,7 @@
             body: JSON.stringify(result)
         })
             .then(res => {
-                window.location.href = '/'
+                window.location.href = '/strategyDiscountCreate'
             })
             .catch(err => {
                 console.log(err)
