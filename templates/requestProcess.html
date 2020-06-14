@@ -108,7 +108,13 @@
                                                     <td>{{day['occupancy']}}</td>
                                                     <td>{{day['type']}}</td>
                                                     <td>{{day['count']}}</td>
-                                                    <td>{{day['rate']}}</td>
+                                                    <td>
+                                                    {% if day['rate'] == -1%}
+                                                        <input type = 'number' class = 'num3' min = '10'>
+                                                    {% else %}
+                                                        {{day['rate']}}
+                                                    {% endif %}
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>

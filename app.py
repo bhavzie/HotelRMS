@@ -1578,14 +1578,17 @@ def showRequest(token):
                 query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
                 cursor.execute(query, ['1', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
-                if r['occupancy'] == 'Single':
-                    r['rate'] = pent[0]['sor']
-                elif r['occupancy'] == 'Double':
-                    r['rate'] = pent[0]['dor']
-                elif r['occupancy'] == 'Triple':
-                    r['rate'] = pent[0]['tor']
-                elif r['occupancy'] == 'Quad':
-                    r['rate'] = pent[0]['qor']
+                if (len(pent) == 0):
+                    r['rate'] = -1
+                else:
+                    if r['occupancy'] == 'Single':
+                        r['rate'] = pent[0]['sor']
+                    elif r['occupancy'] == 'Double':
+                        r['rate'] = pent[0]['dor']
+                    elif r['occupancy'] == 'Triple':
+                        r['rate'] = pent[0]['tor']
+                    elif r['occupancy'] == 'Quad':
+                        r['rate'] = pent[0]['qor']
                 
                 r['type'] = '1 Bed'
                 tempResult.append(r)
@@ -1603,25 +1606,30 @@ def showRequest(token):
                     day)
                 cursor.execute(query, ['2', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
+                if (len(pent) == 0):
+                    r['rate'] = -1
+                else:
                 # print(pent)
-                if r['occupancy'] == 'Single':
-                    r['rate'] = pent[0]['sor']
-                elif r['occupancy'] == 'Double':
-                    r['rate'] = pent[0]['dor']
-                elif r['occupancy'] == 'Triple':
-                    r['rate'] = pent[0]['tor']
-                elif r['occupancy'] == 'Quad':
-                    r['rate'] = pent[0]['qor']
+                    if r['occupancy'] == 'Single':
+                        r['rate'] = pent[0]['sor']
+                    elif r['occupancy'] == 'Double':
+                        r['rate'] = pent[0]['dor']
+                    elif r['occupancy'] == 'Triple':
+                        r['rate'] = pent[0]['tor']
+                    elif r['occupancy'] == 'Quad':
+                        r['rate'] = pent[0]['qor']
                 r['type'] = '2 Bed'
 
                 tempResult.append(r)
 
         dates.append(curr_date.strftime('%B %d'))
 
+
         result.append(tempResult)
+    
         curr_date = curr_date + datetime.timedelta(days = 1)
     
-    #print(result)
+    print(result)
     return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates)
 
 
