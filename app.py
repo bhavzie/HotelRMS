@@ -1654,7 +1654,11 @@ def strategyDiscountCreate():
     if len(f) != 0:
         flag = True
         defaultId = f[0]['discountId']
-    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId)
+    
+    cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
+    storedDates = cursor.fetchall()
+
+    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():

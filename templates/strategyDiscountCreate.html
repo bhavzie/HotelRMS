@@ -77,6 +77,7 @@
                     {% endif %}
                 </div>
             </div>
+        <div id = 'msg2'></div>
         <div class = 'table-responsive'>
             <table class = 'table table-bordered table-hover' id = 'tab12'>
                 <caption>Default Discount Grid</caption>
@@ -650,6 +651,22 @@
         return x.split("/").reverse().join("/");
     }
 
+    function dateRangeOverlaps(a_start, a_end, b_start, b_end) {
+            if (a_start <= b_start && b_start <= a_end) return true;
+            if (a_start <= b_end && b_end <= a_end) return true;
+            if (b_start <= a_start && a_end < b_end) return true;
+            return false;
+    }
+
+    function strDate(x) {
+            var dateParts = x.split("/");
+
+            var dateObject = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]);
+
+            return dateObject
+    }
+
+
 
     function addDiscount(e) {
         e.preventDefault()
@@ -659,6 +676,33 @@
         const discountId = $('#discountId').val()
         const defaults = document.getElementById('defaults')
 
+        const storedDates = JSON.parse('{{ storedDates|tojson }}')
+        let stc = strDate(startDate)
+        let etc = strDate(endDate)
+        let pass = true
+        storedDates.forEach(date => {
+            let st = new Date(date['startDate'])
+            let et = new Date(date['endDate'])
+
+            st.setHours(0, 0, 0)
+            et.setHours(0, 0, 0)
+
+            if (dateRangeOverlaps(st, et, stc, etc)) {
+                let msg2 = document.getElementById('msg2')
+                msg2.style.setProperty('color', 'red', 'important');
+
+                msg2.innerHTML = `The date range entered overlaps with the already entered date range with start date :- ${st.toDateString()} and end date :- ${et.toDateString()}`
+                $(msg2).show()
+                pass = false
+            }
+
+        })
+
+        if (!pass)
+            return false
+        else
+            $('#msg2').hide()
+
         result = {}
         result['startDate'] = startDate
         result['endDate'] = endDate
@@ -667,10 +711,11 @@
         if (defaults) {
             if (defaults.checked) {
                 result['defaultm'] = 1
-            } else {
-                result['defaultm'] = 0
             }
+        } else {
+            result['defaultm'] = 0
         }
+
 
         const table1 = document.getElementById('tab12')
         const table2 = document.getElementById('tab13')
