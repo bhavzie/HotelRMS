@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Enter OCC :</p>
+            </div>
+        </div>
+        <small id='smallID' class='form-text text-muted mb-5'>
+            All fields are in percentage (%)
+        </small>
+        <form action = '{{ url_for("showRequest1") }}' method = 'POST'>
+            <input type = 'hidden' name = 'id' value = '{{ token }}'>
+            
+            {% for date in dates%}
+                <div class = 'row mb-5'>
+                    <div class = 'col-sm-6'>
+                        <label class = 'btn btn-info'>{{ date }}</label>
+                    </div>
+                    <div class='col-sm-6'>
+                        <input type = 'number' step = 'any' min = '0' max = '100' class = 'form-control ml-5' style = 'width: 60%;' name = '{{ date }}' required>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

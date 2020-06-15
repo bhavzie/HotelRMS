@@ -1538,6 +1538,23 @@ def home2():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 def showRequest(token):
     cursor = mysql.connection.cursor()
+    cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
+    dates = cursor.fetchall()
+    dates = dates[0]
+    checkIn = dates['checkIn']
+    checkOut = dates['checkOut']
+    dates = []
+    day = datetime.timedelta(days=1)
+    while checkIn < checkOut:
+        dates.append(checkIn)
+        checkIn = checkIn + day
+
+    return render_template('getOcc.html', dates = dates, token = token)
+
+@app.route('/showRequest1', methods = ['GET', 'POST'])
+def showRequest1():
+    token = request.form['id']
+    cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM request where id = %s', [token])
     data = cursor.fetchall()
     data = data[0]
@@ -1563,16 +1580,28 @@ def showRequest(token):
     curr_date = data['checkIn']
     result = []
     dates = []
+    discounts = []
+    lead = int(data['leadTime'])
+
+    cursor.execute('SELECT * From room')
+    data7 = cursor.fetchall()
+    totalRooms = 0
+    for d in data7:
+        totalRooms += int(d['count'])
 
     mmp = 1
     for i in range(0, int(nights)):
         tempResult = []
         cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
         resultPerDay1 = cursor.fetchall()
+
+
         #print(resultPerDay1)
         for r in resultPerDay1:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
+                
+
                 day = curr_date.strftime('%A')
                 day = day.lower()
                 query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
@@ -1624,6 +1653,34 @@ def showRequest(token):
 
                 tempResult.append(r)
 
+        dateToCheck = curr_date.strftime('%Y-%m-%d')
+        
+        occ = int(request.form[str(curr_date)])
+        
+        cursor.execute(
+            'SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
+        di = cursor.fetchall()
+        if (len(di) == 0):
+            discounts.append(0)
+        else:
+            if len(di) == 1:
+                id = di[0]['discountId']
+
+            else:
+                for l in di:
+                    if (l['defaultm'] == 0):
+                        id = l['discountId']
+                        break
+            
+            rooms = occ * totalRooms // 100
+            
+            print(id, lead, rooms)
+            cursor.execute('SELECT * FROM discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rooms, rooms])
+            dd = cursor.fetchall()
+            discounts.append(dd[0]['value'])
+
+        lead = lead + 1
+
         dates.append(curr_date.strftime('%B %d'))
 
 
@@ -1631,10 +1688,9 @@ def showRequest(token):
     
         curr_date = curr_date + datetime.timedelta(days = 1)
     
-    print(result)
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -1696,9 +1752,9 @@ def viewAllUsers():
 @app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
 def strategyDiscountSubmit():
     inp = request.json
-    print(inp)
+    #print(inp)
     occ = inp['occ']
-    print(occ)
+    #print(occ)
         
     cursor = mysql.connection.cursor()
     for o in occ:
@@ -1745,7 +1801,7 @@ def showDiscountGrid(id):
 
     cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
     occ = cursor.fetchall()
-    print(occ)
+    #print(occ)
 
     ranges = []
     range1 = {}
@@ -1757,7 +1813,7 @@ def showDiscountGrid(id):
         else:
             break
 
-    print(ranges)
+    #print(ranges)
 
     
     result = []

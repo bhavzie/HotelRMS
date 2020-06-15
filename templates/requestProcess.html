@@ -89,6 +89,14 @@
                                         <td>Lead Time</td>
                                         <td>{{ data['leadTime']|int + i }}</td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            Discount
+                                        </td>
+                                        <td>
+                                            {{ discounts[i] }}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -139,4 +147,8 @@
     </div>
 </div>
 
+<script src="/static/js/jquery.js"></script>
+<script>
+
+</script>
 {% endblock %}
