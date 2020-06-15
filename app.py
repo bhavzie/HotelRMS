@@ -1564,7 +1564,7 @@ def showRequest(token):
     result = []
     dates = []
 
-
+    mmp = 1
     for i in range(0, int(nights)):
         tempResult = []
         cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
@@ -1580,6 +1580,7 @@ def showRequest(token):
                 pent = cursor.fetchall()
                 if (len(pent) == 0):
                     r['rate'] = -1
+                    mmp = 0
                 else:
                     if r['occupancy'] == 'Single':
                         r['rate'] = pent[0]['sor']
@@ -1608,6 +1609,7 @@ def showRequest(token):
                 pent = cursor.fetchall()
                 if (len(pent) == 0):
                     r['rate'] = -1
+                    mmp = 0
                 else:
                 # print(pent)
                     if r['occupancy'] == 'Single':
@@ -1630,6 +1632,8 @@ def showRequest(token):
         curr_date = curr_date + datetime.timedelta(days = 1)
     
     print(result)
+    if (mmp == 0):
+        flash('No Rate Grid available!', 'danger')
     return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates)
 
 
@@ -1646,9 +1650,11 @@ def strategyDiscountCreate():
     cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE')
     f = cursor.fetchall()
     flag = False
+    defaultId = -1
     if len(f) != 0:
         flag = True
-    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag)
+        defaultId = f[0]['discountId']
+    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId)
 
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():
@@ -1694,7 +1700,7 @@ def strategyDiscountSubmit():
     for o in occ:
         cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
     
-    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate) VALUES(%s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate']])
+    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm) VALUES(%s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm']])
 
     for jindex, l in enumerate(inp['leadtime']):
         lead = l.split(' - ')
@@ -1767,7 +1773,33 @@ def showDiscountGrid(id):
             tup[key] = [dic]
     
     result = tup
-    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ)
+
+    cursor.execute('SELECT * From discountMap where defaultm = 1')
+    ffm = cursor.fetchall()
+    flag = True
+    if len(ffm) == 0:
+        flag = False
+
+    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag)
+
+@app.route('/unmarkDefault/<id>', methods = ['GET', 'POST'])
+def unmarkDefault(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE discountMap set defaultm = 0 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid marked as non default', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
+@app.route('/markDefault/<id>', methods = ['GET', 'POST'])
+def markDefault(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE discountMap set defaultm = 1 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid marked as default', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
 
 
 if __name__ == "__main__":

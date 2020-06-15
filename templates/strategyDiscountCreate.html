@@ -8,11 +8,12 @@
                 <p>Discount Grid</p>
             </div>
         </div>
-        {{ flag }}
         <div id = 'previous'>
             <div class = 'mb-5'>
+                <span class='badge badge-primary mb-3'>Default Grid Row</span>
                 <table class='table table-bordered table-hover' id='tab17'>
-                    <caption>Created Discount Grid</caption>
+                    <caption>Created Discount Grid
+                    </caption>
                     <thead class='thead-dark'>
                         <tr>
                             <th>
@@ -31,7 +32,11 @@
                     </thead>
                     <tbody>
                         {% for grid in discountGrids %}
+                            {% if defaultId == -1%}
                             <tr>
+                            {% elif defaultId == grid['discountId'] %}
+                            <tr class = 'table-primary'>
+                            {% endif %}
                                 <td>
                                     {{ grid['discountId'] }}
                                 </td>
@@ -62,8 +67,14 @@
                     <input type="text" placeholder="End date" aria-label="Last name"
                         class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
                 </div>
-                <div class='col-sm mb-2'>
-                    <input type = 'text' class = 'form-control' min = '0' max = '100' placeholder="Discount ID" style="width: 40%;" required id = 'discountId'>
+                <div class='col-sm mb-4'>
+                    <input type = 'text' class = 'form-control' min = '0' max = '100' placeholder="Discount ID" style="width: 70%;" required id = 'discountId'>
+                    {% if flag == False %}
+                </div>
+                <div class = 'col-sm mb-2'>
+                    <input type='checkbox' id='defaults'>
+                    <label>Mark as Default</label>
+                    {% endif %}
                 </div>
             </div>
         <div class = 'table-responsive'>
@@ -646,12 +657,20 @@
         const startDate = parseDate2($('#startDateG').val())
         const endDate = parseDate2($('#endDateG').val())
         const discountId = $('#discountId').val()
+        const defaults = document.getElementById('defaults')
 
         result = {}
         result['startDate'] = startDate
         result['endDate'] = endDate
         result['discountId'] = discountId
 
+        if (defaults) {
+            if (defaults.checked) {
+                result['defaultm'] = 1
+            } else {
+                result['defaultm'] = 0
+            }
+        }
 
         const table1 = document.getElementById('tab12')
         const table2 = document.getElementById('tab13')
@@ -743,8 +762,6 @@
 
         }
 
-
-        console.log(JSON.stringify(result))
 
         fetch('/strategyDiscountSubmit', {
             method: 'POST',
