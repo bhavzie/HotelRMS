@@ -462,6 +462,9 @@
             $('#point').hide()
             var $startDate = $('.start-date');
             var $endDate = $('.end-date');
+            const min = document.getElementById('mincol')
+            min.value = 0
+            min.disabled = true
 
             var d = new Date();
             var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
@@ -598,7 +601,7 @@
         const theadr = table.children[1].children
         const th1 = document.createElement('th')
         const rooms = "{{ rooms|safe }}"
-        const diff = max.value - min.value + 1
+        const diff = max.value - min.value
         const val = Math.floor((rooms * diff) / 100);
 
         if (peep == 0) {
