@@ -1582,6 +1582,7 @@ def showRequest1():
     dates = []
     discounts = []
     lead = int(data['leadTime'])
+    occs = []
 
     cursor.execute('SELECT * From room')
     data7 = cursor.fetchall()
@@ -1656,6 +1657,8 @@ def showRequest1():
         dateToCheck = curr_date.strftime('%Y-%m-%d')
         
         occ = int(request.form[str(curr_date)])
+        pam = occ * totalRooms//100
+        occs.append(str(occ) + "  (" + str(pam) + " Rooms)")
         
         cursor.execute(
             'SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
@@ -1674,7 +1677,6 @@ def showRequest1():
             
             rooms = occ * totalRooms // 100
             
-            print(id, lead, rooms)
             cursor.execute('SELECT * FROM discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rooms, rooms])
             dd = cursor.fetchall()
             discounts.append(dd[0]['value'])
@@ -1690,7 +1692,7 @@ def showRequest1():
     
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])

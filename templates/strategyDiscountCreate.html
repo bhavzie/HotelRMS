@@ -575,6 +575,8 @@
 
     var peep = 0
 
+    var lastc = 0
+
     function addcol() {
         const min = document.getElementById('mincol')
         const max = document.getElementById('maxcol')
@@ -602,7 +604,10 @@
         const th1 = document.createElement('th')
         const rooms = "{{ rooms|safe }}"
         const diff = max.value - min.value
-        const val = Math.floor((rooms * diff) / 100);
+
+        const m = Math.floor((max.value * rooms)/100);
+        const val = m - lastc;
+        lastc = m;
 
         if (peep == 0) {
             const peep2 = peep +  parseInt(min.value)
