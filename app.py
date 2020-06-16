@@ -1658,7 +1658,7 @@ def showRequest1():
         
         occ = int(request.form[str(curr_date)])
         pam = occ * totalRooms//100
-        occs.append(str(occ) + "  (" + str(pam) + " Rooms)")
+        occs.append(str(occ) + "  (" + str(pam) + " Rooms   )")
         
         cursor.execute(
             'SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
@@ -1679,7 +1679,7 @@ def showRequest1():
             
             cursor.execute('SELECT * FROM discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rooms, rooms])
             dd = cursor.fetchall()
-            discounts.append(dd[0]['value'])
+            discounts.append(dd[0]['value'] + " (ID: " + str(id) + ")")
 
         lead = lead + 1
 
@@ -1761,8 +1761,10 @@ def strategyDiscountSubmit():
     cursor = mysql.connection.cursor()
     for o in occ:
         cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
-    
-    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm) VALUES(%s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm']])
+
+    email = session['email']
+    time = datetime.datetime.now()   
+    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time])
 
     for jindex, l in enumerate(inp['leadtime']):
         lead = l.split(' - ')

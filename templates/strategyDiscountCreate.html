@@ -26,6 +26,12 @@
                                 End Date
                             </th>
                             <th>
+                                Created By
+                            </th>
+                            <th>
+                                Created On
+                            </th>
+                            <th>
                                 Actions
                             </th>
                         </tr>
@@ -45,6 +51,12 @@
                                 </td>
                                 <td>
                                     {{ grid['endDate'] }}
+                                </td>
+                                <td>
+                                    {{ grid['createdBy'] }}
+                                </td>
+                                <td>
+                                    {{ grid['createdOn'] }}
                                 </td>
                                 <td>
                                     <a class = 'btn btn-info' href = '{{ url_for("showDiscountGrid", id = grid["discountId"] ) }}'>View</a>
