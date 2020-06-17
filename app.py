@@ -1675,7 +1675,7 @@ def showRequest1():
 
         minDiscountVal = 101
         glid = 0
-        cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
+        cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s AND active = 1', [dateToCheck, dateToCheck])
         di = cursor.fetchall()
 
         if len(di) == 0:
@@ -1696,9 +1696,12 @@ def showRequest1():
                     discounts.append('0' + "(No Grid Fits)")
                 else:
                     glid = id
-                    minDiscountVal = min(minDiscountVal, int(dd[0]['value']))
+                    if dd[0]['value'] == '' or dd[0]['value'] == ' ':
+                        dd[0]['value'] = '0'
+                    dd[0]['value'] == dd[0]['value'].strip()
+                    minDiscountVal = min(minDiscountVal, float(dd[0]['value']))
             
-        discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
+            discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
         
         lead = lead + 1
 
