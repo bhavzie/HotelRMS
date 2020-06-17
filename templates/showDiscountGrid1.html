@@ -9,17 +9,29 @@
             </div>
         </div>
         <div class = 'mb-5'>
+        <a class = 'btn btn-primary' href = '{{ url_for("strategyDiscountCreate")  }}'>Back <i class="fas fa-backward"></i></a>
+        </div>
+        <div id = 'msg2'></div>
+        <div class = 'mb-5'>
             <div class = 'row mb-5'>
                 <div class = 'col-sm-3'>
-                    <span class = 'btn btn-info'>Start Date: {{ data['startDate'] }} </span>
+                    <div class="input-group-prepend col-sm" id='dend'>
+                        <span class="input-group-text  mb-2">Date range</span>
+                        <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                            id='startDateG' required>
+                        <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                            id='endDateG' required>
+                    </div>
+                    <span class = 'btn btn-info' id = 'de1'>Start Date: {{ data['startDate'] }} </span>
                 </div>
                 <div class = 'col-sm-3'>
-                    <span class = 'btn btn-info'>End Date: {{ data['endDate'] }} </span>
+                    <span class = 'btn btn-info' id = 'de2'>End Date: {{ data['endDate'] }} </span>
                 </div>
                 <div class='col-sm-3'>
                     <span class='btn btn-info'>Discount ID : {{ data['discountId'] }} </span>
+                    <input type = 'hidden' id = 'discountId' value = "{{ data['discountId'] }}">
                 </div>
-                {% if data['defaultm'] == 1 %}
+                <!-- {% if data['defaultm'] == 1 %}
                 <div class = 'col-sm-3'>
                     <a class = 'btn btn btn-danger' href = '{{ url_for("unmarkDefault", id = data["discountId"]) }}'>Unmark as Default?</a>
                 </div>
@@ -27,7 +39,17 @@
                 <div class='col-sm-3'>
                     <a class='btn btn btn-danger' href='{{ url_for("markDefault", id = data["discountId"]) }}'>Mark as Default?</a>
                 </div>
-                {% endif %}
+                {% endif %} -->
+                <div class = 'col-sm-3'>
+                    <button class = 'btn btn-warning' onclick = 'edit()'>Edit</button>
+                    {% if data['defaultm'] == 0%}
+                    {% if data['active'] == 1 %}
+                    <a class = 'btn btn-danger' href = "{{ url_for('deactivateDiscount', id = data['discountId']) }}">Deactivate</a>
+                    {% elif data['active'] == 0 %}
+                    <a class='btn btn-danger' href="{{ url_for('activateDiscount', id = data['discountId']) }}">Activate</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
         <hr>
@@ -61,14 +83,15 @@
                 {% for k,v in result.items() %}
                     <tr>
                         <td>
-                            {{ k }}
+                            <input type = 'number' disabled value = "{{ k.split(' - ')[0] }}" class = 'num3' style = 'width:40%;' min = 0> - 
+                            <input type='number' disabled value="{{ k.split(' - ')[1] }}" class='num3' style = 'width:40%;' min = 0>
                         </td>
                         <td>
 
                         </td>
                         {% for x in v%}
                             <td>
-                                {{ x['value'] }}
+                               <input type = 'number' disabled value = "{{ x['value'] }}" class = 'form-control' min = 0 max = 100 step = any>
                             </td>
                         {% endfor %}
                     </tr>
@@ -76,7 +99,214 @@
             </tbody>
         </table>
 
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin" onclick = 'aj(event)'>Submit</button>
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+    function parseDate(x) {
+            return x.split("-").reverse().join("/");
+    }
+
+    $(document).ready(function () {
+        $('#subm').hide();
+        $('#dend').hide();
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: strDate,
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: $startDate.datepicker('getDate'),
+        });
+
+
+        $startDate.on('change', function () {
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+        });
+    });
+
+    function edit() {
+        $('#subm').show();
+
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+        
+        let startDate = parseDate("{{ data['startDate'] }}")
+        let endDate = parseDate("{{ data['endDate'] }}")
+
+
+        $startDate.datepicker('setDate', startDate);
+        $endDate.datepicker('setDate', endDate);
+
+        const defaultm = "{{ data['defaultm']|safe }}"
+        const table = document.getElementById('tab55')
+        const trs = [...table.children[1].children]
+
+        trs.forEach(tr => {
+            
+            const td = [...tr.children]
+
+            for (let i = 0; i<td.length; i++) {
+                if (i==0) {
+                    td[i].children[0].disabled = false
+                    td[i].children[1].disabled = false
+                } else {
+                    if (i==1)   continue;
+                    else {
+                        td[i].children[0].disabled = false
+                    }
+                }
+                
+            }
+
+        });
+
+        if (defaultm == 0) {
+            $('#de1').hide()
+            $('#de2').hide()
+            $('#dend').show()
+        }
+
+    }
+
+    function parseDate2(x) {
+            return x.split("/").reverse().join("/");
+    }
+
+     function dateRangeOverlaps(a_start, a_end, b_start, b_end) {
+            if (a_start <= b_start && b_start <= a_end) return true;
+            if (a_start <= b_end && b_end <= a_end) return true;
+            if (b_start <= a_start && a_end < b_end) return true;
+            return false;
+    }
+    
+    function strDate(x) {
+        var dateParts = x.split("/");
+
+        var dateObject = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]);
+
+        return dateObject
+    }
+
+    function aj(e) {
+        e.preventDefault()
+        const defaultm = "{{ data['defaultm']|safe }}"
+        const discountId = $('#discountId').val()
+
+        let startDate = "{{ data['startDate'] }}"
+        let endDate = "{{ data['endDate'] }}"
+
+        result = {}
+
+        if (defaultm == 0) {
+            const startDate1 = parseDate2($('#startDateG').val())
+            const endDate1 = parseDate2($('#endDateG').val())
+
+            const storedDates = JSON.parse('{{ storedDates|tojson }}')
+            let stc = strDate(startDate1)
+            let etc = strDate(endDate1)
+
+            let pass = true
+            storedDates.forEach(date => {
+                let st = new Date(date['startDate'])
+                let et = new Date(date['endDate'])
+
+                st.setHours(0, 0, 0)
+                et.setHours(0, 0, 0)
+
+                if (dateRangeOverlaps(st, et, stc, etc)) {
+                    let msg2 = document.getElementById('msg2')
+                    msg2.style.setProperty('color', 'red', 'important');
+
+                    msg2.innerHTML = `The date range entered overlaps with the already entered date range with start date :- ${st.toDateString()} and end date :- ${et.toDateString()}`
+                    $(msg2).show()
+                    pass = false
+                }
+
+            })
+
+            if (!pass)
+                return false
+            else {
+                $('#msg2').hide()
+                startDate = parseDate2($('#startDateG').val())
+                endDate = parseDate2($('#endDateG').val())
+            }
+        }
+
+        result['discountId'] = discountId
+        result['startDate']= startDate
+        result['endDate'] = endDate
+        result['defaultm'] = defaultm
+
+
+        const table = document.getElementById('tab55')
+        table_result = []
+        let children = table.children
+        let tr = [...children[0].children[1].children]
+        let tbody = [...children[1].children]
+        leadtime = []
+        values = []
+        let ranges = []
+
+        for (let m = 1; m < tr.length; m++) {
+            ranges.push(tr[m].innerHTML.trim())
+        }
+
+        result['ranges'] = ranges
+
+        tbody.forEach(tr => {
+            leadtimecell = tr.children[0]
+            
+
+            leadtime.push(leadtimecell.children[0].value + "-" + leadtimecell.children[1].value)
+
+            let inputs = tr.children
+            tempArr = []
+            for (let j = 2; j < inputs.length; j++) {
+                tempArr.push(inputs[j].children[0].value)
+            }
+            values.push(tempArr)
+
+        })
+
+        result['values'] = values
+        result['leadtime'] = leadtime
+
+
+        fetch('/editDiscountGrid', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/strategyDiscountCreate'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+</script>
 
 {% endblock %}

@@ -1553,6 +1553,7 @@ def showRequest(token):
 
 @app.route('/showRequest1', methods = ['GET', 'POST'])
 def showRequest1():
+
     token = request.form['id']
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM request where id = %s', [token])
@@ -1565,13 +1566,22 @@ def showRequest1():
         if v.count('pc') > 0:
             string = 'Post Checkout'
             data['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            data['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            data['paymentTerms'] = 'Prior To Arrival'
 
     string = ''
     v = data['formPayment']
     if v != None:
         if v.count('cq') > 0:
-            string = 'Cheque'
-            data['formPayment'] = string
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    data['formPayment'] = string
 
     if data['comments'].isspace():
         data['comments'] = ''
@@ -1596,12 +1606,12 @@ def showRequest1():
         cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
         resultPerDay1 = cursor.fetchall()
 
-
-        #print(resultPerDay1)
+        roomsToBook = 0
         for r in resultPerDay1:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
                 
+
 
                 day = curr_date.strftime('%A')
                 day = day.lower()
@@ -1623,11 +1633,11 @@ def showRequest1():
                 
                 r['type'] = '1 Bed'
                 tempResult.append(r)
+                roomsToBook += int(r['count'])
         
         cursor.execute(
             'SELECT * FROM request2Bed where date = %s AND id = %s', [curr_date, token])
         resultPerDay2 = cursor.fetchall()
-        #print(resultPerDay2)
         for r in resultPerDay2:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
@@ -1653,34 +1663,43 @@ def showRequest1():
                 r['type'] = '2 Bed'
 
                 tempResult.append(r)
+                roomsToBook += int(r['count'])
+            
 
         dateToCheck = curr_date.strftime('%Y-%m-%d')
         
         occ = int(request.form[str(curr_date)])
         pam = occ * totalRooms//100
         occs.append(str(occ) + "  (" + str(pam) + " Rooms   )")
-        
-        cursor.execute(
-            'SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
+        pam = pam + 1
+
+        minDiscountVal = 101
+        glid = 0
+        cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s', [dateToCheck, dateToCheck])
         di = cursor.fetchall()
-        if (len(di) == 0):
-            discounts.append(0)
+
+        if len(di) == 0:
+            discounts.append('0' + "(No Discount Grid)")
         else:
             if len(di) == 1:
                 id = di[0]['discountId']
-
-            else:
+            elif len(di) == 2:
                 for l in di:
                     if (l['defaultm'] == 0):
                         id = l['discountId']
                         break
+                
+            for rv in range(pam, roomsToBook + pam):
+                cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rv, rv])
+                dd = cursor.fetchall()
+                if len(dd) == 0:
+                    discounts.append('0' + "(No Grid Fits)")
+                else:
+                    glid = id
+                    minDiscountVal = min(minDiscountVal, int(dd[0]['value']))
             
-            rooms = occ * totalRooms // 100
-            
-            cursor.execute('SELECT * FROM discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rooms, rooms])
-            dd = cursor.fetchall()
-            discounts.append(dd[0]['value'] + " (ID: " + str(id) + ")")
-
+        discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
+        
         lead = lead + 1
 
         dates.append(curr_date.strftime('%B %d'))
@@ -1712,7 +1731,7 @@ def strategyDiscountCreate():
     if len(f) != 0:
         flag = True
         defaultId = f[0]['discountId']
-    
+
     cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
     storedDates = cursor.fetchall()
 
@@ -1844,7 +1863,11 @@ def showDiscountGrid(id):
     if len(ffm) == 0:
         flag = False
 
-    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag)
+    cursor.execute(
+        'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
+    storedDates = cursor.fetchall()
+
+    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
 
 @app.route('/unmarkDefault/<id>', methods = ['GET', 'POST'])
 def unmarkDefault(id):
@@ -1865,6 +1888,70 @@ def markDefault(id):
     return redirect(url_for('strategyDiscountCreate'))
 
 
+@app.route('/deactivateDiscount/<id>', methods = ['GET', 'POST'])
+def deactivateDiscount(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'UPDATE discountMap set active = 0 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid Deactivated', 'danger')
+    return redirect(url_for('strategyDiscountCreate'))
+
+@app.route('/activateDiscount/<id>', methods = ['GET', 'POST'])
+def activateDiscount(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'UPDATE discountMap set active = 1 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid Activated', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
+
+@app.route('/editDiscountGrid', methods = ['GET', 'POST'])
+def editDiscountGrid():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.now()
+
+    cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s', [
+        inp['startDate'], inp['endDate'], email, time, inp['discountId']
+    ])
+
+    cursor.execute('DELETE FROM discount where discountId = %s', [inp['discountId']])
+
+    mysql.connection.commit()
+
+    for jindex, l in enumerate(inp['leadtime']):
+        lead = l.split('-')
+        leadMin = lead[0]
+        if (len(lead) == 2):
+            leadMax = lead[1]
+        else:
+            leadMax = 365
+        discountId = inp['discountId']
+
+        for index, r in enumerate(inp['ranges']):
+            range = r.split(' - ')
+            roomMin = range[0]
+            roomMax = range[1]
+            values = inp['values']
+            value = values[jindex][index]
+            
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [
+                           discountId, leadMin, leadMax, roomMin, roomMax, value])
+
+
+    mysql.connection.commit()
+    cursor.close()
+
+
+    flash('Your discount grid has been edited', 'success')
+    return ('', 204)
+
 
 if __name__ == "__main__":
     app.run(debug = True)
+

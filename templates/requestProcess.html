@@ -47,7 +47,7 @@
                         {% if data['paymentTerms'] %}
                         <div class='mb-3'>
                             <span>Payment Terms : {{ data['paymentTerms'] }} 
-                                {% if data['paymentDays'] %}
+                                {% if data['paymentTerms'] != 'At Checkout' %}
                                     {{ data['paymentDays'] }} Days
                                 {% endif %}
                             </span>
@@ -68,7 +68,7 @@
                             <table class="table table-bordered table-hover">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th style = 'width:60%'>Date</th>
+                                        <th style = 'width:50%'>Date</th>
                                         <th style = 'width:50%'>{{ dates[i] }}</th>
                                     </tr>   
                                 </thead>

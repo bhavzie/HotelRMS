@@ -11,6 +11,7 @@
         <div id = 'previous'>
             <div class = 'mb-5'>
                 <span class='badge badge-primary mb-3'>Default Grid Row</span>
+                <span class='badge badge-danger mb-3'>Deactivated Grid Row</span>
                 <table class='table table-bordered table-hover' id='tab17'>
                     <caption>Created Discount Grid
                     </caption>
@@ -38,7 +39,9 @@
                     </thead>
                     <tbody>
                         {% for grid in discountGrids %}
-                            {% if defaultId == -1%}
+                            {% if grid['active'] == 0%}
+                            <tr class = 'table-danger'>
+                            {% elif defaultId == -1%}
                             <tr>
                             {% elif defaultId == grid['discountId'] %}
                             <tr class = 'table-primary'>
@@ -826,6 +829,7 @@
             result['leadtime'] = leadtime
 
         }
+
 
 
         fetch('/strategyDiscountSubmit', {
