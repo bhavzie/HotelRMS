@@ -1545,11 +1545,28 @@ def showRequest(token):
     checkOut = dates['checkOut']
     dates = []
     day = datetime.timedelta(days=1)
+
+    cursor.execute('SELECT startDate, endDate from autopilot where active = "1" AND policy = "manual"')
+    excep = cursor.fetchall()
+
     while checkIn < checkOut:
         dates.append(checkIn)
         checkIn = checkIn + day
 
-    return render_template('getOcc.html', dates = dates, token = token)
+    newDates = []
+    for d in dates:
+        flag = True
+        for x in excep:
+            if (x['startDate'] <= d and x['endDate'] >= d):
+                flag = False
+        if (flag):
+            newDates.append(d)
+
+    dates = newDates
+    f = True
+    if len(dates) == 0:
+        f = False
+    return render_template('getOcc.html', dates = dates, token = token, flag = False)
 
 @app.route('/showRequest1', methods = ['GET', 'POST'])
 def showRequest1():
@@ -1668,40 +1685,46 @@ def showRequest1():
 
         dateToCheck = curr_date.strftime('%Y-%m-%d')
         
-        occ = int(request.form[str(curr_date)])
-        pam = occ * totalRooms//100
-        occs.append(str(occ) + "  (" + str(pam) + " Rooms   )")
-        pam = pam + 1
-
-        minDiscountVal = 101
-        glid = 0
-        cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s AND active = 1', [dateToCheck, dateToCheck])
-        di = cursor.fetchall()
-
-        if len(di) == 0:
-            discounts.append('0' + "(No Discount Grid)")
+        occ = request.form.get(str(curr_date))
+        if occ == None:
+            occs.append("-")
+            discounts.append("0" + " (Manual AutoPilot)")
+            tempResult[0]['rate'] = -1
         else:
-            if len(di) == 1:
-                id = di[0]['discountId']
-            elif len(di) == 2:
-                for l in di:
-                    if (l['defaultm'] == 0):
-                        id = l['discountId']
-                        break
+            occ = int(occ)
+            pam = occ * totalRooms//100
+            occs.append(str(occ) + "  (" + str(pam) + " Rooms   )")
+            pam = pam + 1
+
+            minDiscountVal = 101
+            glid = 0
+            cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s AND active = 1', [dateToCheck, dateToCheck])
+            di = cursor.fetchall()
+
+            if len(di) == 0:
+                discounts.append('0' + "(No Discount Grid)")
+            else:
+                if len(di) == 1:
+                    id = di[0]['discountId']
+                elif len(di) == 2:
+                    for l in di:
+                        if (l['defaultm'] == 0):
+                            id = l['discountId']
+                            break
+                    
+                for rv in range(pam, roomsToBook + pam):
+                    cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rv, rv])
+                    dd = cursor.fetchall()
+                    if len(dd) == 0:
+                        discounts.append('0' + "(No Grid Fits)")
+                    else:
+                        glid = id
+                        if dd[0]['value'] == '' or dd[0]['value'] == ' ':
+                            dd[0]['value'] = '0'
+                        dd[0]['value'] == dd[0]['value'].strip()
+                        minDiscountVal = min(minDiscountVal, float(dd[0]['value']))
                 
-            for rv in range(pam, roomsToBook + pam):
-                cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rv, rv])
-                dd = cursor.fetchall()
-                if len(dd) == 0:
-                    discounts.append('0' + "(No Grid Fits)")
-                else:
-                    glid = id
-                    if dd[0]['value'] == '' or dd[0]['value'] == ' ':
-                        dd[0]['value'] = '0'
-                    dd[0]['value'] == dd[0]['value'].strip()
-                    minDiscountVal = min(minDiscountVal, float(dd[0]['value']))
-            
-            discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
+                discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
         
         lead = lead + 1
 

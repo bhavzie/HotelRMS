@@ -11,7 +11,7 @@
         <small id='smallID' class='form-text text-muted mb-5'>
             All fields are in percentage (%)
         </small>
-        <form action = '{{ url_for("showRequest1") }}' method = 'POST'>
+        <form action = '{{ url_for("showRequest1") }}' method = 'POST' id = 'gocc'>
             <input type = 'hidden' name = 'id' value = '{{ token }}'>
             
             {% for date in dates%}
@@ -35,5 +35,14 @@
         </form>
     </div>
 </div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    const flag = "{{ flag }}"
+    $(document).ready(function () {
+        if (flag == "False")
+            $("#gocc").submit();
+    });
+</script>
 
 {% endblock %}
