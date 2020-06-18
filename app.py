@@ -1688,8 +1688,13 @@ def showRequest1():
         occ = request.form.get(str(curr_date))
         if occ == None:
             occs.append("-")
-            discounts.append("0" + " (Manual AutoPilot)")
-            tempResult[0]['rate'] = -1
+            cursor.execute('SELECT policyName from autopilot where startDate <= %s AND endDate >= %s AND active = 1 AND policy = "manual"', [curr_date, curr_date])
+            pn = cursor.fetchall()
+            print(pn)
+
+            discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
+            for t in tempResult:
+                t['rate'] = -1
         else:
             occ = int(occ)
             pam = occ * totalRooms//100
