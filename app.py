@@ -1566,7 +1566,7 @@ def showRequest(token):
     f = True
     if len(dates) == 0:
         f = False
-    return render_template('getOcc.html', dates = dates, token = token, flag = False)
+    return render_template('getOcc.html', dates = dates, token = token, flag = f)
 
 @app.route('/showRequest1', methods = ['GET', 'POST'])
 def showRequest1():
