@@ -1,0 +1,192 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Autopilot</p>
+            </div>
+        </div>
+        <div id='msg2'></div>
+        <div class='mb-5' id='viewA'>
+            <span class='badge badge-danger mb-3'>Deactivated Grid Row</span>
+            <table class = 'table table-bordered table-hover' id = 'tab99'>
+                <caption>View Autopilot Policy</caption>
+                <thead class = 'thead-dark'>
+                    <tr>
+                        <th>
+                            Policy Name
+                        </th>
+                        <th>
+                            Start Date
+                        </th>
+                        <th>
+                            End Date
+                        </th>
+                        <th>
+                            Policy Type
+                        </th>
+                        <th>
+                            Created By
+                        </th>
+                        <th>
+                            Created On
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    {% if d['active'] == 0 %}
+                        <tr class = 'table-danger'>
+                    {% endif %}
+                            <td>
+                                {{ d['policyName'] }}
+                            </td>
+                            <td>
+                                {{ d['startDate'] }}
+                            </td>
+                            <td>
+                                {{ d['endDate'] }}
+                            </td>
+                            <td>
+                                {{ d['policy'] }}
+                            </td>
+                            <td>
+                                {{ d['createdBy'] }}
+                            </td>
+                            <td>
+                                {{ d['createdOn'] }}
+                            </td>
+                            <td>
+                                <a class='btn btn-info' href='{{ url_for("showAutopilot", id = d["policyName"] ) }}'>View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type='button' class='btn btn-primary mb-5' onclick='vr()' id = 'vrb'>
+            View Policies
+        </button>
+        <button type = 'button' class = 'btn btn-primary mb-5' onclick = 'cr()' id = 'crb'>
+            Create AutoPilot
+        </button>
+        <form action = '' method = 'POST' onsubmit="add(event)">
+            <div class = 'row mt-5' id = 'createA'>
+                <div class="input-group-prepend col-sm-4">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                        id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                        id='endDateG' required>
+                </div>
+                <div class = 'col-sm-3'>
+                    <select class = 'form-control text-center' required style = 'width: 90%;' id = 'pol'>
+                        <option selected disabled>
+                            Policy
+                        </option>
+                        <option value = 'manual'>
+                            Manual Calculation
+                        </option>
+                    </select>
+                </div>
+                <div class = 'col-sm-2'>
+                    <input type = 'text' id = 'policyName' class = 'form-control' placeholder="Policy Name" required>
+                </div>
+                    <div class="col-sm-3">
+                            <button type="submit" id='subm77' class="btn btn-info">Add</button>
+                    </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+        $('#vrb').hide();
+
+        $('#createA').hide();
+
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: strDate,
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            startDate: $startDate.datepicker('getDate'),
+            format: "dd/mm/yyyy",
+        });
+
+        $startDate.on('change', function () {
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+        });
+    });
+
+
+    function cr() {
+        $('#crb').hide();
+        $('#viewA').hide();
+
+        $('#vrb').show();
+        $('#createA').show()
+    }
+
+    function vr() {
+        $('#vrb').hide();
+        $('#createA').hide()
+
+        $('#crb').show();
+        $('#viewA').show();
+    }
+
+    function parseDate2(x) {
+            return x.split("/").reverse().join("/");
+    }
+
+
+    function add(e) {
+        e.preventDefault();
+
+        const startDate = parseDate2($('#startDateG').val())
+        const endDate = parseDate2($('#endDateG').val())
+        const policy = $('#pol').val();
+        const policyName = $('#policyName').val();
+
+        result = {}
+        result['startDate'] = startDate
+        result['endDate'] = endDate
+        result['policy'] = policy
+        result['policyName'] = policyName
+
+        fetch('/settingsAutopilotSubmit', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/settingsAutopilot'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+    }
+
+
+</script>
+{% endblock %}

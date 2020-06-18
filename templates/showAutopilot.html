@@ -1,0 +1,173 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login spread3">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>View Autopilot Policy</p>
+            </div>
+        </div>
+        <div class='mb-5'>
+            <a class='btn btn-primary' href='{{ url_for("settingsAutopilot")  }}'>Back <i
+                    class="fas fa-backward"></i></a>
+        </div>
+        <div id='msg2'></div>
+        <div class='mb-5'>
+            <div class='row mb-5'>
+                <div class='col-sm-3'>
+                    <div class="input-group-prepend col-sm" id='dend'>
+                        <span class="input-group-text  mb-2">Date range</span>
+                        <input type="text" placeholder="Start date" aria-label="First name"
+                            class="form-control start-date  mb-2 " id='startDateG' required>
+                        <input type="text" placeholder="End date" aria-label="Last name"
+                            class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
+                    </div>
+                    <span class='btn btn-info' id='de1'>Start Date: {{ data['startDate'] }} </span>
+                </div>
+                <div class='col-sm-3'>
+                    <span class='btn btn-info' id='de2'>End Date: {{ data['endDate'] }} </span>
+                </div>
+                <div class='col-sm-3'>
+                    <span id = 'de5' class='btn btn-info'>Policy : {{ data['policy'] }} </span>
+                    <select class='form-control text-center' required style='width: 90%; display: none;' id='pol'>
+                        <option selected disabled>
+                            Policy
+                        </option>
+                        <option value='manual'>
+                            Manual Calculation
+                        </option>
+                    </select>
+                </div>
+                <div class='col-sm-3'>
+                    <button class='btn btn-warning' onclick='edit()'>Edit</button>
+                {% if data['active'] == 1%}
+                    <a class='btn btn-danger' href="{{ url_for('deactiveAutopilot', id = data['policyName']) }}">Deactivate</a>
+                {% elif data['active'] == 0%}
+                    <a class='btn btn-danger' href="{{ url_for('activateAutopilot', id = data['policyName']) }}">Activate</a>
+                {% endif %}
+                </div>
+            </div>
+            <div class='row mb-5 mt-5'>
+                <div class='col-sm-3'>
+                    <span class='btn btn-info'>PolicyName : {{ data['policyName'] }} </span>
+                    <input type='hidden' id='policyName' value="{{ data['policyName'] }}">
+                </div>
+            </div>
+            <div class = 'row mb-5'>
+                <div class = 'col-sm-3'>
+                        <span class='btn btn-info'>CreatedBy : {{ data['createdBy'] }} </span>
+                </div>
+            </div>
+            <div class='row mb-5'>
+                <div class='col-sm-3'>
+                    <span class='btn btn-info'>CreatedOn : {{ data['createdOn'] }} </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 mt-3">
+                <div class="text-center">
+                    <button type="submit" id='subm' class="btnLogin" onclick='aj(event)'>Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+    function parseDate(x) {
+        return x.split("-").reverse().join("/");
+    }
+
+    $(document).ready(function () {
+        $('#subm').hide();
+        $('#dend').hide();
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+
+        var d = new Date();
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: strDate,
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+            startDate: $startDate.datepicker('getDate'),
+        });
+
+
+        $startDate.on('change', function () {
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+        });
+    });
+
+    function edit() {
+        $('#subm').show();
+
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+
+        let startDate = parseDate("{{ data['startDate'] }}")
+        let endDate = parseDate("{{ data['endDate'] }}")
+
+
+        $startDate.datepicker('setDate', startDate);
+        $endDate.datepicker('setDate', endDate);
+
+        $('#de1').hide()
+        $('#de2').hide()
+        $('#de5').hide()
+        $('#dend').show()
+        $('#pol').show()
+
+        const pol = "{{ data['policy'] }}"
+
+        $('#pol option[value ='+pol+']').attr('selected', 'selected');
+    }
+
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+
+    function aj(e) {
+        e.preventDefault();
+        const startDate = parseDate2($('#startDateG').val())
+        const endDate = parseDate2($('#endDateG').val())
+        const policy = $('#pol').val();
+        const policyName = $('#policyName').val();
+
+        result = {}
+        result['startDate'] = startDate
+        result['endDate'] = endDate
+        result['policy'] = policy
+        result['policyName'] = policyName
+
+        fetch('/editAutopilot', {
+          method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/settingsAutopilot'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+
+
+</script>
+
+{% endblock %}

@@ -1794,7 +1794,7 @@ def strategyDiscountSubmit():
         if (len(lead) == 2):
             leadMax = lead[1]
         else:
-            leadMax = 365
+            leadMax = 730
         discountId = inp['discountId']
 
         for index, r in enumerate(inp['ranges']):
@@ -1953,6 +1953,85 @@ def editDiscountGrid():
 
     flash('Your discount grid has been edited', 'success')
     return ('', 204)
+
+
+@app.route('/settingsAutopilot', methods = ['GET', 'POST'])
+def settingsAutopilot():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from autopilot')
+    data = cursor.fetchall()
+
+    for d in data:
+        if d['policy'] == 'manual':
+            d['policy'] = 'Manual Calculation'
+
+    return render_template('settingsAutopilot.html', data = data)
+
+
+@app.route('/settingsAutopilotSubmit', methods = ['GET', 'POST'])
+def settingsAutopilotSubmit():
+    inp = request.json
+    email = session['email']
+    time = datetime.datetime.now()
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
+    email, time
+    ])
+
+    mysql.connection.commit()
+    cursor.close()
+
+
+    flash('Your Autopilot setting has been added', 'success')
+    return ('', 204)
+
+
+@app.route('/showAutopilot/<id>', methods = ['GET', 'POST'])
+def showAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From autopilot where policyName = %s', [id])
+    data = cursor.fetchall()
+    return render_template('showAutopilot.html', data = data[0])
+
+@app.route('/editAutopilot', methods = ['GET', 'POST'])
+def editAutopilot():
+    inp = request.json
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot SET startDate = %s, endDate = %s, policy = %s WHERE policyName = %s', [
+        inp['startDate'], inp['endDate'], inp['policy'], inp['policyName']
+    ])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot setting has been edited', 'success')
+    return ('', 204)
+
+
+@app.route('/deactiveAutopilot/<id>', methods = ['GET', 'POST'])
+def deactiveAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot set active = 0 where policyName = %s', [id])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot has been de-activated', 'danger')
+    return redirect(url_for('settingsAutopilot'))
+
+@app.route('/activateAutopilot/<id>', methods = ['GET', 'POST'])
+def activateAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot set active = 1 where policyName = %s', [id])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot has been activated', 'success')
+    return redirect(url_for('settingsAutopilot'))
+
+
 
 
 if __name__ == "__main__":
