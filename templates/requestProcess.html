@@ -4,7 +4,7 @@
 <div class="home">
     <div class="wrap-login spread3">
         <div class = 'row'>
-            <div class = 'col-10'>
+            <div class = 'col-9' style = 'border-right: 1px solid black;'>
                 <div class = 'row'>
                     <div class = 'col-5'>
                         <div class = 'mb-4'>
@@ -26,7 +26,7 @@
                             <span>Room Nights : {{ data['nights'] }}</span>
                         </div>
                     </div>
-                    <div class = 'col-4'>
+                    <div class = 'col-5'>
                         <div class='mb-4'>
                             <span class="badge badge-pill badge-primary">Last Opened : {{ data['createdOn'] }}</span>
                         </div>
@@ -61,10 +61,10 @@
                     </div>
                 </div>
                 <div class = 'row mt-5'>
-                    <div class = 'row col-8'>
+                    <div class = 'row col-10'>
 
                         {% for i in range(length) %}
-                        <div class = 'col-3'>
+                        <div class = 'col-4'>
                             <table class="table table-bordered table-hover">
                                 <thead class="thead-dark">
                                     <tr>
@@ -118,7 +118,7 @@
                                                     <td>{{day['count']}}</td>
                                                     <td>
                                                     {% if day['rate'] == -1%}
-                                                        <input type = 'number' class = 'num3' min = '10'>
+                                                        <input type = 'number' class = 'num3' min = '10' onchange="up()" step = 'any'>
                                                     {% else %}
                                                         {{day['rate']}}
                                                     {% endif %}
@@ -140,8 +140,91 @@
                     </div>
                 </div>
             </div>
-            <div class = 'col-2'>
-                
+            <div class = 'col-3'>
+                <div class = 'mb-5'>
+                    <span class = 'btn btn-info'>
+                        Average Rate/ Night : 
+                    </span>
+                    <span class = 'btn btn-info' id = 'avgRate'>
+                        {{ avgRate }}
+                    </span>
+                </div>
+                <div class='mb-5'>
+                    <span class='btn btn-info'>
+                        Total Rate : 
+                    </span>
+                    <span class='btn btn-info' id = 'totalRate'>
+                        {{ totalRate }}
+                    </span>
+                </div>
+                <hr>
+
+                <div class='mb-5'>
+                    <label>Cutoff</label>
+                        <input type='number' class='form-control ml-5' style='max-width: 30%; display: inline-block;'
+                        id='dedenewi' min = 0><span> Days</span>
+                </div>
+                <div class="form-group row mb-5">
+                    <label class="col-sm-6 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
+                    <div class="col-sm-6">
+                        <select class='form-control text-center payment' id='formPayment' style='max-width: 100%;' multiple='multiple'>
+                            <option value='bt'>
+                                Bank Transfer
+                            </option>
+                            <option value='cq'>
+                                Cheque
+                            </option>
+                            <option value='cc'>
+                                Credit Card
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-5 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
+                    <div class="col-sm-7">
+                        <select class='form-control text-center' name='paymentTerms'  style='max-width: 80%;' onchange="hdd(event)" id = 'dede'>
+                            <option disabled selected>
+                                Payment Terms
+                            </option>
+                            <option value = 'poa'>
+                                Prior To Arrival
+                            </option>
+                            <option value = 'pc'>
+                                Post Checkout
+                            </option>
+                            <option value = 'ac'>
+                                At Checkout
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class='col-sm-12 mb-5' id='dede22'>
+                    <input type='number' class='form-control' style='max-width: 40%; display: inline-block; margin-left: 10rem;'
+                        id='dede33' disabled><span> Days</span>
+                </div>
+                <div class='mb-5'>
+                    <div class="form-check checkbox-slider--b-flat">
+                        <label>
+                            <input type='checkbox' class='mr-5'>
+                            <span class='ml-5'>Payment Guaranteed</span>
+                        </label>
+                    </div>
+                </div>
+                <div class='mb-5'>
+                    <div class="form-check checkbox-slider--b-flat">
+                        <label>
+                            <input type = 'checkbox' class = 'mr-5'>
+                            <span class = 'ml-5'>Negotiable</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top: 100px;"></div>
+                <div class = 'mt-5 mb-5'>
+                    <button class="btn btn-info">Send For Review</button>
+                    <button class="btn btn-danger">Decline</button>
+                    <button class="btn btn-success">Quote</button>
+                </div>
             </div>
         </div>
     </div>
@@ -149,6 +232,51 @@
 
 <script src="/static/js/jquery.js"></script>
 <script>
+
+    function hdd(e) {
+            const dede = document.getElementById('dede')
+            const option = dede.options[dede.selectedIndex].value
+            const dede22 = document.getElementById('dede22')
+            if (option === 'ac') {
+                $('#dede33').val('')
+                $(dede22).hide()
+            } else {
+                $(dede22).show()
+                $('#dede33').removeAttr('disabled')
+                document.getElementById('dede33').required = true
+            }
+
+        }
+
+    $(document).ready(function () {
+        $('.payment').multiselect({
+              nonSelectedText: 'FOP',
+              numberDisplayed: 0,
+              buttonWidth: '200px'
+          })
+    });
+
+    function up() {
+        const inputs = [...document.getElementsByClassName('num3')]
+        const avg = document.getElementById('avgRate')
+        const total = document.getElementById('totalRate')
+
+        const ogT = "{{ totalRate }}"
+        const ogA = "{{ avgRate }}"
+
+        let newtotal = parseInt(ogT)
+
+        inputs.forEach(inp => {
+            if (inp.value != '' && inp.value >= 10) {
+                newtotal += parseFloat(inp.value)
+            }
+        })
+
+        total.innerText = Math.round(newtotal)
+        const length = parseInt("{{ length }}");
+        const num = newtotal / length
+        avg.innerText = +(Math.round(num + "e+2") + "e-2");
+      }
 
 </script>
 {% endblock %}

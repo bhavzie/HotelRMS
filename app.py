@@ -6,6 +6,7 @@ from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
 import datetime
+import math
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -1617,6 +1618,8 @@ def showRequest1():
     for d in data7:
         totalRooms += int(d['count'])
 
+    rates = []
+
     mmp = 1
     for i in range(0, int(nights)):
         tempResult = []
@@ -1690,10 +1693,10 @@ def showRequest1():
             occs.append("-")
             cursor.execute('SELECT policyName from autopilot where startDate <= %s AND endDate >= %s AND active = 1 AND policy = "manual"', [curr_date, curr_date])
             pn = cursor.fetchall()
-            print(pn)
 
             discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
             for t in tempResult:
+                rates.append({'val': -1, 'count': t['count']})
                 t['rate'] = -1
         else:
             occ = int(occ)
@@ -1730,19 +1733,37 @@ def showRequest1():
                         minDiscountVal = min(minDiscountVal, float(dd[0]['value']))
                 
                 discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
-        
+            for t in tempResult:
+                te = int(t['rate'])
+                val = te - (minDiscountVal * te)/100
+                rates.append({'val': val, 'count': t['count']})
+                t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
+         
         lead = lead + 1
 
         dates.append(curr_date.strftime('%B %d'))
 
-
+    
         result.append(tempResult)
     
         curr_date = curr_date + datetime.timedelta(days = 1)
+
+
+
+    totalRate = 0
+    for d in rates:
+        if (d['val'] == -1):
+            totalRate += 0
+        else:
+            totalRate += int(d['count']) * d['val']
+
     
+    totalRate = int(round(totalRate))
+    avgRate = totalRate/int(nights)
+
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
