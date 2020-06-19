@@ -1759,7 +1759,7 @@ def showRequest1():
 
     
     totalRate = int(round(totalRate))
-    avgRate = totalRate/int(nights)
+    avgRate = str(round(totalRate/int(nights), 2))
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
