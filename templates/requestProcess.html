@@ -268,7 +268,8 @@
 
         inputs.forEach(inp => {
             if (inp.value != '' && inp.value >= 10) {
-                newtotal += parseFloat(inp.value)
+                const count = inp.parentElement.previousElementSibling.innerHTML
+                newtotal += parseFloat(inp.value * count)
             }
         })
 
