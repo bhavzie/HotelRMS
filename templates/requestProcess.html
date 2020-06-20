@@ -117,11 +117,15 @@
                                                     <td>{{day['count']}}</td>
                                                     <td>
                                                     {% if day['type'] == 'foc' %}
+                                                        {% if day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num4' min = '10'
-                                                        onchange="down()"
+                                                        onchange="down(event)"
                                                         step = 'any'>
+                                                        {% else %}
+                                                        {{ day['rate'] }}
+                                                        {% endif %}
                                                     {% elif day['rate'] == -1 %}
-                                                        <input type = 'number' class = 'num3' min = '10' onchange="up()" step = 'any'>
+                                                        <input type = 'number' class = 'num3' min = '10' onchange="up(event)" step = 'any'>
                                                     {% else %}
                                                         {{day['rate']}}
                                                     {% endif %}
@@ -288,9 +292,15 @@
               numberDisplayed: 0,
               buttonWidth: '200px'
           })
+        
+        const res = "{{ result|safe }}"
+        //console.log(res)
     });
 
-    function up() {
+    function up(e) {
+        if (e.target.value < 10)
+            return false
+
         const inputs = [...document.getElementsByClassName('num3')]
         const avg = document.getElementById('avgRate')
         const total = document.getElementById('totalRate')
@@ -337,7 +347,10 @@
         avg.innerText = +(Math.round(num + "e+2") + "e-2");
     }
 
-    function down() {
+    function down(e) {
+
+        if (e.target.value < 10)
+            return false
         const inputs = [...document.getElementsByClassName('num4')]
         const avg = document.getElementById('avgRate')
         const total = document.getElementById('totalRate')

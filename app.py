@@ -1737,6 +1737,7 @@ def showRequest1():
                 tempResult.append(r)
     
             
+    
 
         dateToCheck = curr_date.strftime('%Y-%m-%d')
         
@@ -1787,10 +1788,13 @@ def showRequest1():
                 discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
 
             for t in tempResult:
+                print(t)
                 te = int(t['rate'])
                 if (te == -1):
                     rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
                 else:
+                    if minDiscountVal == 101:
+                        minDiscountVal = 0
                     val = te - (minDiscountVal * te)/100
                     rates.append({'val': val, 'count': t['count'], 'type': t['type']})
                     t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
@@ -1805,6 +1809,7 @@ def showRequest1():
     
         curr_date = curr_date + datetime.timedelta(days = 1)
 
+
     focv = 0
     for r in rates:
         if r['type'] == 'foc':
@@ -1817,7 +1822,7 @@ def showRequest1():
         else:
             totalRate += int(d['count']) * d['val']
 
-
+    focv = float(round(focv, 2))
     totalRate = float(round(totalRate, 2))
     totalQuote = totalRate
     tcomm = False
@@ -1833,6 +1838,7 @@ def showRequest1():
         tcommv = vv
 
 
+    tcommv = float(round(tcommv, 2))
 
     totalQuote += focv
     totalQuote = int(round(totalQuote))
