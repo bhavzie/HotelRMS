@@ -1788,7 +1788,6 @@ def showRequest1():
                 discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
 
             for t in tempResult:
-                print(t)
                 te = int(t['rate'])
                 if (te == -1):
                     rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
@@ -1846,9 +1845,10 @@ def showRequest1():
     roomCount = 0
     for r in result:
         for m in r:
-            roomCount += int(m['count'])
+            if (m['type'] != 'foc'):
+                roomCount += int(m['count'])
 
-    avgRate = str(round(totalRate/roomCount, 2))
+    avgRate = str(round(totalQuote/roomCount, 2))
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
