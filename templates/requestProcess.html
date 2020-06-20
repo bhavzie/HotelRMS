@@ -1,8 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="home">
-    <div class="wrap-login spread3">
+    <div class="spread4">
         <div class = 'row'>
             <div class = 'col-9' style = 'border-right: 1px solid black;'>
                 <div class = 'row'>
@@ -117,7 +116,11 @@
                                                     <td>{{day['type']}}</td>
                                                     <td>{{day['count']}}</td>
                                                     <td>
-                                                    {% if day['rate'] == -1%}
+                                                    {% if day['type'] == 'foc' %}
+                                                        <input type = 'number' class = 'num4' min = '10'
+                                                        onchange="down()"
+                                                        step = 'any'>
+                                                    {% elif day['rate'] == -1%}
                                                         <input type = 'number' class = 'num3' min = '10' onchange="up()" step = 'any'>
                                                     {% else %}
                                                         {{day['rate']}}
@@ -142,19 +145,51 @@
             </div>
             <div class = 'col-3'>
                 <div class = 'mb-5'>
-                    <span class = 'btn btn-info'>
-                        Average Rate/ Night : 
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-6'>
+                        Total Fare
                     </span>
-                    <span class = 'btn btn-info' id = 'avgRate'>
-                        {{ avgRate }}
+                    <span class='btn btn-info col-sm-3' id = 'totalRate'>
+                        {{ totalRate }}
                     </span>
+                </div>
+                <div class='mb-2 ff'>
+                    {% if tfoc == True%}
+                    <span class='btn btn-info col-sm-6'>
+                        + FOC
+                    </span>
+                    <span class='btn btn-info col-sm-3' id = 'focRate'>
+                        {{ focv }}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class = 'mb-2 ff'>
+                        {% if tcomm == True%}
+                        <span class='btn btn-info col-sm-6'>
+                        + Commission ({{ comP }}%)
+                        </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'comv'>
+                        {{ tcommv }}
+                    </span>
+                        {% endif %}
+                </div>
+                <hr>
+                <div class='mb-1'>
+                    <span class='btn btn-info col-sm-6'>
+                        Total Quote
+                    </span>
+                    <span class='btn btn-info col-sm-3' id='totalQuote'>
+                        {{ totalQuote }}
+                    </span>
+                </div>
+                <hr>
                 </div>
                 <div class='mb-5'>
                     <span class='btn btn-info'>
-                        Total Rate : 
+                        Average Rate/ Night :
                     </span>
-                    <span class='btn btn-info' id = 'totalRate'>
-                        {{ totalRate }}
+                    <span class='btn btn-info' id='avgRate'>
+                        {{ avgRate }}
                     </span>
                 </div>
                 <hr>
@@ -228,7 +263,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script src="/static/js/jquery.js"></script>
 <script>
@@ -261,10 +295,19 @@
         const avg = document.getElementById('avgRate')
         const total = document.getElementById('totalRate')
 
+        const foc = document.getElementById('focRate')
+        const totalQuote = document.getElementById('totalQuote')
+
+        // update totalQuote for both functions & commisssion
+
+        const comv = document.getElementById('comv');
+
         const ogT = "{{ totalRate }}"
         const ogA = "{{ avgRate }}"
+        const comP = "{{ comP }}"
+        
 
-        let newtotal = parseInt(ogT)
+        let newtotal = parseFloat(ogT)
 
         inputs.forEach(inp => {
             if (inp.value != '' && inp.value >= 10) {
@@ -273,11 +316,57 @@
             }
         })
 
-        total.innerText = Math.round(newtotal)
+        total.innerText = +(Math.round(newtotal + "e+2") + "e-2");
+        r = parseFloat(total.innerHTML) + parseFloat(foc.innerHTML)
+        comv1 = (r * comP)/100  
+        comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+
+        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + parseFloat(foc.innerHTML) + parseFloat(comv.innerHTML))
+
         const length = parseInt("{{ length }}");
         const num = newtotal / length
         avg.innerText = +(Math.round(num + "e+2") + "e-2");
-      }
+    }
+
+    function down() {
+        const inputs = [...document.getElementsByClassName('num4')]
+        const avg = document.getElementById('avgRate')
+        const total = document.getElementById('totalRate')
+        const foc = document.getElementById('focRate')
+
+        const totalQuote = document.getElementById('totalQuote')
+
+
+        const comv = document.getElementById('comv');
+
+        const ogT = "{{ focv }}"
+        const ogA = "{{ avgRate }}"
+        const comP = "{{ comP }}"
+
+        let newtotal = parseFloat(ogT)
+
+        inputs.forEach(inp => {
+            if (inp.value != '' && inp.value >= 10) {
+                const count = inp.parentElement.previousElementSibling.innerHTML
+                newtotal += parseFloat(inp.value * count)
+            }
+        })
+
+        foc.innerText = +(Math.round(newtotal + "e+2") + "e-2");
+        r = parseInt(total.innerHTML) + parseInt(foc.innerHTML)
+        comv1 = (r * comP) / 100
+        comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+
+        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + parseFloat(foc.innerHTML) + parseFloat(comv.innerHTML))
+        
+
+        const length = parseInt("{{ length }}");
+        const num = newtotal / length
+        avg.innerText = +(Math.round(num + "e+2") + "e-2");
+    }
+
+
+
 
 </script>
 {% endblock %}

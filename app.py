@@ -1620,6 +1620,15 @@ def showRequest1():
 
     rates = []
 
+    tfoc = False
+    tfoc1 = 0
+    tfoc2 = 0
+    foc = []
+    if (data['foc'] != 0):
+        tfoc = True
+        tfoc1 = data['foc1']
+        tfoc2 = data['foc2']
+
     mmp = 1
     for i in range(0, int(nights)):
         tempResult = []
@@ -1684,6 +1693,49 @@ def showRequest1():
 
                 tempResult.append(r)
                 roomsToBook += int(r['count'])
+        
+        if (tfoc):
+            if (tfoc1 != '0'):
+                r = {}
+                dateToCheck = curr_date.strftime('%Y-%m-%d')
+                day = curr_date.strftime('%A')
+                day = day.lower()
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                    day)
+                cursor.execute(query, ['1', dateToCheck, dateToCheck])
+                pent = cursor.fetchall()
+                r['foc1'] = tfoc1
+                r['type'] = 'foc'
+                r['occupancy'] = 'Single'
+                r['count'] = tfoc1
+                if (len(pent) == 0):
+                    r['rate'] = -1
+                else:
+                    r['rate'] = pent[0]['sor']
+                foc.append(r)
+                tempResult.append(r)
+            if (tfoc2 != '0'):
+                r = {}
+                dateToCheck = curr_date.strftime('%Y-%m-%d')
+                day = curr_date.strftime('%A')
+                day = day.lower()
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                    day)
+                cursor.execute(query, ['2', dateToCheck, dateToCheck])
+                pent = cursor.fetchall()
+                r['foc2'] = tfoc2
+                r['type'] = 'foc'
+                r['occupancy'] = 'Double'
+                r['count'] = tfoc2
+
+                if (len(pent) == 0):
+                    r['rate'] = -1
+                else:
+                    r['rate'] = pent[0]['dor']
+                
+                foc.append(r)
+                tempResult.append(r)
+    
             
 
         dateToCheck = curr_date.strftime('%Y-%m-%d')
@@ -1696,7 +1748,7 @@ def showRequest1():
 
             discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
             for t in tempResult:
-                rates.append({'val': -1, 'count': t['count']})
+                rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
                 t['rate'] = -1
         else:
             occ = int(occ)
@@ -1736,9 +1788,10 @@ def showRequest1():
             for t in tempResult:
                 te = int(t['rate'])
                 val = te - (minDiscountVal * te)/100
-                rates.append({'val': val, 'count': t['count']})
+                rates.append({'val': val, 'count': t['count'], 'type': t['type']})
                 t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
          
+
         lead = lead + 1
 
         dates.append(curr_date.strftime('%B %d'))
@@ -1748,22 +1801,43 @@ def showRequest1():
     
         curr_date = curr_date + datetime.timedelta(days = 1)
 
-
+    focv = 0
+    for r in rates:
+        if r['type'] == 'foc':
+            focv += int(r['count']) * r['val']
 
     totalRate = 0
     for d in rates:
-        if (d['val'] == -1):
+        if (d['val'] == -1 or d['type'] == 'foc'):
             totalRate += 0
         else:
             totalRate += int(d['count']) * d['val']
 
-    
-    totalRate = int(round(totalRate))
+
+    totalRate = float(round(totalRate, 2))
+    totalQuote = totalRate
+    tcomm = False
+    tcommv = 0
+
+
+    comP = 0
+    if (data['commissionable'] != '0'):
+        vv = (totalRate * float(data['commissionable'])) / 100
+        comP = data['commissionable']
+        totalQuote += vv
+        tcomm = True
+        tcommv = vv
+
+
+
+    totalQuote += focv
+    totalQuote = int(round(totalQuote))
+
     avgRate = str(round(totalRate/int(nights), 2))
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])

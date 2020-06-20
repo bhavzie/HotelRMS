@@ -243,6 +243,14 @@ td {
   width: 100vw;
 }
 
+.spread4 {
+  background: #fff;
+  height: 100%;
+  width: 100vw;
+  padding: 25px;
+}
+
+
 .xwrap {
   min-height: 550px !important;
 }
@@ -455,6 +463,12 @@ table {
     border: 1px solid black;
 }
 
+.num4 {
+    width: 80px;
+    border: 1px solid black;
+}
+
+
 
 .start-date {
   width: 200px !important;
@@ -537,4 +551,3 @@ button.multiselect {
 #tab55 th {
   word-wrap: break-word;
 }
-
