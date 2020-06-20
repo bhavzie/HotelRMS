@@ -1729,6 +1729,7 @@ def showRequest1():
                     r['rate'] = pent[0]['sor']
                 foc.append(r)
                 tempResult.append(r)
+                roomsToBook += int(tfoc1)
             if (tfoc2 != '0'):
                 r = {}
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
@@ -1750,6 +1751,7 @@ def showRequest1():
                 
                 foc.append(r)
                 tempResult.append(r)
+                roomsToBook += int(tfoc2)
     
             
     
@@ -1789,7 +1791,6 @@ def showRequest1():
                         if (l['defaultm'] == 0):
                             id = l['discountId']
                             break
-                    
                 for rv in range(pam, roomsToBook + pam):
                     cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rv, rv])
                     dd = cursor.fetchall()
