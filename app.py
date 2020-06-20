@@ -1564,9 +1564,24 @@ def showRequest(token):
             newDates.append(d)
 
     dates = newDates
+    
+    newDates = []
+    for d in dates:
+        day = d.strftime('%A')
+        day = day.lower()
+        query = 'SELECT * from rate where startDate <= %s AND endDate >= %s AND {} = 1'.format(
+            day)
+        cursor.execute(query, [d, d])
+        pent = cursor.fetchall()
+        if len(pent) != 0:
+            newDates.append(d)
+
+    dates = newDates
+    
     f = True
     if len(dates) == 0:
         f = False
+    
     return render_template('getOcc.html', dates = dates, token = token, flag = f)
 
 @app.route('/showRequest1', methods = ['GET', 'POST'])
@@ -1746,8 +1761,10 @@ def showRequest1():
             occs.append("-")
             cursor.execute('SELECT policyName from autopilot where startDate <= %s AND endDate >= %s AND active = 1 AND policy = "manual"', [curr_date, curr_date])
             pn = cursor.fetchall()
-
-            discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
+            if len(pn) != 0:
+                discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
+            else:
+                discounts.append('0' + "(Not OCC)")
             for t in tempResult:
                 rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
                 t['rate'] = -1

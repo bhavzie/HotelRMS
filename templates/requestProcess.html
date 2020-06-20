@@ -392,7 +392,7 @@
         totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
 
         const roomCount = parseInt("{{ roomCount }}");
-        const num = parseInt(total.innerHTML) / roomCount
+        const num =  parseInt(totalQuote.innerHTML) / roomCount
         avg.innerText = +(Math.round(num + "e+2") + "e-2");   
 
     }
