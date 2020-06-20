@@ -298,7 +298,7 @@
         const avgRate = "{{ avgRate|safe }}"
         const roomCount = "{{ roomCount|safe }}"
         
-        console.log(totalQuote, roomCount, avgRate)
+        //console.log(totalQuote, roomCount, avgRate)
         //console.log(res)
     });
 
@@ -345,7 +345,7 @@
 
         totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
         const roomCount = parseInt("{{ roomCount }}");
-        const num = (newtotal - focvalue)/ roomCount
+        const num = parseInt(totalQuote.innerHTML)/ roomCount
         avg.innerText = +(Math.round(num + "e+2") + "e-2");
     }
 
