@@ -120,7 +120,7 @@
                                                         <input type = 'number' class = 'num4' min = '10'
                                                         onchange="down()"
                                                         step = 'any'>
-                                                    {% elif day['rate'] == -1%}
+                                                    {% elif day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num3' min = '10' onchange="up()" step = 'any'>
                                                     {% else %}
                                                         {{day['rate']}}
@@ -298,6 +298,9 @@
         const foc = document.getElementById('focRate')
         const totalQuote = document.getElementById('totalQuote')
 
+        focvalue = 0
+        if (foc != null)
+            focvalue = parseFloat(foc.innerHTML)
         // update totalQuote for both functions & commisssion
 
         const comv = document.getElementById('comv');
@@ -317,11 +320,17 @@
         })
 
         total.innerText = +(Math.round(newtotal + "e+2") + "e-2");
-        r = parseFloat(total.innerHTML) + parseFloat(foc.innerHTML)
-        comv1 = (r * comP)/100  
-        comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+        r = parseFloat(total.innerHTML) + focvalue
+        comv1 = (r * comP)/100
+        
 
-        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + parseFloat(foc.innerHTML) + parseFloat(comv.innerHTML))
+        let comvalue = 0
+        if (comv != null) {  
+            comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+            comvalue = parseFloat(comv.innerHTML)
+        }
+
+        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
 
         const length = parseInt("{{ length }}");
         const num = newtotal / length
@@ -333,6 +342,11 @@
         const avg = document.getElementById('avgRate')
         const total = document.getElementById('totalRate')
         const foc = document.getElementById('focRate')
+
+
+        let focvalue = 0
+        if (foc != null)
+            focvalue = parseFloat(foc.innerHTML)
 
         const totalQuote = document.getElementById('totalQuote')
 
@@ -353,11 +367,17 @@
         })
 
         foc.innerText = +(Math.round(newtotal + "e+2") + "e-2");
-        r = parseInt(total.innerHTML) + parseInt(foc.innerHTML)
+        focvalue = parseFloat(foc.innerHTML)
+        r = parseInt(total.innerHTML) + focvalue
         comv1 = (r * comP) / 100
-        comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+        
+        let comvalue = 0
+        if (comv != null) {
+            comv.innerHTML = +(Math.round(comv1 + "e+2") + "e-2");
+            comvalue = parseFloat(comv.innerHTML)
+        }  
+        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
 
-        totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + parseFloat(foc.innerHTML) + parseFloat(comv.innerHTML))
         
 
         const length = parseInt("{{ length }}");

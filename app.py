@@ -1785,11 +1785,15 @@ def showRequest1():
                         minDiscountVal = min(minDiscountVal, float(dd[0]['value']))
                 
                 discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
+
             for t in tempResult:
                 te = int(t['rate'])
-                val = te - (minDiscountVal * te)/100
-                rates.append({'val': val, 'count': t['count'], 'type': t['type']})
-                t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
+                if (te == -1):
+                    rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
+                else:
+                    val = te - (minDiscountVal * te)/100
+                    rates.append({'val': val, 'count': t['count'], 'type': t['type']})
+                    t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
          
 
         lead = lead + 1
