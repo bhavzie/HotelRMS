@@ -1850,6 +1850,7 @@ def showRequest1():
 
     avgRate = str(round(totalQuote/roomCount, 2))
 
+    print(totalQuote, roomCount, avgRate)
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
     return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount)
