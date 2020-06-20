@@ -1843,11 +1843,16 @@ def showRequest1():
     totalQuote += focv
     totalQuote = int(round(totalQuote))
 
-    avgRate = str(round(totalRate/int(nights), 2))
+    roomCount = 0
+    for r in result:
+        for m in r:
+            roomCount += int(m['count'])
+
+    avgRate = str(round(totalRate/roomCount, 2))
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])

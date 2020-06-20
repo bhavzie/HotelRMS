@@ -190,7 +190,7 @@
                 </div>
                 <div class='mb-5'>
                     <span class='btn btn-info'>
-                        Average Rate/ Night :
+                        Average Rate/ Room Night :
                     </span>
                     <span class='btn btn-info' id='avgRate'>
                         {{ avgRate }}
@@ -298,8 +298,6 @@
     });
 
     function up(e) {
-        if (e.target.value < 10)
-            return false
 
         const inputs = [...document.getElementsByClassName('num3')]
         const avg = document.getElementById('avgRate')
@@ -341,16 +339,13 @@
         }
 
         totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
-
-        const length = parseInt("{{ length }}");
-        const num = newtotal / length
+        const roomCount = parseInt("{{ roomCount }}");
+        const num = (newtotal - focvalue)/ roomCount
         avg.innerText = +(Math.round(num + "e+2") + "e-2");
     }
 
     function down(e) {
 
-        if (e.target.value < 10)
-            return false
         const inputs = [...document.getElementsByClassName('num4')]
         const avg = document.getElementById('avgRate')
         const total = document.getElementById('totalRate')
@@ -391,11 +386,10 @@
         }  
         totalQuote.innerHTML = Math.round(parseFloat(total.innerHTML) + focvalue + comvalue)
 
-        
+        const roomCount = parseInt("{{ roomCount }}");
+        const num = parseInt(total.innerHTML) / roomCount
+        avg.innerText = +(Math.round(num + "e+2") + "e-2");   
 
-        const length = parseInt("{{ length }}");
-        const num = newtotal / length
-        avg.innerText = +(Math.round(num + "e+2") + "e-2");
     }
 
 
