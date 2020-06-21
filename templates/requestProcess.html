@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% block content %}
-
     <div class="spread4">
         <div class = 'row'>
             <div class = 'col-9' style = 'border-right: 1px solid black;'>
@@ -16,7 +15,7 @@
                             <span>ID : {{ data['id'] }}</span>
                         </div>
                         <div class='mb-3'>
-                            <span>Category : {{ data['category'] }}</span>
+                            <span>Category : <span id = 'category'>{{ data['category'] }}</span></span>
                         </div>
                         <div class='mb-3'>
                             <span>LeadTime : {{ data['leadTime'] }} Days</span>
@@ -27,7 +26,7 @@
                     </div>
                     <div class = 'col-5'>
                         <div class='mb-4'>
-                            <span class="badge badge-pill badge-primary">Last Opened : {{ data['createdOn'] }}</span>
+                            <span class="badge badge-pill badge-primary">Last Opened : {{ data['lastOpenedOn'] }} By {{ data['lastOpenedBy'] }}</span>
                         </div>
                         <div class='mb-3'>
                             <span>Budget/RM/NT : ${{ data['budget'] }}</span>
@@ -59,12 +58,18 @@
                         {% endif %}
                     </div>
                 </div>
+                <hr>
+                <div class = 'row mb-2'>
+                    <button class = 'btn btn-primary' type = 'button'>Duplicate</button>
+                </div>
+                <div class = 'row mb-5'>
+                    <button class='btn btn-primary' type='button'>History</button>
+                </div>
                 <div class = 'row mt-5'>
-                    <div class = 'row col-10'>
-
+                    <div class = 'row col-12'>
                         {% for i in range(length) %}
-                        <div class = 'col-4'>
-                            <table class="table table-bordered table-hover">
+                        <div class = 'col-5'>
+                            <table class="table table-bordered table-hover" id = {{ i }}>
                                 <thead class="thead-dark">
                                     <tr>
                                         <th style = 'width:50%'>Date</th>
@@ -99,8 +104,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class = 'col-8'>
-                                    <table class="table table-bordered table-hover">
+                        <div class = 'col-7'>
+                                    <table class="table table-bordered table-hover" id = "row{{i}}">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th>Occupancy</th>
@@ -137,14 +142,6 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <div class = 'col-1'>
-                        <a href = '#'>Comments</a>
-                        <a href = '#'>Commission</a>
-                        <a href = '#'>FOC</a>
-                        <a href = '#'>History</a>
-                        <a href = '#'>Duplicate</a>
-                        <a href = '#'>Contract</a>
-                    </div>
                 </div>
             </div>
             <div class = 'col-3'>
@@ -170,8 +167,8 @@
                 <div class = 'mb-2 ff'>
                         {% if tcomm == True%}
                         <span class='btn btn-info col-sm-6'>
-                        + Commission ({{ comP }}%)
-                        </span>
+                        + Commission <span id = 'commission'>{{ comP }}
+                        </span>%</span>
                     <span class = 'btn btn-info col-sm-3' id = 'comv'>
                         {{ tcommv }}
                     </span>
@@ -245,7 +242,7 @@
                 <div class='mb-5'>
                     <div class="form-check checkbox-slider--b-flat">
                         <label>
-                            <input type='checkbox' class='mr-5'>
+                            <input type='checkbox' class='mr-5' id = 'pmgtd'>
                             <span class='ml-5'>Payment Guaranteed</span>
                         </label>
                     </div>
@@ -253,16 +250,28 @@
                 <div class='mb-5'>
                     <div class="form-check checkbox-slider--b-flat">
                         <label>
-                            <input type = 'checkbox' class = 'mr-5'>
+                            <input type = 'checkbox' class = 'mr-5' id = 'nego'>
                             <span class = 'ml-5'>Negotiable</span>
                         </label>
                     </div>
                 </div>
+                <div class = 'form-group row mb-5'>
+                    <label class="col-sm-2 col-form-label">Comments: </label>
+                    <div class="col-sm-7 ml-5">
+                        <textarea class="form-control" rows='2' id='comments'></textarea>
+                    </div>
+                </div>
+                <div class='mb-5'>
+                    Contract
+                </div>
+                <div class='row mb-5' id='msg'>
+                
+                </div>
                 <div style="margin-top: 100px;"></div>
                 <div class = 'mt-5 mb-5'>
-                    <button class="btn btn-info">Send For Review</button>
-                    <button class="btn btn-danger">Decline</button>
-                    <button class="btn btn-success">Quote</button>
+                    <button type = 'button' class="btn btn-info">Send For Review</button>
+                    <button type = 'button' class="btn btn-danger">Decline</button>
+                    <button type = 'button' class="btn btn-success" onclick = 'quote()'>Quote</button>
                 </div>
             </div>
         </div>
@@ -288,7 +297,7 @@
 
     $(document).ready(function () {
         $('.payment').multiselect({
-              nonSelectedText: 'FOP',
+              nonSelectedText: '-',
               numberDisplayed: 0,
               buttonWidth: '200px'
           })
@@ -394,6 +403,173 @@
         const roomCount = parseInt("{{ roomCount }}");
         const num =  parseInt(totalQuote.innerHTML) / roomCount
         avg.innerText = +(Math.round(num + "e+2") + "e-2");   
+
+    }
+
+    function emsg(text) {
+        let msg2 = document.getElementById('msg')
+        msg2.style.setProperty('color', 'red', 'important');
+
+        msg2.innerHTML = `${text}`
+        $(msg2).show()
+    }
+
+    function quote() {
+        const requestId = "{{ data['id'] }}"
+        const groupCategory = document.getElementById('category').innerText
+        const totalFare = document.getElementById('totalRate').innerText
+        let foc = document.getElementById('focRate')
+        if (foc == null) {
+            foc = 0
+        } else {
+            foc = foc.innerText
+        }
+        let commission = document.getElementById('commission')
+        if (commission == null) {
+            commission = 0
+        } else {
+            commission = commission.innerText
+        }
+        let commissionValue = document.getElementById('comv')
+        if (commissionValue == null) {
+            commissionValue = 0
+        } else {
+            commissionValue = commissionValue.innerText
+        }
+        const totalQuote = document.getElementById('totalQuote').innerText
+        const cutoffDays = document.getElementById('dedenewi').value
+        if (cutoffDays == '') {
+            emsg('Enter Cutoff Days')   
+            return false
+        }
+        const formPayment = $('#formPayment').val()
+        if (formPayment == '') {
+            emsg('Enter Form of Payment')
+            return false
+        }
+        const paymentTerms = $('#dede').val()
+        if (paymentTerms == null) {
+            emsg('Enter Payment Terms')
+            return false
+        }
+        const paymentDays = $('#dede33').val()
+        if (paymentDays == '' && paymentTerms != 'ac') {
+            emsg('Enter Payment Days')
+            return false
+        }
+        let paymentGtd = document.getElementById('pmgtd')
+        if (paymentGtd.checked) {
+            paymentGtd = 1
+        } else {
+            paymentGtd = 0
+        }
+        let negotiable = document.getElementById('nego')
+        if (negotiable.checked) {
+            negotiable = 1
+        } else {
+            negotiable = 0
+        }
+        const status = 'quoted'
+
+        const checkIn = "{{ checkIn }}"
+        const checkOut = "{{ checkOut }}"
+        const nights = "{{ length }}"
+
+
+        const result = {}
+        result['requestId'] = requestId
+        result['groupCategory'] = groupCategory
+        result['totalFare'] = totalFare
+        result['foc'] = foc
+        result['commission'] = commission
+        result['commissionValue'] = commissionValue
+        result['totalQuote'] = totalQuote
+        result['cutoffDays'] = cutoffDays
+        result['formPayment'] = formPayment
+        result['paymentTerms'] = paymentTerms
+        result['paymentDays'] = paymentDays
+        result['paymentGtd'] = paymentGtd
+        result['negotiable'] = negotiable
+        result['checkIn'] = checkIn
+        result['checkOut'] = checkOut
+        result['nights'] = nights
+        result['comments'] = $('#comments').val()
+
+
+        const table_result = []
+
+        var dateParts1 = checkIn.split("-");
+        var dt1 = new Date(+dateParts1[0], dateParts1[1] - 1, +dateParts1[2]);
+        let dobj = dt1
+        let flag = true
+        for (let i = 0; i<nights; i++) {
+
+            const date = dobj.getDate()
+            const month = dobj.getMonth()
+            const year = dobj.getFullYear()
+
+
+            const table1 = document.getElementById(i)
+            const table2 = document.getElementById("row" + i)
+
+            let tbody1 = table1.children[1]
+            let tbody2 = table2.children[1]
+            let children2 = [...tbody2.children]
+
+            children2.forEach(tr => {
+                let resArr = {}
+                resArr['date'] = year + "/" + month + "/" + date
+                let children1 = tbody1.children
+                resArr['currentOcc'] = children1[0].children[1].innerText
+                resArr['discountId'] = children1[4].children[1].innerText
+                
+                resArr['occupancy'] = tr.children[0].innerText
+                resArr['type'] = tr.children[1].innerText
+                resArr['count'] = tr.children[2].innerText
+                // check if input
+                let x = tr.children[3]
+                if (x.children.length == 0)
+                    resArr['ratePerRoom'] = tr.children[3].innerText
+                else {
+                    resArr['ratePerRoom'] = tr.children[3].children[0].value
+                    if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
+                        flag = false
+                    }
+                }
+
+                table_result.push(resArr)
+
+            })
+            if (!flag) {
+                emsg('Enter Rate Per Room')
+                return false
+            } else {
+                $('#msg').hide()
+            }
+
+            dobj.setDate(dobj.getDate() + 1)
+
+        }
+
+
+        result['table_result'] = table_result
+
+        fetch('/requestProcessQuote', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+        
 
     }
 

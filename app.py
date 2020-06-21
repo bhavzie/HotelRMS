@@ -1581,18 +1581,39 @@ def showRequest(token):
     f = True
     if len(dates) == 0:
         f = False
-    
+
     return render_template('getOcc.html', dates = dates, token = token, flag = f)
 
 @app.route('/showRequest1', methods = ['GET', 'POST'])
 def showRequest1():
+
 
     token = request.form['id']
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM request where id = %s', [token])
     data = cursor.fetchall()
     data = data[0]
+    checkIn = data['checkIn']
+    checkOut = data['checkOut']
     data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+
+    email = session['email']
+    now = datetime.datetime.now()
+
+    cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+    check = cursor.fetchall()
+    if len(check) == 0:
+        cursor.execute('INSERT INTO requestLastOpened(id, time, openedBy) VALUES (%s, %s, %s)', [token, now ,email]
+        )   
+        data['lastOpenedOn'] = now
+        data['lastOpenedBy'] = email
+    else:
+        data['lastOpenedOn'] = check[0]['time']
+        data['lastOpenedBy'] = check[0]['openedBy']
+        cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s', [now, email, token])
+
+
+    mysql.connection.commit()
     string = ''
     v = data['paymentTerms']
     if v != None:
@@ -1871,7 +1892,7 @@ def showRequest1():
     #print(totalQuote, roomCount, avgRate)
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2189,6 +2210,14 @@ def activateAutopilot(id):
     return redirect(url_for('settingsAutopilot'))
 
 
+@app.route('/requestProcessQuote', methods = ['GET', 'POST'])
+def requestProcessQuote():
+    inp = request.json
+    print(inp)
+    #insert
+
+    flash('The request has been quoted', 'success')
+    return ('', 204)
 
 
 if __name__ == "__main__":
