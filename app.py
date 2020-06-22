@@ -1882,17 +1882,168 @@ def showRequest1():
     totalQuote = int(round(totalQuote))
 
     roomCount = 0
+
+    single1 = []
+    single2 = []
+    double1 = []
+    double2 = []
+    triple1 = []
+    triple2 = []
+    quad1 = []
+    quad2 = []
+
+    single1c = 0
+    single2c = 0
+    double1c = 0
+    double2c = 0
+    triple1c = 0
+    triple2c = 0
+    quad1c = 0
+    quad2c = 0
+
+    foc1 = 0
+    foc2 = 0
     for r in result:
         for m in r:
             if (m['type'] != 'foc'):
                 roomCount += int(m['count'])
+            if (m['type'] == '1 Bed'):
+                if (m['occupancy'] == 'Single'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        single1.append(v)
+                        single1c = single1c + int(m['count'])
+                elif (m['occupancy'] == 'Double'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        double1.append(v)
+                        double1c = double1c + int(m['count'])
+                elif (m['occupancy'] == 'Triple'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        triple1.append(v)
+                        triple1c = triple1c + int(m['count'])
+                elif (m['occupancy'] == 'Quad'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        quad1.append(v)
+                        quad1c = quad1c + int(m['count'])
+            elif (m['type'] == '2 Bed'):
+                if (m['occupancy'] == 'Single'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        single2.append(v)
+                        single2c = single2c + int(m['count'])
+                elif (m['occupancy'] == 'Double'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        double2.append(v)
+                        double2c = double2c + int(m['count'])
+                elif (m['occupancy'] == 'Triple'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        triple2.append(v)
+                        triple2c = triple2c + int(m['count'])
+                elif (m['occupancy'] == 'Quad'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        quad2.append(v)
+                        quad2c = quad2c + int(m['count'])
+            elif (m['type'] == 'foc'):
+                if (m['occupancy'] == 'Single'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        foc1 += float(v)
+                elif (m['occupancy'] == 'Double'):
+                    if (m['rate'] != -1):
+                        s = m['rate'].split(' (')
+                        v = float(s[0]) * int(m['count'])
+                        foc2 += float(v)
+
+
+    le = single1c
+    single1avg = -1
+    if (le != 0):
+        sum = 0
+        for s in single1:
+            sum += float(s)
+            sum += foc1
+        single1avg = sum / le
+
+    le = single2c
+    single2avg = -1
+    if (le != 0):
+        sum = 0
+        for s in single2:
+            sum += float(s)
+        single2avg = sum / le
+
+    le = double1c
+    double1avg = -1
+    if (le != 0):
+        sum = 0
+        for s in double1:
+            sum += float(s)
+        double1avg = sum / le
+
+    le = double2c
+    double2avg = -1
+    if (le != 0):
+        sum = 0
+        for s in double2:
+            sum += float(s)
+            sum += foc2
+        double2avg = sum / le
+
+    le = triple1c
+    triple1avg = -1
+    if (le != 0):
+        sum = 0
+        for s in triple1:
+            sum += float(s)
+        triple1avg = sum / le
+
+    le = triple2c
+    triple2avg = -1
+    if (le != 0):
+        sum = 0
+        for s in triple2:
+            sum += float(s)
+        triple2avg = sum / le
+
+    le = quad1c
+    quad1avg = -1
+    if (le != 0):
+        sum = 0
+        for s in quad1:
+            sum += float(s)
+        quad1avg = sum / le
+
+    le = quad2c
+    quad2avg = -1
+    if (le != 0):
+        sum = 0
+        for s in quad2:
+            sum += float(s)
+        quad2avg = sum / le
+
+
 
     avgRate = str(round(totalQuote/roomCount, 2))
 
-    #average calculations
+
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, quad1avg = quad1avg, quad2avg = quad2avg)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
