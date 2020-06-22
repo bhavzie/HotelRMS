@@ -1969,9 +1969,6 @@ def showRequest1():
                         v = float(s[0]) * int(m['count'])
                         foc2 += float(v)
 
-    print(single1avg, single1c)
-    return ''
-
     le = single1c
     single1avg = -1
     if (le != 0):
@@ -1980,6 +1977,9 @@ def showRequest1():
             sum += float(s)
             sum += foc1
         single1avg = sum / le
+
+    print(single1avg, single1c)
+    return ''
 
     le = single2c
     single2avg = -1
