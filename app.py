@@ -1905,6 +1905,7 @@ def showRequest1():
     foc2 = 0
     for r in result:
         for m in r:
+            print(m)
             if (m['type'] != 'foc'):
                 roomCount += int(m['count'])
             if (m['type'] == '1 Bed'):
@@ -1970,15 +1971,15 @@ def showRequest1():
                         foc2 += float(v)
 
     le = single1c
+
     single1avg = -1
     if (le != 0):
         sum = 0
         for s in single1:
             sum += float(s)
-            sum += foc1
+        sum += foc1
         single1avg = sum / le
 
-    print(single1avg, single1c)
 
     le = single2c
     single2avg = -1
@@ -2002,7 +2003,7 @@ def showRequest1():
         sum = 0
         for s in double2:
             sum += float(s)
-            sum += foc2
+        sum += foc2
         double2avg = sum / le
 
     le = triple1c
