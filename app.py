@@ -2415,6 +2415,10 @@ def requestProcessQuote():
     
     cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
 
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId
+    ])
+
     mysql.connection.commit()
 
     # dynamic => db

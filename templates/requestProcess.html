@@ -510,7 +510,7 @@
                             v = parseFloat(s[0]) * parseInt(count);
                             double1v += v
                         }
-                    }  else if (occ == 'Triple') {
+                    } else if (occ == 'Triple') {
                         if (rate != -1 || rate != 0) {
                             const sep = " ("
                             s = rate.split(sep)
@@ -526,7 +526,7 @@
                         }
                     }
                 } else if (type == '2 Bed') {
-                   if (occ == 'Single') {
+                    if (occ == 'Single') {
                         if (rate != -1 || rate != 0) {
                             const sep = " ("
                             s = rate.split(sep)
@@ -729,8 +729,53 @@
         const checkOut = "{{ checkOut }}"
         const nights = "{{ length }}"
 
+        const single1avg = document.getElementById('single1avg')
+        const double1avg = document.getElementById('double1avg')
+        const triple1avg = document.getElementById('triple1avg')
+        const quad1avg = document.getElementById('quad1avg')
+        const single2avg = document.getElementById('single2avg')
+        const double2avg = document.getElementById('double2avg')
+        const triple2avg = document.getElementById('triple2avg')
+        const quad2avg = document.getElementById('quad2avg')
 
         const result = {}
+        if (single1avg != null)
+            result['single1'] = single1avg.innerText
+        else
+            result['single1'] = 0
+        if (double1avg != null)
+            result['double1'] = double1avg.innerText
+        else
+            result['double1'] = 0
+        if (triple1avg != null)
+            result['triple1'] = triple1avg.innerText
+        else
+            result['triple1'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText
+        else
+            result['quad1'] = 0
+        if (single2avg != null)
+            result['single2'] = single2avg.innerText
+        else
+            result['single2'] = 0
+        if (double2avg != null)
+            result['double2'] = double2avg.innerText
+        else
+            result['double2'] = 0
+        if (triple2avg != null)
+            result['triple2'] = triple2avg.innerText
+        else
+            result['triple2'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText   
+        else
+            result['quad1'] = 0
+        if (quad2avg != null)
+            result['quad2'] = quad2avg.innerText
+        else
+            result['quad2'] = 0
+
         result['requestId'] = requestId
         result['groupCategory'] = groupCategory
         result['totalFare'] = totalFare
@@ -748,7 +793,6 @@
         result['checkOut'] = checkOut
         result['nights'] = nights
         result['comments'] = $('#comments').val()
-
 
         const table_result = []
 
