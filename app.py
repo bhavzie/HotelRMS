@@ -2039,13 +2039,12 @@ def showRequest1():
         quad2avg = sum / le
 
 
-
     avgRate = str(round(totalQuote/roomCount, 2))
 
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, quad1avg = quad1avg, quad2avg = quad2avg)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
