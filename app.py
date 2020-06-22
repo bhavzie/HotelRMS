@@ -1994,6 +1994,28 @@ def showRequest1():
                     foc2c = int(m['count'])
 
     le = single1c
+    parts = 0
+    if (single1f):
+        parts = parts + 1
+    if (double1f):
+        parts = parts + 1
+    if (triple1f):
+        parts = parts + 1
+    if (quad1f):
+        parts = parts + 1
+    if (single2f):
+        parts = parts + 1
+    if (double2f):
+        parts = parts + 1
+    if (triple2f):
+        parts = parts + 1
+    if (quad2f):
+        parts = parts + 1
+
+    if parts != 0:
+        foc1 = foc1 / parts
+        foc2 = foc2 / parts
+    
 
     single1avg = 0
     if (le != 0):
@@ -2001,6 +2023,7 @@ def showRequest1():
         for s in single1:
             sum += float(s)
         sum += foc1
+        sum += foc2
         single1avg = sum / le
 
 
@@ -2010,6 +2033,8 @@ def showRequest1():
         sum = 0
         for s in single2:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         single2avg = sum / le
 
     le = double1c
@@ -2018,6 +2043,8 @@ def showRequest1():
         sum = 0
         for s in double1:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         double1avg = sum / le
 
     le = double2c
@@ -2026,6 +2053,7 @@ def showRequest1():
         sum = 0
         for s in double2:
             sum += float(s)
+        sum += foc1
         sum += foc2
         double2avg = sum / le
 
@@ -2035,6 +2063,8 @@ def showRequest1():
         sum = 0
         for s in triple1:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         triple1avg = sum / le
 
     le = triple2c
@@ -2043,6 +2073,8 @@ def showRequest1():
         sum = 0
         for s in triple2:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         triple2avg = sum / le
 
     le = quad1c
@@ -2051,6 +2083,8 @@ def showRequest1():
         sum = 0
         for s in quad1:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         quad1avg = sum / le
 
     le = quad2c
@@ -2059,8 +2093,11 @@ def showRequest1():
         sum = 0
         for s in quad2:
             sum += float(s)
+        sum += foc1
+        sum += foc2
         quad2avg = sum / le
 
+    # add foc to all equally
 
     single1avg = round(single1avg, 2)
     double1avg = round(double1avg, 2)
@@ -2075,7 +2112,7 @@ def showRequest1():
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, parts = parts)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])

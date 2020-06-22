@@ -475,6 +475,8 @@
         let quad2v = 0
         let foc1 = 0
         let foc2 = 0
+        let foc1v = 0
+        let foc2v = 0
 
         for (let i = 0; i < nights; i++) {
             const table = document.getElementById('row' + i)
@@ -561,32 +563,36 @@
                             const sep = " ("
                             s = rate.split(sep)
                             v = parseFloat(s[0]) * parseInt(count);
-                            single1v += v
+                            foc1v += v
                         }
                     } else if (occ == 'Double') {
                         if (rate != -1 || rate != 0) {
                             const sep = " ("
                             s = rate.split(sep)
                             v = parseFloat(s[0]) * parseInt(count);
-                            double2v += v
+                            foc2v += v
                         }
                     }
                 }
 
             });
 
-        }
+        }   
+
+        const parts = "{{ parts }}"
+        foc1v = foc1v / parseInt(parts)
+        foc2v = foc2v / parseInt(parts)
 
 
 
-        const sv = +(Math.round((single1v/single1c) + "e+2") + "e-2")
-        const dv = +(Math.round((double1v / double1c) + "e+2") + "e-2")
-        const tv = +(Math.round((triple1v / triple1c) + "e+2") + "e-2")
-        const qv = +(Math.round((quad1v / quad1c) + "e+2") + "e-2")
-        const sv1 = +(Math.round((single2v / single2c) + "e+2") + "e-2")
-        const dv1 = +(Math.round((double2v / double2c) + "e+2") + "e-2")
-        const tv1 = +(Math.round((triple2v / triple2c) + "e+2") + "e-2")
-        const qv1 = +(Math.round((quad2v / quad2c) + "e+2") + "e-2")
+        const sv = +(Math.round((single1v + foc1v + foc2v /single1c) + "e+2") + "e-2")
+        const dv = +(Math.round((double1v  + foc1v + foc2v / double1c) + "e+2") + "e-2")
+        const tv = +(Math.round((triple1v  + foc1v + foc2v / triple1c) + "e+2") + "e-2")
+        const qv = +(Math.round((quad1v  + foc1v + foc2v / quad1c) + "e+2") + "e-2")
+        const sv1 = +(Math.round((single2v + foc1v + foc2v  / single2c) + "e+2") + "e-2")
+        const dv1 = +(Math.round((double2v  + foc1v + foc2v / double2c) + "e+2") + "e-2")
+        const tv1 = +(Math.round((triple2v + foc1v + foc2v  / triple2c) + "e+2") + "e-2")
+        const qv1 = +(Math.round((quad2v  + foc1v + foc2v / quad2c) + "e+2") + "e-2")
 
 
         if (single1avg != null)
