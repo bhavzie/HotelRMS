@@ -1979,7 +1979,6 @@ def showRequest1():
         single1avg = sum / le
 
     print(single1avg, single1c)
-    return ''
 
     le = single2c
     single2avg = -1
