@@ -1598,7 +1598,7 @@ def showRequest1():
     data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
 
     email = session['email']
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
 
     cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
     check = cursor.fetchall()
@@ -1969,6 +1969,8 @@ def showRequest1():
                         v = float(s[0]) * int(m['count'])
                         foc2 += float(v)
 
+    print(single1avg, single1c)
+    return ''
 
     le = single1c
     single1avg = -1
@@ -2114,7 +2116,7 @@ def strategyDiscountSubmit():
         cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
 
     email = session['email']
-    time = datetime.datetime.now()   
+    time = datetime.datetime.utcnow()   
     cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time])
 
     for jindex, l in enumerate(inp['leadtime']):
@@ -2246,7 +2248,7 @@ def editDiscountGrid():
     inp = request.json
     cursor = mysql.connection.cursor()
     email = session['email']
-    time = datetime.datetime.now()
+    time = datetime.datetime.utcnow()
 
     cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s', [
         inp['startDate'], inp['endDate'], email, time, inp['discountId']
@@ -2301,7 +2303,7 @@ def settingsAutopilot():
 def settingsAutopilotSubmit():
     inp = request.json
     email = session['email']
-    time = datetime.datetime.now()
+    time = datetime.datetime.utcnow()
     cursor = mysql.connection.cursor()
     cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
     email, time
@@ -2367,7 +2369,7 @@ def requestProcessQuote():
     cursor = mysql.connection.cursor()
     responseId = inp['requestId'] + "R"
     email = session['email']
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     status = 'QUOTED'
 
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
