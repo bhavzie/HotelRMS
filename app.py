@@ -1889,7 +1889,7 @@ def showRequest1():
 
     avgRate = str(round(totalQuote/roomCount, 2))
 
-    #print(totalQuote, roomCount, avgRate)
+    #average calculations
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
     return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut)
@@ -2213,8 +2213,26 @@ def activateAutopilot(id):
 @app.route('/requestProcessQuote', methods = ['GET', 'POST'])
 def requestProcessQuote():
     inp = request.json
-    print(inp)
-    #insert
+    cursor = mysql.connection.cursor()
+    responseId = inp['requestId'] + "R"
+    email = session['email']
+    now = datetime.datetime.now()
+    status = 'QUOTED'
+
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments']
+    ])
+
+    table = inp['table_result']
+    for t in table:
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId
+        ])
+    
+    cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
+
+    mysql.connection.commit()
 
     flash('The request has been quoted', 'success')
     return ('', 204)
