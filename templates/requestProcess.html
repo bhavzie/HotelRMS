@@ -385,8 +385,6 @@
         const avgRate = "{{ avgRate|safe }}"
         const roomCount = "{{ roomCount|safe }}"
         
-        //console.log(totalQuote, roomCount, avgRate)
-        //console.log(res)
     });
 
     function up(e) {
@@ -441,6 +439,10 @@
 
 
     }
+
+
+    var foc1o = parseFloat("{{ foc1 }}")
+    var foc2o = parseFloat("{{ foc2 }}")
 
     function upd() {
         const single1avg = document.getElementById('single1avg')
@@ -577,22 +579,42 @@
 
             });
 
-        }   
+        }
 
+
+        
         const parts = "{{ parts }}"
+
+
         foc1v = foc1v / parseInt(parts)
         foc2v = foc2v / parseInt(parts)
 
 
+        foc1v = +(Math.round(foc1v + "e+2") + "e-2")
+        foc2v = +(Math.round(foc2v + "e+2") + "e-2")
 
-        const sv = +(Math.round((single1v + foc1v + foc2v /single1c) + "e+2") + "e-2")
-        const dv = +(Math.round((double1v  + foc1v + foc2v / double1c) + "e+2") + "e-2")
-        const tv = +(Math.round((triple1v  + foc1v + foc2v / triple1c) + "e+2") + "e-2")
-        const qv = +(Math.round((quad1v  + foc1v + foc2v / quad1c) + "e+2") + "e-2")
-        const sv1 = +(Math.round((single2v + foc1v + foc2v  / single2c) + "e+2") + "e-2")
-        const dv1 = +(Math.round((double2v  + foc1v + foc2v / double2c) + "e+2") + "e-2")
-        const tv1 = +(Math.round((triple2v + foc1v + foc2v  / triple2c) + "e+2") + "e-2")
-        const qv1 = +(Math.round((quad2v  + foc1v + foc2v / quad2c) + "e+2") + "e-2")
+
+        focvv = foc1v + foc2v
+
+        let svv = (single1v / single1c) + focvv
+        let dvv = (double1v / double1c) + focvv
+        let tvv = (triple1v/triple1c) + focvv
+        let qvv = (quad1v/quad1c) + focvv
+        
+        let svv2 = (single2v/single2c) + focvv
+        let dvv2 = (double2v/double2c) + focvv
+        let tvv2 = (triple2v/triple2c) + focvv
+        let qvv2 = (quad2v/quad2c) + focvv
+
+        const sv = +(Math.round(svv + "e+2") + "e-2")
+        const dv = +(Math.round(dvv + "e+2") + "e-2")
+        const tv = +(Math.round(tvv + "e+2") + "e-2")
+        const qv = +(Math.round(qvv + "e+2") + "e-2")
+        const sv1 = +(Math.round(svv2 + "e+2") + "e-2")
+        const dv1 = +(Math.round(dvv2 + "e+2") + "e-2")
+        const tv1 = +(Math.round(tvv2 + "e+2") + "e-2")
+        const qv1 = +(Math.round(qvv2 + "e+2") + "e-2")
+
 
 
         if (single1avg != null)

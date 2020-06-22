@@ -1716,7 +1716,6 @@ def showRequest1():
                     r['rate'] = -1
                     mmp = 0
                 else:
-                # print(pent)
                     if r['occupancy'] == 'Single':
                         r['rate'] = pent[0]['sor']
                     elif r['occupancy'] == 'Double':
@@ -1993,7 +1992,6 @@ def showRequest1():
                         foc2 += float(v)
                     foc2c = int(m['count'])
 
-    le = single1c
     parts = 0
     if (single1f):
         parts = parts + 1
@@ -2017,15 +2015,14 @@ def showRequest1():
         foc2 = foc2 / parts
     
 
+    le = single1c
     single1avg = 0
     if (le != 0):
         sum = 0
         for s in single1:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         single1avg = sum / le
-
+        single1avg = single1avg + foc1 + foc2
 
     le = single2c
     single2avg = 0
@@ -2033,9 +2030,10 @@ def showRequest1():
         sum = 0
         for s in single2:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         single2avg = sum / le
+
+        single2avg = single2avg + foc1 + foc2
+    
 
     le = double1c
     double1avg = 0
@@ -2043,9 +2041,9 @@ def showRequest1():
         sum = 0
         for s in double1:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         double1avg = sum / le
+
+        double1avg = double1avg + foc1 + foc2
 
     le = double2c
     double2avg = 0
@@ -2053,9 +2051,9 @@ def showRequest1():
         sum = 0
         for s in double2:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         double2avg = sum / le
+
+        double2avg = double2avg + foc1 + foc2
 
     le = triple1c
     triple1avg = 0
@@ -2063,9 +2061,9 @@ def showRequest1():
         sum = 0
         for s in triple1:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         triple1avg = sum / le
+
+        triple1avg = triple1avg + foc1 + foc2
 
     le = triple2c
     triple2avg = 0
@@ -2073,9 +2071,9 @@ def showRequest1():
         sum = 0
         for s in triple2:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         triple2avg = sum / le
+
+        triple2avg = triple2avg + foc1 + foc2
 
     le = quad1c
     quad1avg = 0
@@ -2083,9 +2081,9 @@ def showRequest1():
         sum = 0
         for s in quad1:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         quad1avg = sum / le
+
+        quad1avg = quad1avg + foc1 + foc2
 
     le = quad2c
     quad2avg = 0
@@ -2093,9 +2091,9 @@ def showRequest1():
         sum = 0
         for s in quad2:
             sum += float(s)
-        sum += foc1
-        sum += foc2
         quad2avg = sum / le
+
+        quad2avg = quad2avg + foc1 + foc2
 
     # add foc to all equally
 
@@ -2107,12 +2105,13 @@ def showRequest1():
     double2avg = round(double2avg, 2)
     triple2avg = round(triple2avg, 2)
     quad2avg = round(quad2avg, 2)
+
     avgRate = str(round(totalQuote/roomCount, 2))
 
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, parts = parts)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, parts = parts, foc1 = foc1, foc2 = foc2)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2174,9 +2173,7 @@ def viewAllUsers():
 @app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
 def strategyDiscountSubmit():
     inp = request.json
-    #print(inp)
     occ = inp['occ']
-    #print(occ)
         
     cursor = mysql.connection.cursor()
     for o in occ:
@@ -2225,7 +2222,6 @@ def showDiscountGrid(id):
 
     cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
     occ = cursor.fetchall()
-    #print(occ)
 
     ranges = []
     range1 = {}
@@ -2237,7 +2233,6 @@ def showDiscountGrid(id):
         else:
             break
 
-    #print(ranges)
 
     
     result = []
