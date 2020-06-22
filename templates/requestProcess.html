@@ -60,9 +60,7 @@
                 </div>
                 <hr>
                 <div class = 'row mb-2'>
-                    <button class = 'btn btn-primary' type = 'button'>Duplicate</button>
-                </div>
-                <div class = 'row mb-5'>
+                    <button class = 'btn btn-primary mr-2' type = 'button'>Duplicate</button>
                     <button class='btn btn-primary' type='button'>History</button>
                 </div>
                 <div class = 'row mt-5'>
@@ -186,48 +184,93 @@
                 <hr>
                 </div>
                 <div class='mb-5'>
-                    <span class='btn btn-info'>
-                        Average Rate/ Room Night :
+                    <span class='btn btn-info col-sm-8'>
+                        Average Rate/ Room Night
                     </span>
-                    <span class='btn btn-info' id='avgRate'>
+                    <span class='btn btn-info col-sm-3' id='avgRate'>
                         {{ avgRate }}
                     </span>
                 </div>
-                <div class = 'mb-5'>
-                    <span>
-                        Single1
+                {% if single1f %}
+                <div class = 'mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        1 Bed Single
+                    </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'single1avg'>
                         {{ single1avg }}
-                    </span><br>
-                
-                    <span>
-                        Double1
-                        {{ double1avg }}
-                    </span><br>
-                    <span>
-                        Triple1
-                        {{ triple1avg }}
-                    </span><br>
-                    <span>
-                        Quad1
-                        {{ quad1avg }}
-                    </span><br>
-                    <span>
-                        Single2
-                        {{ single2avg }}
-                    </span><br>
-                    <span>
-                        Double2
-                        {{ double2avg }}
-                    </span><br>
-                    <span>
-                        Triple2
-                        {{ triple2avg }}
-                    </span><br>
-                    <span>
-                        Quad2
-                        {{ quad2avg }}
                     </span>
                 </div>
+                {% endif %}
+                {% if double1f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        1 Bed Double
+                    </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'double1avg'>
+                    {{ double1avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if triple1f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        1 Bed Triple
+                    </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'triple1avg'>
+                        {{ triple1avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if quad1f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        1 Bed Quad
+                    </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'quad1avg'>
+                        {{ quad1avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if single2f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        2 Bed Single
+                    </span>
+                    <span class = 'btn btn-info col-sm-3' id = 'single2avg'>
+                        {{ single2avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if double2f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        2 Bed Double
+                    </span>
+                        <span class = 'btn btn-info col-sm-3' id = 'double2avg'>
+                            {{ double2avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if triple2f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        2 Bed Triple
+                    </span>
+                        <span class = 'btn btn-info col-sm-3' id = 'triple2avg'>
+                            {{ triple2avg }}
+                    </span>
+                </div>
+                {% endif %}
+                {% if quad2f %}
+                <div class='mb-2'>
+                    <span class='btn btn-info col-sm-8'>
+                        2 Bed Quad
+                    </span>
+                        <span class = 'btn btn-info col-sm-3' id = 'quad2avg'>
+                            {{ quad2avg }}
+                    </span>
+                </div>
+                {% endif %}
                 <hr>
 
                 <div class='mb-5'>
@@ -391,7 +434,180 @@
         const roomCount = parseInt("{{ roomCount }}");
         const num = parseInt(totalQuote.innerHTML)/ roomCount
         avg.innerText = +(Math.round(num + "e+2") + "e-2");
+
+
+
+        upd()
+
+
     }
+
+    function upd() {
+        const single1avg = document.getElementById('single1avg')
+        const double1avg = document.getElementById('double1avg')
+        const triple1avg = document.getElementById('triple1avg')
+        const quad1avg = document.getElementById('quad1avg')
+        const single2avg = document.getElementById('single2avg')
+        const double2avg = document.getElementById('double2avg')
+        const triple2avg = document.getElementById('triple2avg')
+        const quad2avg = document.getElementById('quad2avg')
+
+        const single1c = "{{ single1c }}"
+        const double1c = "{{ double1c }}"
+        const triple1c = "{{ triple1c }}"
+        const quad1c = "{{ quad1c }}"
+        const single2c = "{{ single2c }}"
+        const double2c = "{{ double2c }}"
+        const triple2c = "{{ triple2c }}"
+        const quad2c = "{{ quad2c }}"
+        const foc1c = "{{ foc1c }}"
+        const foc2c = "{{ foc2c }}"
+
+        const nights = "{{ length }}"
+
+        let single1v = 0
+        let double1v = 0
+        let triple1v = 0
+        let quad1v = 0
+        let single2v = 0
+        let double2v = 0
+        let triple2v = 0
+        let quad2v = 0
+        let foc1 = 0
+        let foc2 = 0
+
+        for (let i = 0; i < nights; i++) {
+            const table = document.getElementById('row' + i)
+            const children = [...table.children[1].children]
+            
+            children.forEach(tr => {
+                const occ  = tr.children[0].innerText
+                const type = tr.children[1].innerText
+                const count = tr.children[2].innerText
+                let x = tr.children[3]
+                if (x.children.length == 0)
+                    rate = tr.children[3].innerText
+                else {
+                    rate = tr.children[3].children[0].value
+                    if (rate == '') {
+                        rate = '0'
+                    }
+                }
+
+                if (type == '1 Bed') {
+                    if (occ == 'Single') {
+                        if (rate != -1 || rate != 0) {
+
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            single1v += v
+                        }
+                    } else if (occ == 'Double') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            double1v += v
+                        }
+                    }  else if (occ == 'Triple') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            triple1v += v
+                        }
+                    } else if (occ == 'Quad') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            quad1v += v
+                        }
+                    }
+                } else if (type == '2 Bed') {
+                   if (occ == 'Single') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(single2c);
+                            single2v += v
+                        }
+                    } else if (occ == 'Double') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            double2v += v
+                        }
+                    } else if (occ == 'Triple') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            triple2v += v
+                        }
+                    } else if (occ == 'Quad') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            quad2v += v
+                        }
+                    }
+                } else if (type == 'foc') {
+                    if (occ == 'Single') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            single1v += v
+                        }
+                    } else if (occ == 'Double') {
+                        if (rate != -1 || rate != 0) {
+                            const sep = " ("
+                            s = rate.split(sep)
+                            v = parseFloat(s[0]) * parseInt(count);
+                            double2v += v
+                        }
+                    }
+                }
+
+            });
+
+        }
+
+
+
+        const sv = +(Math.round((single1v/single1c) + "e+2") + "e-2")
+        const dv = +(Math.round((double1v / double1c) + "e+2") + "e-2")
+        const tv = +(Math.round((triple1v / triple1c) + "e+2") + "e-2")
+        const qv = +(Math.round((quad1v / quad1c) + "e+2") + "e-2")
+        const sv1 = +(Math.round((single2v / single2c) + "e+2") + "e-2")
+        const dv1 = +(Math.round((double2v / double2c) + "e+2") + "e-2")
+        const tv1 = +(Math.round((triple2v / triple2c) + "e+2") + "e-2")
+        const qv1 = +(Math.round((quad2v / quad2c) + "e+2") + "e-2")
+
+
+        if (single1avg != null)
+            single1avg.innerHTML = sv
+        if (double1avg != null)
+            double1avg.innerHTML = dv
+        if (triple1avg != null)
+            triple1avg.innerHTML = tv
+        if (quad1avg != null)
+            quad1avg.innerHTML = qv
+        if (single2avg != null)
+            single2avg.innerHTML = sv1
+        if (double2avg != null)
+            double2avg.innerHTML = dv1
+        if (triple2avg != null)
+            triple2avg.innerHTML = tv1
+        if (quad2avg != null)
+            quad2avg.innerHTML = qv1   
+
+    }
+
 
     function down(e) {
 
@@ -437,7 +653,10 @@
 
         const roomCount = parseInt("{{ roomCount }}");
         const num =  parseInt(totalQuote.innerHTML) / roomCount
-        avg.innerText = +(Math.round(num + "e+2") + "e-2");   
+        avg.innerText = +(Math.round(num + "e+2") + "e-2"); 
+
+
+        upd()  
 
     }
 

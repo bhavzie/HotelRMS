@@ -1900,12 +1900,25 @@ def showRequest1():
     triple2c = 0
     quad1c = 0
     quad2c = 0
+    foc1c = 0
+    foc2c = 0
+    
+    single1f = False
+    double1f = False
+    triple1f = False
+    quad1f = False 
+    single2f = False
+    double2f = False
+    triple2f = False
+    quad2f = False 
+        
 
     foc1 = 0
     foc2 = 0
+
+
     for r in result:
         for m in r:
-            print(m)
             if (m['type'] != 'foc'):
                 roomCount += int(m['count'])
             if (m['type'] == '1 Bed'):
@@ -1914,65 +1927,75 @@ def showRequest1():
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         single1.append(v)
-                        single1c = single1c + int(m['count'])
+                    single1c = single1c + int(m['count'])
+                    single1f = True
                 elif (m['occupancy'] == 'Double'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         double1.append(v)
-                        double1c = double1c + int(m['count'])
+                    double1c = double1c + int(m['count'])
+                    double1f = True
                 elif (m['occupancy'] == 'Triple'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         triple1.append(v)
-                        triple1c = triple1c + int(m['count'])
+                    triple1c = triple1c + int(m['count'])
+                    triple1f = True
                 elif (m['occupancy'] == 'Quad'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         quad1.append(v)
-                        quad1c = quad1c + int(m['count'])
+                    quad1c = quad1c + int(m['count'])
+                    quad1f = True
             elif (m['type'] == '2 Bed'):
                 if (m['occupancy'] == 'Single'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         single2.append(v)
-                        single2c = single2c + int(m['count'])
+                    single2c = single2c + int(m['count'])
+                    single2f = True
                 elif (m['occupancy'] == 'Double'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         double2.append(v)
-                        double2c = double2c + int(m['count'])
+                    double2c = double2c + int(m['count'])
+                    double2f = True
                 elif (m['occupancy'] == 'Triple'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         triple2.append(v)
-                        triple2c = triple2c + int(m['count'])
+                    triple2c = triple2c + int(m['count'])
+                    triple2f = True
                 elif (m['occupancy'] == 'Quad'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         quad2.append(v)
-                        quad2c = quad2c + int(m['count'])
+                    quad2c = quad2c + int(m['count'])
+                    quad2f = True
             elif (m['type'] == 'foc'):
                 if (m['occupancy'] == 'Single'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         foc1 += float(v)
+                    foc1c = int(m['count'])
                 elif (m['occupancy'] == 'Double'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
                         v = float(s[0]) * int(m['count'])
                         foc2 += float(v)
+                    foc2c = int(m['count'])
 
     le = single1c
 
-    single1avg = -1
+    single1avg = 0
     if (le != 0):
         sum = 0
         for s in single1:
@@ -1982,7 +2005,7 @@ def showRequest1():
 
 
     le = single2c
-    single2avg = -1
+    single2avg = 0
     if (le != 0):
         sum = 0
         for s in single2:
@@ -1990,7 +2013,7 @@ def showRequest1():
         single2avg = sum / le
 
     le = double1c
-    double1avg = -1
+    double1avg = 0
     if (le != 0):
         sum = 0
         for s in double1:
@@ -1998,7 +2021,7 @@ def showRequest1():
         double1avg = sum / le
 
     le = double2c
-    double2avg = -1
+    double2avg = 0
     if (le != 0):
         sum = 0
         for s in double2:
@@ -2007,7 +2030,7 @@ def showRequest1():
         double2avg = sum / le
 
     le = triple1c
-    triple1avg = -1
+    triple1avg = 0
     if (le != 0):
         sum = 0
         for s in triple1:
@@ -2015,7 +2038,7 @@ def showRequest1():
         triple1avg = sum / le
 
     le = triple2c
-    triple2avg = -1
+    triple2avg = 0
     if (le != 0):
         sum = 0
         for s in triple2:
@@ -2023,7 +2046,7 @@ def showRequest1():
         triple2avg = sum / le
 
     le = quad1c
-    quad1avg = -1
+    quad1avg = 0
     if (le != 0):
         sum = 0
         for s in quad1:
@@ -2031,7 +2054,7 @@ def showRequest1():
         quad1avg = sum / le
 
     le = quad2c
-    quad2avg = -1
+    quad2avg = 0
     if (le != 0):
         sum = 0
         for s in quad2:
@@ -2039,12 +2062,20 @@ def showRequest1():
         quad2avg = sum / le
 
 
+    single1avg = round(single1avg, 2)
+    double1avg = round(double1avg, 2)
+    triple1avg = round(triple1avg, 2)
+    quad1avg = round(quad1avg, 2)
+    single2avg = round(single2avg, 2)
+    double2avg = round(double2avg, 2)
+    triple2avg = round(triple2avg, 2)
+    quad2avg = round(quad2avg, 2)
     avgRate = str(round(totalQuote/roomCount, 2))
 
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2385,6 +2416,8 @@ def requestProcessQuote():
     cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
 
     mysql.connection.commit()
+
+    # dynamic => db
 
     flash('The request has been quoted', 'success')
     return ('', 204)
