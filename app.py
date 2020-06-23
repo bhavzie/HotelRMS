@@ -1539,6 +1539,75 @@ def home2():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 def showRequest(token):
     cursor = mysql.connection.cursor()
+    cursor.execute('SELECT status from request where id = %s', [token])
+    status = cursor.fetchall()
+    if (status[0]['status'] == 'QUOTED'):
+        cursor.execute('SELECT * From request where id = %s', [token])
+        data = cursor.fetchall()
+        data = data[0]
+        checkIn = data['checkIn']
+        checkOut = data['checkOut']
+        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+
+        email = session['email']
+        now = datetime.datetime.utcnow()
+
+        cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+        check = cursor.fetchall()
+        if len(check) == 0:
+            cursor.execute('INSERT INTO requestLastOpened(id, time, openedBy) VALUES (%s, %s, %s)', [token, now, email]
+                        )
+            data['lastOpenedOn'] = now
+            data['lastOpenedBy'] = email
+        else:
+            data['lastOpenedOn'] = check[0]['time']
+            data['lastOpenedBy'] = check[0]['openedBy']
+            cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s', [
+                       now, email, token])
+        mysql.connection.commit()
+        string = ''
+        v = data['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data['paymentTerms'] = 'Prior To Arrival'
+
+        string = ''
+        v = data['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        data['formPayment'] = string
+
+        if data['comments'].isspace():
+            data['comments'] = ''
+
+        responseId = data['id'] + "R"
+        cursor.execute('SELECT * From response where responseId = %s', [responseId])
+        data2 = cursor.fetchall()
+        print(data2)
+        data['groupCategory'] = data2[0]['groupCategory']
+        data2 = data2[0]
+        tfoc = True
+        if (data2['foc'] == '0'):
+            tfoc = False
+        tcomm = True
+        if (data2['commission'] == '0'):
+            tcomm = False
+        
+        
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm)
+
+
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
     dates = cursor.fetchall()
     dates = dates[0]
@@ -1992,28 +2061,10 @@ def showRequest1():
                         foc2 += float(v)
                     foc2c = int(m['count'])
 
-    parts = 0
-    if (single1f):
-        parts = parts + 1
-    if (double1f):
-        parts = parts + 1
-    if (triple1f):
-        parts = parts + 1
-    if (quad1f):
-        parts = parts + 1
-    if (single2f):
-        parts = parts + 1
-    if (double2f):
-        parts = parts + 1
-    if (triple2f):
-        parts = parts + 1
-    if (quad2f):
-        parts = parts + 1
 
-    if parts != 0:
-        foc1 = foc1 / parts
-        foc2 = foc2 / parts
-    
+    foc1 = foc1 / roomCount
+    foc2 = foc2 / roomCount
+    tcommparts = tcommv / roomCount
 
     le = single1c
     single1avg = 0
@@ -2022,7 +2073,7 @@ def showRequest1():
         for s in single1:
             sum += float(s)
         single1avg = sum / le
-        single1avg = single1avg + foc1 + foc2
+        single1avg = single1avg + foc1 + foc2 + tcommparts
 
     le = single2c
     single2avg = 0
@@ -2032,7 +2083,7 @@ def showRequest1():
             sum += float(s)
         single2avg = sum / le
 
-        single2avg = single2avg + foc1 + foc2
+        single2avg = single2avg + foc1 + foc2 + tcommparts
     
 
     le = double1c
@@ -2043,7 +2094,7 @@ def showRequest1():
             sum += float(s)
         double1avg = sum / le
 
-        double1avg = double1avg + foc1 + foc2
+        double1avg = double1avg + foc1 + foc2 + tcommparts
 
     le = double2c
     double2avg = 0
@@ -2053,7 +2104,7 @@ def showRequest1():
             sum += float(s)
         double2avg = sum / le
 
-        double2avg = double2avg + foc1 + foc2
+        double2avg = double2avg + foc1 + foc2 + tcommparts
 
     le = triple1c
     triple1avg = 0
@@ -2063,7 +2114,7 @@ def showRequest1():
             sum += float(s)
         triple1avg = sum / le
 
-        triple1avg = triple1avg + foc1 + foc2
+        triple1avg = triple1avg + foc1 + foc2 + tcommparts
 
     le = triple2c
     triple2avg = 0
@@ -2073,7 +2124,7 @@ def showRequest1():
             sum += float(s)
         triple2avg = sum / le
 
-        triple2avg = triple2avg + foc1 + foc2
+        triple2avg = triple2avg + foc1 + foc2 + tcommparts
 
     le = quad1c
     quad1avg = 0
@@ -2083,7 +2134,7 @@ def showRequest1():
             sum += float(s)
         quad1avg = sum / le
 
-        quad1avg = quad1avg + foc1 + foc2
+        quad1avg = quad1avg + foc1 + foc2 + tcommparts
 
     le = quad2c
     quad2avg = 0
@@ -2093,7 +2144,7 @@ def showRequest1():
             sum += float(s)
         quad2avg = sum / le
 
-        quad2avg = quad2avg + foc1 + foc2
+        quad2avg = quad2avg + foc1 + foc2 + tcommparts
 
     # add foc to all equally
 
@@ -2111,7 +2162,7 @@ def showRequest1():
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, parts = parts, foc1 = foc1, foc2 = foc2)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])

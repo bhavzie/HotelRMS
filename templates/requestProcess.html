@@ -583,11 +583,10 @@
 
 
         
-        const parts = "{{ parts }}"
+        const roomCount = parseInt("{{ roomCount }}")
 
-
-        foc1v = foc1v / parseInt(parts)
-        foc2v = foc2v / parseInt(parts)
+        foc1v = foc1v / roomCount
+        foc2v = foc2v / roomCount
 
 
         foc1v = +(Math.round(foc1v + "e+2") + "e-2")
