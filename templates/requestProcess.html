@@ -595,6 +595,7 @@
         focvv = foc1v + foc2v
 
         // add commission
+    
         let c = parseInt(document.getElementById('comv').innerHTML)
         c = c / roomCount
         
@@ -670,9 +671,11 @@
             }
         })
 
+
         foc.innerText = +(Math.round(newtotal + "e+2") + "e-2");
         focvalue = parseFloat(foc.innerHTML)
-        r = parseInt(total.innerHTML) + focvalue
+
+        r = parseInt(total.innerHTML)
         comv1 = (r * comP) / 100
         
         let comvalue = 0
