@@ -418,9 +418,8 @@
         })
 
         total.innerText = +(Math.round(newtotal + "e+2") + "e-2");
-        r = parseFloat(total.innerHTML) + focvalue
+        r = parseFloat(total.innerHTML)
         comv1 = (r * comP)/100
-        
 
         let comvalue = 0
         if (comv != null) {  
@@ -595,15 +594,20 @@
 
         focvv = foc1v + foc2v
 
-        let svv = (single1v / single1c) + focvv
-        let dvv = (double1v / double1c) + focvv
-        let tvv = (triple1v/triple1c) + focvv
-        let qvv = (quad1v/quad1c) + focvv
+        // add commission
+        let c = parseInt(document.getElementById('comv').innerHTML)
+        c = c / roomCount
         
-        let svv2 = (single2v/single2c) + focvv
-        let dvv2 = (double2v/double2c) + focvv
-        let tvv2 = (triple2v/triple2c) + focvv
-        let qvv2 = (quad2v/quad2c) + focvv
+        let svv = (single1v / single1c) + focvv + c
+        let dvv = (double1v / double1c) + focvv + c
+        let tvv = (triple1v/triple1c) + focvv + c
+        let qvv = (quad1v/quad1c) + focvv + c
+        
+
+        let svv2 = (single2v/single2c) + focvv + c
+        let dvv2 = (double2v/double2c) + focvv + c
+        let tvv2 = (triple2v/triple2c) + focvv + c
+        let qvv2 = (quad2v/quad2c) + focvv + c
 
         const sv = +(Math.round(svv + "e+2") + "e-2")
         const dv = +(Math.round(dvv + "e+2") + "e-2")

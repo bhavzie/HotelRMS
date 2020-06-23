@@ -1554,17 +1554,8 @@ def showRequest(token):
 
         cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
         check = cursor.fetchall()
-        if len(check) == 0:
-            cursor.execute('INSERT INTO requestLastOpened(id, time, openedBy) VALUES (%s, %s, %s)', [token, now, email]
-                        )
-            data['lastOpenedOn'] = now
-            data['lastOpenedBy'] = email
-        else:
-            data['lastOpenedOn'] = check[0]['time']
-            data['lastOpenedBy'] = check[0]['openedBy']
-            cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s', [
-                       now, email, token])
-        mysql.connection.commit()
+        data['lastOpenedOn'] = check[0]['time']
+        data['lastOpenedBy'] = check[0]['openedBy']
         string = ''
         v = data['paymentTerms']
         if v != None:

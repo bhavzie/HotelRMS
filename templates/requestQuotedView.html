@@ -96,14 +96,6 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Discount
-                                    </td>
-                                    <td>
-                                        {{ l['discountId'] }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
                                         Groups
                                     </td>
                                     <td>
@@ -116,6 +108,14 @@
                                     </td>
                                     <td>
                                         {{ l['leadTime'] }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Discount
+                                    </td>
+                                    <td>
+                                        {{ l['discountId'] }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -307,6 +307,22 @@
             {% endif %}
             <div class='mb-5'>
                 Contract
+            </div>
+            <div class = 'mb-5'>
+                Negotiable :
+                {% if data2['negotiable'] == 1 %}
+                    YES
+                {% else %} 
+                    NO
+                {% endif %}           
+            </div>
+            <div class = 'mb-5'>
+                Payment GTD :
+                {% if data2['paymentGtd'] == 1 %}
+                YES
+                {% else %}
+                NO
+                {% endif %}
             </div>
             <div class = 'mb-5'>
                 <span class = 'badge badge-pill badge-primary'>
