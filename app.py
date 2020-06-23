@@ -1594,7 +1594,6 @@ def showRequest(token):
         responseId = data['id'] + "R"
         cursor.execute('SELECT * From response where responseId = %s', [responseId])
         data2 = cursor.fetchall()
-        print(data2)
         data['groupCategory'] = data2[0]['groupCategory']
         data2 = data2[0]
         tfoc = True
@@ -1603,9 +1602,63 @@ def showRequest(token):
         tcomm = True
         if (data2['commission'] == '0'):
             tcomm = False
+
+        string = ''
+        v = data2['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        data2['formPayment'] = string
+
+        string = ''
+        v = data2['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data2['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data2['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data2['paymentTerms'] = 'Prior To Arrival'
         
+        cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+        data3 = cursor.fetchall()
+        data3 = data3[0]
         
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm)
+        cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+        data4 = cursor.fetchall()
+        lefttable = []
+        dataToCheck = []
+        righttable = {}
+        for d in data4:
+            righttable[d['date']] = []
+
+        for d in data4:
+            if d['date'] not in dataToCheck:
+                tempArr = {}
+                tempArr['date'] = d['date']
+                tempArr['currentOcc'] = d['currentOcc']
+                tempArr['discountId'] = d['discountId']
+                tempArr['forecast'] = d['forecast']
+                tempArr['groups'] = d['groups']
+                tempArr['leadTime'] = d['leadTime']
+                lefttable.append(tempArr)
+                dataToCheck.append(d['date'])
+            tArr = {}
+            tArr['occupancy'] = d['occupancy']
+            tArr['type'] = d['type']
+            tArr['count'] = d['count']
+            tArr['ratePerRoom'] = d['ratePerRoom']
+
+            righttable[d['date']].append(tArr)
+
+
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable)
 
 
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2485,15 +2538,16 @@ def requestProcessQuote():
     now = datetime.datetime.utcnow()
     status = 'QUOTED'
 
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
-        status, inp['paymentDays'], inp['nights'], inp['comments']
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate']
     ])
 
     table = inp['table_result']
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)', [
-            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups']
         ])
     
     cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])

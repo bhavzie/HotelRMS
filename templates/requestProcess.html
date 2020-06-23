@@ -752,6 +752,7 @@
         }
         const status = 'quoted'
 
+
         const checkIn = "{{ checkIn }}"
         const checkOut = "{{ checkOut }}"
         const nights = "{{ length }}"
@@ -820,6 +821,9 @@
         result['checkOut'] = checkOut
         result['nights'] = nights
         result['comments'] = $('#comments').val()
+        
+        const averageRate = document.getElementById('avgRate').innerText
+        result['averageRate'] = averageRate
 
         const table_result = []
 
@@ -846,8 +850,12 @@
                 resArr['date'] = year + "/" + month + "/" + date
                 let children1 = tbody1.children
                 resArr['currentOcc'] = children1[0].children[1].innerText
+                resArr['forecast'] = children1[1].children[1].innerText
+                resArr['groups'] = children1[2].children[1].innerText
+                resArr['leadTime'] = children1[3].children[1].innerText
                 resArr['discountId'] = children1[4].children[1].innerText
                 
+
                 resArr['occupancy'] = tr.children[0].innerText
                 resArr['type'] = tr.children[1].innerText
                 resArr['count'] = tr.children[2].innerText
