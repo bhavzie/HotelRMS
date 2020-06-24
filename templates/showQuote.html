@@ -1,0 +1,460 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="spread4">
+    <div class='mb-5'>
+        <div class='mb-3'>
+            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <span class="btn btn-success">Status : Quoted</span>
+        </div>
+    </div>
+    <div class = 'row mb-5'>
+        <div class = 'col-sm-6'>
+            <div class = 'card box'>
+                <div class = 'card-body'>
+                    <h5>Customer Request</h5>
+                    <hr>
+                    <div class='mt-5 mb-5'>
+                        <span>
+                            Request ID : {{ data['id'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Check-In Date : {{ data['checkIn'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Check-Out Date : {{ data['checkOut'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Room Nights : {{ data['nights'] }}
+                        </span>
+                    </div>
+                    <div class = 'mb-5'>
+                        <span>
+                            Group Name : {{ data['groupName'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Group Category : {{ data['category'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Requested By : {{ data['createdFor'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Budget : {{ data['budget'] }}
+                        </span>
+                    </div>
+                    {% if data['formPayment'] %}
+                    <div class='mb-5'>
+                        Form of Payment : {{ data['formPayment'] }}
+                    </div>
+                    {% endif %}
+                    {% if data['paymentTerms'] %}
+                    <div class='mb-3'>
+                        <span>Payment Terms : {{ data['paymentTerms'] }}
+                            {% if data['paymentTerms'] != 'At Checkout' %}
+                            {{ data['paymentDays'] }} Days
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data['comments'] != '' %}
+                    <div class='mb-3'>
+                        <span>Comments : {{ data['comments'] }}</span>
+                    </div>
+                    {% endif %}
+                    <button type='button' class='btn btn-info mb-5' onclick='showReq()'>View Request Details</button>
+                </div>
+            </div>
+        </div>
+        <div class = 'col-sm-6'>
+            <div class='card'>
+                <div class='card-body'>
+                    <h5>Hotel Response</h5>
+                    <hr>
+                    <div class = 'mt-5 mb-5'>
+                        Fare Quoted : $ {{ data2['totalQuote'] }} 
+                    </div>
+                    <div class = 'mt-5 mb-5'>
+                    {% if data3['single1'] != '0'%}
+                    <div class='mb-3'>
+                        <span>
+                            1 Bed Single Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['single1'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['double1'] != '0'%}
+                    <div class='mb-3'>
+                        <span>
+                            1 Bed Double Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['double1'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['triple1']!= '0' %}
+                    <div class='mb-3'>
+                        <span>
+                            1 Bed Triple Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['triple1'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['quad1'] != '0' %}
+                    <div class='mb-3'>
+                        <span>
+                            1 Bed Quad Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['quad1'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['single2'] != '0' %}
+                    <div class='mb-3'>
+                        <span>
+                            2 Bed Single Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['single2'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['double2']!= '0' %}
+                    <div class='mb-3'>
+                        <span>
+                            2 Bed Double Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['double2'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['triple2'] != '0' %}
+                    <div class='mb-3'>
+                        <span>
+                            2 Bed Triple Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['triple2'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data3['quad2'] != '0' %}
+                    <div class='mb-3'>
+                        <span> 
+                            2 Bed Quad Rate/Room Night :
+                        </span>
+                        <span>
+                            {{ data3['quad2'] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    </div>
+                    <div class = 'mb-5'>
+                        Last Responded On : {{ data2['submittedOn'] }} By 
+                        {{ data2['submittedBy'] }}
+                    </div>
+                    <div class='mb-5'>
+                        Cutoff Days : {{ data2['cutoffDays'] }}
+                    </div>
+                    <div class='mb-5'>
+                        Form of Payment : {{ data2['formPayment'] }}
+                    </div>
+                    <div class='mb-5'>
+                        <span>Payment Terms : {{ data2['paymentTerms'] }}
+                            {% if data2['paymentTerms'] != 'At Checkout' %}
+                            {{ data2['paymentDays'] }} Days
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        <span>
+                            Group Category : {{ data2['groupCategory'] }}
+                        </span>
+                    </div>
+                    <div class='mb-5'>
+                        Payment Guaranteed : 
+                        {% if data2['paymentGtd'] == 1 %}
+                        YES
+                        {% else %}
+                        NO
+                        {% endif %}
+                    </div>
+                    <div class='mb-5'>
+                        Negotiable :
+                        {% if data2['negotiable'] == 1 %}
+                        YES
+                        {% else %}
+                        NO
+                        {% endif %}
+                    </div>
+                    {% if data2['comments'] != '' %}
+                    <div class='mb-3'>
+                        <span>Comments : {{ data2['comments'] }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row mb-5 mt-5' id='reqDetails'>
+        <div class = 'col-sm-12'>
+            <div class='card'>
+                <div class = 'card-body'>
+                    <div class = 'mb-5'>
+                    {% for b in dateButtons %}
+                        <button type = 'button' class = 'btn dateButtons btn-secondary {{b}}'>
+                            {{ b }}
+                        </button>
+                    {% endfor %}
+                    </div>
+                    <div class = 'mb-5 mt-5'>
+                    {% for key, value in result.items() %}
+                        <div class = 'mb-5 col-sm-6'>
+                        <table class = 'table table-bordered table-hover' style="display: none;" id = "{{key}}">
+                            <caption>{{key}}</caption>
+                            <thead class = 'thead-dark'>
+                                <tr>
+                                    <th>
+                                        Type
+                                    </th>
+                                    <th>
+                                        Occupancy
+                                    </th>
+                                    <th>
+                                        Count
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for v in value %}
+                                    <tr>
+                                        <td>
+                                            {{ v['type'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['occupancy'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['count'] }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class = 'row mb-5 mt-5'>
+        <div class = 'col-sm-12'>
+            <button class='btn btn-info mb-4' type='button' onclick = 'viewbreakdown()'>View Breakdown</button>
+            <div class = 'card' id = 'breakdown'>
+                <div class = 'card-body'>
+                    <div class = 'mb-5'>
+                        {% for b in dateButtons %}
+                            <button type = 'button' class = 'btn  btn-secondary' id = '{{b}}' onclick="showTable(event)">
+                                {{ b }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <div class = 'mb-5 mt-5'>
+                        {% for key, value in secondresult.items() %}
+                            <div class = 'mb-5 col-sm-9'>
+                                <table class = 'table table-bordered table-hover {{key}}' style="display: none;">
+                                    <caption>{{key}}</caption>
+                                    <thead class='thead-dark'>
+                                        <tr>
+                                            <th>
+                                                Type
+                                            </th>
+                                            <th>
+                                                Occupancy
+                                            </th>
+                                            <th>
+                                                Count
+                                            </th>
+                                            <th>
+                                                RatePerRoom
+                                            </th>
+                                            <th>
+                                                Total
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for v in value %}
+                                        <tr>
+                                            <td>
+                                                {{ v['type'] }}
+                                            </td>
+                                            <td>
+                                                {{ v['occupancy'] }}
+                                            </td>
+                                            <td>
+                                                {{ v['count'] }}
+                                            </td>
+                                            <td>
+                                                {{ v['ratePerRoom'] }}
+                                            </td>
+                                            <td>
+                                                {{ v['total'] }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class = 'row mb-5'>
+        <div class = 'col-sm-12'>
+            <div class = 'card'>
+                <div class = 'card-body'>
+                    <h5>Contract</h5>
+                    <hr>
+                    <div class = 'mt-5 mb-5'>
+                        <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract
+                    </div>
+                    <div class = 'mt-5 text-center'>
+                    <button class = 'btn btn-success' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
+                    <button class = 'btn btn-info' onclick = 'negotiate()'>NEGOTIATE</button>
+                    <button class = 'btn btn-danger' onclick = 'decline()'>DECLINE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#reqDetails').hide();
+        $('#breakdown').hide();
+
+        const db = [...document.getElementsByClassName('dateButtons')]
+        db.forEach(db => {
+
+            db.addEventListener('click', () => {
+                const cn = db.classList[3]
+                const table = document.getElementById(cn)
+                
+                const identify = db.classList[3]
+                db.classList.remove(identify)
+                const color = db.classList[2]
+                db.classList.remove(color)
+                db.classList.add('btn-primary')
+                db.classList.add(identify)
+
+                if (table.style.display == 'none') {
+                    table.style.display = 'table'
+                    const db2 = [...document.getElementsByClassName('dateButtons')]
+
+                    db2.forEach(db2 => {
+                        const cn2 = db2.classList[3]
+                        if (cn2 != cn) {
+                            const table2 = document.getElementById(cn2)
+                            table2.style.display = 'none';
+                            
+                            const identify = db2.classList[3]
+                            const color = db2.classList[2]
+                            db2.classList.remove(color)
+                            db2.classList.remove(identify)
+                            
+                            db2.classList.add('btn-secondary')
+                            db2.classList.add(identify)
+
+                        }
+                    })
+
+                } else {
+                    table.style.display = 'none'
+                }
+
+            })
+        })
+
+
+    });
+
+    function showReq() {
+        $('#reqDetails').toggle()
+    }
+
+    function viewbreakdown() {
+        $('#breakdown').toggle()
+    }
+
+    function check(e) {
+        const d = e.target
+        const acceptBtn = document.getElementById('acceptBtn')
+        if (d.checked) {
+            acceptBtn.disabled = false
+        } else {
+            acceptBtn.disabled = true
+        }
+    }
+
+    function showTable(e) {
+        const id = e.target.id
+        const table = [...document.getElementsByClassName(id)]
+        
+        table.forEach(t => {
+            const button = e.target
+            if (t.tagName == 'TABLE') {
+                if (t.style.display == 'none') {
+                    t.style.display = 'table'
+                    button.classList.remove('btn-secondary')
+                    button.classList.add('btn-primary')
+                } else {
+                    t.style.display = 'none'
+                    button.classList.add('btn-secondary')
+                    button.classList.remove('btn-primary')
+                }
+            }
+        })
+    }
+
+
+    //continue here
+    function accept() {
+        console.log('Accept')
+    }
+
+    function negotiate() {
+        console.log('Negotiate')
+    }
+
+    function decline() {
+        console.log('Decline')
+    }
+
+</script>
+
+
+{% endblock %}

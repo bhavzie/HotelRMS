@@ -2554,6 +2554,115 @@ def requestProcessQuote():
     flash('The request has been quoted', 'success')
     return ('', 204)
 
+@app.route('/showQuote/<id>', methods = ['GET', 'POST'])
+def showQuote(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From request where id = %s', [id])
+    data = cursor.fetchall()
+    data = data[0]
+    data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+    string = ''
+    v = data['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            data['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            data['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            data['paymentTerms'] = 'Prior To Arrival'
+
+    string = ''
+    v = data['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    data['formPayment'] = string
+
+    if data['comments'].isspace():
+        data['comments'] = ''
+
+    responseId = data['id'] + "R"
+    cursor.execute('SELECT * From response where responseId = %s', [responseId])
+    data2 = cursor.fetchall()
+    data2 = data2[0]
+
+    string = ''
+    v = data2['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    data2['formPayment'] = string
+
+    string = ''
+    v = data2['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            data2['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            data2['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            data2['paymentTerms'] = 'Prior To Arrival'
+    
+    cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+    data3 = cursor.fetchall()
+    data3 = data3[0]
+
+    result = {}
+    cursor.execute('SELECT * From request1Bed where id = %s', [id])
+    temp1 = cursor.fetchall()
+    for t in temp1:
+        result[t['date']] = []
+
+    cursor.execute('SELECT * From request2Bed where id = %s', [id])
+    temp2 = cursor.fetchall()
+    for t in temp2:
+        result[t['date']] = []
+
+
+    for t in temp1:
+        tArr = {}
+        tArr['type'] = '1 Bed'
+        tArr['occupancy'] = t['occupancy']
+        tArr['count'] = t['count']
+        result[t['date']].append(tArr)
+    
+    for t in temp2:
+        tArr = {}
+        tArr['type'] = '2 Bed'
+        tArr['occupancy'] = t['occupancy']
+        tArr['count'] = t['count']
+        result[t['date']].append(tArr)
+
+    dateButtons = result.keys()
+    
+    secondresult = result
+    for r,v in secondresult.items():
+        for row in v:
+            type1 = row['type'].split(' ')[0]
+            occupancy = row['occupancy'].lower()
+            count = row['count']
+            search = occupancy + type1
+            query = "SELECT {} from responseAvg where responseId = %s".format(search)
+            cursor.execute(query, [responseId])
+            sv = cursor.fetchall()
+            row['ratePerRoom'] = sv[0][search]
+            row['total'] = float(row['ratePerRoom']) * int(row['count']) 
+
+
+    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult)
+
 
 if __name__ == "__main__":
     app.run(debug = True)
