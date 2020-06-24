@@ -116,11 +116,31 @@
                             {{ d['status'] }}
                         </td>
                         <td>
-                            <a href = '/showRequest/{{d["id"]}}' class = 'btn btn-info'><i class="fas fa-cog"></i></a>
-                            {% if d['status'] == 'QUOTED' %}
-                            <a href = '/showQuote/{{ d["id"] }}' class = 'btn btn-info'><i class="fas fa-share-square"></i></a>
+                            {% if d['status'] == 'NEW' %}
+                                <a href = '/showRequest/{{d["id"]}}' class = 'btn btn-info'>
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                                <a href = '/deleteRequest/{{d["id"]}}' class = 'btn btn-danger'>
+                                    <i class="fas fa-times-circle"></i>
+                                </a>
+                            {% elif d['status'] == 'QUOTED' %}
+                                <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                                <a href='/showQuote/{{ d["id"] }}' class='btn btn-info'>
+                                    <i class="fas fa-share-square"></i>
+                                </a>
+                                <a href = '/deleteRequest/{{d["id"]}}'   class='btn btn-danger'>
+                                    <i class="fas fa-times-circle"></i>
+                                </a>
+                            {% elif d['status'] == 'ACCEPTED' %}
+                                <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                                <a href='/showQuote/{{ d["id"] }}' class='btn btn-info'>
+                                    <i class="fas fa-share-square"></i>
+                                </a>
                             {% endif %}
-                            <button class = 'btn btn-danger'><i class="fas fa-times-circle"></i></button>
                         </td>
                     </tr>
                     {% endfor %}

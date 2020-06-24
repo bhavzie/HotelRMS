@@ -4,7 +4,12 @@
     <div class='mb-5'>
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
-            <span class="btn btn-success">Status : Quoted</span>
+            <span class="btn btn-success">Status : {{ data2['status'] }} </span>
+            {% if data['status'] == 'ACCEPTED' %}
+                <span class='badge badge-pill  badge-primary'>
+                    Accepted On : {{ data5['time'] }}
+                </span>
+            {% endif %}
         </div>
     </div>
     <div class = 'row mb-5'>
@@ -330,6 +335,7 @@
             </div>
         </div>
     </div>
+    {% if data['status'] != 'ACCEPTED' %}
     <div class = 'row mb-5'>
         <div class = 'col-sm-12'>
             <div class = 'card'>
@@ -338,6 +344,31 @@
                     <hr>
                     <div class = 'mt-5 mb-5'>
                         <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract
+                    </div>
+                    <div class='form-group row' id = 'dem'>
+                        <label class="col-sm-2 col-form-label">Reason for decline</label>
+                        <div class="col-sm-3">
+                            <select class='form-control text-center' style='max-width: 80%;' onchange = 'hdd(event)' id = 'sel'>
+                                <option disabled selected>
+                                    Select Reason for Decline
+                                </option>
+                                <option>
+                                    Cancelled
+                                </option>
+                                <option>
+                                    Rate too high
+                                </option>
+                                <option>
+                                    Contract Terms too strict
+                                </option>
+                                <option>
+                                    Other
+                                </option>
+                            </select>
+                        </div>
+                        <div class = 'col-sm-3'>
+                            <textarea class = 'form-control' rows = '2' placeholder="Enter Reason for decline" id = 'othert' style="display:none;"></textarea>
+                        </div>
                     </div>
                     <div class = 'mt-5 text-center'>
                     <button class = 'btn btn-success' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
@@ -348,6 +379,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 
@@ -356,6 +388,7 @@
     $(document).ready(function () {
         $('#reqDetails').hide();
         $('#breakdown').hide();
+        $('#dem').hide()
 
         const db = [...document.getElementsByClassName('dateButtons')]
         db.forEach(db => {
@@ -420,6 +453,16 @@
         }
     }
 
+    function hdd(e) {
+        let d = $("#sel option:selected").text()
+        d = d.trim()
+        if (d == 'Other') {
+            $('#othert').show()
+        } else {
+            $('#othert').hide()
+        }
+    }
+
     function showTable(e) {
         const id = e.target.id
         const table = [...document.getElementsByClassName(id)]
@@ -443,7 +486,24 @@
 
     //continue here
     function accept() {
-        console.log('Accept')
+        result = {}
+        result['id'] = "{{ data['id'] }}"
+
+        fetch('/AcceptRequest', {
+            method : 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+
+        })
+        .then(res => {
+            window.location.href = '/'
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 
     function negotiate() {
@@ -452,6 +512,12 @@
 
     function decline() {
         console.log('Decline')
+        const dem = document.getElementById('dem')
+        if (dem.style.display == 'none') {
+            dem.style.display = 'flex';
+        } else {
+            console.log('sub')
+        }
     }
 
 </script>

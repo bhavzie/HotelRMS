@@ -1539,9 +1539,24 @@ def home2():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 def showRequest(token):
     cursor = mysql.connection.cursor()
+    
+    """ cursor.execute('UPDATE request set status = "NEW"')
+    cursor.execute('DELETE From response')
+    cursor.execute('DELETE From responseDaywise')
+    cursor.execute("DELETE from responseAvg")
+    cursor.execute('DELETE from requestAccepted')
+    mysql.connection.commit()
+    return '' """
+    
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED'):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED'):
+        data5 = []
+        if (status[0]['status'] == 'ACCEPTED'):
+            cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
+            data5 = cursor.fetchall()
+            data5 = data5[0]
+
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
         data = data[0]
@@ -1648,8 +1663,7 @@ def showRequest(token):
 
             righttable[d['date']].append(tArr)
 
-
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable)
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5)
 
 
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2543,6 +2557,9 @@ def requestProcessQuote():
     
     cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
 
+    cursor.execute('UPDATE response set status = "QUOTED" where requestId = %s', [inp['requestId']]
+        )
+
     cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId
     ])
@@ -2661,8 +2678,36 @@ def showQuote(id):
             row['total'] = float(row['ratePerRoom']) * int(row['count']) 
 
 
-    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult)
+    data5 = []
+    if data2['status'] == 'ACCEPTED':
+        cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
+        data5 = cursor.fetchall()
+        data5 = data5[0]
 
+    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5)
+
+@app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
+def deleteRequest(id):
+    return render_template('deleteRequest.html')
+
+
+@app.route('/AcceptRequest', methods = ['GET', 'POST'])
+def AcceptRequest():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "ACCEPTED" where id = %s', [inp['id']]
+    )
+    cursor.execute('UPDATE response set status = "ACCEPTED" where requestId = %s', [inp['id']]
+    )
+
+    now = datetime.datetime.utcnow()
+    cursor.execute('INSERT INTO requestAccepted(requestId, time) VALUES(%s, %s)', [inp['id'], now])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('The request has been accepted', 'success')
+    return ('', 204)
 
 if __name__ == "__main__":
     app.run(debug = True)
