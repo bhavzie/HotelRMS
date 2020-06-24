@@ -5,11 +5,23 @@
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
             <span class="btn btn-success">Status : {{ data2['status'] }} </span>
+            <div class = 'mb-5'>
             {% if data['status'] == 'ACCEPTED' %}
                 <span class='badge badge-pill  badge-primary'>
                     Accepted On : {{ data5['time'] }}
                 </span>
             {% endif %}
+            </div>
+            <div class='mb-5'>
+                {% if data['status'] == 'DECLINED' %}
+                <span class='badge badge-pill badge-primary'>
+                    Declined By Customer On : {{ data6['time'] }}
+                </span>
+                <span class='badge badge-primary'>
+                    Reason : {{ data6['reason'] }}
+                </span>
+                {% endif %}
+            </div>
         </div>
     </div>
     <div class = 'row mb-5'>
@@ -335,7 +347,7 @@
             </div>
         </div>
     </div>
-    {% if data['status'] != 'ACCEPTED' %}
+    {% if data['status'] == 'QUOTED' %}
     <div class = 'row mb-5'>
         <div class = 'col-sm-12'>
             <div class = 'card'>
@@ -348,6 +360,7 @@
                     <div class='form-group row' id = 'dem'>
                         <label class="col-sm-2 col-form-label">Reason for decline</label>
                         <div class="col-sm-3">
+                            <div id = 'msg'></div>
                             <select class='form-control text-center' style='max-width: 80%;' onchange = 'hdd(event)' id = 'sel'>
                                 <option disabled selected>
                                     Select Reason for Decline
@@ -460,6 +473,7 @@
             $('#othert').show()
         } else {
             $('#othert').hide()
+            $('#msg').hide()
         }
     }
 
@@ -511,12 +525,57 @@
     }
 
     function decline() {
-        console.log('Decline')
         const dem = document.getElementById('dem')
         if (dem.style.display == 'none') {
             dem.style.display = 'flex';
         } else {
-            console.log('sub')
+            let d = $('#sel option:selected').text()
+            d = d.trim()
+            const msg2 = document.getElementById('msg')
+            if (d == 'Select Reason for Decline') {
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = 'Kindly select reason for decline'
+                $(msg2).show()
+                return false
+            } else if (d == 'Other') {
+                const selt = $('#othert').val()
+                if (selt == '') {
+                    msg2.style.setProperty('color', 'red', 'important');
+                    msg2.innerHTML = 'Kindly add reason for decline'
+                    $(msg2).show()
+                    return false
+                }
+            }
+            $(msg2).hide()
+            // decline
+            let reason = ''
+            if (d == 'Other') {
+                reason = $('#othert').val()
+            } else {
+                reason = $("#sel option:selected").text()
+            }
+            reason = reason.trim()
+            result = {}
+            result['id'] = "{{ data['id'] }}"
+            result['reason'] = reason
+
+
+            fetch('/DeclineRequest', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+
+            })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            
         }
     }
 

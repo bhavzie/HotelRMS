@@ -1,1 +1,128 @@
-DELETE
+{% extends 'layout.html' %}
+{% block content %}
+<div class="spread4" style="height: 100vh;">
+    <div class='mb-5'>
+        <div class='mb-3'>
+            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <span class="btn btn-success">Status : {{ data['status'] }}</span>
+        </div>
+        <div class='mb-5'>
+            {% if data['status'] == 'DECLINED' %}
+            <span class='badge badge-pill badge-primary'>
+                Declined By Customer On : {{ data6['time'] }}
+            </span>
+            <span class='badge badge-primary'>
+                Reason : {{ data6['reason'] }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-9'>
+            <div class='row'>
+                <div class='col-5'>
+                    <div class='mb-4'>
+                        <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Name : {{ data['groupName'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>ID : {{ data['id'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Category : <span>{{ data['category'] }}</span></span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>LeadTime : {{ data['leadTime'] }} Days</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Room Nights : {{ data['nights'] }}</span>
+                    </div>
+                </div>
+                <div class='col-5'>
+                    <div class='mb-4'>
+                        <span class="badge badge-pill badge-primary">Last Opened : {{ data['lastOpenedOn'] }} By
+                            {{ data['lastOpenedBy'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Budget/RM/NT : ${{ data['budget'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Customer : {{ data['createdFor'] }}</span>
+                    </div>
+                    <div class='mb-3'>
+                        <span>Type : {{ data['userType'] }}</span>
+                    </div>
+                    {% if data['formPayment'] %}
+                    <div class='mb-3'>
+                        <span>Form Of Payment : {{ data['formPayment'] }}</span>
+                    </div>
+                    {% endif %}
+                    {% if data['paymentTerms'] %}
+                    <div class='mb-3'>
+                        <span>Payment Terms : {{ data['paymentTerms'] }}
+                            {% if data['paymentTerms'] != 'At Checkout' %}
+                            {{ data['paymentDays'] }} Days
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if data['comments'] != '' %}
+                    <div class='mb-3'>
+                        <span>Comments : {{ data['comments'] }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <div class = 'mb-5'>
+                <textarea class='form-control' rows='2' placeholder="Enter Reason for delete" id='othert'></textarea>
+            </div>
+            <div id = 'msg'></div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="button" id='subm' class="btnLogin" onclick = 'del()'>DELETE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    function del() {
+        const d = $("#othert").val()
+        const msg2 = document.getElementById('msg')
+        if (d == '') {
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = 'Kindly Add reason for delete'
+            $(msg2).show()
+            return false
+        } else {
+            result = {}
+            result['id'] = "{{ data['id'] }}"
+            result['reason'] = $('#othert').val()
+            fetch('/DeleteRequest2', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result)
+
+            })
+                .then(res => {
+                    window.location.href = '/'
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+    }
+
+</script>
+
+{% endblock %}

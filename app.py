@@ -1550,12 +1550,18 @@ def showRequest(token):
     
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED'):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED"):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
             data5 = cursor.fetchall()
             data5 = data5[0]
+        
+        data6 = []
+        if (status[0]['status'] == 'DECLINED'):
+            cursor.execute("SELECT * From customerDeclineRequest where requestId = %s", [token])
+            data6 = cursor.fetchall()
+            data6 = data6[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
@@ -1663,7 +1669,7 @@ def showRequest(token):
 
             righttable[d['date']].append(tArr)
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5)
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6)
 
 
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2683,13 +2689,188 @@ def showQuote(id):
         cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
         data5 = cursor.fetchall()
         data5 = data5[0]
+    
+    data6 = []
+    if (data2['status'] == 'DECLINED'):
+        cursor.execute("SELECT * From customerDeclineRequest where requestId = %s", [id])
+        data6 = cursor.fetchall()
+        data6 = data6[0]
 
-    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5)
+    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6)
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
 def deleteRequest(id):
-    return render_template('deleteRequest.html')
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT status from request where id = %s', [id])
+    status = cursor.fetchall()
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED"):
+        data5 = []
+        if (status[0]['status'] == 'ACCEPTED'):
+            cursor.execute(
+                'SELECT * From requestAccepted where requestId = %s', [id])
+            data5 = cursor.fetchall()
+            data5 = data5[0]
 
+        data6 = []
+        if (status[0]['status'] == 'DECLINED'):
+            cursor.execute(
+                "SELECT * From customerDeclineRequest where requestId = %s", [id])
+            data6 = cursor.fetchall()
+            data6 = data6[0]
+
+        cursor.execute('SELECT * From request where id = %s', [id])
+        data = cursor.fetchall()
+        data = data[0]
+        checkIn = data['checkIn']
+        checkOut = data['checkOut']
+        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+
+        email = session['email']
+        now = datetime.datetime.utcnow()
+
+        cursor.execute(
+            'SELECT * From requestLastOpened where id = %s', [id])
+        check = cursor.fetchall()
+        data['lastOpenedOn'] = check[0]['time']
+        data['lastOpenedBy'] = check[0]['openedBy']
+        string = ''
+        v = data['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data['paymentTerms'] = 'Prior To Arrival'
+
+        string = ''
+        v = data['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        data['formPayment'] = string
+
+        if data['comments'].isspace():
+            data['comments'] = ''
+
+        responseId = data['id'] + "R"
+        cursor.execute(
+            'SELECT * From response where responseId = %s', [responseId])
+        data2 = cursor.fetchall()
+        data['groupCategory'] = data2[0]['groupCategory']
+        data2 = data2[0]
+        tfoc = True
+        if (data2['foc'] == '0'):
+            tfoc = False
+        tcomm = True
+        if (data2['commission'] == '0'):
+            tcomm = False
+
+        string = ''
+        v = data2['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        data2['formPayment'] = string
+
+        string = ''
+        v = data2['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data2['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data2['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data2['paymentTerms'] = 'Prior To Arrival'
+
+        cursor.execute(
+            'SELECT * From responseAvg where responseId = %s', [responseId])
+        data3 = cursor.fetchall()
+        data3 = data3[0]
+
+        cursor.execute(
+            'SELECT * From responseDaywise where responseId = %s', [responseId])
+        data4 = cursor.fetchall()
+        lefttable = []
+        dataToCheck = []
+        righttable = {}
+        for d in data4:
+            righttable[d['date']] = []
+
+        for d in data4:
+            if d['date'] not in dataToCheck:
+                tempArr = {}
+                tempArr['date'] = d['date']
+                tempArr['currentOcc'] = d['currentOcc']
+                tempArr['discountId'] = d['discountId']
+                tempArr['forecast'] = d['forecast']
+                tempArr['groups'] = d['groups']
+                tempArr['leadTime'] = d['leadTime']
+                lefttable.append(tempArr)
+                dataToCheck.append(d['date'])
+            tArr = {}
+            tArr['occupancy'] = d['occupancy']
+            tArr['type'] = d['type']
+            tArr['count'] = d['count']
+            tArr['ratePerRoom'] = d['ratePerRoom']
+
+            righttable[d['date']].append(tArr)
+        deleteflag = True
+        return render_template('requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag)
+    elif (status[0]['status'] == 'NEW'):
+        cursor.execute('SELECT * From request where id = %s', [id])
+        data = cursor.fetchall()
+        data = data[0]
+        checkIn = data['checkIn']
+        checkOut = data['checkOut']
+        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+
+        email = session['email']
+        now = datetime.datetime.utcnow()
+
+        cursor.execute(
+            'SELECT * From requestLastOpened where id = %s', [id])
+        check = cursor.fetchall()
+        data['lastOpenedOn'] = check[0]['time']
+        data['lastOpenedBy'] = check[0]['openedBy']
+        string = ''
+        v = data['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data['paymentTerms'] = 'Prior To Arrival'
+
+        string = ''
+        v = data['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        data['formPayment'] = string
+
+        if data['comments'].isspace():
+            data['comments'] = ''
+        return render_template('deleteRequest.html', data=data)
 
 @app.route('/AcceptRequest', methods = ['GET', 'POST'])
 def AcceptRequest():
@@ -2708,6 +2889,39 @@ def AcceptRequest():
 
     flash('The request has been accepted', 'success')
     return ('', 204)
+
+@app.route('/DeclineRequest', methods = ['GET', 'POST'])
+def DeclineRequest():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "DECLINED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE response set status = "DECLINED" where requestId = %s', [inp['id']])
+
+    now = datetime.datetime.utcnow()
+    cursor.execute("INSERT INTO customerDeclineRequest(requestId, time, reason) VALUES(%s, %s, %s) ", [inp['id'], now, inp['reason']])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('The request has been declined', 'success')
+    return ('', 204)
+
+@app.route('/DeleteRequest2', methods = ['GET', 'POST'])
+def DeleteRequest2():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "DELETED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE response set status = "DELETED" where requestId = %s', [inp['id']])
+
+    now = datetime.datetime.utcnow()
+    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason) VALUES(%s, %s, %s) ", [inp['id'], now, inp['reason']])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('The request has been deleted', 'success')
+    return ('', 204)
+
 
 if __name__ == "__main__":
     app.run(debug = True)
