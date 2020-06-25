@@ -1547,10 +1547,14 @@ def showRequest(token):
     cursor.execute('DELETE from requestAccepted')
     mysql.connection.commit()
     return '' """
-    
+    email = session['email']
+    cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+    ut = cursor.fetchall()
+    if len(ut) != 0:
+        ut = ut[0]    
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED")):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userType'] == 'reservation')):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
@@ -1568,6 +1572,14 @@ def showRequest(token):
             cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
             data7 = cursor.fetchall()
             data7 = data7[0]
+
+        data8 = []
+        if (status[0]['status'] == 'SENT FOR REVIEW'):
+            cursor.execute(
+                "SELECT * From review where requestId = %s", [token])
+            data8 = cursor.fetchall()
+            print(data8)
+            data8 = data8[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
@@ -1682,7 +1694,7 @@ def showRequest(token):
 
         return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7)
 
-
+    
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
     dates = cursor.fetchall()
     dates = dates[0]
@@ -1740,6 +1752,16 @@ def showRequest1():
     checkIn = data['checkIn']
     checkOut = data['checkOut']
     data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+
+    cursor.execute('SELECT status from request where id = %s', [token])
+    status = cursor.fetchall()
+    rvflag = False
+    rvvv = []
+    if (status[0]['status'] == 'SENT FOR REVIEW'):
+        cursor.execute('SELECT * From review where requestId = %s', [token])
+        rvvv = cursor.fetchall()
+        rvvv = rvvv[0]
+        rvflag = True
 
     email = session['email']
     now = datetime.datetime.utcnow()
@@ -2223,6 +2245,8 @@ def showRequest1():
 
     # add foc to all equally
 
+    
+
     single1avg = round(single1avg, 2)
     double1avg = round(double1avg, 2)
     triple1avg = round(triple1avg, 2)
@@ -2234,10 +2258,21 @@ def showRequest1():
 
     avgRate = str(round(totalQuote/roomCount, 2))
 
+    email = session['email']
+    cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+    ut = cursor.fetchall()
+    review = True
+    if len(ut) != 0:
+        ut = ut[0]
+        if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
+            review = False
+
+    
+    print(rv)
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2714,7 +2749,7 @@ def deleteRequest(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT status from request where id = %s', [id])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED"):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or status[0]['status'] == 'SENT FOR REVIEW'):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute(
@@ -2728,6 +2763,13 @@ def deleteRequest(id):
                 "SELECT * From DeclineRequest where requestId = %s", [id])
             data6 = cursor.fetchall()
             data6 = data6[0]
+
+        data8 = []
+        if (status[0]['status'] == 'SENT FOR REVIEW'):
+            cursor.execute(
+                "SELECT * From review where requestId = %s", [id])
+            data8 = cursor.fetchall()
+            data8 = data8[0]
 
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -2774,72 +2816,78 @@ def deleteRequest(id):
         cursor.execute(
             'SELECT * From response where responseId = %s', [responseId])
         data2 = cursor.fetchall()
-        data['groupCategory'] = data2[0]['groupCategory']
-        data2 = data2[0]
-        tfoc = True
-        if (data2['foc'] == '0'):
-            tfoc = False
-        tcomm = True
-        if (data2['commission'] == '0'):
-            tcomm = False
-
-        string = ''
-        v = data2['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
-
-        data2['formPayment'] = string
-
-        string = ''
-        v = data2['paymentTerms']
-        if v != None:
-            if v.count('pc') > 0:
-                string = 'Post Checkout'
-                data2['paymentTerms'] = string
-            elif v.count('ac') > 0:
-                data2['paymentTerms'] = 'At Checkout'
-            elif v.count('poa') > 0:
-                data2['paymentTerms'] = 'Prior To Arrival'
-
-        cursor.execute(
-            'SELECT * From responseAvg where responseId = %s', [responseId])
-        data3 = cursor.fetchall()
-        data3 = data3[0]
-
-        cursor.execute(
-            'SELECT * From responseDaywise where responseId = %s', [responseId])
-        data4 = cursor.fetchall()
+        tfoc = False
+        tcomm = False
+        data3 = []
         lefttable = []
-        dataToCheck = []
-        righttable = {}
-        for d in data4:
-            righttable[d['date']] = []
+        righttable = []
+        if len(data2) != 0:
+            data['groupCategory'] = data2[0]['groupCategory']
+            data2 = data2[0]
+            if (data2['foc'] != '0'):
+                tfoc = True
+            tcomm = True
+            if (data2['commission'] != '0'):
+                tcomm = True
 
-        for d in data4:
-            if d['date'] not in dataToCheck:
-                tempArr = {}
-                tempArr['date'] = d['date']
-                tempArr['currentOcc'] = d['currentOcc']
-                tempArr['discountId'] = d['discountId']
-                tempArr['forecast'] = d['forecast']
-                tempArr['groups'] = d['groups']
-                tempArr['leadTime'] = d['leadTime']
-                lefttable.append(tempArr)
-                dataToCheck.append(d['date'])
-            tArr = {}
-            tArr['occupancy'] = d['occupancy']
-            tArr['type'] = d['type']
-            tArr['count'] = d['count']
-            tArr['ratePerRoom'] = d['ratePerRoom']
+            string = ''
+            v = data2['formPayment']
+            if v != None:
+                if v.count('cq') > 0:
+                    string += '(Cheque),'
+                if v.count('bt') > 0:
+                    string += ' (Bank Transfer),'
+                if v.count('cc') > 0:
+                    string += '(Credit Card)'
 
-            righttable[d['date']].append(tArr)
+            data2['formPayment'] = string
+
+            string = ''
+            v = data2['paymentTerms']
+            if v != None:
+                if v.count('pc') > 0:
+                    string = 'Post Checkout'
+                    data2['paymentTerms'] = string
+                elif v.count('ac') > 0:
+                    data2['paymentTerms'] = 'At Checkout'
+                elif v.count('poa') > 0:
+                    data2['paymentTerms'] = 'Prior To Arrival'
+
+            cursor.execute(
+                'SELECT * From responseAvg where responseId = %s', [responseId])
+            data3 = cursor.fetchall()
+            data3 = data3[0]
+
+            cursor.execute(
+                'SELECT * From responseDaywise where responseId = %s', [responseId])
+            data4 = cursor.fetchall()
+            lefttable = []
+            dataToCheck = []
+            righttable = {}
+            for d in data4:
+                righttable[d['date']] = []
+
+            for d in data4:
+                if d['date'] not in dataToCheck:
+                    tempArr = {}
+                    tempArr['date'] = d['date']
+                    tempArr['currentOcc'] = d['currentOcc']
+                    tempArr['discountId'] = d['discountId']
+                    tempArr['forecast'] = d['forecast']
+                    tempArr['groups'] = d['groups']
+                    tempArr['leadTime'] = d['leadTime']
+                    lefttable.append(tempArr)
+                    dataToCheck.append(d['date'])
+                tArr = {}
+                tArr['occupancy'] = d['occupancy']
+                tArr['type'] = d['type']
+                tArr['count'] = d['count']
+                tArr['ratePerRoom'] = d['ratePerRoom']
+
+                righttable[d['date']].append(tArr)
+
         deleteflag = True
-        return render_template('requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag)
+        return render_template('requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
     elif (status[0]['status'] == 'NEW'):
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -2978,6 +3026,20 @@ def DeleteRequest2():
     flash('The request has been deleted', 'success')
     return ('', 204)
 
+@app.route('/requestProcessReview', methods = ['GET', 'POST'])
+def requestProcessReview():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "SENT FOR REVIEW" where id = %s', [inp['id']])
+    now = datetime.datetime.utcnow()
+    email = session['email']
+    cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['id'], email, now])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('The request has been sent for review', 'success')
+    return ('', 204)
 
 if __name__ == "__main__":
     app.run(debug = True)

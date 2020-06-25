@@ -8,6 +8,12 @@
                         <div class = 'mb-4'>
                             <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
                         </div>
+                        {% if rvflag == True %}
+                        <div class='mb-4'>
+                            <span class="badge badge-pill badge-primary">Sent for review by : {{ rvvv['sentBy'] }}</span>
+                                <span class = 'badge badge-pill badge-primary'> ON {{ rvvv['time'] }}</span>
+                        </div>
+                        {% endif %}
                         <div class = 'mb-3'>
                             <span>Name : {{ data['groupName'] }}</span>
                         </div>
@@ -351,7 +357,9 @@
                 </div>
                 <div style="margin-top: 100px;"></div>
                 <div class = 'mt-5 mb-5'>
-                    <button type = 'button' class="btn btn-info">Send For Review</button>
+                    {% if review == True%}
+                    <button type = 'button' class="btn btn-info" onclick = 'sendreview()'>Send For Review</button>
+                    {% endif %}
                     <button type = 'button' class="btn btn-danger" onclick = 'decline()'>Decline</button>
                     <button type = 'button' class="btn btn-success" onclick = 'quote()'>Quote</button>
                 </div>
@@ -982,7 +990,7 @@
             } else {
                 negotiable = 0
             }
-            const status = 'quoted'
+            const status = 'declined'
 
 
             const checkIn = "{{ checkIn }}"
@@ -1138,6 +1146,29 @@
 
 
         }
+
+    function sendreview() {
+
+        result = {}
+        result['id'] = "{{ data['id'] }}"
+
+        fetch('/requestProcessReview', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+    }
 
 
 
