@@ -15,7 +15,7 @@
             <div class='mb-5'>
                 {% if data['status'] == 'DECLINED' %}
                 <span class='badge badge-pill badge-primary'>
-                    Declined By Customer On : {{ data6['time'] }}
+                    Declined By {{ data6['declinedBy'] }}  On : {{ data6['time'] }}
                 </span>
                 <span class='badge badge-primary'>
                     Reason : {{ data6['reason'] }}
@@ -558,6 +558,7 @@
             result = {}
             result['id'] = "{{ data['id'] }}"
             result['reason'] = reason
+            result['declinedBy'] = "{{ data['createdFor'] }}"
 
 
             fetch('/DeclineRequest', {

@@ -1550,7 +1550,7 @@ def showRequest(token):
     
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED"):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED")):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
@@ -1559,9 +1559,15 @@ def showRequest(token):
         
         data6 = []
         if (status[0]['status'] == 'DECLINED'):
-            cursor.execute("SELECT * From customerDeclineRequest where requestId = %s", [token])
+            cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
             data6 = cursor.fetchall()
             data6 = data6[0]
+        
+        data7 = []
+        if (status[0]['status'] == 'DELETED'):
+            cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
+            data7 = cursor.fetchall()
+            data7 = data7[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
@@ -1606,70 +1612,75 @@ def showRequest(token):
         responseId = data['id'] + "R"
         cursor.execute('SELECT * From response where responseId = %s', [responseId])
         data2 = cursor.fetchall()
-        data['groupCategory'] = data2[0]['groupCategory']
-        data2 = data2[0]
-        tfoc = True
-        if (data2['foc'] == '0'):
-            tfoc = False
-        tcomm = True
-        if (data2['commission'] == '0'):
-            tcomm = False
-
-        string = ''
-        v = data2['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
-
-        data2['formPayment'] = string
-
-        string = ''
-        v = data2['paymentTerms']
-        if v != None:
-            if v.count('pc') > 0:
-                string = 'Post Checkout'
-                data2['paymentTerms'] = string
-            elif v.count('ac') > 0:
-                data2['paymentTerms'] = 'At Checkout'
-            elif v.count('poa') > 0:
-                data2['paymentTerms'] = 'Prior To Arrival'
-        
-        cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
-        data3 = cursor.fetchall()
-        data3 = data3[0]
-        
-        cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
-        data4 = cursor.fetchall()
+        tfoc = False
+        tcomm = False
+        data3 = []
         lefttable = []
-        dataToCheck = []
-        righttable = {}
-        for d in data4:
-            righttable[d['date']] = []
+        righttable = []
+        if len(data2) != 0:
+            data['groupCategory'] = data2[0]['groupCategory']
+            data2 = data2[0]
+            if (data2['foc'] != '0'):
+                tfoc = True
+            tcomm = True
+            if (data2['commission'] != '0'):
+                tcomm = True
 
-        for d in data4:
-            if d['date'] not in dataToCheck:
-                tempArr = {}
-                tempArr['date'] = d['date']
-                tempArr['currentOcc'] = d['currentOcc']
-                tempArr['discountId'] = d['discountId']
-                tempArr['forecast'] = d['forecast']
-                tempArr['groups'] = d['groups']
-                tempArr['leadTime'] = d['leadTime']
-                lefttable.append(tempArr)
-                dataToCheck.append(d['date'])
-            tArr = {}
-            tArr['occupancy'] = d['occupancy']
-            tArr['type'] = d['type']
-            tArr['count'] = d['count']
-            tArr['ratePerRoom'] = d['ratePerRoom']
+            string = ''
+            v = data2['formPayment']
+            if v != None:
+                if v.count('cq') > 0:
+                    string += '(Cheque),'
+                if v.count('bt') > 0:
+                    string += ' (Bank Transfer),'
+                if v.count('cc') > 0:
+                    string += '(Credit Card)'
 
-            righttable[d['date']].append(tArr)
+            data2['formPayment'] = string
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6)
+            string = ''
+            v = data2['paymentTerms']
+            if v != None:
+                if v.count('pc') > 0:
+                    string = 'Post Checkout'
+                    data2['paymentTerms'] = string
+                elif v.count('ac') > 0:
+                    data2['paymentTerms'] = 'At Checkout'
+                elif v.count('poa') > 0:
+                    data2['paymentTerms'] = 'Prior To Arrival'
+        
+            cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+            data3 = cursor.fetchall()
+            data3 = data3[0]
+            
+            cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+            data4 = cursor.fetchall()
+            lefttable = []
+            dataToCheck = []
+            righttable = {}
+            for d in data4:
+                righttable[d['date']] = []
+
+            for d in data4:
+                if d['date'] not in dataToCheck:
+                    tempArr = {}
+                    tempArr['date'] = d['date']
+                    tempArr['currentOcc'] = d['currentOcc']
+                    tempArr['discountId'] = d['discountId']
+                    tempArr['forecast'] = d['forecast']
+                    tempArr['groups'] = d['groups']
+                    tempArr['leadTime'] = d['leadTime']
+                    lefttable.append(tempArr)
+                    dataToCheck.append(d['date'])
+                tArr = {}
+                tArr['occupancy'] = d['occupancy']
+                tArr['type'] = d['type']
+                tArr['count'] = d['count']
+                tArr['ratePerRoom'] = d['ratePerRoom']
+
+                righttable[d['date']].append(tArr)
+
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7)
 
 
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2692,7 +2703,7 @@ def showQuote(id):
     
     data6 = []
     if (data2['status'] == 'DECLINED'):
-        cursor.execute("SELECT * From customerDeclineRequest where requestId = %s", [id])
+        cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
         data6 = cursor.fetchall()
         data6 = data6[0]
 
@@ -2714,7 +2725,7 @@ def deleteRequest(id):
         data6 = []
         if (status[0]['status'] == 'DECLINED'):
             cursor.execute(
-                "SELECT * From customerDeclineRequest where requestId = %s", [id])
+                "SELECT * From DeclineRequest where requestId = %s", [id])
             data6 = cursor.fetchall()
             data6 = data6[0]
 
@@ -2898,10 +2909,54 @@ def DeclineRequest():
     cursor.execute('UPDATE response set status = "DECLINED" where requestId = %s', [inp['id']])
 
     now = datetime.datetime.utcnow()
-    cursor.execute("INSERT INTO customerDeclineRequest(requestId, time, reason) VALUES(%s, %s, %s) ", [inp['id'], now, inp['reason']])
+    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], inp['declinedBy']])
 
     mysql.connection.commit()
     cursor.close()
+
+    flash('The request has been declined', 'success')
+    return ('', 204)
+
+@app.route('/requestProcessDecline', methods = ['GET', 'POST'])
+def requestProcessDecline():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    responseId = inp['requestId'] + "R"
+    email = session['email']
+    now = datetime.datetime.utcnow()
+    status = 'DECLINED'
+
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(
+            inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate']
+    ])
+
+    table = inp['table_result']
+    for t in table:
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t[
+                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups']
+        ])
+    
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId
+    ])
+
+    cursor.execute(
+        'UPDATE request set status = "DECLINED" where id = %s', [ inp['requestId']])
+    cursor.execute(
+        'UPDATE response set status = "DECLINED" where requestId = %s', [ inp['requestId']])
+
+    now = datetime.datetime.utcnow()
+    email = session['email']
+    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [
+                    inp['requestId'], now, inp['reason'], email])
+
+
+
+    mysql.connection.commit()
 
     flash('The request has been declined', 'success')
     return ('', 204)
@@ -2914,7 +2969,8 @@ def DeleteRequest2():
     cursor.execute('UPDATE response set status = "DELETED" where requestId = %s', [inp['id']])
 
     now = datetime.datetime.utcnow()
-    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason) VALUES(%s, %s, %s) ", [inp['id'], now, inp['reason']])
+    email = session['email']
+    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason, deletedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], email])
 
     mysql.connection.commit()
     cursor.close()

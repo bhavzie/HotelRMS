@@ -9,10 +9,18 @@
         <div class = 'mb-5'>
         {% if data['status'] == 'DECLINED' %}
         <span class='badge badge-pill badge-primary'>
-            Declined By Customer On : {{ data6['time'] }}
+            Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
         </span>
         <span class='badge badge-primary'>
             Reason : {{ data6['reason'] }}
+        </span>
+        {% endif %}
+        {% if data['status'] == "DELETED" %}
+        <span class='badge badge-pill badge-primary'>
+            Deleted By : {{ data7['deletedBy'] }} On {{ data7['deletedOn'] }}
+        </span>
+        <span class='badge badge-primary'>
+            Reason : {{ data7['reason'] }}
         </span>
         {% endif %}
         </div>
@@ -89,6 +97,12 @@
                 </div>
             </div>
             <hr>
+            {% if data2|length == 0 %}
+                <div style = 'height: 70vh;'>
+
+                </div>
+            {% endif %}
+            {% if data2|length != 0 %}
             <div class='row mb-2'>
                 <button class='btn btn-primary mr-2' type='button'>Duplicate</button>
                 <button class='btn btn-primary' type='button'>History</button>
@@ -177,7 +191,9 @@
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
         </div>
+        {% if data2|length != 0 %}
         <div class = 'col-3'>
             <div class='mb-5'>
                 <div class='mb-2'>
@@ -365,7 +381,8 @@
                     </span>
                 </div>
             {% endif %}
-        </div>
+        </div>  
+        {% endif %}
     </div>
 </div>
 

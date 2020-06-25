@@ -345,10 +345,14 @@
                 <div class='row mb-5' id='msg'>
                 
                 </div>
+                <div class='row mb-5'>
+                    <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6" placeholder="Enter Reason for decline" id='othert'
+                    ></textarea>
+                </div>
                 <div style="margin-top: 100px;"></div>
                 <div class = 'mt-5 mb-5'>
                     <button type = 'button' class="btn btn-info">Send For Review</button>
-                    <button type = 'button' class="btn btn-danger">Decline</button>
+                    <button type = 'button' class="btn btn-danger" onclick = 'decline()'>Decline</button>
                     <button type = 'button' class="btn btn-success" onclick = 'quote()'>Quote</button>
                 </div>
             </div>
@@ -703,6 +707,7 @@
     }
 
     function quote() {
+        
         const requestId = "{{ data['id'] }}"
         const groupCategory = document.getElementById('category').innerText
         const totalFare = document.getElementById('totalRate').innerText
@@ -912,6 +917,227 @@
         
 
     }
+
+
+     function decline() {
+            const reason = $('#othert').val()
+            if (reason == '') {
+                const msg2 = document.getElementById('msg')
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = 'Kindly add reason for decline'
+                $(msg2).show()
+                return false
+            }
+            const requestId = "{{ data['id'] }}"
+            const groupCategory = document.getElementById('category').innerText
+            const totalFare = document.getElementById('totalRate').innerText
+            let foc = document.getElementById('focRate')
+            if (foc == null) {
+                foc = 0
+            } else {
+                foc = foc.innerText
+            }
+            let commission = document.getElementById('commission')
+            if (commission == null) {
+                commission = 0
+            } else {
+                commission = commission.innerText
+            }
+            let commissionValue = document.getElementById('comv')
+            if (commissionValue == null) {
+                commissionValue = 0
+            } else {
+                commissionValue = commissionValue.innerText
+            }
+            const totalQuote = document.getElementById('totalQuote').innerText
+            const cutoffDays = document.getElementById('dedenewi').value
+            if (cutoffDays == '') {
+                emsg('Enter Cutoff Days')
+                return false
+            }
+            const formPayment = $('#formPayment').val()
+            if (formPayment == '') {
+                emsg('Enter Form of Payment')
+                return false
+            }
+            const paymentTerms = $('#dede').val()
+            if (paymentTerms == null) {
+                emsg('Enter Payment Terms')
+                return false
+            }
+            const paymentDays = $('#dede33').val()
+            if (paymentDays == '' && paymentTerms != 'ac') {
+                emsg('Enter Payment Days')
+                return false
+            }
+            let paymentGtd = document.getElementById('pmgtd')
+            if (paymentGtd.checked) {
+                paymentGtd = 1
+            } else {
+                paymentGtd = 0
+            }
+            let negotiable = document.getElementById('nego')
+            if (negotiable.checked) {
+                negotiable = 1
+            } else {
+                negotiable = 0
+            }
+            const status = 'quoted'
+
+
+            const checkIn = "{{ checkIn }}"
+            const checkOut = "{{ checkOut }}"
+            const nights = "{{ length }}"
+
+            const single1avg = document.getElementById('single1avg')
+            const double1avg = document.getElementById('double1avg')
+            const triple1avg = document.getElementById('triple1avg')
+            const quad1avg = document.getElementById('quad1avg')
+            const single2avg = document.getElementById('single2avg')
+            const double2avg = document.getElementById('double2avg')
+            const triple2avg = document.getElementById('triple2avg')
+            const quad2avg = document.getElementById('quad2avg')
+
+            const result = {}
+            if (single1avg != null)
+                result['single1'] = single1avg.innerText
+            else
+                result['single1'] = 0
+            if (double1avg != null)
+                result['double1'] = double1avg.innerText
+            else
+                result['double1'] = 0
+            if (triple1avg != null)
+                result['triple1'] = triple1avg.innerText
+            else
+                result['triple1'] = 0
+            if (quad1avg != null)
+                result['quad1'] = quad1avg.innerText
+            else
+                result['quad1'] = 0
+            if (single2avg != null)
+                result['single2'] = single2avg.innerText
+            else
+                result['single2'] = 0
+            if (double2avg != null)
+                result['double2'] = double2avg.innerText
+            else
+                result['double2'] = 0
+            if (triple2avg != null)
+                result['triple2'] = triple2avg.innerText
+            else
+                result['triple2'] = 0
+            if (quad1avg != null)
+                result['quad1'] = quad1avg.innerText
+            else
+                result['quad1'] = 0
+            if (quad2avg != null)
+                result['quad2'] = quad2avg.innerText
+            else
+                result['quad2'] = 0
+
+            result['requestId'] = requestId
+            result['groupCategory'] = groupCategory
+            result['totalFare'] = totalFare
+            result['foc'] = foc
+            result['commission'] = commission
+            result['commissionValue'] = commissionValue
+            result['totalQuote'] = totalQuote
+            result['cutoffDays'] = cutoffDays
+            result['formPayment'] = formPayment
+            result['paymentTerms'] = paymentTerms
+            result['paymentDays'] = paymentDays
+            result['paymentGtd'] = paymentGtd
+            result['negotiable'] = negotiable
+            result['checkIn'] = checkIn
+            result['checkOut'] = checkOut
+            result['nights'] = nights
+            result['comments'] = $('#comments').val()
+            result['reason'] = reason
+
+            const averageRate = document.getElementById('avgRate').innerText
+            result['averageRate'] = averageRate
+
+            const table_result = []
+
+            var dateParts1 = checkIn.split("-");
+            var dt1 = new Date(+dateParts1[0], dateParts1[1] - 1, +dateParts1[2]);
+            let dobj = dt1
+            let flag = true
+            for (let i = 0; i < nights; i++) {
+
+                const date = dobj.getDate()
+                const month = dobj.getMonth()
+                const year = dobj.getFullYear()
+
+
+                const table1 = document.getElementById(i)
+                const table2 = document.getElementById("row" + i)
+
+                let tbody1 = table1.children[1]
+                let tbody2 = table2.children[1]
+                let children2 = [...tbody2.children]
+
+                children2.forEach(tr => {
+                    let resArr = {}
+                    resArr['date'] = year + "/" + month + "/" + date
+                    let children1 = tbody1.children
+                    resArr['currentOcc'] = children1[0].children[1].innerText
+                    resArr['forecast'] = children1[1].children[1].innerText
+                    resArr['groups'] = children1[2].children[1].innerText
+                    resArr['leadTime'] = children1[3].children[1].innerText
+                    resArr['discountId'] = children1[4].children[1].innerText
+
+
+                    resArr['occupancy'] = tr.children[0].innerText
+                    resArr['type'] = tr.children[1].innerText
+                    resArr['count'] = tr.children[2].innerText
+                    // check if input
+                    let x = tr.children[3]
+                    if (x.children.length == 0)
+                        resArr['ratePerRoom'] = tr.children[3].innerText
+                    else {
+                        resArr['ratePerRoom'] = tr.children[3].children[0].value
+                        if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
+                            flag = false
+                        }
+                    }
+
+                    table_result.push(resArr)
+
+                })
+                if (!flag) {
+                    emsg('Enter Valid Rate Per Room')
+                    return false
+                } else {
+                    $('#msg').hide()
+                }
+
+                dobj.setDate(dobj.getDate() + 1)
+
+            }
+
+
+            result['table_result'] = table_result
+
+            fetch('/requestProcessDecline', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result)
+            })
+                .then(res => {
+                    window.location.href = '/'
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+
+
+        }
 
 
 
