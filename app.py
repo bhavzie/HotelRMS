@@ -1177,7 +1177,7 @@ def submitEditUserAll():
         cursor.execute('Update iataUsers SET fullName = %s, phone = %s, country = %s, password = %s WHERE email = %s',
                         (name, phone, country, password, email))
     elif data == 'developer':
-        cursor.execute('Update developers SET name = %s, password = %s, phone = %s WHERE email = %s',
+        cursor.execute('Update developers SET fullName = %s, password = %s, phone = %s WHERE email = %s',
                         (name, password, phone, email))
 
     cursor.execute('Update users SET firstName = %s, password = %s WHERE email = %s',
@@ -1186,7 +1186,7 @@ def submitEditUserAll():
     mysql.connection.commit()
     cursor.close()
 
-    flash('Hotel user has been edited', 'success')
+    flash('User Details updated', 'success')
     return render_template('index.html')
 
 @app.route('/inviteemail', methods = ['GET', 'POST'])
