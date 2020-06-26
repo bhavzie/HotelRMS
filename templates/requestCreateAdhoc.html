@@ -10,7 +10,6 @@
             Fields marked with * are mandatory.
         </small>
         <form action="" method="POST" onsubmit="aj(event)" id='formF'>
-            <div id='msg2'></div>
             <div class = 'mge'>
                 <div class = 'mge1'>
                 <div class="form-group row mb-5">
@@ -80,6 +79,7 @@
                         </select>
                     </div>
                 </div>
+                <div id='msg2'></div>
                 <div class = 'form-group mb-5 mt-5'>
                     <table class="table table-hover table-bordered table-sm" id='tab5'>
                         <thead class="thead-dark">
@@ -562,7 +562,6 @@
                 buttonWidth: '350px'
             })
 
-
      });
 
       function parseDate(x) {
@@ -577,7 +576,6 @@
      function aj(e) {
         e.preventDefault()
         const checkIn = $('.start-date').val();
-        
         result = {}
 
          result['category'] = $('#category option:selected').val()
@@ -631,6 +629,56 @@
             dobj.setDate(dobj.getDate() + 1)
         })
 
+        const check_flag = "{{ check_flag|safe }}"
+         if (check_flag == "True") {
+            let result = "{{ result|safe }}"
+            result = result.replace(/'/g, '"');
+            result = JSON.parse(result)
+            const strategy = result['strategy']
+            const count = result['count']
+
+            const check = {}
+            for (let i=0; i<table_result.length; i++) {
+                check[table_result[i]['date']] = 0
+            }
+            const dates = []
+            for (let i = 0; i < table_result.length; i++) {
+                check[table_result[i]['date']] += parseInt(table_result[i]['count'])
+                if (!dates.includes(table_result[i]['date']))
+                    dates.push(table_result[i]['date'])
+            }
+
+            let finalFlag = true
+            let errMsg = ""
+            if (strategy == 'rpn') {
+                for (let i=0; i<dates.length; i++) {
+                    const value = check[dates[i]]
+                    if (value < count) {
+                        finalFlag = false
+                        errMsg = "Room per night is too low for date " + dates[i]
+                        break
+                    }
+                }
+            } else if (strategy == 'total') {
+                sum = 0
+                for (let i = 0; i < dates.length; i++) {
+                    const value = check[dates[i]]
+                    sum += value
+                }
+
+                if (sum < count) {
+                    finalFlag = false
+                    errMsg = "Total Rooms too low"
+                }
+            }
+            if (!finalFlag) {
+                let msg2 = document.getElementById('msg2')
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = errMsg
+                $(msg2).show()
+                return false
+            }
+         }
 
         result['checkIn'] = parseDate2(result['checkIn'])
         result['checkOut'] = parseDate2(result['checkOut'])

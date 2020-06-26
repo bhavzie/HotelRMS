@@ -7,6 +7,7 @@ from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
 import datetime
 import math
+import json
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -1452,8 +1453,14 @@ def requestCreateAdhoc():
     data = cursor.fetchall()
     cursor.execute('SELECT email From users where userType != %s', ['hoteluser'])
     users = cursor.fetchall()
+    cursor.execute('SELECT * From settingsRequest Order By submittedOn desc')
+    result = cursor.fetchall()
+    check_flag = False
+    if len(result) != 0:
+        check_flag = True
+        result = result[0]
 
-    return render_template('requestCreateAdhoc.html', data = data, users = users)
+    return render_template('requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result)
 
 
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
@@ -3040,6 +3047,34 @@ def requestProcessReview():
 
     flash('The request has been sent for review', 'success')
     return ('', 204)
+
+
+@app.route('/settingsRequestCreate', methods = ['GET', 'POST'])
+def settingsRequestCreate():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from settingsRequest Order By submittedOn desc')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settingsRequestCreate.html', result = result, flag = flag)
+
+@app.route('/settingsRequestSubmit', methods = ['GET', 'POST'])
+def settingsRequestSubmit():
+    strategy = request.form['strategy']
+    count = request.form['count']
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO settingsRequest(strategy, count, submittedBy, submittedOn) VALUES(%s, %s, %s, %s)', [strategy, count, email, time])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Request Settings have been updated', 'success')
+    return redirect(url_for("settingsRequestCreate"))
+
 
 if __name__ == "__main__":
     app.run(debug = True)
