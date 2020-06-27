@@ -22,6 +22,11 @@
                 </span>
                 {% endif %}
             </div>
+            <div class = 'mb-5'>
+                {% if data['status'] == 'EXPIRED' %}
+                    <span class = 'badge badge-pill badge-primary'>Time Limit Expired</span>
+                {% endif %}
+            </div>
         </div>
     </div>
     <div class = 'row mb-5'>

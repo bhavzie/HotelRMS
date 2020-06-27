@@ -10,9 +10,9 @@
         {% if flag == False %}
             <div style="margin-bottom: 100px;">
                 <input type="number" class = 'form-control' placeholder="No of Days" style="display: inline-block; max-width: 30%;" min = 0 id = 'days' onchange="handle()">
-                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Hours" min = 0 id = 'hours' onchange="handle()">
+                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Hours" min = 0 id = 'hours' onchange="handle()" value = 0 hidden>
                 <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Minutes"
-                    min=0 id = 'minutes' onchange="handle()">
+                    min=0 id = 'minutes' onchange="handle()" value = 0 hidden>
             </div>
             <div class = 'mt-5'>
                 Total evaluated Hours From quoted time : <span id = 'dem'>0</span>
@@ -23,9 +23,9 @@
                 Days<input type="number" class='form-control' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
                     min=0 id='days' onchange="handle()" value = "{{ result['days'] }}" readonly>
                 Hours<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Hours"
-                    min=0 id='hours' onchange="handle()" value = "{{ result['hours'] }}" readonly>
+                    min=0 id='hours' onchange="handle()" value = "{{ result['hours'] }}" readonly value = 0 hidden>
                 Minutes<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Minutes"
-                    min=0 id='minutes' onchange="handle()" value = "{{ result['minutes'] }}" readonly>
+                    min=0 id='minutes' onchange="handle()" value = "{{ result['minutes'] }}" readonly value = 0 hidden>
             </div>
             <div class='mt-5'>
                 Total evaluated Hours From quoted time : <span id='dem'>{{ result['value'] }}</span>

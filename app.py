@@ -1707,7 +1707,30 @@ def showRequest(token):
             contractv = cursor.fetchall()
             contractv = contractv[0]
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv)
+
+            declined = False
+            declinedMsg = ""
+            if (data['status'] == 'QUOTED'):
+                cursor.execute('SELECT days from settingsTimelimit')
+                days = cursor.fetchall()
+                days = days[0]
+                days = int(days['days'])
+                date = data2['submittedOn'].date()
+                today = datetime.datetime.now().date()
+                endline = date + datetime.timedelta(days=days)
+                if (today > endline):
+                    cursor.execute(
+                        'UPDATE request set status = "EXPIRED" where id = %s', [data['id']])
+                    cursor.execute(
+                        'UPDATE response set status = "EXPIRED" where requestId = %s', [data['id']])
+                    mysql.connection.commit()
+                    declined = True
+                    declinedMsg = "Time limit expired"
+                    data['status'] = "EXPIRED"
+                    data2['status'] = "EXPIRED"
+
+
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg)
 
     
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2641,9 +2664,11 @@ def requestProcessQuote():
 @app.route('/showQuote/<id>', methods = ['GET', 'POST'])
 def showQuote(id):
     cursor = mysql.connection.cursor()
+
     cursor.execute('SELECT * From request where id = %s', [id])
     data = cursor.fetchall()
     data = data[0]
+
     data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
     string = ''
     v = data['paymentTerms']
@@ -2757,10 +2782,34 @@ def showQuote(id):
         data6 = cursor.fetchall()
         data6 = data6[0]
 
-    cursor.execute('SELECT contract, id from contract where id = %s', [data2['contract']])
+    declined = False
+    declinedMsg = ""
+    if (data['status'] == 'QUOTED'):
+        cursor.execute('SELECT days from settingsTimelimit')
+        days = cursor.fetchall()
+        days = days[0]
+        days = int(days['days'])
+        date = data2['submittedOn'].date()
+        today = datetime.datetime.now().date()
+        endline = date + datetime.timedelta(days=days)
+        if (today > endline):
+            cursor.execute(
+                'UPDATE request set status = "EXPIRED" where id = %s', [data['id']])
+            cursor.execute(
+                'UPDATE response set status = "EXPIRED" where requestId = %s', [data['id']])
+            mysql.connection.commit()
+            declined = True
+            declinedMsg = "Time limit expired"
+            data['status'] = "EXPIRED"
+            data2['status'] = "EXPIRED"
+
+    cursor.execute('SELECT contract, id from contract where id = %s', [
+                   data2['contract']])
     contract = cursor.fetchall()
 
-    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract)
+
+
+    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg)
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
 def deleteRequest(id):
@@ -3151,9 +3200,17 @@ def settingsTimelimitSubmit():
     email = session['email']
     time = datetime.datetime.utcnow()
     
-    cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
-        inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
-    ])
+    cursor.execute('SELECT * from settingsTimelimit')
+    len1 = cursor.fetchall()
+
+    if len(len1) == 1:
+        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
+            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        ])
+    else:
+        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days, hours, minutes) VALUES(%s, %s, %s, %s, %s, %s)', [
+            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        ])
     mysql.connection.commit()
 
     flash('The time limit setting has been updated', 'success')
