@@ -437,6 +437,7 @@
     });
 
     function dem(e) {
+        
         let selected = $('#sele option:selected').text()
         selected = selected.trim()
 
@@ -660,14 +661,19 @@
 
         // add commission
     
-        let c = parseInt(document.getElementById('comv').innerHTML)
-        c = c / roomCount
+        let c = document.getElementById('comv')
+        if (c == null) {
+            c = 0
+        } else {
+            c = parseInt(c.innerHTML)
+            c = c / roomCount
+        }
         
         let svv = (single1v / single1c) + focvv + c
         let dvv = (double1v / double1c) + focvv + c
         let tvv = (triple1v/triple1c) + focvv + c
         let qvv = (quad1v/quad1c) + focvv + c
-        
+
 
         let svv2 = (single2v/single2c) + focvv + c
         let dvv2 = (double2v/double2c) + focvv + c
