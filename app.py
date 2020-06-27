@@ -1555,13 +1555,14 @@ def showRequest(token):
     mysql.connection.commit()
     return '' """
     email = session['email']
-    cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+    cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
     ut = cursor.fetchall()
     if len(ut) != 0:
-        ut = ut[0]    
+        ut = ut[0]
+
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userType'] == 'reservation')):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userSubType'] == 'reservation')):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
@@ -1585,7 +1586,6 @@ def showRequest(token):
             cursor.execute(
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
-            print(data8)
             data8 = data8[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
@@ -1699,7 +1699,7 @@ def showRequest(token):
 
                 righttable[d['date']].append(tArr)
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7)
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8)
 
     
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2274,8 +2274,6 @@ def showRequest1():
         if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
             review = False
 
-    
-    print(rv)
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
@@ -3075,6 +3073,51 @@ def settingsRequestSubmit():
     flash('Request Settings have been updated', 'success')
     return redirect(url_for("settingsRequestCreate"))
 
+@app.route('/settingsNegotiation', methods = ['GET', 'POST'])
+def settingsNegotiation():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from settingsNegotiation Order By submittedOn desc')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settingsNegotiation.html', result = result, flag = flag)
+
+@app.route('/settingsNegotiationSubmit', methods = ['GET', 'POST'])
+def settingsNegotiationSubmit():
+    count = request.form['count']
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [count, time, email])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Negotiation settings have been updated', 'success')
+    return redirect(url_for("settingsNegotiation"))
+
+@app.route('/settingsContractCreate', methods = ['GET', 'POST'])
+def settingsContactCreate():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from contract')
+    result = cursor.fetchall()
+    return render_template('settingsContractCreate.html', result = result)
+
+@app.route('/settingsContractSubmit', methods = ['GET', 'POST'])
+def settingsContractSubmit():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    cursor.execute('INSERT INTO contract(id, contract, submittedOn, submittedBy) VALUES(%s, %s, %s, %s)', [
+        inp['id'], inp['contract'], time, email
+    ])
+    mysql.connection.commit()
+
+    flash('The contract has been added', 'success')
+    return ('', 204)
 
 if __name__ == "__main__":
     app.run(debug = True)

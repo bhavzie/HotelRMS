@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class='wrap-login'>
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Negotiation Settings</p>
+            </div>
+        </div>
+        {% if flag %}
+        <button type="submit" class="btn btn-info" onclick="edit()">Edit</button>
+        {% endif %}
+        <form method='POST' action="{{  url_for('settingsNegotiationSubmit') }}">
+            <small id='smallID' class='form-text text-muted mb-5'>
+                Fields marked with * are mandatory.
+            </small>
+            {% if flag == False %}
+            <div class='formhelp mb-5'>
+                <span class='mr-4'>Count* :</span>
+                <input type='number' placeholder="Number of negotiations" class='form-control ml-5'
+                    style='max-width: 50%; display: inline-block;' required min=0 name='count' value = 1>
+            </div>
+            {% else %}
+            <div class='formhelp mb-5'>
+                <span class='mr-4'>Count* :</span>
+                <input type='number' placeholder="Number of negotiations" class='form-control ml-5'
+                    style='max-width: 50%; display: inline-block;' required min=0 name='count' id = 'count1' value="{{ result['count'] }}" readonly>
+            </div>
+            {% endif %}
+            <div class="row" style="margin-top: 100px;">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+       
+    });
+
+    function edit() {
+        $('#count1').prop('readonly', false)
+    }
+
+</script>
+{% endblock %}
