@@ -345,9 +345,45 @@
                         <textarea class="form-control" rows='2' id='comments'></textarea>
                     </div>
                 </div>
-                <div class='mb-5'>
-                    Contract
-                    dropdown
+                <div class='row mb-5'>
+                    <button type = 'button' class = 'btn btn-info col-sm-4 ml-2'  data-toggle="modal" data-target="#exampleModal">
+                        Contract
+                    </button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Contract</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <select class = 'form-control' onchange="dem(event)" id = 'sele'>
+                                        <option disabled selected>
+                                            Select Contract
+                                        </option>
+                                        {% for c in contracts %}
+                                        <option>
+                                            {{ c['id'] }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class='mt-5' id='contracts1'>
+                                    {% for c in contracts %}
+                                    <div class = 'mt-5' id = '{{ c["id"] }}' style="display: none;">
+                                        {{ c['contract'] }}
+                                    </div>
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class='row mb-5' id='msg'>
                 
@@ -399,6 +435,21 @@
         const roomCount = "{{ roomCount|safe }}"
         
     });
+
+    function dem(e) {
+        let selected = $('#sele option:selected').text()
+        selected = selected.trim()
+
+        const contracts1 = document.getElementById('contracts1');
+        const c = [...contracts1.getElementsByTagName('div')]
+        c.forEach(cc => {
+            $(cc).hide();
+        })
+
+        const seleb = document.getElementById(selected)
+        $(seleb).show();
+
+    }
 
     function up(e) {
 
@@ -787,7 +838,14 @@
         const triple2avg = document.getElementById('triple2avg')
         const quad2avg = document.getElementById('quad2avg')
 
+        let contract = $('#sele option:selected').text()
+        contract = contract.trim()
+        if (contract == 'Select Contract') {
+            emsg('Select A contract')
+            return false
+        }
         const result = {}
+        result['contract'] = contract
         if (single1avg != null)
             result['single1'] = single1avg.innerText
         else

@@ -357,7 +357,7 @@
             </div>
             {% endif %}
             <div class='mb-5'>
-                Contract
+                Contract : <button class = 'btn btn-info' onclick="hc()">{{ contract['contract'] }}</button>
             </div>
             <div class = 'mb-5'>
                 Negotiable :
@@ -424,6 +424,11 @@
                     console.log(err)
                 })
         }
+    }
+
+    function hc() {
+        const contractv = "{{ contractv }}"
+        alert(contractv)
     }
 
 </script>

@@ -353,6 +353,10 @@
             <div class = 'card'>
                 <div class = 'card-body'>
                     <h5>Contract</h5>
+                    <h6>Contract ID : {{ contract[0]['id'] }} </h6>
+                    <div class = 'mt-5'>
+                        {{ contract[0]['contract'] }}
+                    </div>
                     <hr>
                     <div class = 'mt-5 mb-5'>
                         <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract

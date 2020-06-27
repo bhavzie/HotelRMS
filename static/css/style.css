@@ -334,7 +334,7 @@ td {
   transition: all 0.2s ease-in-out;
 }
 
-button:hover {
+.btnLogin:hover {
   color : #000;
   background-color: #fff;
   border: 3px solid #000;

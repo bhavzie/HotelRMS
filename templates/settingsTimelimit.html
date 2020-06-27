@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="home">
+    <div class='wrap-login'>
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>TimeLimit Settings</p>
+            </div>
+        </div>
+        {% if flag == False %}
+            <div style="margin-bottom: 100px;">
+                <input type="number" class = 'form-control' placeholder="No of Days" style="display: inline-block; max-width: 30%;" min = 0 id = 'days' onchange="handle()">
+                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Hours" min = 0 id = 'hours' onchange="handle()">
+                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Minutes"
+                    min=0 id = 'minutes' onchange="handle()">
+            </div>
+            <div class = 'mt-5'>
+                Total evaluated Hours From quoted time : <span id = 'dem'>0</span>
+            </div>
+        {% else %}
+            <button type = 'button' class = 'btn btn-info mb-5' onclick="edit()">Edit</button>
+            <div style="margin-bottom: 100px;">
+                Days<input type="number" class='form-control' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
+                    min=0 id='days' onchange="handle()" value = "{{ result['days'] }}" readonly>
+                Hours<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Hours"
+                    min=0 id='hours' onchange="handle()" value = "{{ result['hours'] }}" readonly>
+                Minutes<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Minutes"
+                    min=0 id='minutes' onchange="handle()" value = "{{ result['minutes'] }}" readonly>
+            </div>
+            <div class='mt-5'>
+                Total evaluated Hours From quoted time : <span id='dem'>{{ result['value'] }}</span>
+            </div>
+        {% endif %}
+            <div class="row" style="margin-top: 100px;">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" onclick = 'submit(event)'>Submit</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<script src="/static/js/jquery.js"></script>
+<script>
+        function handle() {
+            let days = parseInt($('#days').val()) * 24
+            let minutes = parseInt($('#minutes').val()) / 60
+            let hours = parseInt($('#hours').val())
+            
+            minutes = +(Math.round(minutes + "e+2") + "e-2")
+
+            if(Number.isNaN(days)) {
+                days = 0
+            } 
+            if(Number.isNaN(minutes)) {
+                minutes = 0
+            }
+            if(Number.isNaN(hours)) {
+                hours = 0
+            }
+            let value = days + minutes + hours
+            value = +(Math.round(value + "e+2") + "e-2")
+            value = value.toString()
+
+            const element = document.getElementById('dem')
+            element.innerHTML = value
+        }
+
+        function edit() {
+            $('#days').removeAttr('readonly')
+            $('#hours').removeAttr('readonly')
+            $('#minutes').removeAttr('readonly')
+        }
+
+        function submit(e) {
+            e.preventDefault()
+            const element = document.getElementById('dem')
+            const value = element.innerHTML
+            result = {}
+            result['value'] = value
+            result['days'] = $("#days").val()
+            result['hours'] = $("#hours").val()
+            result['minutes'] = $('#minutes').val()
+
+            fetch('/settingsTimelimitSubmit', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result)
+            })
+            .then(res => {
+                window.location.href = '/settingsTimelimit'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+        }
+
+</script>
+
+{% endblock %}

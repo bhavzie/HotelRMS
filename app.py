@@ -1699,7 +1699,15 @@ def showRequest(token):
 
                 righttable[d['date']].append(tArr)
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8)
+            cursor.execute('SELECT contract from response where responseId = %s', [responseId])
+            contract = cursor.fetchall()
+            contract = contract[0]
+
+            cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
+            contractv = cursor.fetchall()
+            contractv = contractv[0]
+
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv)
 
     
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2274,10 +2282,12 @@ def showRequest1():
         if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
             review = False
 
+    cursor.execute('SELECT * from contract')
+    contracts = cursor.fetchall()
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2600,10 +2610,10 @@ def requestProcessQuote():
     now = datetime.datetime.utcnow()
     status = 'QUOTED'
 
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
         status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate']
+        inp['averageRate'], inp['contract']
     ])
 
     table = inp['table_result']
@@ -2747,7 +2757,10 @@ def showQuote(id):
         data6 = cursor.fetchall()
         data6 = data6[0]
 
-    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6)
+    cursor.execute('SELECT contract, id from contract where id = %s', [data2['contract']])
+    contract = cursor.fetchall()
+
+    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract)
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
 def deleteRequest(id):
@@ -3117,6 +3130,33 @@ def settingsContractSubmit():
     mysql.connection.commit()
 
     flash('The contract has been added', 'success')
+    return ('', 204)
+
+@app.route('/settingsTimelimit', methods = ['GET', 'POST'])
+def settingsTimelimit():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From settingsTimelimit')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settingsTimelimit.html', result = result, flag = flag)
+
+@app.route('/settingsTimelimitSubmit', methods = ['GET', 'POST'])
+def settingsTimelimitSubmit():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    
+    cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
+        inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+    ])
+    mysql.connection.commit()
+
+    flash('The time limit setting has been updated', 'success')
     return ('', 204)
 
 if __name__ == "__main__":
