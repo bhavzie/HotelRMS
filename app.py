@@ -1705,7 +1705,10 @@ def showRequest(token):
 
             cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
             contractv = cursor.fetchall()
-            contractv = contractv[0]
+            if len(contractv) != 0:
+                contractv = contractv[0]
+            else:
+                contractv = ''
 
 
             declined = False
