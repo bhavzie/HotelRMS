@@ -742,19 +742,16 @@
                 return false
             }
             const formPayment = document.getElementById('formPayment').innerText
-            if (formPayment == '') {
-                emsg('Enter Form of Payment')
-                return false
-            }
             const paymentTerms = document.getElementById('dede').innerText
             if (paymentTerms == null) {
                 emsg('Enter Payment Terms')
                 return false
             }
-            const paymentDays = document.getElementById('dede33').innerText
-            if (paymentDays == '' && paymentTerms != 'ac') {
-                emsg('Enter Payment Days')
-                return false
+            let paymentDays = document.getElementById('dede33')
+            if (paymentDays == null) {
+                paymentDays = 0
+            } else {
+                paymentDays = paymentDays.innerText
             }
             let paymentGtd = document.getElementById('pmgtd')
             if (paymentGtd.checked) {
