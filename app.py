@@ -1691,6 +1691,7 @@ def showRequest(token):
             else:
                 cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
                 data4 = cursor.fetchall()
+
             lefttable = []
             dataToCheck = []
             righttable = {}
