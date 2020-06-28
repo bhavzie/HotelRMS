@@ -1562,7 +1562,7 @@ def showRequest(token):
 
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userSubType'] == 'reservation')):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userSubType'] == 'reservation') or status[0]['status'] == 'NEGOTIATED'):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
@@ -1629,7 +1629,7 @@ def showRequest(token):
             data['comments'] = ''
 
         responseId = data['id'] + "R"
-        cursor.execute('SELECT * From response where responseId = %s', [responseId])
+        cursor.execute('SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
         data2 = cursor.fetchall()
         tfoc = False
         tcomm = False
@@ -1668,11 +1668,12 @@ def showRequest(token):
                 elif v.count('poa') > 0:
                     data2['paymentTerms'] = 'Prior To Arrival'
         
-            cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+            cursor.execute('SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
             data3 = cursor.fetchall()
             data3 = data3[0]
             
-            cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+            cursor.execute(
+                'SELECT * From responseDaywise where responseId = %s  order by submittedOn desc limit 1', [responseId])
             data4 = cursor.fetchall()
             lefttable = []
             dataToCheck = []
@@ -1699,7 +1700,8 @@ def showRequest(token):
 
                 righttable[d['date']].append(tArr)
 
-            cursor.execute('SELECT contract from response where responseId = %s', [responseId])
+            cursor.execute(
+                'SELECT contract from response where responseId = %s  order by submittedOn desc limit 1', [responseId])
             contract = cursor.fetchall()
             contract = contract[0]
 
@@ -1733,7 +1735,22 @@ def showRequest(token):
                     data2['status'] = "EXPIRED"
 
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg)
+        negoTimes = data2['timesNegotiated']
+        nego = False
+        negoInformation = {}
+        canNegotiate = False
+        if (status[0]['status'] == 'NEGOTIATED'):
+            cursor.execute('select count from settingsNegotiation')
+            count = cursor.fetchall()
+            count = count[0]['count']
+            if (negoTimes < count):
+                canNegotiate = True
+            negoTimes = data2['timesNegotiated']
+            negoInformation['expectedFare'] = data2['expectedFare']
+            negoInformation['reason'] = data2['negotiationReason']
+
+
+        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
 
     
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -2311,9 +2328,17 @@ def showRequest1():
     cursor.execute('SELECT * from contract')
     contracts = cursor.fetchall()
 
+    cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
+    nego = cursor.fetchall()
+    negoF = False
+    if len(nego) != 0:
+        nego = nego[0]
+        if (int(nego['count']) > 0):
+            negoF = True
+    
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts)
+    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF)
 
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2644,17 +2669,17 @@ def requestProcessQuote():
 
     table = inp['table_result']
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups']
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
     
     cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
 
-    cursor.execute('UPDATE response set status = "QUOTED" where requestId = %s', [inp['requestId']]
+    cursor.execute('UPDATE response set status = "QUOTED" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']]
         )
 
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
     ])
 
     mysql.connection.commit()
@@ -2700,7 +2725,8 @@ def showQuote(id):
         data['comments'] = ''
 
     responseId = data['id'] + "R"
-    cursor.execute('SELECT * From response where responseId = %s', [responseId])
+    cursor.execute(
+        'SELECT * From response where responseId = %s  order by submittedOn desc limit 1', [responseId])
     data2 = cursor.fetchall()
     data2 = data2[0]
 
@@ -2727,7 +2753,8 @@ def showQuote(id):
         elif v.count('poa') > 0:
             data2['paymentTerms'] = 'Prior To Arrival'
     
-    cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+    cursor.execute(
+        'SELECT * From responseAvg where responseId = %s  order by submittedOn desc limit 1', [responseId])
     data3 = cursor.fetchall()
     data3 = data3[0]
 
@@ -2811,7 +2838,6 @@ def showQuote(id):
     contract = cursor.fetchall()
 
 
-
     return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg)
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -2819,7 +2845,7 @@ def deleteRequest(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT status from request where id = %s', [id])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or status[0]['status'] == 'SENT FOR REVIEW'):
+    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or status[0]['status'] == 'SENT FOR REVIEW' or status[0]['status'] == 'NEGOTIATED'):
         data5 = []
         if (status[0]['status'] == 'ACCEPTED'):
             cursor.execute(
@@ -3053,19 +3079,19 @@ def requestProcessDecline():
 
     table = inp['table_result']
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t[
-                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups']
+                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
     
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
     ])
 
     cursor.execute(
         'UPDATE request set status = "DECLINED" where id = %s', [ inp['requestId']])
     cursor.execute(
-        'UPDATE response set status = "DECLINED" where requestId = %s', [ inp['requestId']])
+        'UPDATE response set status = "DECLINED" where requestId = %s order by submittedOn desc limit 1', [ inp['requestId']])
 
     now = datetime.datetime.utcnow()
     email = session['email']
@@ -3074,7 +3100,7 @@ def requestProcessDecline():
 
 
 
-    mysql.connection.commit()
+    mysql.connection.commit()   
 
     flash('The request has been declined', 'success')
     return ('', 204)
@@ -3141,7 +3167,7 @@ def settingsRequestSubmit():
 @app.route('/settingsNegotiation', methods = ['GET', 'POST'])
 def settingsNegotiation():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from settingsNegotiation Order By submittedOn desc')
+    cursor.execute('SELECT * from settingsNegotiation')
     result = cursor.fetchall()
     flag = True
     if len(result) == 0:
@@ -3157,7 +3183,13 @@ def settingsNegotiationSubmit():
     time = datetime.datetime.utcnow()
 
     cursor = mysql.connection.cursor()
-    cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [count, time, email])
+    cursor.execute('SELECT * From settingsNegotiation')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [count, time, email])
+    else:
+        cursor.execute("UPDATE settingsNegotiation set count = %s, submittedOn = %s, submittedBy = %s", [
+                       count, time, email])
     mysql.connection.commit()
     cursor.close()
     flash('Negotiation settings have been updated', 'success')
@@ -3218,6 +3250,36 @@ def settingsTimelimitSubmit():
 
     flash('The time limit setting has been updated', 'success')
     return ('', 204)
+
+'''
+    negotiate :
+        enter expected fare customer and comments
+        add to response tables with datetime
+        consider latest always
+        accept/decline you have to take latest and change status
+'''
+
+@app.route('/NegotiateRequest', methods = ['GET', 'POST'])
+def NegotiateRequest():
+    inp = request.json
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT timesNegotiated from response where requestId = %s', [inp['id']])
+    dd = cursor.fetchall()
+    dd = dd[0]
+    times = int(dd['timesNegotiated']) + 1
+
+    cursor.execute('UPDATE request set status = "NEGOTIATED" where id = %s', [inp['id']])
+
+    cursor.execute('UPDATE response set status = %s, expectedFare = %s, negotiationReason = %s, timesNegotiated = %s where requestId = %s order by submittedOn desc limit 1', [
+        "NEGOTIATED", inp['expectedFare'], inp['reason'], times, inp['id']
+    ])
+
+    mysql.connection.commit()
+
+    flash('The request is sent for negotiation', 'success')
+    return ('', 204)
+
 
 if __name__ == "__main__":
     app.run(debug = True)

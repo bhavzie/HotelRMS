@@ -365,11 +365,11 @@
                     <hr>
                     <div class = 'mt-5 mb-5'>
                         <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract
-                    </div>
+                    </div>  
+                    <div id='msg'></div>
                     <div class='form-group row' id = 'dem'>
                         <label class="col-sm-2 col-form-label">Reason for decline</label>
                         <div class="col-sm-3">
-                            <div id = 'msg'></div>
                             <select class='form-control text-center' style='max-width: 80%;' onchange = 'hdd(event)' id = 'sel'>
                                 <option disabled selected>
                                     Select Reason for Decline
@@ -392,9 +392,17 @@
                             <textarea class = 'form-control' rows = '2' placeholder="Enter Reason for decline" id = 'othert' style="display:none;"></textarea>
                         </div>
                     </div>
+                    <div class='col-sm-3' id = 'nego'>
+                        <label>Expected Fare/ Night: </label>
+                        <input type = 'number' min = '10' id = 'expFare' class = 'form-control col-sm-4 mb-2'>
+                        <textarea class='form-control' rows='2' placeholder="Enter Reason" id='negoTa'
+                            ></textarea>
+                    </div>
                     <div class = 'mt-5 text-center'>
                     <button class = 'btn btn-success' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
+                    {% if data2['negotiable'] == 1%}
                     <button class = 'btn btn-info' onclick = 'negotiate()'>NEGOTIATE</button>
+                    {% endif %}
                     <button class = 'btn btn-danger' onclick = 'decline()'>DECLINE</button>
                     </div>
                 </div>
@@ -410,7 +418,8 @@
     $(document).ready(function () {
         $('#reqDetails').hide();
         $('#breakdown').hide();
-        $('#dem').hide()
+        $('#dem').hide();
+        $('#nego').hide();
 
         const db = [...document.getElementsByClassName('dateButtons')]
         db.forEach(db => {
@@ -530,7 +539,52 @@
     }
 
     function negotiate() {
-        console.log('Negotiate')
+        const nego = document.getElementById('nego')
+        if (nego.style.display == 'none') {
+            nego.style.display = 'block'
+        } else {
+
+            let expF = $('#expFare').val()
+            let negoReason = $('#negoTa').val()
+
+            const msg2 = document.getElementById('msg')
+            if (expF == '') {
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = 'Kindly add expected Fare'
+                $(msg2).show()
+                return false
+            } else if (negoReason == '') {
+                msg2.style.setProperty('color', 'red', 'important');
+                msg2.innerHTML = 'Kindly add reason'
+                $(msg2).show()
+                return false
+            } else {
+                $(msg2).hide()
+                result = {}
+                result['id'] = "{{ data['id'] }}"
+                result['reason'] = negoReason
+                result['expectedFare'] = expF
+
+                fetch('/NegotiateRequest', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(result)
+
+                })
+                    .then(res => {
+                        window.location.href = '/'
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+
+            }
+
+
+        }
     }
 
     function decline() {
