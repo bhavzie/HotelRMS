@@ -1683,13 +1683,14 @@ def showRequest(token):
             cursor.execute(
                 'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
             submittedOn = cursor.fetchall()
+            print(submittedOn)
             if submittedOn[0]['submittedOn'] == 'None':
                 submittedOn = submittedOn[0]['submittedOn']
                 cursor.execute(
                     'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
                 data4 = cursor.fetchall()
             else:
-                cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
                 data4 = cursor.fetchall()
 
             lefttable = []
