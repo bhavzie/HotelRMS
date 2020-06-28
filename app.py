@@ -20,7 +20,6 @@ def generateConfirmationToken(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
-
 def confirmToken(token, expiration=3600):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
@@ -35,7 +34,6 @@ def confirmToken(token, expiration=3600):
         return False
     return email
 
-
 def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     msg = Message(
         subject = subjectv,
@@ -44,8 +42,6 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     link = url_for(linkv, token=tokenv, _external=True)
     msg.body = bodyv + ' ' + link
     mail.send(msg)
-
-
 
 # DB Queries
 def dbQueryInsert(table, myDict):
@@ -59,7 +55,6 @@ def dbQueryInsert(table, myDict):
     mysql.connection.commit()
     cursor.close()
 
-
 # Mapping 1 => True, 0 => False and vice-versa
 def getValC(value):
     if value == None:
@@ -67,15 +62,11 @@ def getValC(value):
     else:
         return 1
 
-
 def getValC2(value):
     if value == 1:
         return True
     else:
         return False
-
-
-
 
 def procArr(value):
     if value is None:
@@ -126,8 +117,6 @@ def confirm_email(token):
         flash('Your email has been successfully verified', 'success')
         return render_template('login.html', title = 'Login')
 
-
-
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     try:
@@ -142,26 +131,26 @@ def index():
 
 @app.route('/iataRegistration', methods=['GET', 'POST'])
 def iatar():
-    return render_template('registerIata.html', title = 'Register')
+    return render_template('users/registerIata.html', title = 'Register')
 
 
 @app.route('/customerRegistrationR', methods=['GET', 'POST'])
 def customerr():
-    return render_template('rcustomer.html', title = 'Register')
+    return render_template('users/rcustomer.html', title='Register')
 
 @app.route('/customerRegistrationI', methods=['GET', 'POST'])
 def customerI():
-    return render_template('icustomer.html', title = 'Register')
+    return render_template('users/icustomer.html', title='Register')
 
 
 @app.route('/customerRegistrationT', methods=['GET', 'POST'])
 def customerT():
-    return render_template('tcustomer.html', title='Register')
+    return render_template('users/tcustomer.html', title='Register')
 
 
 @app.route('/customerRegistrationC', methods=['GET', 'POST'])
 def customerC():
-    return render_template('ccustomer.html', title='Register')
+    return render_template('users/ccustomer.html', title='Register')
 
 
 @app.route('/registerI', methods = ['GET', 'POST'])
@@ -200,7 +189,7 @@ def registerI():
             cursor.close()
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('rcustomer.html', title="Register")
+            return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
@@ -240,11 +229,10 @@ def registerR():
             cursor.close()
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('rcustomer.html', title="Register")
+            return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
-
 
 @app.route('/registerC', methods=['GET', 'POST'])
 def registerC():
@@ -282,11 +270,10 @@ def registerC():
             cursor.close()
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('rcustomer.html', title="Register")
+            return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
-
 
 @app.route('/registerT', methods=['GET', 'POST'])
 def registerT():
@@ -323,7 +310,7 @@ def registerT():
             cursor.close()
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('rcustomer.html', title="Register")
+            return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
@@ -630,9 +617,10 @@ def login():
 
     return render_template('login.html', title = 'Login')
 
+
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
-    return render_template('forgotpasswordreq.html', title = 'forgotpassword')
+    return render_template('users/forgotpasswordreq.html', title='forgotpassword')
 
 @app.route('/passwordupdatereq', methods = ['GET', 'POST'])
 def passwordupdatereq():
@@ -663,7 +651,7 @@ def passwordupdatereq():
 @app.route('/passwordupdate/<token>', methods = ['GET', 'POST'])
 def passwordupdate(token):
     email = confirmToken(token)
-    return render_template('forgotpassword.html', email = email)
+    return render_template('users/forgotpassword.html', email=email)
 
 @app.route('/passwordupdatef', methods = ['GET', 'POST'])
 def passwordupdatef():
@@ -698,6 +686,8 @@ def signOut():
     flash('You are now logged out', 'success')
     return render_template('login.html', title = 'Login')
 
+
+@is_logged_in
 @app.route('/hoteladduser', methods = ['GET', 'POST'])
 def hoteladduser():
     cursor = mysql.connection.cursor()
@@ -715,8 +705,10 @@ def hoteladduser():
     if 'hotelAdmin' not in subtypes:
         subtypes.append('hotelAdmin')
 
-    return render_template('hoteladduser.html', title = 'AddUser', subtypes = subtypes)
+    return render_template('users/hoteladduser.html', title='AddUser', subtypes=subtypes)
 
+
+@is_logged_in
 @app.route('/registerhotelusers', methods = ['GET', 'POST'])
 def registerhotelusers():
     if request.method == 'POST':
@@ -746,7 +738,7 @@ def registerhotelusers():
             cursor.execute('INSERT INTO hotelUsers(fullName,  email, password, userType) VALUES(%s, %s, %s, %s)', (fullName,  email, password, userType))
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('hoteladduser.html', title="Register")
+            return render_template('users/hoteladduser.html', title="Register")
 
         mysql.connection.commit()
         cursor.close()
@@ -754,10 +746,13 @@ def registerhotelusers():
         flash('New Hotel user has been added', 'success')
         return render_template('index.html')
 
+@is_logged_in
 @app.route('/adddeveloper', methods = ['GET', 'POST'])
 def adddeeloper():
-    return render_template('adddeveloper.html', title =  'Add')
+    return render_template('users/adddeveloper.html', title='Add')
 
+
+@is_logged_in
 @app.route('/registerdeveloper', methods = ['GET', 'POST'])
 def registerdeveloper():
     if request.method == 'POST':
@@ -789,7 +784,7 @@ def registerdeveloper():
         
         else:
             flash('Email Already Registered', 'danger')
-            return render_template('adddeveloper.html', title="Register")
+            return render_template('users/adddeveloper.html', title="Register")
 
 
 
@@ -801,12 +796,13 @@ def registerdeveloper():
         
     return render_template('login.html', title='Login')
 
-
+@is_logged_in
 @app.route('/hoteladdusertype', methods = ["GET", "POST"])
 def hoteladdusertype():
-    return render_template('hoteladdusertype.html', title = 'Register')
+    return render_template('users/hoteladdusertype.html', title='Register')
 
 
+@is_logged_in
 @app.route('/addusertype', methods = ["GET", 'POST'])
 def addusertype():
     requestv = getValC(request.form.get('request'))
@@ -861,7 +857,7 @@ def addusertype():
 
     else:
         flash('UserType Already Registered', 'danger')
-        return render_template('hoteladdusertype.html', title="Register")
+        return render_template('users/hoteladdusertype.html', title="Register")
 
 
 
@@ -872,6 +868,7 @@ def addusertype():
     return render_template('index.html', title='UserType')
 
 
+@is_logged_in
 @app.route('/managehotelusers', methods = ['GET', 'POST'])
 def managehotelusers():
     cursor = mysql.connection.cursor()
@@ -884,10 +881,9 @@ def managehotelusers():
         res['firstName'] = res['fullName'].split()[0]
         data.append(res)
     
+    return render_template('users/managehotelusers.html', title= 'Users', data = data)
 
-    return render_template('managehotelusers.html', title = 'Users', data = data)
-
-
+@is_logged_in
 @app.route('/showprofile/<email>', methods = ['GET', 'POST'])
 def showprofile(email):
     cursor = mysql.connection.cursor()
@@ -898,8 +894,10 @@ def showprofile(email):
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
     data[0]['fullName'] = data[0]['fullName'].split(' ')[0]
     data[0]['active'] = 'Yes' if data[0]['active'] else 'No'
-    return render_template('showprofile.html', title = 'Profile', data = data[0])
+    return render_template('users/showprofile.html', title='Profile', data=data[0])
 
+
+@is_logged_in
 @app.route('/showprofileAll/<email>', methods = ['GET', 'POST'])
 def showprofileAll(email):
     cursor = mysql.connection.cursor()
@@ -926,8 +924,10 @@ def showprofileAll(email):
         rr = rr[0]
     data['email_verified'] = "Yes" if rr['email_verified'] else "No"
     data['active'] = 'Yes' if rr['active'] else 'No'    
-    return render_template('showprofileAll.html', title = 'Profile', data = data)   
+    return render_template('users/showprofileAll.html', title='Profile', data=data)
 
+
+@is_logged_in
 @app.route('/editUser/<email>', methods = ["GET", "POST"])
 def editUser(email):
     cursor = mysql.connection.cursor()
@@ -949,8 +949,10 @@ def editUser(email):
         subtypes.append('hotelAdmin')
 
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
-    return render_template('editUser.html', title = 'Edit', data = data[0], subtypes = subtypes)
+    return render_template('users/editUser.html', title = 'Edit', data = data[0], subtypes = subtypes)
 
+
+@is_logged_in
 @app.route('/editUserAll/<email>', methods = ['GET', 'POST'])
 def editUserAll(email):
     cursor = mysql.connection.cursor()
@@ -982,10 +984,10 @@ def editUserAll(email):
     data['active'] = 'Yes' if rr['active'] else 'No'
     data['fullName'] = rr['fullName']
 
-    return render_template('editUserAll.html', data = data)
+    return render_template('users/editUserAll.html', data=data)
 
 
-
+@is_logged_in
 @app.route('/submitEditUser', methods = ['GET', 'POST'])
 def submitEditUser():
     name = request.form['name']
@@ -1008,6 +1010,8 @@ def submitEditUser():
     flash('Hotel user has been edited', 'success')
     return render_template('index.html')
 
+
+@is_logged_in
 @app.route('/submitEditUserAll2', methods = ["GET", 'POST'])
 def submitEditUserAll2():
     name = request.form['name']
@@ -1040,7 +1044,7 @@ def submitEditUserAll2():
     return render_template('index.html')
 
 
-
+@is_logged_in
 @app.route('/deactivateUser/<email>', methods = ['GET', 'POST'])
 def deactivateUser(email):
     cursor = mysql.connection.cursor()
@@ -1052,6 +1056,7 @@ def deactivateUser(email):
     return render_template('index.html')
 
 
+@is_logged_in
 @app.route('/deactivateUserAll/<email>', methods=['GET', 'POST'])
 def deactivateUserAll(email):
     cursor = mysql.connection.cursor()
@@ -1078,6 +1083,7 @@ def deactivateUserAll(email):
     return render_template('index.html')
 
 
+@is_logged_in
 @app.route('/activateUser/<email>', methods=['GET', 'POST'])
 def activateUser(email):
     cursor = mysql.connection.cursor()
@@ -1090,6 +1096,7 @@ def activateUser(email):
     return render_template('index.html')
 
 
+@is_logged_in
 @app.route('/activateUserAll/<email>', methods=['GET', 'POST'])
 def activateUserAll(email):
     cursor = mysql.connection.cursor()
@@ -1117,7 +1124,7 @@ def activateUserAll(email):
     return render_template('index.html')
 
 
-
+@is_logged_in
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
 def myprofile(email):
     cursor = mysql.connection.cursor()
@@ -1146,10 +1153,10 @@ def myprofile(email):
 
     result['firstName'] = result['fullName'].split(' ')[0]
     
+    return render_template('users/myProfile.html', data= result)
 
-    return render_template('myProfile.html', data = result)
 
-
+@is_logged_in
 @app.route('/submitEditUserAll', methods=['GET', 'POST'])
 def submitEditUserAll():
     name = request.form['name']
@@ -1188,8 +1195,10 @@ def submitEditUserAll():
     cursor.close()
 
     flash('User Details updated', 'success')
-    return render_template('index.html')
+    return render_template('users/index.html')
 
+
+@is_logged_in
 @app.route('/inviteemail', methods = ['GET', 'POST'])
 def inviteemail():
     email = request.form['email']
@@ -1220,6 +1229,7 @@ def inviteemail():
         return render_template('index.html', title='Login')
 
 
+@is_logged_in
 @app.route('/addhoteluserinv<token>', methods = ['GET', 'POST'])
 def addhoteluserinv(token):
     email = confirmToken(token)
@@ -1229,8 +1239,10 @@ def addhoteluserinv(token):
     data = data[0]
     userType = data['userType']
 
-    return render_template('addhoteluserinv.html', title = 'Register', email = email, userType = userType)
+    return render_template('users/addhoteluserinv.html', title = 'Register', email = email, userType = userType)
 
+
+@is_logged_in
 @app.route('/edituserType', methods = ['GET', 'POST'])
 def edituserType():
     cursor = mysql.connection.cursor()
@@ -1254,9 +1266,10 @@ def edituserType():
     if 'hotelAdmin' not in subtypes:
         subtypes.append('hotelAdmin')
 
-    return render_template('editusertype.html', datah=datah, subtypes = subtypes)
+    return render_template('users/editusertype.html', datah=datah, subtypes=subtypes)
 
 
+@is_logged_in
 @app.route('/euserType', methods=['GET', 'POST'])
 def euserType():
     userType = request.form.get('userType')
@@ -1265,8 +1278,10 @@ def euserType():
         'SELECT * From hotelMenuAccess where userType = %s', [userType])
     datah = cursor.fetchall()
     datah = datah[0]
-    return render_template('eusertype.html', datah=datah, userType = userType)
+    return render_template('users/eusertype.html', datah=datah, userType=userType)
 
+
+@is_logged_in
 @app.route('/submiteditusertype', methods = ['GET', 'POST'])
 def submiteditusertype():
     requestv = getValC(request.form.get('request'))
@@ -1319,11 +1334,11 @@ def submiteditusertype():
     cursor.close()
 
     flash('UserType updated!', 'success')
-    return render_template('index.html', title='UserType')
+    return render_template('users/index.html', title='UserType')
 
 # Users Module Finished
 
-
+@is_logged_in
 @app.route('/strategyRooms', methods = ['GET', 'POST'])
 def strategyRooms():
     cursor = mysql.connection.cursor()
@@ -1336,8 +1351,9 @@ def strategyRooms():
         for d in data:
             totalRooms += int(d['count'])
 
-        return render_template('editstrategyRooms.html', data = data, totalRooms = totalRooms)
+        return render_template('strategy/editstrategyRooms.html', data = data, totalRooms = totalRooms)
 
+@is_logged_in
 @app.route('/strategyRoomsSubmit', methods = ['GET', 'POST'])
 def strategyRoomsSubmit():
     inp = request.json
@@ -1354,7 +1370,7 @@ def strategyRoomsSubmit():
     flash('Your Room data has been entered', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/editstrategyRoomsSubmit', methods = ['GET', 'POST'])
 def editstrategyRoomsSubmit():
     inp = request.json
@@ -1377,7 +1393,7 @@ def editstrategyRoomsSubmit():
     return ('', 204)
 
 
-
+@is_logged_in
 @app.route('/strategyRate', methods = ['GET', 'POST'])
 def strategyRate():
     cursor = mysql.connection.cursor()
@@ -1424,10 +1440,10 @@ def strategyRate():
                         strd = x[2] + "/" + x[1] + "/" + x[0]
                         d['endDate'] = strd
                     
-                    return render_template('editstrategyRate.html', data = data, data1 = data1, storedDates = storedDates)
+                    return render_template('strategy/editstrategyRate.html', data=data, data1=data1, storedDates=storedDates)
 
         
-
+@is_logged_in
 @app.route('/strategyRateSubmit', methods = ['GET', 'POST'])
 def strategyRateSubmit():
     inp = request.json
@@ -1445,7 +1461,7 @@ def strategyRateSubmit():
     flash('Your Rate data has been updated', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/requestCreateAdhoc', methods = ['GET', 'POST'])
 def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
@@ -1460,9 +1476,10 @@ def requestCreateAdhoc():
         check_flag = True
         result = result[0]
 
-    return render_template('requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result)
+    return render_template('request/requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result)
 
 
+@is_logged_in
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
 def requestCreateAdhocSubmit():
     inp = request.json
@@ -1543,6 +1560,7 @@ def home2():
         return render_template('login.html', title='Login')
 
 
+@is_logged_in
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 def showRequest(token):
     cursor = mysql.connection.cursor()
@@ -1768,7 +1786,7 @@ def showRequest(token):
             negoInformation['reason'] = data2['negotiationReason']
 
 
-        return render_template('requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
+        return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
 
     
     cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
@@ -1814,8 +1832,10 @@ def showRequest(token):
     if len(dates) == 0:
         f = False
 
-    return render_template('getOcc.html', dates = dates, token = token, flag = f)
+    return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
 
+
+@is_logged_in
 @app.route('/showRequest1', methods = ['GET', 'POST'])
 def showRequest1():
 
@@ -2356,9 +2376,10 @@ def showRequest1():
     
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF)
+    return render_template('request/requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF)
 
 
+@is_logged_in
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
 def strategyDiscountCreate():
     cursor = mysql.connection.cursor()
@@ -2380,8 +2401,9 @@ def strategyDiscountCreate():
     cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
     storedDates = cursor.fetchall()
 
-    return render_template('strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
+    return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
 
+@is_logged_in
 @app.route('/viewAllUsers', methods = ['GET', 'POST'])
 def viewAllUsers():
     cursor = mysql.connection.cursor()
@@ -2413,8 +2435,10 @@ def viewAllUsers():
     
 
     cursor.close()
-    return render_template('manageAllUsers.html', data = data)
+    return render_template('users/manageAllUsers.html', data = data)
 
+
+@is_logged_in
 @app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
 def strategyDiscountSubmit():
     inp = request.json
@@ -2454,7 +2478,7 @@ def strategyDiscountSubmit():
     return ('', 204)
   
 
-
+@is_logged_in
 @app.route('/showDiscountGrid/<id>', methods = ['GET', 'POST'])
 def showDiscountGrid(id):
     cursor = mysql.connection.cursor()
@@ -2508,8 +2532,9 @@ def showDiscountGrid(id):
         'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
     storedDates = cursor.fetchall()
 
-    return render_template('showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
+    return render_template('strategy/showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
 
+@is_logged_in
 @app.route('/unmarkDefault/<id>', methods = ['GET', 'POST'])
 def unmarkDefault(id):
     cursor = mysql.connection.cursor()
@@ -2519,6 +2544,7 @@ def unmarkDefault(id):
     flash('Grid marked as non default', 'success')
     return redirect(url_for('strategyDiscountCreate'))
 
+@is_logged_in
 @app.route('/markDefault/<id>', methods = ['GET', 'POST'])
 def markDefault(id):
     cursor = mysql.connection.cursor()
@@ -2529,6 +2555,7 @@ def markDefault(id):
     return redirect(url_for('strategyDiscountCreate'))
 
 
+@is_logged_in
 @app.route('/deactivateDiscount/<id>', methods = ['GET', 'POST'])
 def deactivateDiscount(id):
     cursor = mysql.connection.cursor()
@@ -2539,6 +2566,7 @@ def deactivateDiscount(id):
     flash('Grid Deactivated', 'danger')
     return redirect(url_for('strategyDiscountCreate'))
 
+@is_logged_in
 @app.route('/activateDiscount/<id>', methods = ['GET', 'POST'])
 def activateDiscount(id):
     cursor = mysql.connection.cursor()
@@ -2550,6 +2578,7 @@ def activateDiscount(id):
     return redirect(url_for('strategyDiscountCreate'))
 
 
+@is_logged_in
 @app.route('/editDiscountGrid', methods = ['GET', 'POST'])
 def editDiscountGrid():
     inp = request.json
@@ -2592,7 +2621,7 @@ def editDiscountGrid():
     flash('Your discount grid has been edited', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/settingsAutopilot', methods = ['GET', 'POST'])
 def settingsAutopilot():
     cursor = mysql.connection.cursor()
@@ -2603,9 +2632,9 @@ def settingsAutopilot():
         if d['policy'] == 'manual':
             d['policy'] = 'Manual Calculation'
 
-    return render_template('settingsAutopilot.html', data = data)
+    return render_template('settings/settingsAutopilot.html', data = data)
 
-
+@is_logged_in
 @app.route('/settingsAutopilotSubmit', methods = ['GET', 'POST'])
 def settingsAutopilotSubmit():
     inp = request.json
@@ -2623,14 +2652,15 @@ def settingsAutopilotSubmit():
     flash('Your Autopilot setting has been added', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/showAutopilot/<id>', methods = ['GET', 'POST'])
 def showAutopilot(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From autopilot where policyName = %s', [id])
     data = cursor.fetchall()
-    return render_template('showAutopilot.html', data = data[0])
+    return render_template('settings/showAutopilot.html', data = data[0])
 
+@is_logged_in
 @app.route('/editAutopilot', methods = ['GET', 'POST'])
 def editAutopilot():
     inp = request.json
@@ -2646,7 +2676,7 @@ def editAutopilot():
     flash('Your Autopilot setting has been edited', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/deactiveAutopilot/<id>', methods = ['GET', 'POST'])
 def deactiveAutopilot(id):
     cursor = mysql.connection.cursor()
@@ -2658,6 +2688,7 @@ def deactiveAutopilot(id):
     flash('Your Autopilot has been de-activated', 'danger')
     return redirect(url_for('settingsAutopilot'))
 
+@is_logged_in
 @app.route('/activateAutopilot/<id>', methods = ['GET', 'POST'])
 def activateAutopilot(id):
     cursor = mysql.connection.cursor()
@@ -2670,6 +2701,7 @@ def activateAutopilot(id):
     return redirect(url_for('settingsAutopilot'))
 
 
+@is_logged_in
 @app.route('/requestProcessQuote', methods = ['GET', 'POST'])
 def requestProcessQuote():
     inp = request.json
@@ -2707,6 +2739,8 @@ def requestProcessQuote():
     flash('The request has been quoted', 'success')
     return ('', 204)
 
+
+@is_logged_in
 @app.route('/showQuote/<id>', methods = ['GET', 'POST'])
 def showQuote(id):
     cursor = mysql.connection.cursor()
@@ -2856,8 +2890,10 @@ def showQuote(id):
     contract = cursor.fetchall()
 
 
-    return render_template('showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg)
 
+
+@is_logged_in
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
 def deleteRequest(id):
     cursor = mysql.connection.cursor()
@@ -2972,10 +3008,10 @@ def deleteRequest(id):
         submittedOn = cursor.fetchall()
         if submittedOn[0]['submittedOn'] == 'None':
             submittedOn = submittedOn[0]['submittedOn']
-            cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+            cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
             data3 = cursor.fetchall()
         else:
-            cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+            cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
             data3 = cursor.fetchall()
 
         data3 = data3[0]
@@ -2989,7 +3025,8 @@ def deleteRequest(id):
                 'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
             data4 = cursor.fetchall()
         else:
-            cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+            cursor.execute(
+                'SELECT * From responseDaywise where responseId = %s  and submittedOn = %s', [responseId, submittedOn])
             data4 = cursor.fetchall()
             
             lefttable = []
@@ -3018,7 +3055,7 @@ def deleteRequest(id):
                 righttable[d['date']].append(tArr)
 
         deleteflag = True
-        return render_template('requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
+        return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
     elif (status[0]['status'] == 'NEW'):
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -3060,8 +3097,10 @@ def deleteRequest(id):
 
         if data['comments'].isspace():
             data['comments'] = ''
-        return render_template('deleteRequest.html', data=data)
+        return render_template('request/deleteRequest.html', data=data)
 
+
+@is_logged_in
 @app.route('/AcceptRequest', methods = ['GET', 'POST'])
 def AcceptRequest():
     inp = request.json
@@ -3080,6 +3119,8 @@ def AcceptRequest():
     flash('The request has been accepted', 'success')
     return ('', 204)
 
+
+@is_logged_in
 @app.route('/DeclineRequest', methods = ['GET', 'POST'])
 def DeclineRequest():
     inp = request.json
@@ -3140,6 +3181,8 @@ def requestProcessDecline():
     flash('The request has been declined', 'success')
     return ('', 204)
 
+
+@is_logged_in
 @app.route('/DeleteRequest2', methods = ['GET', 'POST'])
 def DeleteRequest2():
     inp = request.json
@@ -3157,6 +3200,8 @@ def DeleteRequest2():
     flash('The request has been deleted', 'success')
     return ('', 204)
 
+
+@is_logged_in
 @app.route('/requestProcessReview', methods = ['GET', 'POST'])
 def requestProcessReview():
     inp = request.json
@@ -3172,7 +3217,7 @@ def requestProcessReview():
     flash('The request has been sent for review', 'success')
     return ('', 204)
 
-
+@is_logged_in
 @app.route('/settingsRequestCreate', methods = ['GET', 'POST'])
 def settingsRequestCreate():
     cursor = mysql.connection.cursor()
@@ -3183,8 +3228,9 @@ def settingsRequestCreate():
         flag = False
     else:
         result = result[0]
-    return render_template('settingsRequestCreate.html', result = result, flag = flag)
+    return render_template('settings/settingsRequestCreate.html', result = result, flag = flag)
 
+@is_logged_in
 @app.route('/settingsRequestSubmit', methods = ['GET', 'POST'])
 def settingsRequestSubmit():
     strategy = request.form['strategy']
@@ -3199,6 +3245,8 @@ def settingsRequestSubmit():
     flash('Request Settings have been updated', 'success')
     return redirect(url_for("settingsRequestCreate"))
 
+
+@is_logged_in
 @app.route('/settingsNegotiation', methods = ['GET', 'POST'])
 def settingsNegotiation():
     cursor = mysql.connection.cursor()
@@ -3209,8 +3257,10 @@ def settingsNegotiation():
         flag = False
     else:
         result = result[0]
-    return render_template('settingsNegotiation.html', result = result, flag = flag)
+    return render_template('settings/settingsNegotiation.html', result = result, flag = flag)
 
+
+@is_logged_in
 @app.route('/settingsNegotiationSubmit', methods = ['GET', 'POST'])
 def settingsNegotiationSubmit():
     count = request.form['count']
@@ -3230,13 +3280,15 @@ def settingsNegotiationSubmit():
     flash('Negotiation settings have been updated', 'success')
     return redirect(url_for("settingsNegotiation"))
 
+@is_logged_in
 @app.route('/settingsContractCreate', methods = ['GET', 'POST'])
 def settingsContactCreate():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * from contract')
     result = cursor.fetchall()
-    return render_template('settingsContractCreate.html', result = result)
+    return render_template('settings/settingsContractCreate.html', result = result)
 
+@is_logged_in
 @app.route('/settingsContractSubmit', methods = ['GET', 'POST'])
 def settingsContractSubmit():
     inp = request.json
@@ -3251,6 +3303,7 @@ def settingsContractSubmit():
     flash('The contract has been added', 'success')
     return ('', 204)
 
+@is_logged_in
 @app.route('/settingsTimelimit', methods = ['GET', 'POST'])
 def settingsTimelimit():
     cursor = mysql.connection.cursor()
@@ -3261,8 +3314,10 @@ def settingsTimelimit():
         flag = False
     else:
         result = result[0]
-    return render_template('settingsTimelimit.html', result = result, flag = flag)
+    return render_template('settings/settingsTimelimit.html', result = result, flag = flag)
 
+
+@is_logged_in
 @app.route('/settingsTimelimitSubmit', methods = ['GET', 'POST'])
 def settingsTimelimitSubmit():
     inp = request.json
@@ -3293,7 +3348,7 @@ def settingsTimelimitSubmit():
         consider latest always
         accept/decline you have to take latest and change status
 '''
-
+@is_logged_in
 @app.route('/NegotiateRequest', methods = ['GET', 'POST'])
 def NegotiateRequest():
     inp = request.json
