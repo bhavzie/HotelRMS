@@ -1751,7 +1751,7 @@ def showRequest(token):
                     data['status'] = "EXPIRED"
                     data2['status'] = "EXPIRED"
 
-
+        
         negoTimes = data2['timesNegotiated']
         nego = False
         negoInformation = {}
