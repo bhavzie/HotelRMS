@@ -1667,14 +1667,30 @@ def showRequest(token):
                     data2['paymentTerms'] = 'At Checkout'
                 elif v.count('poa') > 0:
                     data2['paymentTerms'] = 'Prior To Arrival'
-        
-            cursor.execute('SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
-            data3 = cursor.fetchall()
+
+            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+            submittedOn = cursor.fetchall()
+            if submittedOn[0]['submittedOn'] == 'None':
+                submittedOn = submittedOn[0]['submittedOn']
+                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                data3 = cursor.fetchall()
+            else:
+                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+                data3 = cursor.fetchall()
+
             data3 = data3[0]
-            
+
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s  order by submittedOn desc limit 1', [responseId])
-            data4 = cursor.fetchall()
+                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+            submittedOn = cursor.fetchall()
+            if submittedOn[0]['submittedOn'] == 'None':
+                submittedOn = submittedOn[0]['submittedOn']
+                cursor.execute(
+                    'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                data4 = cursor.fetchall()
+            else:
+                cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+                data4 = cursor.fetchall()
             lefttable = []
             dataToCheck = []
             righttable = {}
@@ -2910,7 +2926,7 @@ def deleteRequest(id):
 
         responseId = data['id'] + "R"
         cursor.execute(
-            'SELECT * From response where responseId = %s', [responseId])
+            'SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
         data2 = cursor.fetchall()
         tfoc = False
         tcomm = False
@@ -2949,14 +2965,31 @@ def deleteRequest(id):
                 elif v.count('poa') > 0:
                     data2['paymentTerms'] = 'Prior To Arrival'
 
-            cursor.execute(
-                'SELECT * From responseAvg where responseId = %s', [responseId])
-            data3 = cursor.fetchall()
-            data3 = data3[0]
 
+        cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+        submittedOn = cursor.fetchall()
+        if submittedOn[0]['submittedOn'] == 'None':
+            submittedOn = submittedOn[0]['submittedOn']
+            cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+            data3 = cursor.fetchall()
+        else:
+            cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+            data3 = cursor.fetchall()
+
+        data3 = data3[0]
+
+        cursor.execute(
+            'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+        submittedOn = cursor.fetchall()
+        if submittedOn[0]['submittedOn'] == 'None':
+            submittedOn = submittedOn[0]['submittedOn']
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s', [responseId])
+                'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
             data4 = cursor.fetchall()
+        else:
+            cursor.execute('SELECT * From responseDaywise where responseId = %s', [responseId])
+            data4 = cursor.fetchall()
+            
             lefttable = []
             dataToCheck = []
             righttable = {}
