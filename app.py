@@ -3152,6 +3152,11 @@ def showQuote(id):
         'SELECT * From response where responseId = %s  order by submittedOn desc limit 1', [responseId])
     data2 = cursor.fetchall()
     data2 = data2[0]
+    negcheck = data2['negotiable']
+    if negcheck == 0:
+        negcheck = False
+    else:
+        negcheck = True
 
     string = ''
     v = data2['formPayment']
@@ -3273,6 +3278,7 @@ def showQuote(id):
     negoInformation['expectedFare'] = data2['expectedFare']
     negoInformation['reason'] = data2['negotiationReason']
 
+    canNegotiate = canNegotiate and negcheck
 
     cursor.execute('SELECT contract, id from contract where id = %s', [
                    data2['contract']])
@@ -3280,7 +3286,6 @@ def showQuote(id):
 
 
     return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation)
-
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -3412,37 +3417,38 @@ def deleteRequest(id):
         if submittedOn[0]['submittedOn'] == 'None':
             submittedOn = submittedOn[0]['submittedOn']
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                'SELECT * From responseDaywise where responseId = %s', [responseId])
             data4 = cursor.fetchall()
         else:
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s  and submittedOn = %s', [responseId, submittedOn])
+                'SELECT * From responseDaywise where responseId = %s  and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
             data4 = cursor.fetchall()
             
-            lefttable = []
-            dataToCheck = []
-            righttable = {}
-            for d in data4:
-                righttable[d['date']] = []
+        lefttable = []
+        dataToCheck = []
+        righttable = {}
+        for d in data4:
+            righttable[d['date']] = []
 
-            for d in data4:
-                if d['date'] not in dataToCheck:
-                    tempArr = {}
-                    tempArr['date'] = d['date']
-                    tempArr['currentOcc'] = d['currentOcc']
-                    tempArr['discountId'] = d['discountId']
-                    tempArr['forecast'] = d['forecast']
-                    tempArr['groups'] = d['groups']
-                    tempArr['leadTime'] = d['leadTime']
-                    lefttable.append(tempArr)
-                    dataToCheck.append(d['date'])
-                tArr = {}
-                tArr['occupancy'] = d['occupancy']
-                tArr['type'] = d['type']
-                tArr['count'] = d['count']
-                tArr['ratePerRoom'] = d['ratePerRoom']
+        for d in data4:
+            if d['date'] not in dataToCheck:
+                tempArr = {}
+                tempArr['date'] = d['date']
+                tempArr['currentOcc'] = d['currentOcc']
+                tempArr['discountId'] = d['discountId']
+                tempArr['forecast'] = d['forecast']
+                tempArr['groups'] = d['groups']
+                tempArr['leadTime'] = d['leadTime']
+                lefttable.append(tempArr)
+                dataToCheck.append(d['date'])
+            tArr = {}
+            tArr['occupancy'] = d['occupancy']
+            tArr['type'] = d['type']
+            tArr['count'] = d['count']
+            tArr['ratePerRoom'] = d['ratePerRoom']
 
-                righttable[d['date']].append(tArr)
+            righttable[d['date']].append(tArr)
+
 
         deleteflag = True
         return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
@@ -3571,24 +3577,44 @@ def DeclineRequest():
     flash('The request has been declined', 'success')
     return ('', 204)
 
-
-
 # Work here
 @app.route('/requestProcessReview', methods = ['GET', 'POST'])
 @is_logged_in
 def requestProcessReview():
     inp = request.json
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE request set status = "SENT FOR REVIEW" where id = %s', [inp['id']])
-    now = datetime.datetime.utcnow()
+    responseId = inp['requestId'] + "R"
     email = session['email']
-    cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['id'], email, now])
+    now = datetime.datetime.utcnow()
+    status = 'SENT FOR REVIEW'
 
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate'], inp['contract']
+    ])
+
+    table = inp['table_result']
+    for t in table:
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
+        ])
+    
+    cursor.execute("UPDATE request SET status = 'SENT FOR REVIEW' WHERE id = %s", [inp['requestId']])
+
+    cursor.execute('UPDATE response set status = "SENT FOR REVIEW" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']]
+        )
+
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
+    ])
+
+    cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['requestId'], email, now])
     mysql.connection.commit()
-    cursor.close()
-
-    flash('The request has been sent for review', 'success')
+    flash("The request has been sent for review", 'success')
     return ('', 204)
+
+
 
 
 if __name__ == "__main__":
