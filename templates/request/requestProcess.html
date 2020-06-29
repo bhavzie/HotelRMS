@@ -1079,7 +1079,16 @@
             const triple2avg = document.getElementById('triple2avg')
             const quad2avg = document.getElementById('quad2avg')
 
+
+             let contract = $('#sele option:selected').text()
+                contract = contract.trim()
+                if (contract == 'Select Contract') {
+                    emsg('Select A contract')
+                    return false
+                }
             const result = {}
+            result['contract'] = contract
+
             if (single1avg != null)
                 result['single1'] = single1avg.innerText
             else

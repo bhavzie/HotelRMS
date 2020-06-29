@@ -131,7 +131,7 @@
             $(msg2).show()
             return false
         }
-        var contract = editor.getData()
+        var contract = $(editor.getData()).text()
         if (contract == '') {
             let msg2 = document.getElementById('msg')
             msg2.style.setProperty('color', 'red', 'important');
