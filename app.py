@@ -73,7 +73,6 @@ def procArr(value):
         return ''
     return ' '.join(value)
 
-
 # Decorators
 
 # Check if user logged in
@@ -86,7 +85,6 @@ def is_logged_in(f):
             flash("Unauthorized, Please Login", 'danger')
             return render_template('login.html', title='Login')
     return wrap
-
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
@@ -314,10 +312,6 @@ def registerT():
 
         flash('You are now registered and can log in', 'success')
         return render_template('login.html', title='Login')
-
-
-
-
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -679,16 +673,17 @@ def passwordupdatef():
     flash('Your password has been updated', 'success')
     return render_template('login.html', title = 'Login')
 
-@is_logged_in
+
 @app.route('/signOut', methods=['GET', 'POST'])
+@is_logged_in
 def signOut():
     session.clear()
     flash('You are now logged out', 'success')
     return render_template('login.html', title = 'Login')
 
 
-@is_logged_in
 @app.route('/hoteladduser', methods = ['GET', 'POST'])
+@is_logged_in
 def hoteladduser():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT userType FROM hotelMenuAccess")
@@ -708,8 +703,9 @@ def hoteladduser():
     return render_template('users/hoteladduser.html', title='AddUser', subtypes=subtypes)
 
 
-@is_logged_in
+
 @app.route('/registerhotelusers', methods = ['GET', 'POST'])
+@is_logged_in
 def registerhotelusers():
     if request.method == 'POST':
         fullName = request.form['fullName']
@@ -746,14 +742,13 @@ def registerhotelusers():
         flash('New Hotel user has been added', 'success')
         return render_template('index.html')
 
-@is_logged_in
 @app.route('/adddeveloper', methods = ['GET', 'POST'])
+@is_logged_in
 def adddeeloper():
     return render_template('users/adddeveloper.html', title='Add')
 
-
-@is_logged_in
 @app.route('/registerdeveloper', methods = ['GET', 'POST'])
+@is_logged_in
 def registerdeveloper():
     if request.method == 'POST':
 
@@ -796,11 +791,10 @@ def registerdeveloper():
         
     return render_template('login.html', title='Login')
 
-@is_logged_in
 @app.route('/hoteladdusertype', methods = ["GET", "POST"])
+@is_logged_in
 def hoteladdusertype():
     return render_template('users/hoteladdusertype.html', title='Register')
-
 
 @is_logged_in
 @app.route('/addusertype', methods = ["GET", 'POST'])
@@ -867,9 +861,8 @@ def addusertype():
     flash('New userType added', 'success')
     return render_template('index.html', title='UserType')
 
-
-@is_logged_in
 @app.route('/managehotelusers', methods = ['GET', 'POST'])
+@is_logged_in
 def managehotelusers():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT fullName, email, userType, active FROM hotelUsers')
@@ -883,8 +876,8 @@ def managehotelusers():
     
     return render_template('users/managehotelusers.html', title= 'Users', data = data)
 
-@is_logged_in
 @app.route('/showprofile/<email>', methods = ['GET', 'POST'])
+@is_logged_in
 def showprofile(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
@@ -896,9 +889,8 @@ def showprofile(email):
     data[0]['active'] = 'Yes' if data[0]['active'] else 'No'
     return render_template('users/showprofile.html', title='Profile', data=data[0])
 
-
-@is_logged_in
 @app.route('/showprofileAll/<email>', methods = ['GET', 'POST'])
+@is_logged_in
 def showprofileAll(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM users where email = %s', [email])
@@ -926,9 +918,8 @@ def showprofileAll(email):
     data['active'] = 'Yes' if rr['active'] else 'No'    
     return render_template('users/showprofileAll.html', title='Profile', data=data)
 
-
-@is_logged_in
 @app.route('/editUser/<email>', methods = ["GET", "POST"])
+@is_logged_in
 def editUser(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
@@ -951,9 +942,8 @@ def editUser(email):
     data[0]['email_verified'] = "Yes" if data[0]['email_verified'] else "No"
     return render_template('users/editUser.html', title = 'Edit', data = data[0], subtypes = subtypes)
 
-
-@is_logged_in
 @app.route('/editUserAll/<email>', methods = ['GET', 'POST'])
+@is_logged_in
 def editUserAll(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM users where email = %s', [email])
@@ -986,9 +976,8 @@ def editUserAll(email):
 
     return render_template('users/editUserAll.html', data=data)
 
-
-@is_logged_in
 @app.route('/submitEditUser', methods = ['GET', 'POST'])
+@is_logged_in
 def submitEditUser():
     name = request.form['name']
     userType = request.form['userType']
@@ -1011,8 +1000,8 @@ def submitEditUser():
     return render_template('index.html')
 
 
-@is_logged_in
 @app.route('/submitEditUserAll2', methods = ["GET", 'POST'])
+@is_logged_in
 def submitEditUserAll2():
     name = request.form['name']
     email_verified = getValC(request.form.get('email_verified'))
@@ -1056,8 +1045,8 @@ def deactivateUser(email):
     return render_template('index.html')
 
 
-@is_logged_in
 @app.route('/deactivateUserAll/<email>', methods=['GET', 'POST'])
+@is_logged_in
 def deactivateUserAll(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM users where email = %s', [email])
@@ -1083,8 +1072,8 @@ def deactivateUserAll(email):
     return render_template('index.html')
 
 
-@is_logged_in
 @app.route('/activateUser/<email>', methods=['GET', 'POST'])
+@is_logged_in
 def activateUser(email):
     cursor = mysql.connection.cursor()
     cursor.execute(
@@ -1096,8 +1085,8 @@ def activateUser(email):
     return render_template('index.html')
 
 
-@is_logged_in
 @app.route('/activateUserAll/<email>', methods=['GET', 'POST'])
+@is_logged_in
 def activateUserAll(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM users where email = %s', [email])
@@ -1124,8 +1113,8 @@ def activateUserAll(email):
     return render_template('index.html')
 
 
-@is_logged_in
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
+@is_logged_in
 def myprofile(email):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT userType FROM users where email = %s', [email])
@@ -1156,8 +1145,8 @@ def myprofile(email):
     return render_template('users/myProfile.html', data= result)
 
 
-@is_logged_in
 @app.route('/submitEditUserAll', methods=['GET', 'POST'])
+@is_logged_in
 def submitEditUserAll():
     name = request.form['name']
     phone = request.form.get('phone')
@@ -1198,8 +1187,8 @@ def submitEditUserAll():
     return render_template('users/index.html')
 
 
-@is_logged_in
 @app.route('/inviteemail', methods = ['GET', 'POST'])
+@is_logged_in
 def inviteemail():
     email = request.form['email']
     userType = request.form['userType']
@@ -1229,8 +1218,8 @@ def inviteemail():
         return render_template('index.html', title='Login')
 
 
-@is_logged_in
 @app.route('/addhoteluserinv<token>', methods = ['GET', 'POST'])
+@is_logged_in
 def addhoteluserinv(token):
     email = confirmToken(token)
     cursor = mysql.connection.cursor()
@@ -1242,8 +1231,8 @@ def addhoteluserinv(token):
     return render_template('users/addhoteluserinv.html', title = 'Register', email = email, userType = userType)
 
 
-@is_logged_in
 @app.route('/edituserType', methods = ['GET', 'POST'])
+@is_logged_in
 def edituserType():
     cursor = mysql.connection.cursor()
     
@@ -1269,8 +1258,8 @@ def edituserType():
     return render_template('users/editusertype.html', datah=datah, subtypes=subtypes)
 
 
-@is_logged_in
 @app.route('/euserType', methods=['GET', 'POST'])
+@is_logged_in
 def euserType():
     userType = request.form.get('userType')
     cursor = mysql.connection.cursor()
@@ -1281,8 +1270,8 @@ def euserType():
     return render_template('users/eusertype.html', datah=datah, userType=userType)
 
 
-@is_logged_in
 @app.route('/submiteditusertype', methods = ['GET', 'POST'])
+@is_logged_in
 def submiteditusertype():
     requestv = getValC(request.form.get('request'))
     requestCreate = getValC(request.form.get('requestCreate'))
@@ -1336,10 +1325,45 @@ def submiteditusertype():
     flash('UserType updated!', 'success')
     return render_template('users/index.html', title='UserType')
 
+
+@app.route('/viewAllUsers', methods=['GET', 'POST'])
+@is_logged_in
+def viewAllUsers():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM users")
+    data = cursor.fetchall()
+
+    for r in data:
+        if (r['userType'] == 'developer'):
+            cursor.execute(
+                'SELECT active from developers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'iata'):
+            cursor.execute(
+                'SELECT active from iataUsers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'hoteluser'):
+            cursor.execute(
+                'SELECT active from hotelUsers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        elif (r['userType'] == 'customer'):
+            cursor.execute(
+                'SELECT active from customers where email = %s', [r['email']])
+            rr = cursor.fetchall()
+            rr = rr[0]
+        r['active'] = rr['active']
+
+    cursor.close()
+    return render_template('users/manageAllUsers.html', data=data)
+
+
 # Users Module Finished
 
-@is_logged_in
 @app.route('/strategyRooms', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyRooms():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
@@ -1353,8 +1377,9 @@ def strategyRooms():
 
         return render_template('strategy/editstrategyRooms.html', data = data, totalRooms = totalRooms)
 
-@is_logged_in
+
 @app.route('/strategyRoomsSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyRoomsSubmit():
     inp = request.json
     inp.remove(inp[0])
@@ -1370,8 +1395,9 @@ def strategyRoomsSubmit():
     flash('Your Room data has been entered', 'success')
     return ('', 204)
 
-@is_logged_in
+
 @app.route('/editstrategyRoomsSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def editstrategyRoomsSubmit():
     inp = request.json
     if len(inp) == 0:
@@ -1393,8 +1419,9 @@ def editstrategyRoomsSubmit():
     return ('', 204)
 
 
-@is_logged_in
+
 @app.route('/strategyRate', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyRate():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
@@ -1443,8 +1470,9 @@ def strategyRate():
                     return render_template('strategy/editstrategyRate.html', data=data, data1=data1, storedDates=storedDates)
 
         
-@is_logged_in
+
 @app.route('/strategyRateSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyRateSubmit():
     inp = request.json
     if len(inp) == 0:
@@ -1461,8 +1489,9 @@ def strategyRateSubmit():
     flash('Your Rate data has been updated', 'success')
     return ('', 204)
 
-@is_logged_in
+
 @app.route('/requestCreateAdhoc', methods = ['GET', 'POST'])
+@is_logged_in
 def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
@@ -1479,8 +1508,8 @@ def requestCreateAdhoc():
     return render_template('request/requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result)
 
 
-@is_logged_in
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def requestCreateAdhocSubmit():
     inp = request.json
     cursor = mysql.connection.cursor()
@@ -1506,7 +1535,6 @@ def requestCreateAdhocSubmit():
         inp['paymentDays'] = 0
     if inp['comments'] == '':
         inp['comments'] = 0
-    
     
     cursor.execute('SELECT Count(*) from request')
     count = cursor.fetchall()
@@ -1559,19 +1587,458 @@ def home2():
     except:
         return render_template('login.html', title='Login')
 
-
+@app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
 @is_logged_in
-@app.route('/showRequest/<token>', methods = ['GET', 'POST'])
-def showRequest(token):
+def strategyDiscountCreate():
     cursor = mysql.connection.cursor()
+    cursor.execute('SELECT count from room')
+    data = cursor.fetchall()
+    rooms = 0
+    for d in data:
+        rooms += int(d['count'])
+    cursor.execute('SELECT * FROM discountMap') 
+    discountGrids = cursor.fetchall()
+    cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE')
+    f = cursor.fetchall()
+    flag = False
+    defaultId = -1
+    if len(f) != 0:
+        flag = True
+        defaultId = f[0]['discountId']
+
+    cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
+    storedDates = cursor.fetchall()
+
+    return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
+
+
+@app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
+@is_logged_in
+def strategyDiscountSubmit():
+    inp = request.json
+    occ = inp['occ']
+        
+    cursor = mysql.connection.cursor()
+    for o in occ:
+        cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
+
+    email = session['email']
+    time = datetime.datetime.utcnow()   
+    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time])
+
+    for jindex, l in enumerate(inp['leadtime']):
+        lead = l.split(' - ')
+        leadMin = lead[0]
+        if (len(lead) == 2):
+            leadMax = lead[1]
+        else:
+            leadMax = 730
+        discountId = inp['discountId']
+
+        for index, r in enumerate(inp['ranges']):
+            range = r.split(' - ')
+            roomMin = range[0]
+            roomMax = range[1]
+            values = inp['values']
+            value = values[jindex][index]
+            
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [discountId, leadMin, leadMax, roomMin, roomMax, value])
+
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your discount grid has been entered', 'success')
+    return ('', 204)
+  
+@app.route('/showDiscountGrid/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def showDiscountGrid(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from discountMap where discountId = %s', [id])
+    data = cursor.fetchall()
+    data = data[0]
+
+    cursor.execute('SELECT * FROM discount where discountId = %s', [id])
+    grid = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
+    occ = cursor.fetchall()
+
+    ranges = []
+    range1 = {}
+    for l in grid:
+        key = l['roomMin'] + " - " + l['roomMax']
+        if key not in range1:
+            range1[key] = 0
+            ranges.append(key)
+        else:
+            break
+
+
     
-    """ cursor.execute('UPDATE request set status = "NEW"')
+    result = []
+    tup = {}
+    for d in grid:
+        l = []
+        min = d['leadMin']
+        max = d['leadMax']
+        key = str(min + " - " + max)
+        dic = {}
+        dic['min'] = d['roomMin']
+        dic['max'] = d['roomMax']
+        dic['value'] = d['value']
+        if key in tup:
+            tup[key].append(dic)
+        else:
+            tup[key] = [dic]
+    
+    result = tup
+
+    cursor.execute('SELECT * From discountMap where defaultm = 1')
+    ffm = cursor.fetchall()
+    flag = True
+    if len(ffm) == 0:
+        flag = False
+
+    cursor.execute(
+        'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
+    storedDates = cursor.fetchall()
+
+    return render_template('strategy/showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
+
+
+@app.route('/unmarkDefault/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def unmarkDefault(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE discountMap set defaultm = 0 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid marked as non default', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
+
+@app.route('/markDefault/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def markDefault(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE discountMap set defaultm = 1 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid marked as default', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
+
+
+@app.route('/deactivateDiscount/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def deactivateDiscount(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'UPDATE discountMap set active = 0 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid Deactivated', 'danger')
+    return redirect(url_for('strategyDiscountCreate'))
+
+
+@app.route('/activateDiscount/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def activateDiscount(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        'UPDATE discountMap set active = 1 where discountId = %s', [id])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Grid Activated', 'success')
+    return redirect(url_for('strategyDiscountCreate'))
+
+
+
+@app.route('/editDiscountGrid', methods = ['GET', 'POST'])
+@is_logged_in
+def editDiscountGrid():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s', [
+        inp['startDate'], inp['endDate'], email, time, inp['discountId']
+    ])
+
+    cursor.execute('DELETE FROM discount where discountId = %s', [inp['discountId']])
+
+    mysql.connection.commit()
+
+    for jindex, l in enumerate(inp['leadtime']):
+        lead = l.split('-')
+        leadMin = lead[0]
+        if (len(lead) == 2):
+            leadMax = lead[1]
+        else:
+            leadMax = 365
+        discountId = inp['discountId']
+
+        for index, r in enumerate(inp['ranges']):
+            range = r.split(' - ')
+            roomMin = range[0]
+            roomMax = range[1]
+            values = inp['values']
+            value = values[jindex][index]
+            
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [
+                           discountId, leadMin, leadMax, roomMin, roomMax, value])
+
+
+    mysql.connection.commit()
+    cursor.close()
+
+
+    flash('Your discount grid has been edited', 'success')
+    return ('', 204)
+
+
+@app.route('/settingsAutopilot', methods = ['GET', 'POST'])
+@is_logged_in
+def settingsAutopilot():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from autopilot')
+    data = cursor.fetchall()
+
+    for d in data:
+        if d['policy'] == 'manual':
+            d['policy'] = 'Manual Calculation'
+
+    return render_template('settings/settingsAutopilot.html', data = data)
+
+
+@app.route('/settingsAutopilotSubmit', methods = ['GET', 'POST'])
+@is_logged_in
+def settingsAutopilotSubmit():
+    inp = request.json
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
+    email, time
+    ])
+
+    mysql.connection.commit()
+    cursor.close()
+
+
+    flash('Your Autopilot setting has been added', 'success')
+    return ('', 204)
+
+
+@app.route('/showAutopilot/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def showAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From autopilot where policyName = %s', [id])
+    data = cursor.fetchall()
+    return render_template('settings/showAutopilot.html', data = data[0])
+
+
+@app.route('/editAutopilot', methods = ['GET', 'POST'])
+@is_logged_in
+def editAutopilot():
+    inp = request.json
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot SET startDate = %s, endDate = %s, policy = %s WHERE policyName = %s', [
+        inp['startDate'], inp['endDate'], inp['policy'], inp['policyName']
+    ])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot setting has been edited', 'success')
+    return ('', 204)
+
+
+@app.route('/deactiveAutopilot/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def deactiveAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot set active = 0 where policyName = %s', [id])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot has been de-activated', 'danger')
+    return redirect(url_for('settingsAutopilot'))
+
+
+@app.route('/activateAutopilot/<id>', methods = ['GET', 'POST'])
+@is_logged_in
+def activateAutopilot(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE autopilot set active = 1 where policyName = %s', [id])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('Your Autopilot has been activated', 'success')
+    return redirect(url_for('settingsAutopilot'))
+
+
+@app.route('/settingsRequestCreate', methods=['GET', 'POST'])
+@is_logged_in
+def settingsRequestCreate():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from settingsRequest Order By submittedOn desc')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settings/settingsRequestCreate.html', result=result, flag=flag)
+
+
+@app.route('/settingsRequestSubmit', methods=['GET', 'POST'])
+@is_logged_in
+def settingsRequestSubmit():
+    strategy = request.form['strategy']
+    count = request.form['count']
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO settingsRequest(strategy, count, submittedBy, submittedOn) VALUES(%s, %s, %s, %s)', [
+                   strategy, count, email, time])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Request Settings have been updated', 'success')
+    return redirect(url_for("settingsRequestCreate"))
+
+
+@app.route('/settingsNegotiation', methods=['GET', 'POST'])
+@is_logged_in
+def settingsNegotiation():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from settingsNegotiation')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settings/settingsNegotiation.html', result=result, flag=flag)
+
+
+@app.route('/settingsNegotiationSubmit', methods=['GET', 'POST'])
+@is_logged_in
+def settingsNegotiationSubmit():
+    count = request.form['count']
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From settingsNegotiation')
+    data = cursor.fetchall()
+    if len(data) == 0:
+        cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [
+                       count, time, email])
+    else:
+        cursor.execute("UPDATE settingsNegotiation set count = %s, submittedOn = %s, submittedBy = %s", [
+                       count, time, email])
+    mysql.connection.commit()
+    cursor.close()
+    flash('Negotiation settings have been updated', 'success')
+    return redirect(url_for("settingsNegotiation"))
+
+
+@app.route('/settingsContractCreate', methods=['GET', 'POST'])
+@is_logged_in
+def settingsContactCreate():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * from contract')
+    result = cursor.fetchall()
+    return render_template('settings/settingsContractCreate.html', result=result)
+
+
+@app.route('/settingsContractSubmit', methods=['GET', 'POST'])
+@is_logged_in
+def settingsContractSubmit():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    cursor.execute('INSERT INTO contract(id, contract, submittedOn, submittedBy) VALUES(%s, %s, %s, %s)', [
+        inp['id'], inp['contract'], time, email
+    ])
+    mysql.connection.commit()
+
+    flash('The contract has been added', 'success')
+    return ('', 204)
+
+
+@app.route('/settingsTimelimit', methods=['GET', 'POST'])
+@is_logged_in
+def settingsTimelimit():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From settingsTimelimit')
+    result = cursor.fetchall()
+    flag = True
+    if len(result) == 0:
+        flag = False
+    else:
+        result = result[0]
+    return render_template('settings/settingsTimelimit.html', result=result, flag=flag)
+
+
+@app.route('/settingsTimelimitSubmit', methods=['GET', 'POST'])
+@is_logged_in
+def settingsTimelimitSubmit():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+
+    cursor.execute('SELECT * from settingsTimelimit')
+    len1 = cursor.fetchall()
+
+    if len(len1) == 1:
+        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
+            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        ])
+    else:
+        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days, hours, minutes) VALUES(%s, %s, %s, %s, %s, %s)', [
+            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        ])
+    mysql.connection.commit()
+
+    flash('The time limit setting has been updated', 'success')
+    return ('', 204)
+
+
+
+# Request Actions
+def reset():
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "NEW"')
     cursor.execute('DELETE From response')
     cursor.execute('DELETE From responseDaywise')
     cursor.execute("DELETE from responseAvg")
     cursor.execute('DELETE from requestAccepted')
+    cursor.execute('DELETE from review')
+    cursor.execute('DELETE From DeclineRequest')
+    cursor.execute('DELETE From deletedRequest')
+    cursor.execute('DELETE From requestLastOpened')
+
     mysql.connection.commit()
-    return '' """
+    return ''
+
+
+@app.route('/showRequest/<token>', methods = ['GET', 'POST'])
+@is_logged_in
+def showRequest(token):
+    #reset()    
+    cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
     ut = cursor.fetchall()
@@ -1580,27 +2047,75 @@ def showRequest(token):
 
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or (status[0]['status'] == "DELETED") or ((status[0]['status'] == 'SENT FOR REVIEW') and ut['userSubType'] == 'reservation') or status[0]['status'] == 'NEGOTIATED'):
+    status = status[0]['status']
+    if (status == 'NEW'):
+        cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
+        dates = cursor.fetchall()
+        dates = dates[0]
+        checkIn = dates['checkIn']
+        checkOut = dates['checkOut']
+        dates = []
+        day = datetime.timedelta(days=1)
+
+        cursor.execute('SELECT startDate, endDate from autopilot where active = "1" AND policy = "manual"')
+        excep = cursor.fetchall()
+
+        while checkIn < checkOut:
+            dates.append(checkIn)
+            checkIn = checkIn + day
+
+        newDates = []
+        for d in dates:
+            flag = True
+            for x in excep:
+                if (x['startDate'] <= d and x['endDate'] >= d):
+                    flag = False
+            if (flag):
+                newDates.append(d)
+
+        dates = newDates
+        
+        newDates = []
+        for d in dates:
+            day = d.strftime('%A')
+            day = day.lower()
+            query = 'SELECT * from rate where startDate <= %s AND endDate >= %s AND {} = 1'.format(
+                day)
+            cursor.execute(query, [d, d])
+            pent = cursor.fetchall()
+            if len(pent) != 0:
+                newDates.append(d)
+
+        dates = newDates
+        
+        f = True
+        if len(dates) == 0:
+            f = False
+
+        return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
+
+    elif (status == 'QUOTED' or status == 'ACCEPTED' or status == 'DECLINED' or status == 'DELETED' or (status == 'SENT FOR REVIEW' and ut['userSubType'] == 'reservation')):
+
         data5 = []
-        if (status[0]['status'] == 'ACCEPTED'):
+        if (status == 'ACCEPTED'):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
             data5 = cursor.fetchall()
             data5 = data5[0]
         
         data6 = []
-        if (status[0]['status'] == 'DECLINED'):
+        if (status == 'DECLINED'):
             cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
             data6 = cursor.fetchall()
             data6 = data6[0]
         
         data7 = []
-        if (status[0]['status'] == 'DELETED'):
+        if (status == 'DELETED'):
             cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
             data7 = cursor.fetchall()
             data7 = data7[0]
 
         data8 = []
-        if (status[0]['status'] == 'SENT FOR REVIEW'):
+        if (status == 'SENT FOR REVIEW'):
             cursor.execute(
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
@@ -1654,12 +2169,19 @@ def showRequest(token):
         data3 = []
         lefttable = []
         righttable = []
+        contract = ''
+        contractv = ''
+        declined = False
+        declinedMsg = False
+        nego = False
+        negoInformation = ''
+        canNegotiate = False
+
         if len(data2) != 0:
             data['groupCategory'] = data2[0]['groupCategory']
             data2 = data2[0]
             if (data2['foc'] != '0'):
                 tfoc = True
-            tcomm = True
             if (data2['commission'] != '0'):
                 tcomm = True
 
@@ -1689,11 +2211,11 @@ def showRequest(token):
             cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
             submittedOn = cursor.fetchall()
             if submittedOn[0]['submittedOn'] == 'None':
-                submittedOn = submittedOn[0]['submittedOn']
-                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
                 data3 = cursor.fetchall()
             else:
-                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+                submittedOn = submittedOn[0]['submittedOn']
+                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
                 data3 = cursor.fetchall()
 
             data3 = data3[0]
@@ -1701,11 +2223,9 @@ def showRequest(token):
             cursor.execute(
                 'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
             submittedOn = cursor.fetchall()
-            print(submittedOn)
             if submittedOn[0]['submittedOn'] == 'None':
-                submittedOn = submittedOn[0]['submittedOn']
                 cursor.execute(
-                    'SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                    'SELECT * From responseDaywise where responseId = %s', [responseId])
                 data4 = cursor.fetchall()
             else:
                 cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
@@ -1763,83 +2283,214 @@ def showRequest(token):
                     cursor.execute(
                         'UPDATE request set status = "EXPIRED" where id = %s', [data['id']])
                     cursor.execute(
-                        'UPDATE response set status = "EXPIRED" where requestId = %s', [data['id']])
+                        'UPDATE response set status = "EXPIRED" where requestId = %s order by submittedOn desc limit 1', [data['id']])
                     mysql.connection.commit()
                     declined = True
                     declinedMsg = "Time limit expired"
                     data['status'] = "EXPIRED"
                     data2['status'] = "EXPIRED"
 
-        
-        negoTimes = data2['timesNegotiated']
-        nego = False
-        negoInformation = {}
-        canNegotiate = False
-        if (status[0]['status'] == 'NEGOTIATED'):
-            cursor.execute('select count from settingsNegotiation')
-            count = cursor.fetchall()
-            count = count[0]['count']
-            if (negoTimes < count):
-                canNegotiate = True
-            negoTimes = data2['timesNegotiated']
-            negoInformation['expectedFare'] = data2['expectedFare']
-            negoInformation['reason'] = data2['negotiationReason']
-
+            
 
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
 
-    
-    cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
-    dates = cursor.fetchall()
-    dates = dates[0]
-    checkIn = dates['checkIn']
-    checkOut = dates['checkOut']
-    dates = []
-    day = datetime.timedelta(days=1)
+    elif (status == 'NEGOTIATED' or ( status == 'SENT FOR REVIEW' and ut['userSubType'] != 'reservation')):
 
-    cursor.execute('SELECT startDate, endDate from autopilot where active = "1" AND policy = "manual"')
-    excep = cursor.fetchall()
+        cursor.execute('select count from settingsNegotiation')
+        count = cursor.fetchall()
+        if len(count) != 0:
+            count = count[0]['count']
+        else:
+            count = 100 # no hard limit set so we're assuming 100 here
+        
+        data8 = []
+        if (status == 'SENT FOR REVIEW'):
+            cursor.execute(
+                "SELECT * From review where requestId = %s", [token])
+            data8 = cursor.fetchall()
+            data8 = data8[0]
 
-    while checkIn < checkOut:
-        dates.append(checkIn)
-        checkIn = checkIn + day
+        cursor.execute('SELECT * From request where id = %s', [token])
+        data = cursor.fetchall()
+        data = data[0]
+        checkIn = data['checkIn']
+        checkOut = data['checkOut']
+        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
 
-    newDates = []
-    for d in dates:
-        flag = True
-        for x in excep:
-            if (x['startDate'] <= d and x['endDate'] >= d):
-                flag = False
-        if (flag):
-            newDates.append(d)
+        email = session['email']
+        now = datetime.datetime.utcnow()
 
-    dates = newDates
-    
-    newDates = []
-    for d in dates:
-        day = d.strftime('%A')
-        day = day.lower()
-        query = 'SELECT * from rate where startDate <= %s AND endDate >= %s AND {} = 1'.format(
-            day)
-        cursor.execute(query, [d, d])
-        pent = cursor.fetchall()
-        if len(pent) != 0:
-            newDates.append(d)
+        cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+        check = cursor.fetchall()
+        data['lastOpenedOn'] = check[0]['time']
+        data['lastOpenedBy'] = check[0]['openedBy']
+        string = ''
+        v = data['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                data['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                data['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                data['paymentTerms'] = 'Prior To Arrival'
 
-    dates = newDates
-    
-    f = True
-    if len(dates) == 0:
-        f = False
+        string = ''
+        v = data['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
 
-    return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
+        data['formPayment'] = string
+
+        if data['comments'].isspace():
+            data['comments'] = ''
+
+        responseId = data['id'] + "R"
+        cursor.execute('SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
+        data2 = cursor.fetchall()
+        tfoc = False
+        tcomm = False
+        data3 = []
+        lefttable = []
+        righttable = []
+        contract = ''
+        contractv = ''
+        nego = False
+        negoInformation = ''
+        canNegotiate = False
+
+        if len(data2) != 0:
+            data['groupCategory'] = data2[0]['groupCategory']
+            data2 = data2[0]
+            if (data2['foc'] != '0'):
+                tfoc = True
+            if (data2['commission'] != '0'):
+                tcomm = True
+
+            string = ''
+            v = data2['formPayment']
+            fop = data2['formPayment']
+            if v != None:
+                if v.count('cq') > 0:
+                    string += '(Cheque),'
+                if v.count('bt') > 0:
+                    string += ' (Bank Transfer),'
+                if v.count('cc') > 0:
+                    string += '(Credit Card)'
+
+            data2['formPayment'] = string
+
+            string = ''
+            v = data2['paymentTerms']
+            pt = data2['paymentTerms']
+            if v != None:
+                if v.count('pc') > 0:
+                    string = 'Post Checkout'
+                    data2['paymentTerms'] = string
+                elif v.count('ac') > 0:
+                    data2['paymentTerms'] = 'At Checkout'
+                elif v.count('poa') > 0:
+                    data2['paymentTerms'] = 'Prior To Arrival'
+
+            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+            submittedOn = cursor.fetchall()
+            if submittedOn[0]['submittedOn'] == 'None':
+                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+                data3 = cursor.fetchall()
+            else:
+                submittedOn = submittedOn[0]['submittedOn']
+                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                data3 = cursor.fetchall()
+
+            data3 = data3[0]
+
+            cursor.execute(
+                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+            submittedOn = cursor.fetchall()
+            if submittedOn[0]['submittedOn'] == 'None':
+                cursor.execute(
+                    'SELECT * From responseDaywise where responseId = %s', [responseId])
+                data4 = cursor.fetchall()
+            else:
+                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
+                data4 = cursor.fetchall()
+
+            lefttable = []
+            dataToCheck = []
+            righttable = {}
+            for d in data4:
+                righttable[d['date']] = []
+
+            roomCount = 0
+            for d in data4:
+                if d['date'] not in dataToCheck:
+                    tempArr = {}
+                    tempArr['date'] = d['date']
+                    tempArr['currentOcc'] = d['currentOcc']
+                    tempArr['discountId'] = d['discountId']
+                    tempArr['forecast'] = d['forecast']
+                    tempArr['groups'] = d['groups']
+                    tempArr['leadTime'] = d['leadTime']
+                    lefttable.append(tempArr)
+                    dataToCheck.append(d['date'])
+                tArr = {}
+                tArr['occupancy'] = d['occupancy']
+                tArr['type'] = d['type']
+                tArr['count'] = d['count']
+                roomCount += int(d['count'])
+                tArr['ratePerRoom'] = d['ratePerRoom']
+
+                righttable[d['date']].append(tArr)
+
+            cursor.execute(
+                'SELECT contract from response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+            contract = cursor.fetchall()
+            contract = contract[0]
+
+            cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
+            contractv = cursor.fetchall()
+            if len(contractv) != 0:
+                contractv = contractv[0]
+            else:
+                contractv = ''
+
+            cursor.execute('SELECT * from response where responseId = %s', [responseId])
+            negoTime = cursor.fetchall()
+            negoTimes = len(negoTime)
+            nego = False
+            negoInformation = {}
+            canNegotiate = False
+            if (int(negoTimes) <= int(count)):
+                canNegotiate = True
+            negoInformation['expectedFare'] = data2['expectedFare']
+            negoInformation['reason'] = data2['negotiationReason']
+
+        
+        email = session['email']
+        cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+        ut = cursor.fetchall()
+        review = True
+        if len(ut) != 0:
+            ut = ut[0]
+            if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
+                review = False
+
+        cursor.execute('SELECT * from contract')
+        contracts = cursor.fetchall()
 
 
-@is_logged_in
+        return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt)
+
+        
+
 @app.route('/showRequest1', methods = ['GET', 'POST'])
+@is_logged_in
 def showRequest1():
-
-
     token = request.form['id']
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * FROM request where id = %s', [token])
@@ -2379,330 +3030,52 @@ def showRequest1():
     return render_template('request/requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF)
 
 
+@app.route('/requestProcessDecline', methods=['GET', 'POST'])
 @is_logged_in
-@app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
-def strategyDiscountCreate():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT count from room')
-    data = cursor.fetchall()
-    rooms = 0
-    for d in data:
-        rooms += int(d['count'])
-    cursor.execute('SELECT * FROM discountMap') 
-    discountGrids = cursor.fetchall()
-    cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE')
-    f = cursor.fetchall()
-    flag = False
-    defaultId = -1
-    if len(f) != 0:
-        flag = True
-        defaultId = f[0]['discountId']
-
-    cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
-    storedDates = cursor.fetchall()
-
-    return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
-
-@is_logged_in
-@app.route('/viewAllUsers', methods = ['GET', 'POST'])
-def viewAllUsers():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM users")
-    data = cursor.fetchall()
-
-    for r in data:
-        if (r['userType'] == 'developer'):
-            cursor.execute(
-                'SELECT active from developers where email = %s', [r['email']])
-            rr = cursor.fetchall()
-            rr = rr[0]
-        elif (r['userType'] == 'iata'):
-            cursor.execute(
-                'SELECT active from iataUsers where email = %s', [r['email']])
-            rr = cursor.fetchall()
-            rr = rr[0]
-        elif (r['userType'] == 'hoteluser'):
-            cursor.execute(
-                'SELECT active from hotelUsers where email = %s', [r['email']])
-            rr = cursor.fetchall()
-            rr = rr[0]
-        elif (r['userType'] == 'customer'):
-            cursor.execute(
-                'SELECT active from customers where email = %s', [r['email']])
-            rr = cursor.fetchall()
-            rr = rr[0]
-        r['active'] = rr['active']    
-    
-
-    cursor.close()
-    return render_template('users/manageAllUsers.html', data = data)
-
-
-@is_logged_in
-@app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
-def strategyDiscountSubmit():
-    inp = request.json
-    occ = inp['occ']
-        
-    cursor = mysql.connection.cursor()
-    for o in occ:
-        cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
-
-    email = session['email']
-    time = datetime.datetime.utcnow()   
-    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time])
-
-    for jindex, l in enumerate(inp['leadtime']):
-        lead = l.split(' - ')
-        leadMin = lead[0]
-        if (len(lead) == 2):
-            leadMax = lead[1]
-        else:
-            leadMax = 730
-        discountId = inp['discountId']
-
-        for index, r in enumerate(inp['ranges']):
-            range = r.split(' - ')
-            roomMin = range[0]
-            roomMax = range[1]
-            values = inp['values']
-            value = values[jindex][index]
-            
-            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [discountId, leadMin, leadMax, roomMin, roomMax, value])
-
-
-    mysql.connection.commit()
-    cursor.close()
-
-    flash('Your discount grid has been entered', 'success')
-    return ('', 204)
-  
-
-@is_logged_in
-@app.route('/showDiscountGrid/<id>', methods = ['GET', 'POST'])
-def showDiscountGrid(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from discountMap where discountId = %s', [id])
-    data = cursor.fetchall()
-    data = data[0]
-
-    cursor.execute('SELECT * FROM discount where discountId = %s', [id])
-    grid = cursor.fetchall()
-
-    cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
-    occ = cursor.fetchall()
-
-    ranges = []
-    range1 = {}
-    for l in grid:
-        key = l['roomMin'] + " - " + l['roomMax']
-        if key not in range1:
-            range1[key] = 0
-            ranges.append(key)
-        else:
-            break
-
-
-    
-    result = []
-    tup = {}
-    for d in grid:
-        l = []
-        min = d['leadMin']
-        max = d['leadMax']
-        key = str(min + " - " + max)
-        dic = {}
-        dic['min'] = d['roomMin']
-        dic['max'] = d['roomMax']
-        dic['value'] = d['value']
-        if key in tup:
-            tup[key].append(dic)
-        else:
-            tup[key] = [dic]
-    
-    result = tup
-
-    cursor.execute('SELECT * From discountMap where defaultm = 1')
-    ffm = cursor.fetchall()
-    flag = True
-    if len(ffm) == 0:
-        flag = False
-
-    cursor.execute(
-        'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
-    storedDates = cursor.fetchall()
-
-    return render_template('strategy/showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
-
-@is_logged_in
-@app.route('/unmarkDefault/<id>', methods = ['GET', 'POST'])
-def unmarkDefault(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE discountMap set defaultm = 0 where discountId = %s', [id])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Grid marked as non default', 'success')
-    return redirect(url_for('strategyDiscountCreate'))
-
-@is_logged_in
-@app.route('/markDefault/<id>', methods = ['GET', 'POST'])
-def markDefault(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE discountMap set defaultm = 1 where discountId = %s', [id])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Grid marked as default', 'success')
-    return redirect(url_for('strategyDiscountCreate'))
-
-
-@is_logged_in
-@app.route('/deactivateDiscount/<id>', methods = ['GET', 'POST'])
-def deactivateDiscount(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute(
-        'UPDATE discountMap set active = 0 where discountId = %s', [id])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Grid Deactivated', 'danger')
-    return redirect(url_for('strategyDiscountCreate'))
-
-@is_logged_in
-@app.route('/activateDiscount/<id>', methods = ['GET', 'POST'])
-def activateDiscount(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute(
-        'UPDATE discountMap set active = 1 where discountId = %s', [id])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Grid Activated', 'success')
-    return redirect(url_for('strategyDiscountCreate'))
-
-
-@is_logged_in
-@app.route('/editDiscountGrid', methods = ['GET', 'POST'])
-def editDiscountGrid():
+def requestProcessDecline():
     inp = request.json
     cursor = mysql.connection.cursor()
+    responseId = inp['requestId'] + "R"
     email = session['email']
-    time = datetime.datetime.utcnow()
-
-    cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s', [
-        inp['startDate'], inp['endDate'], email, time, inp['discountId']
+    now = datetime.datetime.utcnow()
+    status = 'DECLINED'
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(
+            inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate'], inp['contract']
     ])
 
-    cursor.execute('DELETE FROM discount where discountId = %s', [inp['discountId']])
+    table = inp['table_result']
+    for t in table:
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t[
+                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
+        ])
 
-    mysql.connection.commit()
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
+    ])
 
-    for jindex, l in enumerate(inp['leadtime']):
-        lead = l.split('-')
-        leadMin = lead[0]
-        if (len(lead) == 2):
-            leadMax = lead[1]
-        else:
-            leadMax = 365
-        discountId = inp['discountId']
+    cursor.execute(
+        'UPDATE request set status = "DECLINED" where id = %s', [inp['requestId']])
+    cursor.execute(
+        'UPDATE response set status = "DECLINED" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']])
 
-        for index, r in enumerate(inp['ranges']):
-            range = r.split(' - ')
-            roomMin = range[0]
-            roomMax = range[1]
-            values = inp['values']
-            value = values[jindex][index]
-            
-            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [
-                           discountId, leadMin, leadMax, roomMin, roomMax, value])
-
-
-    mysql.connection.commit()
-    cursor.close()
-
-
-    flash('Your discount grid has been edited', 'success')
-    return ('', 204)
-
-@is_logged_in
-@app.route('/settingsAutopilot', methods = ['GET', 'POST'])
-def settingsAutopilot():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from autopilot')
-    data = cursor.fetchall()
-
-    for d in data:
-        if d['policy'] == 'manual':
-            d['policy'] = 'Manual Calculation'
-
-    return render_template('settings/settingsAutopilot.html', data = data)
-
-@is_logged_in
-@app.route('/settingsAutopilotSubmit', methods = ['GET', 'POST'])
-def settingsAutopilotSubmit():
-    inp = request.json
+    now = datetime.datetime.utcnow()
     email = session['email']
-    time = datetime.datetime.utcnow()
-    cursor = mysql.connection.cursor()
-    cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
-    email, time
-    ])
+    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [
+        inp['requestId'], now, inp['reason'], email])
 
     mysql.connection.commit()
-    cursor.close()
 
-
-    flash('Your Autopilot setting has been added', 'success')
+    flash('The request has been declined', 'success')
     return ('', 204)
 
-@is_logged_in
-@app.route('/showAutopilot/<id>', methods = ['GET', 'POST'])
-def showAutopilot(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From autopilot where policyName = %s', [id])
-    data = cursor.fetchall()
-    return render_template('settings/showAutopilot.html', data = data[0])
-
-@is_logged_in
-@app.route('/editAutopilot', methods = ['GET', 'POST'])
-def editAutopilot():
-    inp = request.json
-
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot SET startDate = %s, endDate = %s, policy = %s WHERE policyName = %s', [
-        inp['startDate'], inp['endDate'], inp['policy'], inp['policyName']
-    ])
-
-    mysql.connection.commit()
-    cursor.close()
-
-    flash('Your Autopilot setting has been edited', 'success')
-    return ('', 204)
-
-@is_logged_in
-@app.route('/deactiveAutopilot/<id>', methods = ['GET', 'POST'])
-def deactiveAutopilot(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot set active = 0 where policyName = %s', [id])
-
-    mysql.connection.commit()
-    cursor.close()
-
-    flash('Your Autopilot has been de-activated', 'danger')
-    return redirect(url_for('settingsAutopilot'))
-
-@is_logged_in
-@app.route('/activateAutopilot/<id>', methods = ['GET', 'POST'])
-def activateAutopilot(id):
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot set active = 1 where policyName = %s', [id])
-
-    mysql.connection.commit()
-    cursor.close()
-
-    flash('Your Autopilot has been activated', 'success')
-    return redirect(url_for('settingsAutopilot'))
 
 
-@is_logged_in
 @app.route('/requestProcessQuote', methods = ['GET', 'POST'])
+@is_logged_in
 def requestProcessQuote():
     inp = request.json
     cursor = mysql.connection.cursor()
@@ -2734,14 +3107,12 @@ def requestProcessQuote():
 
     mysql.connection.commit()
 
-    # dynamic => db
-
     flash('The request has been quoted', 'success')
     return ('', 204)
 
 
-@is_logged_in
 @app.route('/showQuote/<id>', methods = ['GET', 'POST'])
+@is_logged_in
 def showQuote(id):
     cursor = mysql.connection.cursor()
 
@@ -2885,16 +3256,35 @@ def showQuote(id):
             data['status'] = "EXPIRED"
             data2['status'] = "EXPIRED"
 
+    cursor.execute('select count from settingsNegotiation')
+    count = cursor.fetchall()
+    if len(count) != 0:
+        count = count[0]['count']
+    else:
+        count = 100 # no hard limit so
+    cursor.execute('SELECT * from response where responseId = %s', [responseId])
+    negoTime = cursor.fetchall()
+    negoTimes = len(negoTime)
+    nego = False
+    negoInformation = {}
+    canNegotiate = False
+    if (int(negoTimes) <= int(count)):
+        canNegotiate = True
+    negoInformation['expectedFare'] = data2['expectedFare']
+    negoInformation['reason'] = data2['negotiationReason']
+
+
     cursor.execute('SELECT contract, id from contract where id = %s', [
                    data2['contract']])
     contract = cursor.fetchall()
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation)
 
 
-@is_logged_in
+
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
+@is_logged_in
 def deleteRequest(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT status from request where id = %s', [id])
@@ -3070,8 +3460,12 @@ def deleteRequest(id):
         cursor.execute(
             'SELECT * From requestLastOpened where id = %s', [id])
         check = cursor.fetchall()
-        data['lastOpenedOn'] = check[0]['time']
-        data['lastOpenedBy'] = check[0]['openedBy']
+        if len(check) != 0:
+            data['lastOpenedOn'] = check[0]['time']
+            data['lastOpenedBy'] = check[0]['openedBy']
+        else:
+            data['lastOpenedOn'] = ''
+            data['lastOpenedBy'] = ''
         string = ''
         v = data['paymentTerms']
         if v != None:
@@ -3095,13 +3489,53 @@ def deleteRequest(id):
 
         data['formPayment'] = string
 
+
         if data['comments'].isspace():
             data['comments'] = ''
         return render_template('request/deleteRequest.html', data=data)
 
-
+@app.route('/DeleteRequest2', methods = ['GET', 'POST'])
 @is_logged_in
+def DeleteRequest2():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE request set status = "DELETED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE response set status = "DELETED" where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+
+    now = datetime.datetime.utcnow()
+    email = session['email']
+    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason, deletedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], email])
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash('The request has been deleted', 'success')
+    return ('', 204)
+
+@app.route('/NegotiateRequest', methods = ['GET', 'POST'])
+@is_logged_in
+def NegotiateRequest():
+    inp = request.json
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT timesNegotiated from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+    dd = cursor.fetchall()
+    dd = dd[0]
+    times = int(dd['timesNegotiated']) + 1
+
+    cursor.execute('UPDATE request set status = "NEGOTIATED" where id = %s', [inp['id']])
+
+    cursor.execute('UPDATE response set status = %s, expectedFare = %s, negotiationReason = %s, timesNegotiated = %s where requestId = %s order by submittedOn desc limit 1', [
+        "NEGOTIATED", inp['expectedFare'], inp['reason'], times, inp['id']
+    ])
+
+    mysql.connection.commit()
+
+    flash('The request is sent for negotiation', 'success')
+    return ('', 204)
+
 @app.route('/AcceptRequest', methods = ['GET', 'POST'])
+@is_logged_in
 def AcceptRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
@@ -3120,13 +3554,13 @@ def AcceptRequest():
     return ('', 204)
 
 
-@is_logged_in
 @app.route('/DeclineRequest', methods = ['GET', 'POST'])
+@is_logged_in
 def DeclineRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
     cursor.execute('UPDATE request set status = "DECLINED" where id = %s', [inp['id']])
-    cursor.execute('UPDATE response set status = "DECLINED" where requestId = %s', [inp['id']])
+    cursor.execute('UPDATE response set status = "DECLINED" where requestId = %s order by submittedOn desc limit 1', [inp['id']])
 
     now = datetime.datetime.utcnow()
     cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], inp['declinedBy']])
@@ -3137,72 +3571,11 @@ def DeclineRequest():
     flash('The request has been declined', 'success')
     return ('', 204)
 
-@app.route('/requestProcessDecline', methods = ['GET', 'POST'])
-def requestProcessDecline():
-    inp = request.json
-    cursor = mysql.connection.cursor()
-    responseId = inp['requestId'] + "R"
-    email = session['email']
-    now = datetime.datetime.utcnow()
-    status = 'DECLINED'
-
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(
-            inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
-        status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate']
-    ])
-
-    table = inp['table_result']
-    for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t[
-                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
-        ])
-    
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
-    ])
-
-    cursor.execute(
-        'UPDATE request set status = "DECLINED" where id = %s', [ inp['requestId']])
-    cursor.execute(
-        'UPDATE response set status = "DECLINED" where requestId = %s order by submittedOn desc limit 1', [ inp['requestId']])
-
-    now = datetime.datetime.utcnow()
-    email = session['email']
-    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [
-                    inp['requestId'], now, inp['reason'], email])
 
 
-
-    mysql.connection.commit()   
-
-    flash('The request has been declined', 'success')
-    return ('', 204)
-
-
-@is_logged_in
-@app.route('/DeleteRequest2', methods = ['GET', 'POST'])
-def DeleteRequest2():
-    inp = request.json
-    cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE request set status = "DELETED" where id = %s', [inp['id']])
-    cursor.execute('UPDATE response set status = "DELETED" where requestId = %s', [inp['id']])
-
-    now = datetime.datetime.utcnow()
-    email = session['email']
-    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason, deletedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], email])
-
-    mysql.connection.commit()
-    cursor.close()
-
-    flash('The request has been deleted', 'success')
-    return ('', 204)
-
-
-@is_logged_in
+# Work here
 @app.route('/requestProcessReview', methods = ['GET', 'POST'])
+@is_logged_in
 def requestProcessReview():
     inp = request.json
     cursor = mysql.connection.cursor()
@@ -3217,160 +3590,8 @@ def requestProcessReview():
     flash('The request has been sent for review', 'success')
     return ('', 204)
 
-@is_logged_in
-@app.route('/settingsRequestCreate', methods = ['GET', 'POST'])
-def settingsRequestCreate():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from settingsRequest Order By submittedOn desc')
-    result = cursor.fetchall()
-    flag = True
-    if len(result) == 0:
-        flag = False
-    else:
-        result = result[0]
-    return render_template('settings/settingsRequestCreate.html', result = result, flag = flag)
-
-@is_logged_in
-@app.route('/settingsRequestSubmit', methods = ['GET', 'POST'])
-def settingsRequestSubmit():
-    strategy = request.form['strategy']
-    count = request.form['count']
-    email = session['email']
-    time = datetime.datetime.utcnow()
-
-    cursor = mysql.connection.cursor()
-    cursor.execute('INSERT INTO settingsRequest(strategy, count, submittedBy, submittedOn) VALUES(%s, %s, %s, %s)', [strategy, count, email, time])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Request Settings have been updated', 'success')
-    return redirect(url_for("settingsRequestCreate"))
-
-
-@is_logged_in
-@app.route('/settingsNegotiation', methods = ['GET', 'POST'])
-def settingsNegotiation():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from settingsNegotiation')
-    result = cursor.fetchall()
-    flag = True
-    if len(result) == 0:
-        flag = False
-    else:
-        result = result[0]
-    return render_template('settings/settingsNegotiation.html', result = result, flag = flag)
-
-
-@is_logged_in
-@app.route('/settingsNegotiationSubmit', methods = ['GET', 'POST'])
-def settingsNegotiationSubmit():
-    count = request.form['count']
-    email = session['email']
-    time = datetime.datetime.utcnow()
-
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From settingsNegotiation')
-    data = cursor.fetchall()
-    if len(data) == 0:
-        cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [count, time, email])
-    else:
-        cursor.execute("UPDATE settingsNegotiation set count = %s, submittedOn = %s, submittedBy = %s", [
-                       count, time, email])
-    mysql.connection.commit()
-    cursor.close()
-    flash('Negotiation settings have been updated', 'success')
-    return redirect(url_for("settingsNegotiation"))
-
-@is_logged_in
-@app.route('/settingsContractCreate', methods = ['GET', 'POST'])
-def settingsContactCreate():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from contract')
-    result = cursor.fetchall()
-    return render_template('settings/settingsContractCreate.html', result = result)
-
-@is_logged_in
-@app.route('/settingsContractSubmit', methods = ['GET', 'POST'])
-def settingsContractSubmit():
-    inp = request.json
-    cursor = mysql.connection.cursor()
-    email = session['email']
-    time = datetime.datetime.utcnow()
-    cursor.execute('INSERT INTO contract(id, contract, submittedOn, submittedBy) VALUES(%s, %s, %s, %s)', [
-        inp['id'], inp['contract'], time, email
-    ])
-    mysql.connection.commit()
-
-    flash('The contract has been added', 'success')
-    return ('', 204)
-
-@is_logged_in
-@app.route('/settingsTimelimit', methods = ['GET', 'POST'])
-def settingsTimelimit():
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From settingsTimelimit')
-    result = cursor.fetchall()
-    flag = True
-    if len(result) == 0:
-        flag = False
-    else:
-        result = result[0]
-    return render_template('settings/settingsTimelimit.html', result = result, flag = flag)
-
-
-@is_logged_in
-@app.route('/settingsTimelimitSubmit', methods = ['GET', 'POST'])
-def settingsTimelimitSubmit():
-    inp = request.json
-    cursor = mysql.connection.cursor()
-    email = session['email']
-    time = datetime.datetime.utcnow()
-    
-    cursor.execute('SELECT * from settingsTimelimit')
-    len1 = cursor.fetchall()
-
-    if len(len1) == 1:
-        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
-            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
-        ])
-    else:
-        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days, hours, minutes) VALUES(%s, %s, %s, %s, %s, %s)', [
-            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
-        ])
-    mysql.connection.commit()
-
-    flash('The time limit setting has been updated', 'success')
-    return ('', 204)
-
-'''
-    negotiate :
-        enter expected fare customer and comments
-        add to response tables with datetime
-        consider latest always
-        accept/decline you have to take latest and change status
-'''
-@is_logged_in
-@app.route('/NegotiateRequest', methods = ['GET', 'POST'])
-def NegotiateRequest():
-    inp = request.json
-
-    cursor = mysql.connection.cursor()
-    cursor.execute('SELECT timesNegotiated from response where requestId = %s', [inp['id']])
-    dd = cursor.fetchall()
-    dd = dd[0]
-    times = int(dd['timesNegotiated']) + 1
-
-    cursor.execute('UPDATE request set status = "NEGOTIATED" where id = %s', [inp['id']])
-
-    cursor.execute('UPDATE response set status = %s, expectedFare = %s, negotiationReason = %s, timesNegotiated = %s where requestId = %s order by submittedOn desc limit 1', [
-        "NEGOTIATED", inp['expectedFare'], inp['reason'], times, inp['id']
-    ])
-
-    mysql.connection.commit()
-
-    flash('The request is sent for negotiation', 'success')
-    return ('', 204)
-
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.jinja_env.cache = {}
+    app.run(debug = True, threaded = True)
 

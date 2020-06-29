@@ -1,0 +1,1122 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="spread4">
+    <div class='mb-5'>
+        <div class='mb-3'>
+            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <span class="btn btn-success">Status : {{ data['status'] }}</span>
+        </div>
+        <div class='mb-5'>
+            {% if data['status'] == 'DECLINED' %}
+            <span class='badge badge-pill badge-primary'>
+                Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
+            </span>
+            <span class='badge badge-primary'>
+                Reason : {{ data6['reason'] }}
+            </span> {% endif %} {% if data['status'] == "DELETED" %}
+            <span class='badge badge-pill badge-primary'>
+                Deleted By : {{ data7['deletedBy'] }} On {{ data7['deletedOn'] }}
+            </span>
+            <span class='badge badge-primary'>
+                Reason : {{ data7['reason'] }}
+            </span> {% endif %} {% if data['status'] == 'QUOTED' %}
+            <div class='mb-5'>
+                <span class='badge badge-pill badge-primary'>
+                    Quoted By : {{ data2['submittedBy'] }}
+                </span>
+                <span class='badge badge-pill  badge-primary'>
+                    Quoted On : {{ data2['submittedOn'] }}
+                </span>
+            </div>
+        </div>
+        {% elif data['status'] == 'ACCEPTED' %}
+        <div class='mb-5'>
+            <span class='badge badge-pill  badge-primary'>
+                Accepted On : {{ data5['time'] }}
+            </span>
+        </div>
+        {% elif data['status'] == 'SENT FOR REVIEW' %}
+        <div class='mb-5'>
+            <div class='mb-4'>
+                <span class="badge badge-pill badge-primary">Sent for review by : {{ data8['sentBy'] }}</span>
+                <span class='badge badge-pill badge-primary'> ON {{ data8['time'] }}</span>
+            </div>
+        </div>
+        {% endif %} {% if decline %}
+        <div class='mb-5'>
+            {% if data['status'] == 'EXPIRED' %}
+            <span class='badge badge-pill badge-primary'>Time Limit Expired</span> {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class='row'>
+    <div class='col-9' style='border-right: 1px solid black;'>
+        <div class='row'>
+            <div class='col-5'>
+                <div class='mb-4'>
+                    <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Name : {{ data['groupName'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>ID : {{ data['id'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Category : <span id='category'>{{ data['category'] }}</span></span>
+                </div>
+                <div class='mb-3'>
+                    <span>LeadTime : {{ data['leadTime'] }} Days</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Room Nights : {{ data['nights'] }}</span>
+                </div>
+            </div>
+            <div class='col-5'>
+                <div class='mb-4'>
+                    <span class="badge badge-pill badge-primary">Last Opened : {{ data['lastOpenedOn'] }} By
+                        {{ data['lastOpenedBy'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Budget/RM/NT : ${{ data['budget'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Customer : {{ data['createdFor'] }}</span>
+                </div>
+                <div class='mb-3'>
+                    <span>Type : {{ data['userType'] }}</span>
+                </div>
+                {% if data['formPayment'] %}
+                <div class='mb-3'>
+                    <span>Form Of Payment : {{ data['formPayment'] }}</span>
+                </div>
+                {% endif %} {% if data['paymentTerms'] %}
+                <div class='mb-3'>
+                    <span>Payment Terms : {{ data['paymentTerms'] }}
+                        {% if data['paymentTerms'] != 'At Checkout' %}
+                        {{ data['paymentDays'] }} Days
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %} {% if data['comments'] != '' %}
+                <div class='mb-3'>
+                    <span>Comments : {{ data['comments'] }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <hr> {% if data2|length == 0 %}
+        <div style='height: 70vh;'>
+
+        </div>
+        {% endif %} {% if data2|length != 0 %}
+        <div class='row mb-2'>
+            <button class='btn btn-primary mr-2' type='button'>Duplicate</button>
+            <button class='btn btn-primary mr-2' type='button'>History</button>
+            <button class = 'btn btn-primary' type = 'button' id='editbutton' onclick = 'edit()'>Edit</button>
+        </div>
+        <div class='row mt-5'>
+            <div class='row col-12'>
+                {% for l in lefttable %}
+                <div class='col-5'>
+                    <table class='table table-bordered table-hover' id = '{{ loop.index - 1 }}'>
+                        <thead class='thead-dark'>
+                            <tr>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    {{ l['date'] }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Current OCC</td>
+                                <td>{{ l['currentOcc'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Forecast</td>
+                                <td>{{ l['forecast'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Groups
+                                </td>
+                                <td>
+                                    {{ l['groups'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Lead Time
+                                </td>
+                                <td>
+                                    {{ l['leadTime'] }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Discount
+                                </td>
+                                <td>
+                                    {{ l['discountId'] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class='col-7'>
+                    <table class='table table-bordered table-hover' id='row{{ loop.index - 1 }}'>
+                        <thead class='thead-dark'>
+                            <tr>
+                                <th>Occupancy</th>
+                                <th>Room Type</th>
+                                <th>Count</th>
+                                <th>Rate/Room</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in righttable[l['date']] %}
+                            <tr>
+                                <td>
+                                    {{ r['occupancy'] }}
+                                </td>
+                                <td>
+                                    {{ r['type'] }}
+                                </td>
+                                <td>
+                                    {{ r['count'] }}
+                                </td>
+                                <td>
+                                    {{ r['ratePerRoom'] }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% if data2|length != 0 %}
+    <div class='col-3'>
+        <div class='mb-5'>
+            <div class='mb-2'>
+                <span class='btn btn-info col-sm-6'>
+                    Total Fare
+                </span>
+                <span class='btn btn-info col-sm-3' id='totalRate'>
+                    {{ data2['totalFare'] }}
+                </span>
+            </div>
+            <div class='mb-2 ff'>
+                {% if tfoc == True%}
+                <span class='btn btn-info col-sm-6'>
+                    + FOC
+                </span>
+                <span class='btn btn-info col-sm-3' id='focRate'>
+                    {{ data2['foc'] }}
+                </span> {% endif %}
+            </div>
+            <div class='mb-2 ff'>
+                {% if tcomm == True%}
+                <span class='btn btn-info col-sm-6'>
+                    + Commission <span id='commission'>{{ data2['commission'] }}
+                    </span>%</span>
+                <span class='btn btn-info col-sm-3' id='comv'>
+                    {{ data2['commissionValue'] }}
+                </span> {% endif %}
+            </div>
+            <hr>
+            <div class='mb-1'>
+                <span class='btn btn-info col-sm-6'>
+                    Total Quote
+                </span>
+                <span class='btn btn-info col-sm-3' id='totalQuote'>
+                    {{ data2['totalQuote'] }}
+                </span>
+            </div>
+            <hr>
+        </div>
+        <div class='mb-5'>
+            <span class='btn btn-info col-sm-8'>
+                Average Rate/ Room Night
+            </span>
+            <span class='btn btn-info col-sm-3' id='avgRate'>
+                {{ data2['averageRate'] }}
+            </span>
+        </div>
+        {% if data3['single1'] != '0'%}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                1 Bed Single
+            </span>
+            <span class='btn btn-info col-sm-3' id='single1avg'>
+                {{ data3['single1'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['double1'] != '0'%}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                1 Bed Double
+            </span>
+            <span class='btn btn-info col-sm-3' id='double1avg'>
+                {{ data3['double1'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['triple1']!= '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8' id='triple1avg'>
+                1 Bed Triple
+            </span>
+            <span class='btn btn-info col-sm-3'>
+                {{ data3['triple1'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['quad1'] != '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                1 Bed Quad
+            </span>
+            <span class='btn btn-info col-sm-3' id='quad1avg'>
+                {{ data3['quad1'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['single2'] != '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                2 Bed Single
+            </span>
+            <span class='btn btn-info col-sm-3' id='single2avg'>
+                {{ data3['single2'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['double2']!= '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                2 Bed Double
+            </span>
+            <span class='btn btn-info col-sm-3' id='double2avg'>
+                {{ data3['double2'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['triple2'] != '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                2 Bed Triple
+            </span>
+            <span class='btn btn-info col-sm-3' id='triple2avg'>
+                {{ data3['triple2'] }}
+            </span>
+        </div>
+        {% endif %} {% if data3['quad2'] != '0' %}
+        <div class='mb-2'>
+            <span class='btn btn-info col-sm-8'>
+                2 Bed Quad
+            </span>
+            <span class='btn btn-info col-sm-3' id='quad2avg'>
+                {{ data3['quad2'] }}
+            </span>
+        </div>
+        {% endif %}
+        <hr>
+        <div id = 'noneditable'>
+        <div class='mb-5'>
+            <label>Cutoff</label>
+            <span>{{ data2['cutoffDays'] }}</span>
+            <span> Days</span>
+        </div>
+        <div class='mb-5'>
+            <span>FOP : <span id='formPaymentView'>
+                    {{ data2['formPayment'] }}
+                </span>
+            </span>
+        </div>
+        <div class='mb-5'>
+            <span>Payment Terms :
+                <span>
+                    {{ data2['paymentTerms'] }}
+                </span> {% if data2['paymentTerms'] != 'At Checkout' %}
+            <span>
+                    {{ data2['paymentDays'] }}
+                </span><span>
+                    Days</span>
+            </span>
+            {% endif %}
+            </span>
+        </div>
+        {% if data2['comments'] != '' %}
+        <div class='mb-5'>
+            <span>Comments : <span id='comments'>{{ data2['comments'] }}</span></span>
+        </div>
+        {% endif %}
+        <div class='mb-5'>
+            Contract : <button class='btn btn-info' onclick="hc()">
+                {% if data2['contract'] %}
+                <span id='contracts1'>{{ data2['contract'] }}</span>
+                {% endif %}
+            </button>
+        </div>
+        <div class='mb-5'>
+            Negotiable :
+            {% if data2['negotiable'] == 1 %}
+                YES
+            {% else %}
+                NO
+            {% endif %}
+        </div>
+        <div class='mb-5'>
+            Payment GTD : 
+            {% if data2['paymentGtd'] == 1 %}
+            YES {% else %}
+                NO 
+            {% endif %}
+        </div>
+        </div>
+        <div id = 'editable'>
+            <div class='mb-5'>
+                <label>Cutoff</label>
+                <input type='number' class='form-control ml-5' style='max-width: 30%; display: inline-block;' id='dedenewi'
+                    min=0><span> Days</span>
+            </div>
+            <div class="form-group row mb-5">
+                <label class="col-sm-6 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
+                <div class="col-sm-6">
+                    <select class='form-control text-center payment' id='formPayment' style='max-width: 100%;' multiple='multiple'>
+                        <option value='bt'>
+                            Bank Transfer
+                        </option>
+                        <option value='cq'>
+                            Cheque
+                        </option>
+                        <option value='cc'>
+                            Credit Card
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-5 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
+                <div class="col-sm-7">
+                    <select class='form-control text-center' name='paymentTerms' style='max-width: 80%;' onchange="hdd(event)"
+                        id='dede'>
+                        <option disabled selected>
+                            Payment Terms
+                        </option>
+                        <option value='poa'>
+                            Prior To Arrival
+                        </option>
+                        <option value='pc'>
+                            Post Checkout
+                        </option>
+                        <option value='ac'>
+                            At Checkout
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class='col-sm-12 mb-5' id='dede22'>
+                <input type='number' class='form-control' style='max-width: 40%; display: inline-block; margin-left: 10rem;'
+                    id='dede33' disabled><span> Days</span>
+            </div>
+            <div class='mb-5'>
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        <input type='checkbox' class='mr-5' id='pmgtd'>
+                        <span class='ml-5'>Payment Guaranteed</span>
+                    </label>
+                </div>
+            </div>
+            <div class='mb-5'>
+                {% if canNegotiate == True %}
+                <div class="form-check checkbox-slider--b-flat">
+                    <label>
+                        <input type='checkbox' class='mr-5' id='nego' checked>
+                        <span class='ml-5'>Negotiable</span>
+                    </label>
+                </div>
+                {% else %}
+                <label>Negotiable: No</label>
+                {% endif %}
+            </div>
+            <div class='form-group row mb-5'>
+                <label class="col-sm-2 col-form-label">Comments: </label>
+                <div class="col-sm-7 ml-5">
+                    <textarea class="form-control" rows='2' id='comments'></textarea>
+                </div>
+            </div>
+            <div class='row mb-5'>
+                <button type='button' class='btn btn-info col-sm-4 ml-2' data-toggle="modal" data-target="#exampleModal">
+                    Contract
+                </button>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Select Contract</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <select class='form-control' onchange="dem(event)" id='sele'>
+                                    <option disabled selected>
+                                        Select Contract
+                                    </option>
+                                    {% for c in contracts %}
+                                    <option>
+                                        {{ c['id'] }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <div class='mt-5' id='contracts1'>
+                                    {% for c in contracts %}
+                                    <div class='mt-5' id='{{ c["id"] }}' style="display: none;">
+                                        {{ c['contract'] }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='row mb-5' id='msg'>
+        </div>
+        <div class='row mb-5'>
+            <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6" placeholder="Enter Reason for decline" id='othert'></textarea>
+        </div>
+        <div style="margin-top: 100px;"></div>
+        <div class='mt-5 mb-5'>
+            {% if review == True%}
+            <button type='button' class="btn btn-info" onclick='sendreview()'>Send For Review</button> {% endif %}
+            <button type='button' class="btn btn-danger" onclick='decline()'>Decline</button>
+            <button type='button' class="btn btn-success" onclick='quote()'>Quote</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+    function hdd(e) {
+            const dede = document.getElementById('dede')
+            const option = dede.options[dede.selectedIndex].value
+            const dede22 = document.getElementById('dede22')
+            if (option === 'ac') {
+                $('#dede33').val('')
+                $(dede22).hide()
+            } else {
+                $(dede22).show()
+                $('#dede33').removeAttr('disabled')
+                document.getElementById('dede33').required = true
+            }
+
+    }
+
+    $(document).ready(function () {
+            $('.payment').multiselect({
+                nonSelectedText: '-',
+                numberDisplayed: 0,
+                buttonWidth: '200px'
+            })
+            
+            $('#editable').hide();
+
+            const res = "{{ righttable|safe }}"
+            const totalQuote = "{{ data2['totalQuote']|safe }}"
+            const avgRate = "{{ data2['averageRate']|safe }}"
+            const roomCount = "{{ roomCount|safe }}"
+    });
+
+    function dem(e) {
+
+            let selected = $('#sele option:selected').text()
+            selected = selected.trim()
+
+            const contracts1 = document.getElementById('contracts1');
+            const c = [...contracts1.getElementsByTagName('div')]
+            c.forEach(cc => {
+                $(cc).hide();
+            })
+
+            const seleb = document.getElementById(selected)
+            $(seleb).show();
+
+        }
+
+    function del() {
+        const d = $("#othert2").val()
+        const msg2 = document.getElementById('msg')
+        if (d == '') {
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = 'Kindly Add reason for delete'
+            $(msg2).show()
+            return false
+        } else {
+            result = {}
+            result['id'] = "{{ data['id'] }}"
+            result['reason'] = $('#othert2').val()
+            fetch('/DeleteRequest2', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(result)
+
+                })
+                .then(res => {
+                    window.location.href = '/'
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+    }
+
+    function hc() {
+        const contractv = "{{ contractv }}"
+        alert(contractv)
+    }
+
+    function emsg(text) {
+        let msg2 = document.getElementById('msg')
+        msg2.style.setProperty('color', 'red', 'important');
+
+        msg2.innerHTML = `${text}`
+        $(msg2).show()
+    }
+
+    function edit() {
+        $("#noneditable").hide();
+        $('#editable').show()
+        $("#editbutton").hide();
+    }
+
+    function decline() {
+        const reason = $('#othert').val()
+        if (reason == '') {
+            const msg2 = document.getElementById('msg')
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = 'Kindly add reason for decline'
+            $(msg2).show()
+            return false
+        }
+        const requestId = "{{ data['id'] }}"
+
+        const groupCategory = document.getElementById('category').innerText
+        const totalFare = document.getElementById('totalRate').innerText
+        let foc = document.getElementById('focRate')
+        if (foc == null) {
+            foc = 0
+        } else {
+            foc = foc.innerText
+        }
+        let commission = document.getElementById('commission')
+        if (commission == null) {
+            commission = 0
+        } else {
+            commission = commission.innerText
+        }
+        let commissionValue = document.getElementById('comv')
+        if (commissionValue == null) {
+            commissionValue = 0
+        } else {
+            commissionValue = commissionValue.innerText
+        }
+        const totalQuote = document.getElementById('totalQuote').innerText
+        const status = 'declined'
+
+
+        const checkIn = "{{ data2['checkIn'] }}"
+        const checkOut = "{{ data2['checkOut'] }}"
+        const nights = "{{ data2['nights'] }}"
+        let cutoffDays = ''
+        let formPayment = ''
+        let paymentTerms = ''
+        let paymentDays = ''
+        let paymentGtd = ''
+        let negotiable = ''
+        let comments = ''
+        let contract = ''
+
+        const editable = document.getElementById('editable')
+        if (editable.style.display == 'none') {
+             cutoffDays = "{{ data2['cutoffDays'] }}"
+             formPayment = "{{ fop|safe }}".split(' ')
+             paymentTerms = "{{ pt|safe }}"
+             paymentDays = "{{ data2['paymentDays'] }}"
+             paymentGtd = parseInt("{{ data2['paymentGtd'] }}")
+             negotiable = parseInt("{{ data2['negotiable'] }}")
+             comments = "{{ data2['comments'] }}"
+             contract = "{{ data2['contract'] }}"
+
+        } else {
+            cutoffDays = document.getElementById('dedenewi').value
+            if (cutoffDays == '') {
+                emsg('Enter Cutoff Days')
+                return false
+            }
+             formPayment = $('#formPayment').val()
+            if (formPayment == '') {
+                emsg('Enter Form of Payment')
+                return false
+            }
+             paymentTerms = $('#dede').val()
+            if (paymentTerms == null) {
+                emsg('Enter Payment Terms')
+                return false
+            }
+             paymentDays = $('#dede33').val()
+            if (paymentDays == '' && paymentTerms != 'ac') {
+                emsg('Enter Payment Days')
+                return false
+            }
+            let paymentGtd1 = document.getElementById('pmgtd')
+            if (paymentGtd1.checked) {
+                paymentGtd = 1
+            } else {
+                paymentGtd = 0
+            }
+            let negotiable1 = document.getElementById('nego')
+            if (negotiable1.checked) {
+                negotiable = 1
+            } else {
+                negotiable = 0
+            }
+            let comments1 = document.getElementById('comments')
+            if (comments1 == null) {
+                comments = ''
+            } else {
+                comments = $('#comments').val()
+            }
+
+            let contract1 = $("#sele option:selected").text()
+            contract = contract1.trim()
+            if (contract == 'Select Contract') {
+                emsg('Select A contract')
+                return false
+            }
+
+        }
+
+
+        const single1avg = document.getElementById('single1avg')
+        const double1avg = document.getElementById('double1avg')
+        const triple1avg = document.getElementById('triple1avg')
+        const quad1avg = document.getElementById('quad1avg')
+        const single2avg = document.getElementById('single2avg')
+        const double2avg = document.getElementById('double2avg')
+        const triple2avg = document.getElementById('triple2avg')
+        const quad2avg = document.getElementById('quad2avg')
+
+        const result = {}
+        if (single1avg != null)
+            result['single1'] = single1avg.innerText
+        else
+            result['single1'] = 0
+        if (double1avg != null)
+            result['double1'] = double1avg.innerText
+        else
+            result['double1'] = 0
+        if (triple1avg != null)
+            result['triple1'] = triple1avg.innerText
+        else
+            result['triple1'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText
+        else
+            result['quad1'] = 0
+        if (single2avg != null)
+            result['single2'] = single2avg.innerText
+        else
+            result['single2'] = 0
+        if (double2avg != null)
+            result['double2'] = double2avg.innerText
+        else
+            result['double2'] = 0
+        if (triple2avg != null)
+            result['triple2'] = triple2avg.innerText
+        else
+            result['triple2'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText
+        else
+            result['quad1'] = 0
+        if (quad2avg != null)
+            result['quad2'] = quad2avg.innerText
+        else
+            result['quad2'] = 0
+
+        result['requestId'] = requestId
+        result['groupCategory'] = groupCategory
+        result['totalFare'] = totalFare
+        result['foc'] = foc
+        result['commission'] = commission
+        result['commissionValue'] = commissionValue
+        result['totalQuote'] = totalQuote
+        result['cutoffDays'] = cutoffDays
+        result['formPayment'] = formPayment
+        result['paymentTerms'] = paymentTerms
+        result['paymentDays'] = paymentDays
+        result['paymentGtd'] = paymentGtd
+        result['negotiable'] = negotiable
+        result['checkIn'] = checkIn
+        result['checkOut'] = checkOut
+        result['nights'] = nights
+        result['comments'] = comments
+        result['reason'] = reason
+        result['contract'] = contract
+
+        const averageRate = document.getElementById('avgRate').innerText
+        result['averageRate'] = averageRate
+
+        const table_result = []
+
+        var dateParts1 = checkIn.split("-");
+        var dt1 = new Date(+dateParts1[0], dateParts1[1] - 1, +dateParts1[2]);
+        let dobj = dt1
+        let flag = true
+        for (let i = 0; i < nights; i++) {
+
+            const date = dobj.getDate()
+            const month = dobj.getMonth()
+            const year = dobj.getFullYear()
+
+
+            const table1 = document.getElementById(i)
+            const table2 = document.getElementById("row" + i)
+
+            let tbody1 = table1.children[1]
+            let tbody2 = table2.children[1]
+            let children2 = [...tbody2.children]
+
+            children2.forEach(tr => {
+                let resArr = {}
+                resArr['date'] = year + "/" + month + "/" + date
+                let children1 = tbody1.children
+                resArr['currentOcc'] = children1[0].children[1].innerText
+                resArr['forecast'] = children1[1].children[1].innerText
+                resArr['groups'] = children1[2].children[1].innerText
+                resArr['leadTime'] = children1[3].children[1].innerText
+                resArr['discountId'] = children1[4].children[1].innerText
+
+
+                resArr['occupancy'] = tr.children[0].innerText
+                resArr['type'] = tr.children[1].innerText
+                resArr['count'] = tr.children[2].innerText
+                    // check if input
+                let x = tr.children[3]
+                if (x.children.length == 0)
+                    resArr['ratePerRoom'] = tr.children[3].innerText
+                else {
+                    resArr['ratePerRoom'] = tr.children[3].children[0].value
+                    if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
+                        flag = false
+                    }
+                }
+
+                table_result.push(resArr)
+
+            })
+            if (!flag) {
+                emsg('Enter Valid Rate Per Room')
+                return false
+            } else {
+                $('#msg').hide()
+            }
+
+            dobj.setDate(dobj.getDate() + 1)
+
+        }
+
+
+        result['table_result'] = table_result
+
+        fetch('/requestProcessDecline', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result)
+            })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+
+    }
+
+    function quote() {
+
+        // here
+        const requestId = "{{ data['id'] }}"
+
+        const groupCategory = document.getElementById('category').innerText
+        const totalFare = document.getElementById('totalRate').innerText
+        let foc = document.getElementById('focRate')
+        if (foc == null) {
+            foc = 0
+        } else {
+            foc = foc.innerText
+        }
+        let commission = document.getElementById('commission')
+        if (commission == null) {
+            commission = 0
+        } else {
+            commission = commission.innerText
+        }
+        let commissionValue = document.getElementById('comv')
+        if (commissionValue == null) {
+            commissionValue = 0
+        } else {
+            commissionValue = commissionValue.innerText
+        }
+        const totalQuote = document.getElementById('totalQuote').innerText
+        const status = 'declined'
+
+
+        const checkIn = "{{ data2['checkIn'] }}"
+        const checkOut = "{{ data2['checkOut'] }}"
+        const nights = "{{ data2['nights'] }}"
+        let cutoffDays = ''
+        let formPayment = ''
+        let paymentTerms = ''
+        let paymentDays = ''
+        let paymentGtd = ''
+        let negotiable = ''
+        let comments = ''
+        let contract = ''
+
+        const editable = document.getElementById('editable')
+        if (editable.style.display == 'none') {
+            cutoffDays = "{{ data2['cutoffDays'] }}"
+            formPayment = "{{ fop|safe }}".split(' ')
+            paymentTerms = "{{ pt|safe }}"
+            paymentDays = "{{ data2['paymentDays'] }}"
+            paymentGtd = parseInt("{{ data2['paymentGtd'] }}")
+            negotiable = parseInt("{{ data2['negotiable'] }}")
+            comments = "{{ data2['comments'] }}"
+            contract = "{{ data2['contract'] }}"
+
+        } else {
+            cutoffDays = document.getElementById('dedenewi').value
+            if (cutoffDays == '') {
+                emsg('Enter Cutoff Days')
+                return false
+            }
+            formPayment = $('#formPayment').val()
+            if (formPayment == '') {
+                emsg('Enter Form of Payment')
+                return false
+            }
+            paymentTerms = $('#dede').val()
+            if (paymentTerms == null) {
+                emsg('Enter Payment Terms')
+                return false
+            }
+            paymentDays = $('#dede33').val()
+            if (paymentDays == '' && paymentTerms != 'ac') {
+                emsg('Enter Payment Days')
+                return false
+            }
+            let paymentGtd1 = document.getElementById('pmgtd')
+            if (paymentGtd1.checked) {
+                paymentGtd = 1
+            } else {
+                paymentGtd = 0
+            }
+            let negotiable1 = document.getElementById('nego')
+            if (negotiable1.checked) {
+                negotiable = 1
+            } else {
+                negotiable = 0
+            }
+            let comments1 = document.getElementById('comments')
+            if (comments1 == null) {
+                comments = ''
+            } else {
+                comments = $('#comments').val()
+            }
+
+            let contract1 = $("#sele option:selected").text()
+            contract = contract1.trim()
+            if (contract == 'Select Contract') {
+                emsg('Select A contract')
+                return false
+            }
+
+        }
+       
+
+
+        const single1avg = document.getElementById('single1avg')
+        const double1avg = document.getElementById('double1avg')
+        const triple1avg = document.getElementById('triple1avg')
+        const quad1avg = document.getElementById('quad1avg')
+        const single2avg = document.getElementById('single2avg')
+        const double2avg = document.getElementById('double2avg')
+        const triple2avg = document.getElementById('triple2avg')
+        const quad2avg = document.getElementById('quad2avg')
+
+        const result = {}
+        if (single1avg != null)
+            result['single1'] = single1avg.innerText
+        else
+            result['single1'] = 0
+        if (double1avg != null)
+            result['double1'] = double1avg.innerText
+        else
+            result['double1'] = 0
+        if (triple1avg != null)
+            result['triple1'] = triple1avg.innerText
+        else
+            result['triple1'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText
+        else
+            result['quad1'] = 0
+        if (single2avg != null)
+            result['single2'] = single2avg.innerText
+        else
+            result['single2'] = 0
+        if (double2avg != null)
+            result['double2'] = double2avg.innerText
+        else
+            result['double2'] = 0
+        if (triple2avg != null)
+            result['triple2'] = triple2avg.innerText
+        else
+            result['triple2'] = 0
+        if (quad1avg != null)
+            result['quad1'] = quad1avg.innerText
+        else
+            result['quad1'] = 0
+        if (quad2avg != null)
+            result['quad2'] = quad2avg.innerText
+        else
+            result['quad2'] = 0
+
+        
+        result['requestId'] = requestId
+        result['groupCategory'] = groupCategory
+        result['totalFare'] = totalFare
+        result['foc'] = foc
+        result['commission'] = commission
+        result['commissionValue'] = commissionValue
+        result['totalQuote'] = totalQuote
+        result['cutoffDays'] = cutoffDays
+        result['formPayment'] = formPayment
+        result['paymentTerms'] = paymentTerms
+        result['paymentDays'] = paymentDays
+        result['paymentGtd'] = paymentGtd
+        result['negotiable'] = negotiable
+        result['checkIn'] = checkIn
+        result['checkOut'] = checkOut
+        result['nights'] = nights
+        result['comments'] = comments
+        result['contract'] = contract
+
+
+        const averageRate = document.getElementById('avgRate').innerText
+        result['averageRate'] = averageRate
+
+        const table_result = []
+
+        var dateParts1 = checkIn.split("-");
+        var dt1 = new Date(+dateParts1[0], dateParts1[1] - 1, +dateParts1[2]);
+        let dobj = dt1
+        let flag = true
+        for (let i = 0; i < nights; i++) {
+
+            const date = dobj.getDate()
+            const month = dobj.getMonth()
+            const year = dobj.getFullYear()
+
+
+            const table1 = document.getElementById(i)
+            const table2 = document.getElementById("row" + i)
+
+            let tbody1 = table1.children[1]
+            let tbody2 = table2.children[1]
+            let children2 = [...tbody2.children]
+
+            children2.forEach(tr => {
+                let resArr = {}
+                resArr['date'] = year + "/" + month + "/" + date
+                let children1 = tbody1.children
+                resArr['currentOcc'] = children1[0].children[1].innerText
+                resArr['forecast'] = children1[1].children[1].innerText
+                resArr['groups'] = children1[2].children[1].innerText
+                resArr['leadTime'] = children1[3].children[1].innerText
+                resArr['discountId'] = children1[4].children[1].innerText
+
+
+                resArr['occupancy'] = tr.children[0].innerText
+                resArr['type'] = tr.children[1].innerText
+                resArr['count'] = tr.children[2].innerText
+                    // check if input
+                let x = tr.children[3]
+                if (x.children.length == 0)
+                    resArr['ratePerRoom'] = tr.children[3].innerText
+                else {
+                    resArr['ratePerRoom'] = tr.children[3].children[0].value
+                    if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
+                        flag = false
+                    }
+                }
+
+                table_result.push(resArr)
+
+            })
+            if (!flag) {
+                emsg('Enter Valid Rate Per Room')
+                return false
+            } else {
+                $('#msg').hide()
+            }
+
+            dobj.setDate(dobj.getDate() + 1)
+
+        }
+
+
+        result['table_result'] = table_result
+
+        fetch('/requestProcessQuote', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(result)
+            })
+            .then(res => {
+                window.location.href = '/'
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+    }
+</script>
+
+{% endblock %}
