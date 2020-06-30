@@ -74,7 +74,6 @@ def procArr(value):
     return ' '.join(value)
 
 # Decorators
-
 # Check if user logged in
 def is_logged_in(f):
     @wraps(f)
@@ -85,6 +84,10 @@ def is_logged_in(f):
             flash("Unauthorized, Please Login", 'danger')
             return render_template('login.html', title='Login')
     return wrap
+
+statusval1 = 'NEW'
+statusval2 = 'QUOTED'
+
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
@@ -3657,6 +3660,7 @@ def AcceptRequest():
     
 
     cursor.execute('INSERT INTO requestAccepted(requestId, time) VALUES(%s, %s)', [inp['id'], now])
+    cursor.execute('UPDATE request set status = "ACCEPTED" where id = %s', [inp['id']])
 
     mysql.connection.commit()
     cursor.close()
@@ -3718,7 +3722,6 @@ def DeclineRequest():
 
     now = datetime.datetime.utcnow()
     cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], inp['declinedBy']])
-
     mysql.connection.commit()
     cursor.close()
 
@@ -3768,24 +3771,85 @@ def requestHistory(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From request where id = %s', [id])
     requestData = cursor.fetchall()
-    #print(requestData)
+    requestData = requestData[0]
+
+    v = requestData['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            requestData['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            requestData['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            requestData['paymentTerms'] = 'Prior To Arrival'
+
+    string = ''
+    v = requestData['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    requestData['formPayment'] = string
+
+    if requestData['comments'].isspace():
+        requestData['comments'] = ''
+
+    
+
     cursor.execute('SELECT * From response where requestId = %s', [id])
     responseData = cursor.fetchall()
-    #print(responseData)
+
+    for r in responseData:
+        v = r['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                r['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                r['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                r['paymentTerms'] = 'Prior To Arrival'
+
+        string = ''
+        v = r['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        r['formPayment'] = string
+
+        if r['comments'].isspace():
+            r['comments'] = ''
+
     responseId = id + "R"
     cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+
+    for r in responseData:
+        print(r)
+        print()
+
     responseAvgData = cursor.fetchall()
     #print(responseAvgData)
-    cursor.execute('SELECT * From responseDaywise where responseId = %s GROUP BY submittedOn', [responseId])
+    cursor.execute('SELECT * From responseDaywise where responseId = %s ', [responseId])
     responseDaywiseData = cursor.fetchall()
     tempdict = {}
     for row in responseDaywiseData:
         tempdict[row['submittedOn']] = []
 
-    for row in responseData:
-        print(row)
-        print()
-    return ''
+
+    for row in responseDaywiseData:
+        tempdict[row['submittedOn']].append(row)
+
+    responseDaywiseDate = tempdict
+    return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData)
 
 
 if __name__ == "__main__":

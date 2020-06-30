@@ -1,0 +1,220 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="spread4">
+    <div class='mb-5'>
+        <div class='mb-3'>
+            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <span class="btn btn-success">Current Status : {{ requestData['status'] }}</span>
+        </div>
+    </div>
+    <div class = 'mb-5'>
+        <div class='card box'>  
+            <div class = 'card-body'>
+                <h6>Customer Request</h6><hr>
+                <div class = 'row'>
+                    <div class = 'col-6'>
+                        <div class='mb-3'>
+                            <span class="badge badge-pill badge-primary">Recieved : {{ requestData['createdOn'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Name : {{ requestData['groupName'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>ID : {{ requestData['id'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Category : <span id='category'>{{ requestData['category'] }}</span></span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>LeadTime : {{ requestData['leadTime'] }} Days</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Room Nights : {{ requestData['nights'] }}</span>
+                        </div>
+                    </div>
+                    <div class = 'col-5'>
+                        <div class='mb-3'>
+                            <span>Budget/RM/NT : ${{ requestData['budget'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Customer : {{ requestData['createdFor'] }}</span>
+                        </div>
+                        <div class='mb-3'>
+                            <span>Type : {{ requestData['userType'] }}</span>
+                        </div>
+                        {% if requestData['formPayment'] %}
+                        <div class='mb-3'>
+                            <span>Form Of Payment : {{ requestData['formPayment'] }}</span>
+                        </div>
+                        {% endif %}
+                        {% if requestData['paymentTerms'] %}
+                        <div class='mb-3'>
+                            <span>Payment Terms : {{ requestData['paymentTerms'] }}
+                                {% if requestData['paymentTerms'] != 'At Checkout' %}
+                                {{ requestData['paymentDays'] }} Days
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% endif %}
+                        {% if requestData['comments'] != '' %}
+                        <div class='mb-3'>
+                            <span>Comments : {{ requestData['comments'] }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for r in responseData %}
+    <div class = 'mb-5'>
+        <div class = 'card box'>
+            <div class = 'card-body'>
+                <h6>Response {{ loop.index }}</h6>
+                <h6>Status : {{ r['status'] }} </h6>
+                <hr>
+                <div class = 'row'>
+                    <div class = 'col-6'>
+                        <div class='mb-5'>
+                            <span class='badge badge-pill badge-primary'>Last Responded On : {{ r['submittedOn'] }} By
+                                {{ r['submittedBy'] }} </span>
+                        </div>
+                        <div class='mb-5'>
+                            <span>
+                                Group Category : {{ r['groupCategory'] }}
+                            </span>
+                        </div>
+                        <div class='mb-5'>
+                            Cutoff Days : {{ r['cutoffDays'] }}
+                        </div>
+                        <div class='mb-5'>
+                            Payment Guaranteed :
+                            {% if r['paymentGtd'] == 1 %}
+                            YES
+                            {% else %}
+                            NO
+                            {% endif %}
+                        </div>
+                        <div class='mb-5'>
+                            Negotiable :
+                            {% if r['negotiable'] == 1 %}
+                            YES
+                            {% else %}
+                            NO
+                            {% endif %}
+                        </div>
+                        {% if r['comments'] != '' %}
+                        <div class='mb-3'>
+                            <span>Comments : {{ r['comments'] }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class = 'col-6'>
+                        <div class='mt-5 mb-5'>
+                            Fare Quoted : $ {{ r['totalQuote'] }}
+                        </div>
+                        <div class='mt-5 mb-5'>
+                            {% if responseAvgData[loop.index - 1]['single1'] != '0'%}
+                            <div class='mb-3'>
+                                <span>
+                                    1 Bed Single Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['single1'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['double1'] != '0'%}
+                            <div class='mb-3'>
+                                <span>
+                                    1 Bed Double Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['double1'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['triple1']!= '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    1 Bed Triple Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['triple1'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['quad1'] != '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    1 Bed Quad Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['quad1'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['single2'] != '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    2 Bed Single Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['single2'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['double2']!= '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    2 Bed Double Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['double2'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['triple2'] != '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    2 Bed Triple Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['triple2'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                            {% if responseAvgData[loop.index - 1]['quad2'] != '0' %}
+                            <div class='mb-3'>
+                                <span>
+                                    2 Bed Quad Rate/Room Night :
+                                </span>
+                                <span>
+                                    {{ responseAvgData[loop.index - 1]['quad2'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class='mb-5'>
+                            Form of Payment : {{ r['formPayment'] }}
+                        </div>
+                        <div class='mb-5'>
+                            <span>Payment Terms : {{ r['paymentTerms'] }}
+                                {% if r['paymentTerms'] != 'At Checkout' %}
+                                {{ r['paymentDays'] }} Days
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+
+</div>
+
+{% endblock %}
