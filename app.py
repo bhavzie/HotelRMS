@@ -2465,7 +2465,7 @@ def showRequest(token):
             nego = False
             negoInformation = {}
             canNegotiate = False
-            if (int(negoTimes) <= int(count)):
+            if (int(negoTimes) < int(count)):
                 canNegotiate = True
             negoInformation['expectedFare'] = data2['expectedFare']
             negoInformation['reason'] = data2['negotiationReason']
