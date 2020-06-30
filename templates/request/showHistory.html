@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class = 'mb-5'>
-        <div class='card box'>  
+        <div class='card box' style="border: 2px solid black;">  
             <div class = 'card-body'>
                 <h6>Customer Request</h6><hr>
                 <div class = 'row'>
@@ -69,7 +69,7 @@
 
     {% for r in responseData %}
     <div class = 'mb-5'>
-        <div class = 'card box'>
+        <div class = 'card box'  style="border: 2px solid black;">
             <div class = 'card-body'>
                 <h6>Response {{ loop.index }}</h6>
                 <h6>Status : {{ r['status'] }} </h6>
@@ -208,13 +208,71 @@
                         </div>
                     </div>
                 </div>
+                <div class = 'mb-5'>
+                    {% for key,value in responseDaywiseData[loop.index - 1].items() %}
+                    <button type='button' class='btn btn-primary mr-3'>
+                        {{ key }}
+                    </button>
+                        <div class = 'mt-5'>
+                            <table class = 'table table-bordered table-hover'>
+                                <thead class = 'thead-dark'>
+                                    <tr>
+                                        <th>
+                                            Type
+                                        </th>
+                                        <th>
+                                            Occupancy
+                                        </th>
+                                        <th>
+                                            Count
+                                        </th>
+                                        <th>
+                                            RatePerRoom
+                                        </th>
+                                        <th>
+                                            Total
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for v in value %}
+                                    <tr>                                    <td>
+                                            {{ v['type'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['occupancy'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['count'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['ratePerRoom'] }}
+                                        </td>
+                                        <td>
+                                            {{ v['total'] }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
+        
         </div>
     </div>
     {% endfor %}
-
-
-
 </div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+     $(document).ready(function () {
+         $(".breakdown").hide();
+     });
+
+     
+</script>
 
 {% endblock %}

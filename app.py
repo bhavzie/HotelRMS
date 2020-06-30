@@ -3832,10 +3832,6 @@ def requestHistory(id):
     responseId = id + "R"
     cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
 
-    for r in responseData:
-        print(r)
-        print()
-
     responseAvgData = cursor.fetchall()
     #print(responseAvgData)
     cursor.execute('SELECT * From responseDaywise where responseId = %s ', [responseId])
@@ -3845,10 +3841,26 @@ def requestHistory(id):
         tempdict[row['submittedOn']] = []
 
 
-    for row in responseDaywiseData:
-        tempdict[row['submittedOn']].append(row)
+    for r in responseDaywiseData:
+        tempdict[r['submittedOn']].append(r)
 
-    responseDaywiseDate = tempdict
+    responseDaywiseData = tempdict
+    finalresult = []
+    for key, value in responseDaywiseData.items():
+        tdict = {}
+        for r in value:
+            if (r['date'] in tdict):
+                r['total'] = int(r['count']) * float(r['ratePerRoom'])
+                tdict[r['date']].append(r)
+            else:
+                r['total'] = int(r['count']) * float(r['ratePerRoom'])
+                tdict[r['date']] = [r]
+                
+        finalresult.append(tdict)
+
+
+    responseDaywiseData = finalresult
+
     return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData)
 
 
