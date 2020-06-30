@@ -3850,10 +3850,10 @@ def requestHistory(id):
         tdict = {}
         for r in value:
             if (r['date'] in tdict):
-                r['total'] = int(r['count']) * float(r['ratePerRoom'])
+                r['total'] = int(r['count']) * float(r['ratePerRoom'].split(' (')[0])
                 tdict[r['date']].append(r)
             else:
-                r['total'] = int(r['count']) * float(r['ratePerRoom'])
+                r['total'] = int(r['count']) * float(r['ratePerRoom'].split(" (")[0])
                 tdict[r['date']] = [r]
                 
         finalresult.append(tdict)
