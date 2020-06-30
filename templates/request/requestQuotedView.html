@@ -120,7 +120,7 @@
         {% endif %} {% if data2|length != 0 %}
         <div class='row mb-2'>
             <button class='btn btn-primary mr-2' type='button'>Duplicate</button>
-            <button class='btn btn-primary' type='button'>History</button>
+            <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
         </div>
         <div class='row mt-5'>
             <div class='row col-12'>

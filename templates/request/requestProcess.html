@@ -67,7 +67,7 @@
                 <hr>
                 <div class = 'row mb-2'>
                     <button class = 'btn btn-primary mr-2' type = 'button'>Duplicate</button>
-                    <button class='btn btn-primary' type='button'>History</button>
+                    <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
                 </div>
                 <div class = 'row mt-5'>
                     <div class = 'row col-12'>
@@ -830,10 +830,14 @@
             paymentGtd = 0
         }
         let negotiable = document.getElementById('nego')
-        if (negotiable.checked) {
-            negotiable = 1
-        } else {
+        if (negotiable == null) {
             negotiable = 0
+        } else {
+            if (negotiable.checked) {
+                negotiable = 1
+            } else {
+                negotiable = 0
+            }
         }
         const status = 'quoted'
 
@@ -1058,10 +1062,14 @@
                 paymentGtd = 0
             }
             let negotiable = document.getElementById('nego')
-            if (negotiable.checked) {
-                negotiable = 1
-            } else {
+            if (negotiable == null) {
                 negotiable = 0
+            } else {
+                if (negotiable.checked) {
+                    negotiable = 1
+                } else {
+                    negotiable = 0
+                }
             }
             const status = 'declined'
 
