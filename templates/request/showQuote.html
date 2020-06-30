@@ -27,6 +27,16 @@
                     <span class = 'badge badge-pill badge-primary'>Time Limit Expired</span>
                 {% endif %}
             </div>
+            {% if data2['status'] == 'NEGOTIATED' %}
+            <div class='mb-5'>
+                <div class='mb-4'>
+                    <span class="badge badge-pill badge-primary">
+                        Expected Fare : {{ data2['expectedFare'] }}
+                    </span>
+                    <span class='badge badge-pill badge-primary'> Negotiation Reason : {{ data2['negotiationReason'] }}</span>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class = 'row mb-5'>

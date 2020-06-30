@@ -41,7 +41,17 @@
                 <span class='badge badge-pill badge-primary'> ON {{ data8['time'] }}</span>
             </div>
         </div>
-        {% endif %} {% if decline %}
+        {% elif data2['status'] == 'NEGOTIATED' %}
+            <div class='mb-5'>
+                <div class='mb-4'>
+                    <span class="badge badge-pill badge-primary">
+                        Expected Fare : {{ data2['expectedFare'] }}
+                    </span>
+                    <span class='badge badge-pill badge-primary'> Negotiation Reason : {{ data2['negotiationReason'] }}</span>
+                </div>
+            </div>
+        {% endif %}
+        {% if decline %}
         <div class='mb-5'>
             {% if data['status'] == 'EXPIRED' %}
             <span class='badge badge-pill badge-primary'>Time Limit Expired</span> {% endif %}

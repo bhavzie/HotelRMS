@@ -2483,7 +2483,7 @@ def showRequest(token):
         cursor.execute('SELECT * from contract')
         contracts = cursor.fetchall()
 
-
+        
         return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt)
 
         
