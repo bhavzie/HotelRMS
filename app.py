@@ -85,8 +85,16 @@ def is_logged_in(f):
             return render_template('login.html', title='Login')
     return wrap
 
+# Global Status Values
 statusval1 = 'NEW'
 statusval2 = 'QUOTED'
+statusval3 = 'NEGOTIATED'
+statusval4 = 'ACCEPTED'
+statusval5 = 'CUSTOMER DECLINED'
+statusval6 = 'DELETED'
+statusval7 = 'SENT FOR REVIEW'
+statusval8 = 'HOTEL DECLINED'
+statusval9 = 'EXPIRED'
 
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
@@ -122,7 +130,7 @@ def confirm_email(token):
 def home():
     try:
         if session['logged_in'] == True:
-            return render_template('index.html', title = 'Home')
+            return render_template('index2.html', title = 'Home')
     except:
         return render_template('login.html', title = 'Login')
 
@@ -743,7 +751,7 @@ def registerhotelusers():
         cursor.close()
 
         flash('New Hotel user has been added', 'success')
-        return render_template('index.html')
+        return render_template('index2.html')
 
 @app.route('/adddeveloper', methods = ['GET', 'POST'])
 @is_logged_in
@@ -862,7 +870,7 @@ def addusertype():
     cursor.close()
 
     flash('New userType added', 'success')
-    return render_template('index.html', title='UserType')
+    return render_template('index2.html', title='UserType')
 
 @app.route('/managehotelusers', methods = ['GET', 'POST'])
 @is_logged_in
@@ -1000,7 +1008,7 @@ def submitEditUser():
     cursor.close()
 
     flash('Hotel user has been edited', 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route('/submitEditUserAll2', methods = ["GET", 'POST'])
@@ -1033,7 +1041,7 @@ def submitEditUserAll2():
     cursor.close()
 
     flash('User has been edited', 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @is_logged_in
@@ -1045,7 +1053,7 @@ def deactivateUser(email):
     cursor.close()
 
     flash("User has been de-activated", 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route('/deactivateUserAll/<email>', methods=['GET', 'POST'])
@@ -1072,7 +1080,7 @@ def deactivateUserAll(email):
     cursor.close()
 
     flash("User has been de-activated", 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route('/activateUser/<email>', methods=['GET', 'POST'])
@@ -1085,7 +1093,7 @@ def activateUser(email):
     cursor.close()
 
     flash("User has been activated", 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route('/activateUserAll/<email>', methods=['GET', 'POST'])
@@ -1113,7 +1121,7 @@ def activateUserAll(email):
     cursor.close()
 
     flash("User has been activated", 'success')
-    return render_template('index.html')
+    return render_template('index2.html')
 
 
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
@@ -1187,7 +1195,7 @@ def submitEditUserAll():
     cursor.close()
 
     flash('User Details updated', 'success')
-    return render_template('users/index.html')
+    return render_template('users/index2.html')
 
 
 @app.route('/inviteemail', methods = ['GET', 'POST'])
@@ -1218,7 +1226,7 @@ def inviteemail():
         )
 
         flash('Invitation sent to email', 'success')
-        return render_template('index.html', title='Login')
+        return render_template('index2.html', title='Login')
 
 
 @app.route('/addhoteluserinv<token>', methods = ['GET', 'POST'])
@@ -1326,7 +1334,7 @@ def submiteditusertype():
     cursor.close()
 
     flash('UserType updated!', 'success')
-    return render_template('users/index.html', title='UserType')
+    return render_template('users/index2.html', title='UserType')
 
 
 @app.route('/viewAllUsers', methods=['GET', 'POST'])
@@ -1404,7 +1412,7 @@ def strategyRoomsSubmit():
 def editstrategyRoomsSubmit():
     inp = request.json
     if len(inp) == 0:
-        return render_template('index.html')
+        return render_template('index2.html')
     inp.remove(inp[0])
         
     cursor = mysql.connection.cursor()
@@ -1479,7 +1487,7 @@ def strategyRate():
 def strategyRateSubmit():
     inp = request.json
     if len(inp) == 0:
-        return render_template('index.html')
+        return render_template('index2.html')
     
     cursor = mysql.connection.cursor()
     cursor.execute('DELETE FROM rate')
@@ -1552,7 +1560,7 @@ def requestCreateAdhocSubmit():
     lead = lead.days
     today = datetime.datetime.today()
     cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, inp['createdFor'], lead, 'NEW', userType, today   
+                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, inp['createdFor'], lead, statusval1, userType, today   
             ])
 
     table = inp['table_result']
@@ -1586,7 +1594,7 @@ def home2():
                 data = cursor.fetchall()
                 data = data[::-1]
                 return render_template('index2.html', title='Home', data=data)
-            return render_template('index.html', title='Home')
+            return render_template('index2.html', title='Home')
     except:
         return render_template('login.html', title='Login')
 
@@ -2023,7 +2031,7 @@ def settingsTimelimitSubmit():
 # Request Actions
 def reset():
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE request set status = "NEW"')
+    cursor.execute('UPDATE request set status = %s', [statusval1])
     cursor.execute('DELETE From response')
     cursor.execute('DELETE From responseDaywise')
     cursor.execute("DELETE from responseAvg")
@@ -2051,7 +2059,7 @@ def showRequest(token):
     cursor.execute('SELECT status from request where id = %s', [token])
     status = cursor.fetchall()
     status = status[0]['status']
-    if (status == 'NEW'):
+    if (status == statusval1):
         cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
         dates = cursor.fetchall()
         dates = dates[0]
@@ -2097,28 +2105,28 @@ def showRequest(token):
 
         return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
 
-    elif (status == 'QUOTED' or status == 'ACCEPTED' or status == 'DECLINED' or status == 'DELETED' or (status == 'SENT FOR REVIEW' and ut['userSubType'] == 'reservation')):
+    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or  (status == statusval7 and ut['userSubType'] == 'reservation')):
 
         data5 = []
-        if (status == 'ACCEPTED'):
+        if (status == statusval4):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
             data5 = cursor.fetchall()
             data5 = data5[0]
         
         data6 = []
-        if (status == 'DECLINED'):
+        if (status == statusval5):
             cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
             data6 = cursor.fetchall()
             data6 = data6[0]
         
         data7 = []
-        if (status == 'DELETED'):
+        if (status == statusval6):
             cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
             data7 = cursor.fetchall()
             data7 = data7[0]
 
         data8 = []
-        if (status == 'SENT FOR REVIEW'):
+        if (status == statusval7):
             cursor.execute(
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
@@ -2274,7 +2282,7 @@ def showRequest(token):
 
             declined = False
             declinedMsg = ""
-            if (data['status'] == 'QUOTED'):
+            if (data['status'] == statusval2):
                 cursor.execute('SELECT days from settingsTimelimit')
                 days = cursor.fetchall()
                 days = days[0]
@@ -2284,20 +2292,20 @@ def showRequest(token):
                 endline = date + datetime.timedelta(days=days)
                 if (today > endline):
                     cursor.execute(
-                        'UPDATE request set status = "EXPIRED" where id = %s', [data['id']])
+                        'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
                     cursor.execute(
-                        'UPDATE response set status = "EXPIRED" where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])
                     mysql.connection.commit()
                     declined = True
                     declinedMsg = "Time limit expired"
-                    data['status'] = "EXPIRED"
-                    data2['status'] = "EXPIRED"
+                    data['status'] = statusval9
+                    data2['status'] = statusval9
 
             
 
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
 
-    elif (status == 'NEGOTIATED' or ( status == 'SENT FOR REVIEW' and ut['userSubType'] != 'reservation')):
+    elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
 
         cursor.execute('select count from settingsNegotiation')
         count = cursor.fetchall()
@@ -2307,7 +2315,7 @@ def showRequest(token):
             count = 100 # no hard limit set so we're assuming 100 here
         
         data8 = []
-        if (status == 'SENT FOR REVIEW'):
+        if (status == statusval7):
             cursor.execute(
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
@@ -2507,7 +2515,7 @@ def showRequest1():
     status = cursor.fetchall()
     rvflag = False
     rvvv = []
-    if (status[0]['status'] == 'SENT FOR REVIEW'):
+    if (status[0]['status'] == statusval7):
         cursor.execute('SELECT * From review where requestId = %s', [token])
         rvvv = cursor.fetchall()
         rvvv = rvvv[0]
@@ -3041,7 +3049,7 @@ def requestProcessDecline():
     responseId = inp['requestId'] + "R"
     email = session['email']
     now = datetime.datetime.utcnow()
-    status = 'DECLINED'
+    status = statusval8
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(
             inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
@@ -3061,9 +3069,9 @@ def requestProcessDecline():
     ])
 
     cursor.execute(
-        'UPDATE request set status = "DECLINED" where id = %s', [inp['requestId']])
+        'UPDATE request set status = %s where id = %s', [statusval8, inp['requestId']])
     cursor.execute(
-        'UPDATE response set status = "DECLINED" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']])
+        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval8, inp['requestId']])
 
     now = datetime.datetime.utcnow()
     email = session['email']
@@ -3085,7 +3093,7 @@ def requestProcessQuote():
     responseId = inp['requestId'] + "R"
     email = session['email']
     now = datetime.datetime.utcnow()
-    status = 'QUOTED'
+    status = statusval2
 
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
@@ -3099,9 +3107,9 @@ def requestProcessQuote():
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
     
-    cursor.execute("UPDATE request SET status = 'QUOTED' WHERE id = %s", [inp['requestId']])
+    cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval2, inp['requestId']])
 
-    cursor.execute('UPDATE response set status = "QUOTED" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']]
+    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval2, inp['requestId']]
         )
 
     cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
@@ -3232,20 +3240,20 @@ def showQuote(id):
 
 
     data5 = []
-    if data2['status'] == 'ACCEPTED':
+    if data2['status'] == statusval4:
         cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
         data5 = cursor.fetchall()
         data5 = data5[0]
     
     data6 = []
-    if (data2['status'] == 'DECLINED'):
+    if (data2['status'] == statusval5):
         cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
         data6 = cursor.fetchall()
         data6 = data6[0]
 
     declined = False
     declinedMsg = ""
-    if (data['status'] == 'QUOTED'):
+    if (data['status'] == statusval2):
         cursor.execute('SELECT days from settingsTimelimit')
         days = cursor.fetchall()
         days = days[0]
@@ -3255,14 +3263,14 @@ def showQuote(id):
         endline = date + datetime.timedelta(days=days)
         if (today > endline):
             cursor.execute(
-                'UPDATE request set status = "EXPIRED" where id = %s', [data['id']])
+                'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
             cursor.execute(
-                'UPDATE response set status = "EXPIRED" where requestId = %s', [data['id']])
+                'UPDATE response set status = %s where requestId = %s', [statusval9, data['id']])
             mysql.connection.commit()
             declined = True
             declinedMsg = "Time limit expired"
-            data['status'] = "EXPIRED"
-            data2['status'] = "EXPIRED"
+            data['status'] = statusval9
+            data2['status'] = statusval9
 
     cursor.execute('select count from settingsNegotiation')
     count = cursor.fetchall()
@@ -3297,23 +3305,23 @@ def deleteRequest(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT status from request where id = %s', [id])
     status = cursor.fetchall()
-    if (status[0]['status'] == 'QUOTED') or (status[0]['status'] == 'ACCEPTED') or (status[0]['status'] == "DECLINED" or status[0]['status'] == 'SENT FOR REVIEW' or status[0]['status'] == 'NEGOTIATED'):
+    if (status[0]['status'] == statusval2) or (status[0]['status'] == statusval4) or (status[0]['status'] == statusval5 or status[0]['status'] == statusval7 or status[0]['status'] == statusval3 or status[0]['status'] == statusval8):
         data5 = []
-        if (status[0]['status'] == 'ACCEPTED'):
+        if (status[0]['status'] == statusval4):
             cursor.execute(
                 'SELECT * From requestAccepted where requestId = %s', [id])
             data5 = cursor.fetchall()
             data5 = data5[0]
 
         data6 = []
-        if (status[0]['status'] == 'DECLINED'):
+        if (status[0]['status'] == statusval5):
             cursor.execute(
                 "SELECT * From DeclineRequest where requestId = %s", [id])
             data6 = cursor.fetchall()
             data6 = data6[0]
 
         data8 = []
-        if (status[0]['status'] == 'SENT FOR REVIEW'):
+        if (status[0]['status'] == statusval7):
             cursor.execute(
                 "SELECT * From review where requestId = %s", [id])
             data8 = cursor.fetchall()
@@ -3455,7 +3463,7 @@ def deleteRequest(id):
 
         deleteflag = True
         return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
-    elif (status[0]['status'] == 'NEW'):
+    elif (status[0]['status'] == statusval1):
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
         data = data[0]
@@ -3508,7 +3516,7 @@ def deleteRequest(id):
 def DeleteRequest2():
     inp = request.json
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE request set status = "DELETED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE request set status = %s where id = %s', [statusval6, inp['id']])
     cursor.execute('SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
     email = session['email']
     now = datetime.datetime.utcnow()
@@ -3518,7 +3526,7 @@ def DeleteRequest2():
         cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse['foc'],prevresponse['commission'],prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
                 prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse['negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
-            "DELETED", prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+            statusval6, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract']
         ])
 
@@ -3563,7 +3571,7 @@ def NegotiateRequest():
     dd = dd[0]
     times = int(dd['timesNegotiated']) + 1
     #here
-    cursor.execute('UPDATE request set status = "NEGOTIATED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE request set status = %s where id = %s', [statusval3, inp['id']])
 
     cursor.execute(
         'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
@@ -3578,7 +3586,7 @@ def NegotiateRequest():
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
-            "NEGOTIATED", prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+            statusval3, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract'], inp['expectedFare'], inp['reason'], times
         ])
 
@@ -3629,7 +3637,7 @@ def AcceptRequest():
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
-            "ACCEPTED", prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+            statusval4, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
         ])
 
@@ -3660,7 +3668,7 @@ def AcceptRequest():
     
 
     cursor.execute('INSERT INTO requestAccepted(requestId, time) VALUES(%s, %s)', [inp['id'], now])
-    cursor.execute('UPDATE request set status = "ACCEPTED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE request set status = %s where id = %s', [statusval4, inp['id']])
 
     mysql.connection.commit()
     cursor.close()
@@ -3675,7 +3683,7 @@ def DeclineRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
     #here
-    cursor.execute('UPDATE request set status = "DECLINED" where id = %s', [inp['id']])
+    cursor.execute('UPDATE request set status = %s where id = %s', [statusval5, inp['id']])
     cursor.execute(
         'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
     email = session['email']
@@ -3689,7 +3697,7 @@ def DeclineRequest():
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
-            "DECLINED", prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+            statusval5, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract'], prevresponse[
                 'expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
         ])
@@ -3736,7 +3744,7 @@ def requestProcessReview():
     responseId = inp['requestId'] + "R"
     email = session['email']
     now = datetime.datetime.utcnow()
-    status = 'SENT FOR REVIEW'
+    status = statusval7
 
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
@@ -3750,9 +3758,9 @@ def requestProcessReview():
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
     
-    cursor.execute("UPDATE request SET status = 'SENT FOR REVIEW' WHERE id = %s", [inp['requestId']])
+    cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval7, inp['requestId']])
 
-    cursor.execute('UPDATE response set status = "SENT FOR REVIEW" where requestId = %s order by submittedOn desc limit 1', [inp['requestId']]
+    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval7, inp['requestId']]
         )
 
     cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
@@ -3865,6 +3873,5 @@ def requestHistory(id):
 
 
 if __name__ == "__main__":
-    app.jinja_env.cache = {}
     app.run(debug = True, threaded = True)
 
