@@ -108,6 +108,18 @@ statusval9 = 'EXPIRED'
 statusval10 = 'CONFIRMED'
 statusval11 = 'NOT CONFIRMED'
 
+@app.errorhandler(404)
+def error_404(e):
+    return render_template('error/404.html'), 404
+
+@app.errorhandler(403)
+def error_403(e):
+    return render_template('error/403.html'), 403
+
+@app.errorhandler(500)
+def error_500(e):
+    return render_template('error/500.html'), 500
+
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
 def confirm_email(token):
