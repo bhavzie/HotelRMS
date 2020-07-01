@@ -31,16 +31,16 @@ $(document).ready(function () {
 
     var table = $('#tab9').DataTable({
         columns: [
+            { width: '3%' },
+            { width: '0%' },
+            { width: '0%' },
+            { width: '5%' },
             { width: '10%' },
+            { width: '15%' },
             { width: '10%' },
+            { width: '5%' },
             { width: '10%' },
-            { width: '10%' },
-            { width: '10%' },
-            { width: '20%' },
-            { width: '10%' },
-            { width: '10%' },
-            { width: '10%' },
-            { width: '10%' },
+            { width: '15%' },
         ],
         "ordering": true,
     });

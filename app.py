@@ -43,6 +43,16 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
+def sendMail2(subjectv, recipientsv, bodyv, senderv):
+    msg = Message(
+        subject = subjectv,
+        sender = app.config['MAIL_SENDER'],
+        recipients = recipientsv.split())
+
+    msg.body = bodyv
+    mail.send(msg)
+    
+
 # DB Queries
 def dbQueryInsert(table, myDict):
     placeholders = ', '.join(['%s'] * len(myDict))
@@ -95,6 +105,8 @@ statusval6 = 'DELETED'
 statusval7 = 'SENT FOR REVIEW'
 statusval8 = 'HOTEL DECLINED'
 statusval9 = 'EXPIRED'
+statusval10 = 'CONFIRMED'
+statusval11 = 'NOT CONFIRMED'
 
 
 @app.route('/confirm_email/<token>', methods=['GET', 'POST'])
@@ -2105,7 +2117,7 @@ def showRequest(token):
 
         return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
 
-    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or  (status == statusval7 and ut['userSubType'] == 'reservation')):
+    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or status == statusval10 or status == statusval11 or  (status == statusval7 and ut['userSubType'] == 'reservation')):
 
         data5 = []
         if (status == statusval4):
@@ -3305,7 +3317,7 @@ def deleteRequest(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT status from request where id = %s', [id])
     status = cursor.fetchall()
-    if (status[0]['status'] == statusval2) or (status[0]['status'] == statusval4) or (status[0]['status'] == statusval5 or status[0]['status'] == statusval7 or status[0]['status'] == statusval3 or status[0]['status'] == statusval8):
+    if (status[0]['status'] == statusval2) or (status[0]['status'] == statusval4) or (status[0]['status'] == statusval5 or status[0]['status'] == statusval7 or status[0]['status'] == statusval3 or status[0]['status'] == statusval8 or status[0]['status'] == statusval10 or status[0]['status'] == statusval11):
         data5 = []
         if (status[0]['status'] == statusval4):
             cursor.execute(
@@ -3870,6 +3882,99 @@ def requestHistory(id):
     responseDaywiseData = finalresult
 
     return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData)
+
+
+@app.route('/confirmRequest/<token>', methods = ['GET', 'POST'])
+@is_logged_in
+def confirmRequest(token):
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From request where id = %s', [token])
+    requestData = cursor.fetchall()
+    requestData = requestData[0]
+
+    cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
+    acceptedOn = cursor.fetchall()
+    acceptedOn = acceptedOn[0]['time']
+
+    cursor.execute('SELECT totalQuote from response where requestId = %s order by submittedOn desc limit 1', [token])
+    totalQuote = cursor.fetchall()
+    totalQuote = totalQuote[0]['totalQuote']
+
+    return render_template('request/confirmRequest.html', requestData = requestData, acceptedOn = acceptedOn, totalQuote = totalQuote)
+
+@app.route('/confirmRequestSubmit', methods = ['GET', 'POST'])
+@is_logged_in
+def confirmRequestSubmit():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    cursor.execute('INSERT INTO confirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn) VALUES(%s, %s, %s, %s, %s)', [inp['id'], inp['confirmationCode'], inp['comments'], email, time])
+    cursor.execute('UPDATE request set status = %s where id = %s', [
+        statusval10, inp['id']
+    ])
+    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval10, inp['id']])
+
+    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    createdFor = cursor.fetchall()
+    createdFor = createdFor[0]['createdFor']
+    cursor.execute('SELECT totalQuote from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+    totalQuote = cursor.fetchall()
+    totalQuote = totalQuote[0]['totalQuote']
+    mysql.connection.commit()
+
+    msg = 'Your request with confirmationCode {} has been confirmed for totalQuote ${}'.format(inp['confirmationCode'], totalQuote)
+
+    sendMail2(
+        subjectv = 'Confirmation Email',
+        recipientsv = createdFor,
+        bodyv = msg,
+        senderv = 'koolbhavya.epic@gmail.com'
+    )
+
+
+    flash('The request has been confirmed', 'success')
+    return ('', 204)
+
+
+@app.route('/notConfirmRequest',  methods=['GET', 'POST'])
+@is_logged_in
+def notConfirmRequest():
+    inp = request.json
+    cursor = mysql.connection.cursor()
+    email = session['email']
+    time = datetime.datetime.utcnow()
+    cursor.execute('INSERT INTO notConfirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn) VALUES(%s, %s, %s, %s, %s)', [
+                   inp['id'], inp['confirmationCode'], inp['comments'], email, time])
+
+    cursor.execute('UPDATE request set status = %s where id = %s', [
+        statusval11, inp['id']
+    ])
+
+    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [
+                   statusval11, inp['id']])
+
+
+    mysql.connection.commit()
+
+    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    createdFor = cursor.fetchall()
+    createdFor = createdFor[0]['createdFor']
+   
+    mysql.connection.commit()
+
+    msg = 'Your request with confirmationCode {} has been declined by you for the following reason "{}"'.format(
+        inp['confirmationCode'], inp['comments'])
+
+    sendMail2(
+        subjectv='Confirmation Email',
+        recipientsv=createdFor,
+        bodyv=msg,
+        senderv='koolbhavya.epic@gmail.com'
+    )
+
+    flash('The request is now declined', 'danger')
+    return ('', 204)
 
 
 if __name__ == "__main__":

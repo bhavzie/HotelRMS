@@ -73,7 +73,7 @@
                 <caption>Request</caption>
                 <thead class="thead-dark">
                     <tr>
-                        <th style = 'width: 10%;' class = 'text-center no-sort'>Request ID</th>
+                        <th style = 'width: 5%;' class = 'text-center no-sort'>Request ID</th>
                         <th>Category</th>
                         <th>Created On</th>
                         <th style = 'width: 10%;' class = 'text-center'>Customer Type</th>
@@ -143,6 +143,9 @@
                                 <a href='/deleteRequest/{{d["id"]}}' class='btn btn-danger'>
                                     <i class="fas fa-times-circle"></i>
                                 </a>
+                                <a href = '/confirmRequest/{{ d["id"] }}' class = 'btn btn-success'>
+                                    <i class="fas fa-check-circle"></i>
+                                </a>
                             {% elif d['status'] == 'HOTEL DECLINED' %}
                             <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
                                 <i class="fas fa-cog"></i>
@@ -175,6 +178,26 @@
                                 <i class="fas fa-times-circle"></i>
                             </a>
                             {% elif d['status'] == 'NEGOTIATED' %}
+                            <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            <a href='/showQuote/{{ d["id"] }}' class='btn btn-info'>
+                                <i class="fas fa-share-square"></i>
+                            </a>
+                            <a href='/deleteRequest/{{d["id"]}}' class='btn btn-danger'>
+                                <i class="fas fa-times-circle"></i>
+                            </a>
+                            {% elif d['status'] == 'CONFIRMED' %}
+                            <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            <a href='/showQuote/{{ d["id"] }}' class='btn btn-info'>
+                                <i class="fas fa-share-square"></i>
+                            </a>
+                            <a href='/deleteRequest/{{d["id"]}}' class='btn btn-danger'>
+                                <i class="fas fa-times-circle"></i>
+                            </a>
+                            {% elif d['status'] == 'NOT CONFIRMED' %}
                             <a href='/showRequest/{{d["id"]}}' class='btn btn-info'>
                                 <i class="fas fa-cog"></i>
                             </a>
