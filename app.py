@@ -51,6 +51,16 @@ def sendMail2(subjectv, recipientsv, bodyv, senderv):
 
     msg.body = bodyv
     mail.send(msg)
+
+def sendMail3(subjectv, recipientsv, bodyv, senderv, attachv):
+    msg = Message(
+        subject = subjectv,
+        sender = app.config['MAIL_SENDER'],
+        recipients = recipientsv.split())
+
+    msg.body = bodyv
+    msg.attach(attachv)
+    mail.send(msg)
     
 
 # DB Queries
@@ -2072,7 +2082,6 @@ def reset():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    #reset()    
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
@@ -3808,6 +3817,22 @@ def AcceptRequest():
 
     cursor.execute('INSERT INTO requestAccepted(requestId, time) VALUES(%s, %s)', [inp['id'], now])
     cursor.execute('UPDATE request set status = %s where id = %s', [statusval4, inp['id']])
+    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    createdFor = cursor.fetchall()
+    createdFor = createdFor[0]['createdFor']
+
+    with app.open_resource("static/docs/ccauth_hotels.pdf") as fp:
+        msg = Message(
+            'Payment Guarantee',
+            sender = 'koolbhavya.epic@gmail.com',
+            recipients= [createdFor],
+        )
+        msg.body = 'Kindly guarantee payment by filling this form'
+        msg.attach(
+            "PaymentGuarantee.pdf", "application/pdf", fp.read()
+        )
+        mail.send(msg)
+
 
     mysql.connection.commit()
     cursor.close()
