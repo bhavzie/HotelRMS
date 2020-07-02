@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="home">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Enter OCC :</p>
+            </div>
+        </div>
+        <small id='smallID' class='form-text text-muted mb-5'>
+            All fields are in percentage (%)
+        </small>
+        <button type = 'button' class = 'btn btn-info mb-5' onclick="edit()">Edit</button>
+        <form action='{{ url_for("showRequest1") }}' method='POST' id='gocc'>
+            <input type='hidden' name='id' value='{{ token }}'>
+
+            {% for date, value in occ.items() %}
+            <div class='row mb-5'>
+                <div class='col-sm-6'>
+                        <label class='btn btn-info'>{{ date }}</label>
+                </div>
+                <div class='col-sm-6'>
+                    <input type='number' step='any' min='0' max='100' class='form-control entry ml-5' style='width: 60%;'
+                        name='{{ date }}' required value = "{{ value }}" readonly>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btnLogin">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+    const flag = "{{ flag }}"
+    $(document).ready(function () {
+        console.log(flag)
+        if (flag == "False")
+            $("#gocc").submit();
+    });
+
+    function edit() {
+        const entry = [...document.getElementsByClassName('entry')]
+        entry.forEach(e => {
+            $(e).removeAttr('readonly')
+        })
+    }
+
+</script>
+
+{% endblock %}

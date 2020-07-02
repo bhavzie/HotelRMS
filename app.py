@@ -2082,6 +2082,7 @@ def reset():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
+    #reset()
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
@@ -2845,7 +2846,6 @@ def showRequest1():
     
 
         dateToCheck = curr_date.strftime('%Y-%m-%d')
-        
         occ = request.form.get(str(curr_date))
         if occ == None:
             occs.append("-")
@@ -4007,7 +4007,6 @@ def requestHistory(id):
     cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
 
     responseAvgData = cursor.fetchall()
-    #print(responseAvgData)
     cursor.execute('SELECT * From responseDaywise where responseId = %s ', [responseId])
     responseDaywiseData = cursor.fetchall()
     tempdict = {}
@@ -4024,10 +4023,10 @@ def requestHistory(id):
         tdict = {}
         for r in value:
             if (r['date'] in tdict):
-                r['total'] = int(r['count']) * float(r['ratePerRoom'].split(' (')[0])
+                r['total'] = int(r['count']) * float(r['ratePerRoom'].split('(')[0])
                 tdict[r['date']].append(r)
             else:
-                r['total'] = int(r['count']) * float(r['ratePerRoom'].split(" (")[0])
+                r['total'] = int(r['count']) * float(r['ratePerRoom'].split("(")[0])
                 tdict[r['date']] = [r]
                 
         finalresult.append(tdict)
@@ -4217,6 +4216,28 @@ def notConfirmRequest():
     flash('The request is now declined', 'danger')
     return ('', 204)
 
+@app.route('/changeOcc/<id>', methods = ['GET', 'POST'])
+def changeOcc(id):
+    cursor = mysql.connection.cursor()
+    responseId = id + "R"
+    cursor.execute('SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+    submittedOn = cursor.fetchall()
+    submittedOn = submittedOn[0]['submittedOn']
+
+    cursor.execute('SELECT date, currentOcc from responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+    occ = cursor.fetchall()
+    tempdict = {}
+    for row in occ:
+        tempdict[row['date']] = row['currentOcc'].split(" (")[0]
+    
+    flag = False
+    for key, value in tempdict.copy().items():
+        if (value != '' and value != '-'):
+            flag = True
+        else:
+            tempdict.pop(key)
+    
+    return render_template('request/getOccEdit.html', occ = tempdict, flag = flag, token = id)
 
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)

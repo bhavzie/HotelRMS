@@ -947,7 +947,8 @@
         for (let i = 0; i<nights; i++) {
 
             const date = dobj.getDate()
-            const month = dobj.getMonth()
+            let month = dobj.getMonth()
+            month = month + 1
             const year = dobj.getFullYear()
 
 
@@ -1182,7 +1183,8 @@
             for (let i = 0; i < nights; i++) {
 
                 const date = dobj.getDate()
-                const month = dobj.getMonth()
+                let month = dobj.getMonth()
+                month = month + 1
                 const year = dobj.getFullYear()
 
 
@@ -1394,11 +1396,13 @@
         var dateParts1 = checkIn.split("-");
         var dt1 = new Date(+dateParts1[0], dateParts1[1] - 1, +dateParts1[2]);
         let dobj = dt1
+
         let flag = true
         for (let i = 0; i < nights; i++) {
 
             const date = dobj.getDate()
-            const month = dobj.getMonth()
+            let month = dobj.getMonth()
+            month = month + 1
             const year = dobj.getFullYear()
 
 
@@ -1450,8 +1454,6 @@
 
 
         result['table_result'] = table_result
-
-        console.log(result)
 
         fetch('/requestProcessReview', {
             method: 'POST',

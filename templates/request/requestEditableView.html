@@ -123,7 +123,8 @@
         <div class='row mb-2'>
             <button class='btn btn-primary mr-2' type='button'>Duplicate</button>
             <a class='btn btn-primary mr-2' href = '{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
-            <button class = 'btn btn-primary' type = 'button' id='editbutton' onclick = 'edit()'>Edit</button>
+            <button class = 'btn btn-primary mr-2' type = 'button' id='editbutton' onclick = 'edit()'>Edit</button>
+            <a class = 'btn btn-primary mr-2' href = '{{ url_for("changeOcc", id = data["id"]) }}'>Edit OCC</a>
         </div>
         <div class='row mt-5'>
             <div class='row col-12'>
