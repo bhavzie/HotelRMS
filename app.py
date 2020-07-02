@@ -2291,6 +2291,7 @@ def showRequest(token):
 
                 righttable[d['date']].append(tArr)
 
+
             cursor.execute(
                 'SELECT contract from response where responseId = %s  order by submittedOn desc limit 1', [responseId])
             contract = cursor.fetchall()
@@ -2325,7 +2326,7 @@ def showRequest(token):
                     data['status'] = statusval9
                     data2['status'] = statusval9
 
-            
+        
 
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
 
@@ -2487,6 +2488,116 @@ def showRequest(token):
             contract = cursor.fetchall()
             contract = contract[0]
 
+            single1 = []
+            single2 = []
+            double1 = []
+            double2 = []
+            triple1 = []
+            triple2 = []
+            quad1 = []
+            quad2 = []
+
+            single1c = 0
+            single2c = 0
+            double1c = 0
+            double2c = 0
+            triple1c = 0
+            triple2c = 0
+            quad1c = 0
+            quad2c = 0
+            foc1c = 0
+            foc2c = 0
+
+            single1f = False
+            double1f = False
+            triple1f = False
+            quad1f = False
+            single2f = False
+            double2f = False
+            triple2f = False
+            quad2f = False
+
+            foc1 = 0
+            foc2 = 0
+            roomCount = 0
+
+            for m in data4:
+                if (m['type'] != 'foc'):
+                    roomCount += int(m['count'])
+                if (m['type'] == '1 Bed'):
+                    if (m['occupancy'] == 'Single'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            single1.append(v)
+                        single1c = single1c + int(m['count'])
+                        single1f = True
+                    elif (m['occupancy'] == 'Double'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            double1.append(v)
+                        double1c = double1c + int(m['count'])
+                        double1f = True
+                    elif (m['occupancy'] == 'Triple'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            triple1.append(v)
+                        triple1c = triple1c + int(m['count'])
+                        triple1f = True
+                    elif (m['occupancy'] == 'Quad'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            quad1.append(v)
+                        quad1c = quad1c + int(m['count'])
+                        quad1f = True
+                elif (m['type'] == '2 Bed'):
+                    if (m['occupancy'] == 'Single'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            single2.append(v)
+                        single2c = single2c + int(m['count'])
+                        single2f = True
+                    elif (m['occupancy'] == 'Double'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            double2.append(v)
+                        double2c = double2c + int(m['count'])
+                        double2f = True
+                    elif (m['occupancy'] == 'Triple'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            triple2.append(v)
+                        triple2c = triple2c + int(m['count'])
+                        triple2f = True
+                    elif (m['occupancy'] == 'Quad'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            quad2.append(v)
+                        quad2c = quad2c + int(m['count'])
+                        quad2f = True
+                elif (m['type'] == 'foc'):
+                    if (m['occupancy'] == 'Single'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            foc1 += float(v)
+                        foc1c = int(m['count'])
+                    elif (m['occupancy'] == 'Double'):
+                        if (m['ratePerRoom'] != -1):
+                            s = m['ratePerRoom'].split('(')
+                            v = float(s[0]) * int(m['count'])
+                            foc2 += float(v)
+                        foc2c = int(m['count'])
+
+
+
             cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
             contractv = cursor.fetchall()
             if len(contractv) != 0:
@@ -2519,7 +2630,7 @@ def showRequest(token):
         contracts = cursor.fetchall()
 
         
-        return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt)
+        return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1c = foc1c, foc2c = foc2c)
 
         
 

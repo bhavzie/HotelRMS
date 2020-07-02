@@ -68,6 +68,7 @@
                 <div class = 'row mb-2'>
                     <button class = 'btn btn-primary mr-2' type = 'button'>Duplicate</button>
                     <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
+                    <button class = 'btn btn-info' type = 'button' onclick = 'edit()'>Edit</button>
                 </div>
                 <div class = 'row mt-5'>
                     <div class = 'row col-12'>
@@ -122,70 +123,13 @@
                                             {% for day in result[i] %}
                                                 <tr>
                                                     <td>
-                                                        {% if day['type'] == '1 Bed' %}
-                                                        <select class = 'form-control seldom' disabled>
-                                                            <option class='{{ roomData[0]["single"] }}' {% if day["occupancy"] == "Single" %} selected='selected' {% endif %}>
-                                                                Single
-                                                            </option>
-                                                            <option class='{{ roomData[0]["doublev"] }}' {% if day["occupancy"] == "Double" %} selected='selected' {% endif %}>
-                                                                Double
-                                                            </option>
-                                                            <option class='{{ roomData[0]["triple"] }}' {% if day["occupancy"] == "Triple" %} selected='selected' {% endif %}>
-                                                                Triple
-                                                            </option>
-                                                            <option class='{{ roomData[0]["quad"] }}' {% if day["occupancy"] == "Quad" %} selected='selected' {% endif %}>
-                                                                Quad
-                                                            </option>
-                                                        </select>
-                                                        {% elif day['type'] == '2 Bed' %}
-                                                        <select class = 'form-control seldom' disabled>
-                                                            <option class='{{ roomData[1]["single"] }}'  {% if day["occupancy"] == "Single" %} selected = 'selected' {% endif %}>
-                                                                Single
-                                                            </option>
-                                                            <option class='{{ roomData[1]["doublev"] }}' {% if day["occupancy"] == "Double" %} selected = 'selected' {% endif %}>
-                                                                Double
-                                                            </option>
-                                                            <option class='{{ roomData[1]["triple"] }}' {% if day["occupancy"] == "Triple" %} selected = 'selected' {% endif %}>
-                                                                Triple
-                                                            </option>
-                                                            <option class='{{ roomData[1]["quad"] }}' {% if day["occupancy"] == "Quad" %} selected = 'selected' {% endif %}>
-                                                                Quad
-                                                            </option>
-                                                        </select>
-                                                        {% else %}
-                                                        <select class = 'form-control' disabled>
-                                                            <option selected>
-                                                                {{ day['occupancy'] }}
-                                                            </option>
-                                                        </select>
-                                                        {% endif %}
+                                                        {{ day['occupancy'] }}
                                                     </td>
                                                     <td>
-                                                        {% if day['type'] == 'foc' %}
-                                                            <select class = 'form-control' disabled>
-                                                                <option>
-                                                                    {{ day['type'] }}
-                                                                </option>
-                                                            </select>
-                                                        {% else %}
-                                                        <select class = 'form-control'  onchange="poor(event)" disabled>
-                                                            <option>
-                                                                {{ day['type'] }}
-                                                            </option>
-                                                            {% if day['type'] == '1 Bed' %}
-                                                            <option>
-                                                                2 Bed
-                                                            </option>
-                                                            {% elif day['type'] == '2 Bed' %}
-                                                            <option>
-                                                                1 Bed
-                                                            </option>
-                                                            {% endif %}
-                                                        </select>
-                                                        {% endif %}
+                                                        {{ day['type'] }}
                                                     </td>
                                                     <td>
-                                                        <input type='number' class='form-control' readonly value="{{day['count']}}">
+                                                        {{ day['count'] }}
                                                     </td>
                                                     <td>
                                                     {% if day['type'] == 'foc' %}
@@ -194,12 +138,15 @@
                                                         onchange="down(event)"
                                                         step = 'any'>
                                                         {% else %}
-                                                        <input type='text' class='form-control' readonly value="{{ day['rate'] }}">
+                                                        <input type='number' class='num4 rateedit'
+                                                            value="{{ day['rate'].split(' (')[0] }}"  min = 10 onchange="down(event)" step = 'any'>
+                                                        <input type = 'text' class = 'form-control' value = "({{ day['rate'].split(' (')[1] }}" readonly>
                                                         {% endif %}
                                                     {% elif day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num3' min = '10' onchange="up(event)" step = 'any'>
                                                     {% else %}
-                                                        <input type='text' class='form-control' readonly value="{{day['rate']}}">
+                                                        <input type='number' class='num3 rateedit' readonly value="{{ day['rate'].split(' (')[0] }}" readonly min = 10 onchange="up(event)" step = 'any'>
+                                                        <input type='text' class='form-control'  value = "({{ day['rate'].split(' (')[1] }}" readonly>
                                                     {% endif %}
                                                     </td>
                                                 </tr>
@@ -474,105 +421,6 @@
 <script src="/static/js/jquery.js"></script>
 <script>
 
-
-    function setOptionssel() {
-        const selects = [...document.getElementsByClassName('seldom')]
-        selects.forEach(select => {
-            const options = [...select.options]
-            options.forEach(option => {
-                if ($(option).hasClass('0')) {
-                    $(option).hide()
-                }
-            })
-
-        })
-    }
-
-    function poor(e) {
-        const data = "{{ roomData|safe }}";
-        let selected = e.target.value
-
-        const type1 = "{{ roomData[0]['type'] }}"
-        const type2 = "{{ roomData[1]['type'] }}"
-
-        const type1arr = []
-        type1arr.push("{{ roomData[0]['single'] }}")
-        type1arr.push("{{ roomData[0]['doublev'] }}")
-        type1arr.push("{{ roomData[0]['triple'] }}")
-        type1arr.push("{{ roomData[0]['quad'] }}")
-
-
-        const type2arr = []
-        type2arr.push("{{ roomData[1]['single'] }}")
-        type2arr.push("{{ roomData[1]['doublev'] }}")
-        type2arr.push("{{ roomData[1]['triple'] }}")
-        type2arr.push("{{ roomData[1]['quad'] }}")
-
-        let inp = e.target.parentElement.nextElementSibling.children[0]
-
-        selected = selected.split(' ')[0]
-
-        if (selected == 1) {
-            inp.max = ("{{ roomData[0]['count'] }}")
-        } else {
-            inp.max = ("{{ roomData[1]['count'] }}")
-        }
-
-        const p = e.target.parentElement.previousElementSibling.children[0]
-
-        if (selected == type1) {
-            for (let i = 0; i < p.options.length; i++) {
-                if (p.options[i].value == 'Single' && type1arr[0] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Single' && type1arr[0] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Double' && type1arr[1] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Double' && type1arr[1] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Triple' && type1arr[2] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Triple' && type1arr[2] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Quad' && type1arr[3] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Quad' && type1arr[3] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-            }
-        } else {
-            for (let i = 0; i < p.options.length; i++) {
-                if (p.options[i].value == 'Single' && type2arr[0] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Single' && type2arr[0] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Double' && type2arr[1] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Double' && type2arr[1] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Triple' && type2arr[2] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Triple' && type2arr[2] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-                if (p.options[i].value == 'Quad' && type2arr[3] != 1) {
-                    p.options[i].style.display = 'none'
-                } else if (p.options[i].value == 'Quad' && type2arr[3] == 1) {
-                    p.options[i].style.display = 'block'
-                }
-            }
-        }
-
-        p.selectedIndex = 0
-
-    } 
-
-
     function hdd(e) {
             const dede = document.getElementById('dede')
             const option = dede.options[dede.selectedIndex].value
@@ -600,12 +448,18 @@
         const avgRate = "{{ avgRate|safe }}"
         const roomCount = "{{ roomCount|safe }}"
 
-        setOptionssel()
-
-
 
         
     });
+
+
+    function edit() {
+        const rateedit = [...document.getElementsByClassName('rateedit')]
+        rateedit.forEach(rate => {
+            $(rate).removeAttr("readonly")
+        })
+
+    }
 
     function dem(e) {
         
@@ -644,14 +498,17 @@
         const comP = "{{ comP }}"
         
 
-        let newtotal = parseFloat(ogT)
+        let newtotal = 0
 
         inputs.forEach(inp => {
-            if (inp.value != '' && inp.value >= 10) {
-                const count = inp.parentElement.previousElementSibling.innerHTML
+            if (inp.value != '') {
+                val = parseFloat(inp.value)
+                const count = parseInt(inp.parentElement.previousElementSibling.innerHTML)
+                
                 newtotal += parseFloat(inp.value * count)
             }
         })
+
 
         total.innerText = +(Math.round(newtotal + "e+2") + "e-2");
         r = parseFloat(total.innerHTML)
@@ -723,14 +580,9 @@
                 const occ  = tr.children[0].innerText
                 const type = tr.children[1].innerText
                 const count = tr.children[2].innerText
-                let x = tr.children[3]
-                if (x.children.length == 0)
-                    rate = tr.children[3].innerText
-                else {
-                    rate = tr.children[3].children[0].value
-                    if (rate == '') {
-                        rate = '0'
-                    }
+                rate = tr.children[3].children[0].value
+                if (rate == '') {
+                    rate = '0'
                 }
 
                 if (type == '1 Bed') {
@@ -903,11 +755,13 @@
         const ogA = "{{ avgRate }}"
         const comP = "{{ comP }}"
 
-        let newtotal = parseFloat(ogT)
+        let newtotal = 0
 
         inputs.forEach(inp => {
-            if (inp.value != '' && inp.value >= 10) {
-                const count = inp.parentElement.previousElementSibling.innerHTML
+            if (inp.value != '') {
+                val = parseFloat(inp.value)
+                const count = parseInt(inp.parentElement.previousElementSibling.innerHTML)
+
                 newtotal += parseFloat(inp.value * count)
             }
         })
@@ -1004,8 +858,6 @@
             }
         }
         const status = 'quoted'
-
-        console.log('h')
 
         const checkIn = "{{ checkIn }}"
         const checkOut = "{{ checkOut }}"
@@ -1122,13 +974,13 @@
                 resArr['count'] = tr.children[2].innerText
                 // check if input
                 let x = tr.children[3]
-                if (x.children.length == 0)
-                    resArr['ratePerRoom'] = tr.children[3].innerText
-                else {
-                    resArr['ratePerRoom'] = tr.children[3].children[0].value
-                    if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
-                        flag = false
-                    }
+                resArr['ratePerRoom'] = tr.children[3].children[0].value
+                if (resArr['ratePerRoom'] == '') {
+                    flag = false
+                    emsg('Enter valid Rate per room')
+                }
+                if (x.children.length == 2) {
+                    resArr['ratePerRoom'] += (tr.children[3].children[1].value)
                 }
 
                 table_result.push(resArr)
@@ -1147,8 +999,7 @@
 
 
         result['table_result'] = table_result
-        console.log(result['table_result'])
-        return false
+
 
         fetch('/requestProcessQuote', {
             method: 'POST',
@@ -1358,13 +1209,13 @@
                     resArr['count'] = tr.children[2].innerText
                     // check if input
                     let x = tr.children[3]
-                    if (x.children.length == 0)
-                        resArr['ratePerRoom'] = tr.children[3].innerText
-                    else {
-                        resArr['ratePerRoom'] = tr.children[3].children[0].value
-                        if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
-                            flag = false
-                        }
+                    resArr['ratePerRoom'] = tr.children[3].children[0].value
+                    if (resArr['ratePerRoom'] == '') {
+                        flag = false
+                        emsg('Enter valid Rate per room')
+                    }
+                    if (x.children.length == 2) {
+                        resArr['ratePerRoom'] += (tr.children[3].children[1].value)
                     }
 
                     table_result.push(resArr)
@@ -1574,13 +1425,13 @@
                 resArr['count'] = tr.children[2].innerText
                 // check if input
                 let x = tr.children[3]
-                if (x.children.length == 0)
-                    resArr['ratePerRoom'] = tr.children[3].innerText
-                else {
-                    resArr['ratePerRoom'] = tr.children[3].children[0].value
-                    if (resArr['ratePerRoom'] == '' || resArr['ratePerRoom'] < 10) {
-                        flag = false
-                    }
+                resArr['ratePerRoom'] = tr.children[3].children[0].value
+                if (resArr['ratePerRoom'] == '') {
+                    flag = false
+                    emsg('Enter valid Rate per room')
+                }
+                if (x.children.length == 2) {
+                    resArr['ratePerRoom'] += (tr.children[3].children[1].value)
                 }
 
                 table_result.push(resArr)
