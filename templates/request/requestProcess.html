@@ -112,18 +112,81 @@
                                     <table class="table table-bordered table-hover" id = "row{{i}}">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th>Occupancy</th>
-                                                <th>Room Type</th>
-                                                <th>Count</th>
-                                                <th>Rate/Room</th>
+                                                <th style="width: 20%;">Occupancy</th>
+                                                <th style='width:20%;'>Room Type</th>
+                                                <th style='width:15%;'>Count</th>
+                                                <th style='width:40%;'>Rate/Room</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for day in result[i] %}
                                                 <tr>
-                                                    <td>{{day['occupancy']}}</td>
-                                                    <td>{{day['type']}}</td>
-                                                    <td>{{day['count']}}</td>
+                                                    <td>
+                                                        {% if day['type'] == '1 Bed' %}
+                                                        <select class = 'form-control seldom' disabled>
+                                                            <option class='{{ roomData[0]["single"] }}' {% if day["occupancy"] == "Single" %} selected='selected' {% endif %}>
+                                                                Single
+                                                            </option>
+                                                            <option class='{{ roomData[0]["doublev"] }}' {% if day["occupancy"] == "Double" %} selected='selected' {% endif %}>
+                                                                Double
+                                                            </option>
+                                                            <option class='{{ roomData[0]["triple"] }}' {% if day["occupancy"] == "Triple" %} selected='selected' {% endif %}>
+                                                                Triple
+                                                            </option>
+                                                            <option class='{{ roomData[0]["quad"] }}' {% if day["occupancy"] == "Quad" %} selected='selected' {% endif %}>
+                                                                Quad
+                                                            </option>
+                                                        </select>
+                                                        {% elif day['type'] == '2 Bed' %}
+                                                        <select class = 'form-control seldom' disabled>
+                                                            <option class='{{ roomData[1]["single"] }}'  {% if day["occupancy"] == "Single" %} selected = 'selected' {% endif %}>
+                                                                Single
+                                                            </option>
+                                                            <option class='{{ roomData[1]["doublev"] }}' {% if day["occupancy"] == "Double" %} selected = 'selected' {% endif %}>
+                                                                Double
+                                                            </option>
+                                                            <option class='{{ roomData[1]["triple"] }}' {% if day["occupancy"] == "Triple" %} selected = 'selected' {% endif %}>
+                                                                Triple
+                                                            </option>
+                                                            <option class='{{ roomData[1]["quad"] }}' {% if day["occupancy"] == "Quad" %} selected = 'selected' {% endif %}>
+                                                                Quad
+                                                            </option>
+                                                        </select>
+                                                        {% else %}
+                                                        <select class = 'form-control' disabled>
+                                                            <option selected>
+                                                                {{ day['occupancy'] }}
+                                                            </option>
+                                                        </select>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if day['type'] == 'foc' %}
+                                                            <select class = 'form-control' disabled>
+                                                                <option>
+                                                                    {{ day['type'] }}
+                                                                </option>
+                                                            </select>
+                                                        {% else %}
+                                                        <select class = 'form-control'  onchange="poor(event)" disabled>
+                                                            <option>
+                                                                {{ day['type'] }}
+                                                            </option>
+                                                            {% if day['type'] == '1 Bed' %}
+                                                            <option>
+                                                                2 Bed
+                                                            </option>
+                                                            {% elif day['type'] == '2 Bed' %}
+                                                            <option>
+                                                                1 Bed
+                                                            </option>
+                                                            {% endif %}
+                                                        </select>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <input type='number' class='form-control' readonly value="{{day['count']}}">
+                                                    </td>
                                                     <td>
                                                     {% if day['type'] == 'foc' %}
                                                         {% if day['rate'] == -1 %}
@@ -131,12 +194,12 @@
                                                         onchange="down(event)"
                                                         step = 'any'>
                                                         {% else %}
-                                                        {{ day['rate'] }}
+                                                        <input type='text' class='form-control' readonly value="{{ day['rate'] }}">
                                                         {% endif %}
                                                     {% elif day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num3' min = '10' onchange="up(event)" step = 'any'>
                                                     {% else %}
-                                                        {{day['rate']}}
+                                                        <input type='text' class='form-control' readonly value="{{day['rate']}}">
                                                     {% endif %}
                                                     </td>
                                                 </tr>
@@ -411,6 +474,105 @@
 <script src="/static/js/jquery.js"></script>
 <script>
 
+
+    function setOptionssel() {
+        const selects = [...document.getElementsByClassName('seldom')]
+        selects.forEach(select => {
+            const options = [...select.options]
+            options.forEach(option => {
+                if ($(option).hasClass('0')) {
+                    $(option).hide()
+                }
+            })
+
+        })
+    }
+
+    function poor(e) {
+        const data = "{{ roomData|safe }}";
+        let selected = e.target.value
+
+        const type1 = "{{ roomData[0]['type'] }}"
+        const type2 = "{{ roomData[1]['type'] }}"
+
+        const type1arr = []
+        type1arr.push("{{ roomData[0]['single'] }}")
+        type1arr.push("{{ roomData[0]['doublev'] }}")
+        type1arr.push("{{ roomData[0]['triple'] }}")
+        type1arr.push("{{ roomData[0]['quad'] }}")
+
+
+        const type2arr = []
+        type2arr.push("{{ roomData[1]['single'] }}")
+        type2arr.push("{{ roomData[1]['doublev'] }}")
+        type2arr.push("{{ roomData[1]['triple'] }}")
+        type2arr.push("{{ roomData[1]['quad'] }}")
+
+        let inp = e.target.parentElement.nextElementSibling.children[0]
+
+        selected = selected.split(' ')[0]
+
+        if (selected == 1) {
+            inp.max = ("{{ roomData[0]['count'] }}")
+        } else {
+            inp.max = ("{{ roomData[1]['count'] }}")
+        }
+
+        const p = e.target.parentElement.previousElementSibling.children[0]
+
+        if (selected == type1) {
+            for (let i = 0; i < p.options.length; i++) {
+                if (p.options[i].value == 'Single' && type1arr[0] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Single' && type1arr[0] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Double' && type1arr[1] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Double' && type1arr[1] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Triple' && type1arr[2] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Triple' && type1arr[2] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Quad' && type1arr[3] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Quad' && type1arr[3] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+            }
+        } else {
+            for (let i = 0; i < p.options.length; i++) {
+                if (p.options[i].value == 'Single' && type2arr[0] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Single' && type2arr[0] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Double' && type2arr[1] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Double' && type2arr[1] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Triple' && type2arr[2] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Triple' && type2arr[2] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+                if (p.options[i].value == 'Quad' && type2arr[3] != 1) {
+                    p.options[i].style.display = 'none'
+                } else if (p.options[i].value == 'Quad' && type2arr[3] == 1) {
+                    p.options[i].style.display = 'block'
+                }
+            }
+        }
+
+        p.selectedIndex = 0
+
+    } 
+
+
     function hdd(e) {
             const dede = document.getElementById('dede')
             const option = dede.options[dede.selectedIndex].value
@@ -437,6 +599,8 @@
         const totalQuote = "{{ totalQuote|safe }}"
         const avgRate = "{{ avgRate|safe }}"
         const roomCount = "{{ roomCount|safe }}"
+
+        setOptionssel()
 
 
 
@@ -983,6 +1147,8 @@
 
 
         result['table_result'] = table_result
+        console.log(result['table_result'])
+        return false
 
         fetch('/requestProcessQuote', {
             method: 'POST',
