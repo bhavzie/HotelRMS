@@ -66,9 +66,12 @@
                 </div>
                 <hr>
                 <div class = 'row mb-2'>
+                    <a class='btn btn-info mr-2' href='{{ url_for("showRequest", token = data["id"]) }}'>
+                        Back
+                    </a>
                     <button class = 'btn btn-primary mr-2' type = 'button'>Duplicate</button>
                     <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
-                    <button class = 'btn btn-info' type = 'button' onclick = 'edit()'>Edit</button>
+                    <button class = 'btn btn-info mr-2' type = 'button' onclick = 'edit()'>Edit</button>
                 </div>
                 <div class = 'row mt-5'>
                     <div class = 'row col-12'>
@@ -331,7 +334,7 @@
                 </div>
                 <div class='col-sm-12 mb-5' id='dede22'>
                     <input type='number' class='form-control' style='max-width: 40%; display: inline-block; margin-left: 10rem;'
-                        id='dede33' disabled><span> Days</span>
+                        id='dede33' disabled ><span> Days</span>
                 </div>
                 <div class='mb-5'>
                     <div class="form-check checkbox-slider--b-flat">
@@ -350,7 +353,7 @@
                         </label>
                     </div>
                     {% else %}
-                    <label>Negotiable: No</label>
+                    <label>Negotiable: No(Negotiable set off or reached settings limit)</label>
                     {% endif %}
                 </div>
                 <div class = 'form-group row mb-5'>

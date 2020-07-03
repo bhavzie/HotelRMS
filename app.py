@@ -3172,21 +3172,67 @@ def showRequest1():
     cursor.execute('SELECT * from contract')
     contracts = cursor.fetchall()
 
-    cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
-    nego = cursor.fetchall()
-    negoF = False
-    if len(nego) != 0:
-        nego = nego[0]
-        if (int(nego['count']) > 0):
-            negoF = True
-    
     cursor.execute('SELECT * From room')
     roomData = cursor.fetchall()
+
+    negoF = False
+    cursor.execute('SELECT * From response where requestId = %s order by submittedOn desc limit 1', [token])
+    responseData = cursor.fetchall()
+    if len(responseData) == 0:
+        cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
+        nego = cursor.fetchall()
+        if len(nego) != 0:
+            nego = nego[0]
+            if (int(nego['count']) > 0):
+                negoF = True
+    else:
+        cursor.execute('SELECT * from response where requestId = %s &&status = %s', [token, statusval3])
+        negoTime = cursor.fetchall()
+        negoTimes = len(negoTime)
+        cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
+        count = cursor.fetchall()
+        if len(count) != 0:
+            count = count[0]['count']
+        else:
+            count = 100
+        if (int(negoTimes) < int(count)):
+            negoF = True
+
+        responseData = responseData[0]
+        string = ''
+        v = responseData['formPayment']
+        fop = responseData['formPayment']
+        if v != None:
+            if v.count('cq') > 0:
+                string += '(Cheque),'
+            if v.count('bt') > 0:
+                string += ' (Bank Transfer),'
+            if v.count('cc') > 0:
+                string += '(Credit Card)'
+
+        responseData['formPayment'] = string
+
+        string = ''
+        v = responseData['paymentTerms']
+        pt = responseData['paymentTerms']
+        if v != None:
+            if v.count('pc') > 0:
+                string = 'Post Checkout'
+                responseData['paymentTerms'] = string
+            elif v.count('ac') > 0:
+                responseData['paymentTerms'] = 'At Checkout'
+            elif v.count('poa') > 0:
+                responseData['paymentTerms'] = 'Prior To Arrival'
+
+        print(responseData)
+
+
+    # get right side values
 
 
     if (mmp == 0):
         flash('No Rate Grid available!', 'danger')
-    return render_template('request/requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF, roomData = roomData)
+    return render_template('request/requestProcess.html', data = data, result = result, length = len(result), dates = dates, discounts = discounts, occs = occs, totalRate = totalRate, avgRate = avgRate, tcomm = tcomm, tcommv = tcommv, totalQuote = totalQuote, tfoc = tfoc, focv = focv, comP = comP, roomCount = roomCount, checkIn = checkIn, checkOut = checkOut, single1avg = single1avg, single2avg = single2avg, double1avg = double1avg, double2avg = double2avg, triple1avg = triple1avg, triple2avg = triple2avg, quad1avg = quad1avg, quad2avg = quad2avg, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1 = foc1, foc2 = foc2, review = review, rvflag = rvflag, rvvv = rvvv, contracts = contracts, negoF = negoF, roomData = roomData, responseData = responseData)
 
 
 @app.route('/requestProcessDecline', methods=['GET', 'POST'])
