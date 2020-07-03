@@ -1479,7 +1479,7 @@ def strategyRate():
             cursor.execute('SELECT * From rate')
             data1 = cursor.fetchall()
             if len(data1) == 0:
-                return render_template('strategyRate.html', data = data)
+                return render_template('strategy/strategyRate.html', data = data)
             else:
                     cursor.execute('SELECT startDate, endDate from rate')
                     storedDates = cursor.fetchall()
