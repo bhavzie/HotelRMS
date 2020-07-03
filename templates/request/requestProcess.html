@@ -291,7 +291,7 @@
                 </div>
                 {% endif %}
                 <hr>
-
+                {% if responseData|length == 0 %}
                 <div class='mb-5'>
                     <label>Cutoff</label>
                         <input type='number' class='form-control ml-5' style='max-width: 30%; display: inline-block;'
@@ -334,7 +334,7 @@
                 </div>
                 <div class='col-sm-12 mb-5' id='dede22'>
                     <input type='number' class='form-control' style='max-width: 40%; display: inline-block; margin-left: 10rem;'
-                        id='dede33' disabled ><span> Days</span>
+                        id='dede33' disabled value = "{{ responseData['paymentDays'] }}"><span> Days</span>
                 </div>
                 <div class='mb-5'>
                     <div class="form-check checkbox-slider--b-flat">
@@ -402,6 +402,142 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                    <div id='noneditable'>
+                        <div class='mb-5'>
+                            <label>Cutoff</label>
+                            <input type='number' class='form-control ml-5' style='max-width: 30%; display: inline-block;' id='dedenewi'
+                                value="{{ responseData['cutoffDays'] }}" readonly min=0><span> Days</span>
+                        </div>
+                        <div class="form-group row mb-5">
+                            <label class="col-sm-6 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
+                            <div class="col-sm-6">
+                                <select class='form-control text-center payment' id='formPayment' style='max-width: 100%;'
+                                    multiple='multiple'>
+                                    <option value='bt'>
+                                        Bank Transfer
+                                    </option>
+                                    <option value='cq'>
+                                        Cheque
+                                    </option>
+                                    <option value='cc'>
+                                        Credit Card
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-5 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
+                            <div class="col-sm-7">
+                                <select class='form-control text-center' name='paymentTerms' style='max-width: 80%;' onchange="hdd(event)"
+                                    id='dede' disabled>
+                                    <option disabled selected>
+                                        Payment Terms
+                                    </option>
+                                    <option value='poa'>
+                                        Prior To Arrival
+                                    </option>
+                                    <option value='pc'>
+                                        Post Checkout
+                                    </option>
+                                    <option value='ac'>
+                                        At Checkout
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='col-sm-12 mb-5' id='dede22'>
+                            <input type='number' class='form-control' style='max-width: 40%; display: inline-block; margin-left: 10rem;'
+                                id='dede33' disabled value="{{ responseData['paymentDays'] }}"><span> Days</span>
+                        </div>
+                        <div class='mb-5'>
+                            Contract :
+                            <button type='button' class='btn btn-info col-sm-4 ml-2' data-toggle="modal" data-target="#exampleModal">
+                                Contract
+                            </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Select Contract</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <select class='form-control' onchange="dem(event)" id='sele' disabled>
+                                                <option disabled selected>
+                                                    Select Contract
+                                                </option>
+                                                {% for c in contracts %}
+                                                {% if responseData['contract'] == c['id'] %}
+                                                <option selected>
+                                                    {% else %}
+                                                <option>
+                                                    {% endif %}
+                                                    {{ c['id'] }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class='mt-5' id='contracts1'>
+                                                {% for c in contracts %}
+                                                {% if responseData['contract'] == c['id'] %}
+                                                <div class='mt-5' id='{{ c["id"] }}'>
+                                                    {% else %}
+                                                    <div class='mt-5' id='{{ c["id"] }}' style="display: none;">
+                                                        {% endif %}
+                                                        {{ c['contract'] }}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='mb-5'>
+                                <div class="form-check checkbox-slider--b-flat">
+                                    <label>
+                                        {% if responseData['paymentGtd'] == 1%}
+                                        <input type='checkbox' class='mr-5' id='pmgtd' checked disabled>
+                                        {% else %}
+                                        <input type='checkbox' class='mr-5' id='pmgtd' disabled>
+                                        {% endif %}
+                                        <span class='ml-5'>Payment Guaranteed</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class='mb-5'>
+                                {% if negoF == True %}
+                                <div class="form-check checkbox-slider--b-flat">
+                                    <label>
+                                        {% if responseData['negotiable'] == 1 %}
+                                        <input type='checkbox' class='mr-5' id='nego' checked disabled>
+                                        {% else %}
+                                        <input type='checkbox' class='mr-5' id='nego' disabled>
+                                        {% endif %}
+                                        <span class='ml-5'>Negotiable</span>
+                                    </label>
+                                </div>
+                                {% else %}
+                                <label>Negotiable: No(Negotiable set off or reached settings limit)</label>
+                                {% endif %}
+                            </div>
+                            {% if responseData['comments'] != '' %}
+                            <div class='form-group row mb-5'>
+                                <label class="col-sm-2 col-form-label">Comments: </label>
+                                <div class="col-sm-7 ml-5">
+                                    <textarea class="form-control" rows='2' id='comments' value='{{ responseData["comments"] }}'
+                                        disabled></textarea>
+                                </div>
+                            </div>
+                            {% endif %}
+                    </div>
+                {% endif %}
                 <div class='row mb-5' id='msg'>
                 
                 </div>
@@ -440,18 +576,54 @@
         }
 
     $(document).ready(function () {
-        $('.payment').multiselect({
-              nonSelectedText: '-',
-              numberDisplayed: 0,
-              buttonWidth: '200px'
-          })
         
         const res = "{{ result|safe }}"
         const totalQuote = "{{ totalQuote|safe }}"
         const avgRate = "{{ avgRate|safe }}"
         const roomCount = "{{ roomCount|safe }}"
+        
+        const responseData = "{{ responseData|safe }}"
+        if (responseData == "()") {
+            $('.payment').multiselect({
+                nonSelectedText: '-',
+                numberDisplayed: 0,
+                buttonWidth: '200px'
+            })
+        } else {
+            $('.payment').multiselect({
+                nonSelectedText: '-',
+                numberDisplayed: 0,
+                buttonWidth: '200px',
+                buttonText: function (options, select) {
+                    if (options.length == 0) {
+                        return 'FOP'
+                    } else {
+                        var selected = ''
+                        options.each(function () {
+                            selected += $(this).val() + ", "
+                        })
+                        return selected
+                    }
+                }
+            })
+
+            $('#formPayment').multiselect('disable')
 
 
+            const paymentTerms = "{{ pt|safe }}"
+            const fop = "{{ fop|safe }}".split(' ')
+            const sel = document.getElementById('dede');
+            const options = [...sel.options]
+            options.forEach((opt, index) => {
+                if (opt.value == paymentTerms) {
+                    sel.selectedIndex = index;
+                }
+            })
+
+            const formPayment = document.getElementById('formPayment')
+            $(formPayment).val(fop)
+            $(formPayment).multiselect('refresh')
+        }
         
     });
 
@@ -461,6 +633,16 @@
         rateedit.forEach(rate => {
             $(rate).removeAttr("readonly")
         })
+
+        $("#dedenewi").removeAttr('readonly')
+        $('#formPayment').multiselect('enable')
+        $("#dede").removeAttr('disabled')
+        $("#dede33").removeAttr('disabled')
+        $("#sele").removeAttr('disabled')
+        $("#pmgtd").removeAttr('disabled')
+        $("#nego").removeAttr('disabled')
+        $("#comments").removeAttr('disabled')
+        $("#editbutton").hide();
 
     }
 

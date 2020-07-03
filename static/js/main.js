@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     setTimeout(function(){
         $("div.alert").remove();
-    }, 3000);
+    }, 6000);
 
     $('#tableusers').DataTable();
 
