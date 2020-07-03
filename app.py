@@ -2473,11 +2473,14 @@ def showRequest(token):
                 righttable[d['date']] = []
 
             roomCount = 0
+            occFlag = False
             for d in data4:
                 if d['date'] not in dataToCheck:
                     tempArr = {}
                     tempArr['date'] = d['date']
                     tempArr['currentOcc'] = d['currentOcc']
+                    if (d['currentOcc']) != "-":
+                        occFlag = True
                     tempArr['discountId'] = d['discountId']
                     tempArr['forecast'] = d['forecast']
                     tempArr['groups'] = d['groups']
@@ -2639,8 +2642,7 @@ def showRequest(token):
         cursor.execute('SELECT * from contract')
         contracts = cursor.fetchall()
 
-        
-        return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1c = foc1c, foc2c = foc2c)
+        return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1c = foc1c, foc2c = foc2c, occFlag = occFlag)
 
         
 
