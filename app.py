@@ -3426,7 +3426,7 @@ def showQuote(id):
         count = count[0]['count']
     else:
         count = 100 # no hard limit so
-    cursor.execute('SELECT * from response where responseId = %s', [responseId])
+    cursor.execute('SELECT * from response where responseId = %s and status = %s', [responseId, statusval3])
     negoTime = cursor.fetchall()
     negoTimes = len(negoTime)
     nego = False
