@@ -4265,6 +4265,7 @@ def notConfirmRequest():
     return ('', 204)
 
 @app.route('/changeOcc/<id>', methods = ['GET', 'POST'])
+@is_logged_in
 def changeOcc(id):
     cursor = mysql.connection.cursor()
     responseId = id + "R"
@@ -4286,6 +4287,32 @@ def changeOcc(id):
             tempdict.pop(key)
     
     return render_template('request/getOccEdit.html', occ = tempdict, flag = flag, token = id)
+
+@app.route('/analyticsbehavior', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticsbehavior():
+    return render_template('analytics/behavior.html')
+
+@app.route('/analyticsdashboard', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticsdashboard():
+    return render_template('analytics/dashboard.html')
+
+@app.route('/analyticsperformance', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticsperformance():
+    return render_template('analytics/performance.html')
+
+@app.route('/analyticsrevenue', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticsrevenue():
+    return render_template('analytics/revenue.html')
+
+@app.route('/analyticstracking', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticstracking():
+    return render_template('analytics/tracking.html')
+
 
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)
