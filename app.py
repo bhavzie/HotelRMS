@@ -2615,7 +2615,7 @@ def showRequest(token):
             else:
                 contractv = ''
 
-            cursor.execute('SELECT * from response where responseId = %s', [responseId])
+            cursor.execute('SELECT * from response where responseId = %s && status = %s', [responseId, statusval3])
             negoTime = cursor.fetchall()
             negoTimes = len(negoTime)
             nego = False
