@@ -1,63 +1,266 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="container">
-    <canvas id='myChart'></canvas>
+<div class='spread4' style="min-height: 100vh;">
+    <form class='inline mb-5' onsubmit='view(event)'>
+        <div class='row mb-5 mt-5'>
+            <div class='col-sm-6'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name"
+                        class="form-control start-date  mb-2 " id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name"
+                        class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
+                </div>
+            </div>
+            <div class='col-sm-6'>
+                <button type='submit' class='btn btn-info'>View Turn Around Time</button>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <div class = 'mb-5'>
+        <span class = 'badge badge-primary'>For Hotel</span>
+    <div class='mt-5 mb-5'>
+        <span class='btn btn-primary'>Average Time in Hours :
+
+        </span>
+        <span class='btn btn-primary' id='count'>
+            0
+        </span>
+    </div>
+    <div class='mt-5 mb-5'>
+        <span class='btn btn-primary'>Total Requests :
+    
+        </span>
+        <span class='btn btn-primary' id='count1'>
+            0
+        </span>
+    </div>
+    <div class='mt-5 mb-5'>
+        <span class='btn btn-primary'>Not Submitted :
+    
+        </span>
+        <span class='btn btn-primary' id='count2'>
+            0
+        </span>
+    </div>
+    <div class = 'table-responsive mb-5'>
+        <table class = 'table table-bordered table-hover' id = 'tablef'>
+            <caption>Performance for hotel</caption>
+            <thead class = 'thead-dark'>
+                <tr>
+                    <th>
+                        Lead Time Range
+                    </th>
+                    <th>
+                        Count
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        0 - 1
+                    </td>
+                    <td id = '0'>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        2 - 5
+                    </td>
+                    <td id='1'>
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        6 - 14
+                    </td>
+                    <td id='2'>
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        15 + 
+                    </td>
+                    <td id='3'>
+                    
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    <hr>
+
+    <div class='mb-5'>
+        <span class='badge badge-primary'>For Customer</span>
+        <div class='mt-5 mb-5'>
+            <span class='btn btn-primary'>Average Time in Hours :
+    
+            </span>
+            <span class='btn btn-primary' id='2count'>
+                0
+            </span>
+        </div>
+        <div class='mt-5 mb-5'>
+            <span class='btn btn-primary'>Total Requests :
+    
+            </span>
+            <span class='btn btn-primary' id='2count1'>
+                0
+            </span>
+        </div>
+        <div class='mt-5 mb-5'>
+            <span class='btn btn-primary'>Not Submitted :
+    
+            </span>
+            <span class='btn btn-primary' id='2count2'>
+                0
+            </span>
+        </div>
+        <div class='table-responsive mb-5'>
+            <table class='table table-bordered table-hover' id='2tablef'>
+                <caption>Performance for Customer</caption>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th>
+                            Lead Time Range
+                        </th>
+                        <th>
+                            Count
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            0 - 1
+                        </td>
+                        <td id='20'>
+    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            2 - 5
+                        </td>
+                        <td id='21'>
+    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            6 - 14
+                        </td>
+                        <td id='22'>
+    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            15 +
+                        </td>
+                        <td id='23'>
+    
+                        </td>
+                    </tr>
+    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+
+
+<script src="/static/js/jquery.js"></script>
 <script src="/static/js/Chart.bundle.js"></script>
 <script>
-    let myChart = document.getElementById('myChart').getContext('2d');
 
-    // global options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
+    $(document).ready(function () {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
 
-    let massPopChart = new Chart(myChart, {
-        type: 'polarArea', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-        data: {
-            labels: ['Boston', 'Worcester', 'Srpingfield', 'Lowell', 'Cambridge', 'New Bedford'],
-            datasets: [{
-                label: 'Population',
-                data: [
-                    617594,
-                    181045,
-                    153060,
-                    106519,
-                    105162,
-                    95072
-                ],
-                //backgroundColor:'green'
-                backgroundColor: [
-                    'green',
-                    'orange',
-                    'blue',
-                    'yellow'
-                ],
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Largest Cities In Massachusetts',
-                fontSize: 25,
-            },
-            legend: {
-                position: 'right',
-            },
-            labels: {
-                fontColor: "#000"
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
-                }
-            }
-        },
+        var d2 = new Date();
+        d2.setDate(d2.getDate() + 31);
+        var strDate2 = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            endDate: strDate2,
+            format: "dd/mm/yyyy",
+        });
+
+        $startDate.on('change', function () {
+            var d2 = $startDate.datepicker('getDate');
+            d2.setDate(d2.getDate() + 31);
+            var tDate = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('setEndDate', tDate);
+        });
     });
+
+
+
+
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+    function view(e) {
+        e.preventDefault()
+        const startDate = parseDate2($("#startDateG").val())
+        const endDate = parseDate2($("#endDateG").val())
+
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                const response = JSON.parse(xhttp.responseText)
+                $('#count').html(response['time'])
+                $('#count1').html(response['requestsNo'])
+                $("#count2").html(response['notSubmitted'])
+
+                const table = response['table']
+                $("#0").html(table["0 - 1"])
+                $("#1").html(table["2 - 5"])
+                $("#2").html(table["6 - 14"])
+                $("#3").html(table["15 +"])
+
+                $("#2count").html(response['2time'])
+                $("#2count1").html(response['responsesNo'])
+                $("#2count2").html(response['2notSubmitted'])
+
+                const table2 = response['2table']
+                $("#20").html(table2["0 - 1"])
+                $("#21").html(table2["2 - 5"])
+                $("#22").html(table2["6 - 14"])
+                $("#23").html(table2["15 +"])
+            }   
+        };
+        var target = new URL("http://localhost:5000/analyticsperformanceGet")
+        const params = new URLSearchParams();
+        params.set('startDate', startDate)
+        params.set('endDate', endDate)
+        target.search = params.toString()
+
+        xhttp.open("GET", target, true);
+        xhttp.send();
+
+
+    }
+
 
 
 

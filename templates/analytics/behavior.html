@@ -1,63 +1,172 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="container">
-    <canvas id='myChart'></canvas>
+<div class = 'spread4' style="min-height: 100vh;">
+    <form class = 'inline mb-5' onsubmit = 'view(event)'>
+    <div class='row mb-5 mt-5'>
+        <div class='col-sm-6'>
+            <div class="input-group-prepend col-sm">
+                <span class="input-group-text  mb-2">Date range</span>
+                <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                    id='startDateG' required>
+                <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                    id='endDateG' required>
+            </div>
+        </div>
+        <div class='col-sm-6'>
+            <button type='submit' class='btn btn-info'>View Count</button>
+        </div>
+    </div>
+    </form>
+    <hr>
+    <div class = 'mt-5 mb-5'>
+        <span class = 'btn btn-primary'>Count : 
+
+        </span>
+        <span class = 'btn btn-primary' id = 'count'>
+            0            
+        </span>
+    </div>
+    <div class = 'mb-5'>
+        <span class='btn btn-primary'>Average Length Of stay :
+        </span>
+        <span class = 'btn btn-primary' id = 'avg'>
+           0 
+        </span>
+    </div>
+    <div class = 'table-responsive mb-5'>
+        <table class = 'table table-bordered table-hover' id = 'tablefill'>
+            <caption>Request Details in given date range</caption>
+            <thead class = 'thead-dark'>
+                <tr>
+                    <th>
+                        Request ID
+                    </th>
+                    <th>
+                        Lead Time
+                    </th>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        Customer Type
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Length of Stay
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
 </div>
+
+
+<script src="/static/js/jquery.js"></script>
 <script src="/static/js/Chart.bundle.js"></script>
 <script>
-    let myChart = document.getElementById('myChart').getContext('2d');
 
-    // global options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
+     $(document).ready(function () {
+         var $startDate = $('.start-date');
+         var $endDate = $('.end-date');
 
-    let massPopChart = new Chart(myChart, {
-        type: 'polarArea', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-        data: {
-            labels: ['Boston', 'Worcester', 'Srpingfield', 'Lowell', 'Cambridge', 'New Bedford'],
-            datasets: [{
-                label: 'Population',
-                data: [
-                    617594,
-                    181045,
-                    153060,
-                    106519,
-                    105162,
-                    95072
-                ],
-                //backgroundColor:'green'
-                backgroundColor: [
-                    'green',
-                    'orange',
-                    'blue',
-                    'yellow'
-                ],
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Largest Cities In Massachusetts',
-                fontSize: 25,
-            },
-            legend: {
-                position: 'right',
-            },
-            labels: {
-                fontColor: "#000"
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
-                }
-            }
-        },
+        var d2 = new Date();
+        d2.setDate(d2.getDate() + 31);
+        var strDate2 = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+
+         $startDate.datepicker({
+             autoHide: true,
+             format: "dd/mm/yyyy",
+         });
+         $endDate.datepicker({
+             autoHide: true,
+             endDate : strDate2,
+             format: "dd/mm/yyyy",
+         });
+
+         $startDate.on('change', function () {
+              var d2 = $startDate.datepicker('getDate');
+             d2.setDate(d2.getDate() + 31);
+             var tDate = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+             $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+             $endDate.datepicker('setEndDate',tDate);
+         });
     });
+
+
+
+
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+    function view(e) {
+        e.preventDefault()
+        const startDate = parseDate2($("#startDateG").val())
+        const endDate = parseDate2($("#endDateG").val())
+
+       
+       var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                const response = JSON.parse(xhttp.responseText)
+                $("#count").html(response.length)
+                const count = response.length
+                let total = 0
+                if (count != 0) {
+                    const tbody = document.getElementById('tablefill').children[2]
+                    for (let i=0; i<response.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                            <td>
+                                ${response[i]['id']}
+                            </td>
+                            <td>
+                                ${response[i]['leadTime']}
+                            </td>
+                            <td>
+                                ${response[i]['category']}
+                            </td>
+                            <td>
+                                ${response[i]['userType']}
+                            </td>
+                            <td>
+                                ${response[i]['status']}
+                            </td>
+                            <td>
+                                ${response[i]['nights']}
+                            </td>     
+                            `
+                        
+                        tbody.appendChild(tr)
+                        total += parseInt(response[i]['nights'])
+                }
+
+                let value = total/count
+                value = +(Math.round(value + "e+2") + "e-2");
+                $("#avg").html(value)
+                }
+
+            }
+        };
+        var target = new URL("http://localhost:5000/analyticsbehaviorGet")
+        const params = new URLSearchParams();
+        params.set('startDate', startDate)
+        params.set('endDate', endDate)
+        target.search = params.toString()
+
+        xhttp.open("GET", target , true);
+        xhttp.send();
+
+        
+    }
+
 
 
 

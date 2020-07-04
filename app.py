@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, session, url_for, session, jsonify, redirect
+from flask import Flask, render_template, flash, request, session, url_for, session, jsonify, redirect, Response
 from config import Config
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from functools import wraps
@@ -4293,6 +4293,18 @@ def changeOcc(id):
 def analyticsbehavior():
     return render_template('analytics/behavior.html')
 
+@app.route('/analyticsbehaviorGet', methods = ['GET'])
+def analyticsbehaviorGet():
+    cursor = mysql.connection.cursor()
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    requests = cursor.fetchall()
+    
+    return jsonify(requests), 200
+    
+
 @app.route('/analyticsdashboard', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticsdashboard():
@@ -4302,6 +4314,111 @@ def analyticsdashboard():
 @is_logged_in
 def analyticsperformance():
     return render_template('analytics/performance.html')
+
+@app.route('/analyticsperformanceGet', methods = ['GET'])
+def analyticsperformanceGet():
+    cursor = mysql.connection.cursor()
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    requests = cursor.fetchall()
+    result = {}
+    result['requestsNo'] = len(requests)
+    notSubmitted = 0
+    resHours = []
+    table = {
+        "0 - 1": 0,
+        "2 - 5": 0,
+        "6 - 14":0,
+        "15 +":0,
+    }
+    for r in requests:
+        cursor.execute('SELECT submittedOn from response where requestId = %s && status != %s order by submittedOn asc limit 1', [r['id'], statusval7])
+        res = cursor.fetchall()
+        if len(res) == 0:
+            notSubmitted = notSubmitted + 1
+        else:
+            difference = res[0]['submittedOn'] - r['createdOn']
+            difference = difference.total_seconds()
+            hours = divmod(difference, 3600)[0]
+            resHours.append(hours)
+            rl = divmod(difference, 86400)[0]
+            if rl >= 0 and rl <= 1:
+                table["0 - 1"] = table["0 - 1"] + 1
+            elif rl >=2 and rl <= 5:
+                table["2 - 5"] = table['2 - 5'] + 1
+            elif rl >= 6 and rl <= 14:
+                table['6 - 14'] = table['6 - 14'] + 1
+            elif rl >= 15:
+                table["15 +"] = table["15 +"] + 1
+
+
+    temp = 0
+    for r in resHours:
+        temp = temp + r
+
+
+    if len(resHours) != 0:
+        temp = temp / len(resHours)
+        temp = round(temp, 2)
+    result['time'] = temp
+    result['notSubmitted'] = notSubmitted
+    result['table'] = table
+
+    count = 0
+    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s', [startDate, endDate, statusval2])
+    notSubmitted = 0
+    resHours = []
+    table = {
+        "0 - 1": 0,
+        "2 - 5": 0,
+        "6 - 14":0,
+        "15 +":0,
+    }
+    responseData = cursor.fetchall()
+    for r in responseData:
+        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId']])
+        tempres = cursor.fetchall()
+        if len(tempres) == 0:
+            notSubmitted = notSubmitted + 1
+        else:
+            count = count + 1
+            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId']])
+            customerres = cursor.fetchall()
+            if len(customerres) == 0:
+                notSubmitted = notSubmitted + 1
+            else:
+                difference = customerres[0]['submittedOn'] - tempres[0]['submittedOn']
+                difference = difference.total_seconds()
+                hours = divmod(difference, 3600)[0]
+                resHours.append(hours)
+                rl = divmod(difference, 86400)[0]
+                if rl >= 0 and rl <= 1:
+                    table["0 - 1"] = table["0 - 1"] + 1
+                elif rl >=2 and rl <= 5:
+                    table["2 - 5"] = table['2 - 5'] + 1
+                elif rl >= 6 and rl <= 14:
+                    table['6 - 14'] = table['6 - 14'] + 1
+                elif rl >= 15:
+                    table["15 +"] = table["15 +"] + 1
+
+    temp = 0
+    for r in resHours:
+        temp = temp + r
+
+
+    if len(resHours) != 0:
+        temp = temp / len(resHours)
+        temp = round(temp, 2)
+    result['2time'] = temp
+    result['2notSubmitted'] = notSubmitted
+    result['2table'] = table
+    result['responsesNo'] = count
+        
+    return jsonify(result), 200
+
+
 
 @app.route('/analyticsrevenue', methods = ['GET', 'POST'])
 @is_logged_in
