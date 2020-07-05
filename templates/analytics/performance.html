@@ -50,7 +50,7 @@
             <thead class = 'thead-dark'>
                 <tr>
                     <th>
-                        Lead Time Range
+                       Response Time Range(in Hours)
                     </th>
                     <th>
                         Count
@@ -60,7 +60,7 @@
             <tbody>
                 <tr>
                     <td>
-                        0 - 1
+                        0 - 2
                     </td>
                     <td id = '0'>
 
@@ -68,7 +68,7 @@
                 </tr>
                 <tr>
                     <td>
-                        2 - 5
+                        2 - 8
                     </td>
                     <td id='1'>
                     
@@ -76,7 +76,7 @@
                 </tr>
                 <tr>
                     <td>
-                        6 - 14
+                        8 - 24
                     </td>
                     <td id='2'>
                     
@@ -84,7 +84,7 @@
                 </tr>
                 <tr>
                     <td>
-                        15 + 
+                        24 + 
                     </td>
                     <td id='3'>
                     
@@ -130,7 +130,7 @@
                 <thead class='thead-dark'>
                     <tr>
                         <th>
-                            Lead Time Range
+                           Response Time Range(in Hours)
                         </th>
                         <th>
                             Count
@@ -140,7 +140,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            0 - 1
+                            0 - 2
                         </td>
                         <td id='20'>
     
@@ -148,7 +148,7 @@
                     </tr>
                     <tr>
                         <td>
-                            2 - 5
+                            2 - 8
                         </td>
                         <td id='21'>
     
@@ -156,7 +156,7 @@
                     </tr>
                     <tr>
                         <td>
-                            6 - 14
+                            8 - 24
                         </td>
                         <td id='22'>
     
@@ -164,7 +164,7 @@
                     </tr>
                     <tr>
                         <td>
-                            15 +
+                            24 +
                         </td>
                         <td id='23'>
     
@@ -233,20 +233,20 @@
                 $("#count2").html(response['notSubmitted'])
 
                 const table = response['table']
-                $("#0").html(table["0 - 1"])
-                $("#1").html(table["2 - 5"])
-                $("#2").html(table["6 - 14"])
-                $("#3").html(table["15 +"])
+                $("#0").html(table["0 - 2"])
+                $("#1").html(table["2 - 8"])
+                $("#2").html(table["8 - 24"])
+                $("#3").html(table["24 +"])
 
                 $("#2count").html(response['2time'])
                 $("#2count1").html(response['responsesNo'])
                 $("#2count2").html(response['2notSubmitted'])
 
                 const table2 = response['2table']
-                $("#20").html(table2["0 - 1"])
-                $("#21").html(table2["2 - 5"])
-                $("#22").html(table2["6 - 14"])
-                $("#23").html(table2["15 +"])
+                $("#20").html(table2["0 - 2"])
+                $("#21").html(table2["2 - 8"])
+                $("#22").html(table2["8 - 24"])
+                $("#23").html(table2["24 +"])
             }   
         };
         var target = new URL("http://localhost:5000/analyticsperformanceGet")

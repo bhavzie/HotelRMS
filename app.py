@@ -4328,30 +4328,30 @@ def analyticsperformanceGet():
     notSubmitted = 0
     resHours = []
     table = {
-        "0 - 1": 0,
-        "2 - 5": 0,
-        "6 - 14":0,
-        "15 +":0,
+        "0 - 2": 0,
+        "2 - 8": 0,
+        "8 - 24":0,
+        "24 +":0,
     }
     for r in requests:
-        cursor.execute('SELECT submittedOn from response where requestId = %s && status != %s order by submittedOn asc limit 1', [r['id'], statusval7])
+        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
         res = cursor.fetchall()
+        #print(res)
         if len(res) == 0:
             notSubmitted = notSubmitted + 1
         else:
-            difference = res[0]['submittedOn'] - r['createdOn']
+            difference = abs(res[0]['submittedOn'] - r['createdOn'])
             difference = difference.total_seconds()
             hours = divmod(difference, 3600)[0]
             resHours.append(hours)
-            rl = divmod(difference, 86400)[0]
-            if rl >= 0 and rl <= 1:
-                table["0 - 1"] = table["0 - 1"] + 1
-            elif rl >=2 and rl <= 5:
-                table["2 - 5"] = table['2 - 5'] + 1
-            elif rl >= 6 and rl <= 14:
-                table['6 - 14'] = table['6 - 14'] + 1
-            elif rl >= 15:
-                table["15 +"] = table["15 +"] + 1
+            if hours >= 0 and hours <= 2:
+                table["0 - 2"] = table["0 - 2"] + 1
+            elif hours >2 and hours <= 8:
+                table["2 - 8"] = table['2 - 8'] + 1
+            elif hours > 8 and hours <= 24:
+                table['8 - 24'] = table['8 - 24'] + 1
+            elif hours > 24:
+                table["24 +"] = table["24 +"] + 1
 
 
     temp = 0
@@ -4371,10 +4371,10 @@ def analyticsperformanceGet():
     notSubmitted = 0
     resHours = []
     table = {
-        "0 - 1": 0,
-        "2 - 5": 0,
-        "6 - 14":0,
-        "15 +":0,
+        "0 - 2": 0,
+        "2 - 8": 0,
+        "8 - 24": 0,
+        "24 +": 0,
     }
     responseData = cursor.fetchall()
     for r in responseData:
@@ -4393,15 +4393,14 @@ def analyticsperformanceGet():
                 difference = difference.total_seconds()
                 hours = divmod(difference, 3600)[0]
                 resHours.append(hours)
-                rl = divmod(difference, 86400)[0]
-                if rl >= 0 and rl <= 1:
-                    table["0 - 1"] = table["0 - 1"] + 1
-                elif rl >=2 and rl <= 5:
-                    table["2 - 5"] = table['2 - 5'] + 1
-                elif rl >= 6 and rl <= 14:
-                    table['6 - 14'] = table['6 - 14'] + 1
-                elif rl >= 15:
-                    table["15 +"] = table["15 +"] + 1
+                if hours >= 0 and hours <= 2:
+                    table["0 - 2"] = table["0 - 2"] + 1
+                elif hours >2 and hours <= 8:
+                    table["2 - 8"] = table['2 - 8'] + 1
+                elif hours > 8 and hours <= 24:
+                    table['8 - 24'] = table['8 - 24'] + 1
+                elif hours > 24:
+                    table["24 +"] = table["24 +"] + 1
 
     temp = 0
     for r in resHours:
