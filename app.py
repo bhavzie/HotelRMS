@@ -440,7 +440,8 @@ def login():
                     'help': True,
                     'helpUserGuide': True,
                     'helpFaq': True,
-                    'helpTicketing': True
+                    'helpTicketing': True,
+                    'analyticsStdReport': True,
                     }
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
@@ -527,7 +528,7 @@ def login():
                                 d['users'])
                         menuParams['usersHotelEdit'] = getValC2(
                                 d['usersHotelEdit'])
-                                                
+                        menuParams['analyticsStdReport'] = getValC2(d['analyticsStdReport'])        
     
 
                     session['menuParams'] = menuParams
@@ -1357,18 +1358,20 @@ def submiteditusertype():
     users = getValC(request.form.get('users'))
     usersHotelEdit = getValC(request.form.get('usersHotelEdit'))
     userType = request.form['userType']
+    analyticsStdReport = getValC(request.form['analyticsStdReport'])
+    print(analyticsStdReport)
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s WHERE userType = %s', [
-                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, userType])
+    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s WHERE userType = %s', [
+                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, userType])
 
 
     mysql.connection.commit()
     cursor.close()
 
     flash('UserType updated!', 'success')
-    return render_template('users/index2.html', title='UserType')
+    return render_template('users/index.html', title='UserType')
 
 
 @app.route('/viewAllUsers', methods=['GET', 'POST'])
@@ -4757,6 +4760,11 @@ def analyticsrevenue():
 @is_logged_in
 def analyticstracking():
     return render_template('analytics/tracking.html')
+
+
+@app.route('/stdreport', methods = ['GET', 'POST'])
+def stdreport():
+    return render_template('analytics/stdreport.html')
 
 
 if __name__ == "__main__":

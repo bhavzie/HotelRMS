@@ -219,6 +219,12 @@
                         Tracking
                     </span>
                 </div>
+                <div class="checkbox-inline">
+                    <input type="checkbox" value="{{ datah['analyticsStdReport'] }}" name='analyticsStdReport'
+                        onchange="hchange(this)"><span class='checkl'>
+                        STD Report
+                    </span>
+                </div>
             </div>
         </div>
        <div class="row">
@@ -241,6 +247,6 @@
             if (checkbox.value == 1) {
                 checkbox.checked = true
             }
-        })
+        });
     </script>
     {% endblock %}

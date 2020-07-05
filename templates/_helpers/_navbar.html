@@ -295,6 +295,13 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% if session.menuParams['analyticsStdReport'] %}
+                        <li>
+                            <a href="/stdreport">
+                                STD Report
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
@@ -472,6 +479,11 @@
 
                     <li><a href="/analyticstracking">Tracking</a>
                     
+                    </li>
+                    <li>
+                        <a href="/stdreport">
+                            STD Report
+                        </a>
                     </li>
                 </ul>
             </li>
