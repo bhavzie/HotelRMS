@@ -4298,11 +4298,340 @@ def analyticsbehaviorGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
+    leadtime = request.args.get('leadtime')
+    category = request.args.get('category')
+    customerType = request.args.get('customerType')
+    status = request.args.get('status')
 
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
-    requests = cursor.fetchall()
+
+    result = {}
+    result['leadres'] = []
+    result['category'] = []
+    result['customerType'] = []
+    result['statusres'] = []
+    if leadtime != 'Booking Lead Time':
+        leadres = []
+        tempres = {}
+        if leadtime == "180 +":
+            lead1 = 180
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s', [startDate, endDate, lead1])
+            leadres1 = cursor.fetchall()
+        else:
+            t1 = leadtime.split(' - ')
+            lead1 = t1[0]
+            lead2 = t1[1]
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, int(lead1), int(lead2)])
+            leadres1 = cursor.fetchall()
+        
+
+        tempres['0'] = leadtime
+        tempres['1'] = len(leadres1)
+        if len(leadres1) != 0:
+            nights = 0
+            for r in leadres1:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres1)
+            nights = round(nights, 2)
+            tempres['2'] = nights
+        else:
+            tempres['2'] = 0
+        leadres.append(tempres)
+    else:
+        leadres = []
+        tempres1 = {}
+        tempres1['0'] = "0 - 14"
+        tempres2 = {}
+        tempres2['0'] = "14 - 45"
+        tempres3 = {}
+        tempres3['0'] = "45 - 120"
+        tempres4 = {}
+        tempres4['0'] = "120 - 180"
+        tempres5 = {}
+        tempres5['0'] = "180 +"
+
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, 0, 14])
+        leadres1 = cursor.fetchall()
+        tempres1['1'] = len(leadres1)
+        if len(leadres1) != 0:
+            nights = 0
+            for r in leadres1:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres1)
+            nights = round(nights, 2)
+            tempres1['2'] = nights
+        else:
+            tempres1['2'] = 0
+        leadres.append(tempres1)
+
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 14, 45])
+        leadres2 = cursor.fetchall()
+        tempres2['1'] = len(leadres2)
+        if len(leadres2) != 0:
+            nights = 0
+            for r in leadres2:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres2)
+            nights = round(nights, 2)
+            tempres2['2'] = nights
+        else:
+            tempres2['2'] = 0
+        leadres.append(tempres2)  
+
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 45, 120])
+        leadres3 = cursor.fetchall()
+        tempres3['1'] = len(leadres3)
+        if len(leadres3) != 0:
+            nights = 0
+            for r in leadres3:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres3)
+            nights = round(nights, 2)
+            tempres3['2'] = nights
+        else:
+            tempres3['2'] = 0
+        leadres.append(tempres3)    
+
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 120, 180])
+        leadres4 = cursor.fetchall()
+        tempres4['1'] = len(leadres4)
+        if len(leadres4) != 0:
+            nights = 0
+            for r in leadres4:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres4)
+            nights = round(nights, 2)
+            tempres4['2'] = nights
+        else:
+            tempres4['2'] = 0
+        leadres.append(tempres4)    
+
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s', [startDate, endDate, 180])
+        leadres5 = cursor.fetchall()
+        tempres5['1'] = len(leadres5)
+        if len(leadres5) != 0:
+            nights = 0
+            for r in leadres5:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(leadres5)
+            nights = round(nights, 2)
+            tempres5['2'] = nights
+        else:
+            tempres5['2'] = 0
+        leadres.append(tempres5)           
+
+    result['leadres'] = leadres
+
+    if category != 'Category':
+        catres = []
+        tempres = {} 
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, category])
+        tempres1 = cursor.fetchall()
+        tempres['0'] = category
+        tempres['1'] = len(tempres1)
+        if len(tempres1) != 0:
+            nights = 0
+            for r in tempres1:
+                nights = nights + int(r['nights'])
+
+            nights = nights / len(tempres1)
+            nights = round(nights, 2)
+            tempres['2'] = nights
+        else:
+            tempres['2'] = 0
+        catres.append(tempres)
+    else:
+        catres = []
+        cursor.execute('show columns from requestCategory')
+        categories = cursor.fetchall()
+        for c in categories:
+            cat = c['Field']
+            tempres = {}
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, cat])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = cat
+            tempres['1'] = len(tempres1)
+            if len(tempres1) != 0:
+                nights = 0
+                for r in tempres1:
+                    nights = nights + int(r['nights'])
+
+                nights = nights / len(tempres1)
+                nights = round(nights, 2)
+                tempres['2'] = nights
+            else:
+                tempres['2'] = 0
+            catres.append(tempres)
+
     
-    return jsonify(requests), 200
+    result['catres'] = catres
+
+    if customerType != 'Customer Type':
+        custres = []
+        tempres = {}
+        if (customerType == 'iata'):
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = customerType
+            tempres['1'] = len(tempres1)
+            if len(tempres1) != 0:
+                nights = 0
+                for r in tempres1:
+                    nights = nights + int(r['nights'])
+
+                nights = nights / len(tempres1)
+                nights = round(nights, 2)
+                tempres['2'] = nights
+            else:
+                tempres['2'] = 0
+            catres.append(tempres)
+        else:
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s',
+                           [startDate, endDate, "customer"])
+            tempres1 = cursor.fetchall()
+            count = 0
+            nights = 0
+            for r in tempres1:
+                cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+                dd = cursor.fetchall()
+                if (dd[0]['userSubType'] == customerType):
+                    count = count + 1
+                    nights = nights + int(r['nights'])
+            
+            if (count != 0):
+                nights = nights / count
+                nights = round(nights, 2)
+            else:
+                nights = 0
+            
+            tempres['0'] = customerType
+            tempres['1'] = count
+            tempres['2'] = nights
+        custres.append(tempres)
+    else:
+        custres = []
+        tempres = {}
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "iata"])
+        tempres1 = cursor.fetchall()
+        tempres['0'] = "iata"
+        tempres['1'] = len(tempres1)
+        if len(tempres1) != 0:
+            nights = 0
+            for r in tempres1:
+                nights = nights + int(r['nights'])
+
+            nights = nights / len(tempres1)
+            nights = round(nights, 2)
+            tempres['2'] = nights
+        else:
+            tempres['2'] = 0
+        custres.append(tempres)
+
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "customer"])
+        count1 = 0
+        count2 = 0
+        count3 = 0
+        night1 = 0
+        night2 = 0
+        night3 = 0
+        tempres1 = cursor.fetchall()
+        for r in tempres1:
+            cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+            dd = cursor.fetchall()
+            if (dd[0]['userSubType'] == 'retail'):
+                count1 = count1 + 1
+                night1 = night1 + int(r['nights'])
+            elif (dd[0]['userSubType'] == 'corporate'):
+                count2 = count2 + 1
+                night2 = night2 + int(r['nights'])
+            elif (dd[0]['userSubType'] == 'tour'):
+                count3 = count3 + 1
+                night3 = night3 + int(r['nights'])
+            
+        if (count1 != 0):
+            night1 = night1 / count1
+            night1 = round(night1, 2)
+        else:
+            night1 = 0
+
+        if (count2 != 0):
+            night2 = night2 / count2
+            night2 = round(night2, 2)
+        else:
+            night2 = 0
+        
+        if (count3 != 0):
+            night3 = night3 / count3
+            night3 = round(night3, 2)
+        else:
+            night3 = 0
+
+        tempres1 = {}
+        tempres2 = {}
+        tempres3 = {}
+        tempres1['0'] = "retail"
+        tempres1['1'] = count1
+        tempres1['2'] = night1
+        custres.append(tempres1)
+
+        tempres2['0'] = "corporate"
+        tempres2['1'] = count2
+        tempres2['2'] = night2
+        custres.append(tempres2)
+
+        tempres3['0'] = "tour"
+        tempres3['1'] = count3
+        tempres3['2'] = night3
+        custres.append(tempres3)
+    
+    result['custres'] = custres
+
+    if (status != 'Status'):
+        statusres = []
+        tempres = {}
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s', [startDate, endDate, status])
+        tempres1 = cursor.fetchall()
+        tempres['0'] = status
+        tempres['1'] = len(tempres1)
+        if len(tempres1) != 0:
+            nights = 0
+            for r in tempres1:
+                nights = nights + int(r['nights'])
+            
+            nights = nights / len(tempres1)
+            nights = round(nights, 2)
+            tempres['2'] = nights
+        else:
+            tempres['2'] = 0
+        statusres.append(tempres)
+    else:
+        statusres = []
+        statuses = [statusval1, statusval2, statusval3, statusval4, statusval5, statusval6, statusval7, statusval8, statusval9, statusval10, statusval11 ]
+        for s in statuses:
+            tempres = {}
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s', [startDate, endDate, s])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = s
+            tempres['1'] = len(tempres1)
+            if len(tempres1) != 0:
+                nights = 0
+                for r in tempres1:
+                    nights = nights + int(r['nights'])
+
+                nights = nights / len(tempres1)
+                nights = round(nights, 2)
+                tempres['2'] = nights
+            else:
+                tempres['2'] = 0
+            statusres.append(tempres)
+
+    result['statusres'] = statusres
+    return jsonify(result), 200
     
 
 @app.route('/analyticsdashboard', methods = ['GET', 'POST'])

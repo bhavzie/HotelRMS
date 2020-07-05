@@ -12,46 +12,174 @@
                     id='endDateG' required>
             </div>
         </div>
+    </div>
+    <span class = 'badge badge-primary mb-5'>
+        Filters (Not Mandatory)
+    </span>
+    <div class = 'row mb-5'>
+        <div class='col-sm-2'>
+            <select class='form-control' id = 'leadtime'>
+                <option selected disabled>
+                    Booking Lead Time
+                </option>
+                <option>
+                    0 - 14
+                </option>
+                <option>
+                    14 - 45
+                </option>
+                <option>
+                    45 - 120
+                </option>
+                <option>
+                    120 - 180
+                </option>
+                <option>
+                    180 +
+                </option>
+            </select>
+        </div>
+        <div class = 'col-sm-3'>
+            <select class='form-control text-center' id='category' style='max-width: 60%;'>
+                <option disabled selected>
+                    Category
+                </option>
+                <option>
+                    Bachelor-ette party
+                </option>
+                <option>
+                    Business meeting
+                </option>
+                <option>
+                    Corporate incentive travel
+                </option>
+                <option>
+                    Class re-union
+                </option>
+                <option>
+                    Family
+                </option>
+                <option>
+                    Military
+                </option>
+                <option>
+                    Music band
+                </option>
+                <option>
+                    Religious/Church event
+                </option>
+                <option>
+                    Sport team
+                </option>
+                <option>
+                    Theatre
+                </option>
+                <option>
+                    Wedding
+                </option>
+                <option>
+                    Other
+                </option>
+            </select>
+        </div>
+        <div class = 'col-sm-3'>
+            <select class = 'form-control text-center' style = 'max-width: 60%;' id = 'customerType'>
+                <option disabled selected>
+                    Customer Type
+                </option>
+                <option value = 'iata'>
+                    IATA
+                </option>
+                <option value = 'corporate'>
+                    Corporate
+                </option>
+                <option value = 'retail'>
+                    Retail
+                </option>
+                <option value = 'tour'>
+                    Tour Operator
+                </option>
+            </select>
+        </div>
+        <div class='col-sm-3'>
+            <select class='form-control text-center' style='max-width: 50%;' id = 'status'>
+                <option disabled selected>
+                    Status
+                </option>
+                <option>
+                    NEW
+                </option>
+                <option>
+                    QUOTED
+                </option>
+                <option>
+                    NEGOTIATED
+                </option>
+                <option>
+                    ACCEPTED
+                </option>
+                <option>
+                    CUSTOMER DECLINED
+                </option>
+                <option>
+                    DELETED
+                </option>
+                <option>
+                    SENT FOR REVIEW
+                </option>
+                <option>
+                    HOTEL DECLINED
+                </option>
+                <option>
+                    EXPIRED
+                </option>
+                <option>
+                    CONFIRMED
+                </option>
+                <option>
+                    NOT CONFIRMED
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class = 'row mb-5'>
         <div class='col-sm-6'>
             <button type='submit' class='btn btn-info'>View Count</button>
         </div>
     </div>
     </form>
     <hr>
-    <div class = 'mt-5 mb-5'>
-        <span class = 'btn btn-primary'>Count : 
-
-        </span>
-        <span class = 'btn btn-primary' id = 'count'>
-            0            
-        </span>
-    </div>
-    <div class = 'mb-5'>
-        <span class='btn btn-primary'>Average Length Of stay :
-        </span>
-        <span class = 'btn btn-primary' id = 'avg'>
-           0 
-        </span>
+    <div class='table-responsive mb-5'>
+        <table class='table table-bordered table-hover' id='tablefilllead'>
+            <caption>Request Details in given date range</caption>
+            <thead class='thead-dark'>
+                <tr>
+                    <th>
+                        Booking Lead Time
+                    </th>
+                    <th>
+                        Count
+                    </th>
+                    <th>
+                        Length of Stay
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+    
+            </tbody>
+        </table>
     </div>
     <div class = 'table-responsive mb-5'>
-        <table class = 'table table-bordered table-hover' id = 'tablefill'>
+        <table class = 'table table-bordered table-hover' id = 'tablefillcategory'>
             <caption>Request Details in given date range</caption>
             <thead class = 'thead-dark'>
                 <tr>
                     <th>
-                        Request ID
-                    </th>
-                    <th>
-                        Lead Time
-                    </th>
-                    <th>
                         Category
                     </th>
                     <th>
-                        Customer Type
-                    </th>
-                    <th>
-                        Status
+                        Count
                     </th>
                     <th>
                         Length of Stay
@@ -60,6 +188,48 @@
             </thead>
             <tbody>
 
+            </tbody>
+        </table>
+    </div>
+    <div class='table-responsive mb-5'>
+        <table class='table table-bordered table-hover' id='tablefillcustomer'>
+            <caption>Request Details in given date range</caption>
+            <thead class='thead-dark'>
+                <tr>
+                    <th>
+                        Customer Type
+                    </th>
+                    <th>
+                        Count
+                    </th>
+                    <th>
+                        Length of Stay
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+    
+            </tbody>
+        </table>
+    </div>
+    <div class='table-responsive mb-5'>
+        <table class='table table-bordered table-hover' id='tablefillstatus'>
+            <caption>Request Details in given date range</caption>
+            <thead class='thead-dark'>
+                <tr>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Count
+                    </th>
+                    <th>
+                        Length of Stay
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+    
             </tbody>
         </table>
     </div>
@@ -109,48 +279,152 @@
         e.preventDefault()
         const startDate = parseDate2($("#startDateG").val())
         const endDate = parseDate2($("#endDateG").val())
+        const leadtime = $("#leadtime option:selected").text().trim();
+        const category = $("#category option:selected").text().trim();
+        const customerType = $("#customerType option:selected").val();
+        const status = $("#status option:selected").text().trim();
 
-       
        var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 // Typical action to be performed when the document is ready:
                 const response = JSON.parse(xhttp.responseText)
-                $("#count").html(response.length)
-                const count = response.length
-                let total = 0
-                if (count != 0) {
-                    const tbody = document.getElementById('tablefill').children[2]
-                    for (let i=0; i<response.length; i++) {
+                const leadres = response['leadres']
+                if (leadres.length == 1) {
+                    const tbody1 = document.getElementById('tablefilllead').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${leadres[0]['0']}
+                        </td>
+                        <td>
+                            ${leadres[0]['1']}
+                        </td>
+                        <td>
+                            ${leadres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefilllead').children[2]
+                    for (let i=0; i<leadres.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                        <td>
+                            ${leadres[i]['0']}
+                        </td>
+                        <td>
+                            ${leadres[i]['1']}
+                        </td>
+                        <td>
+                            ${leadres[i]['2']}
+                        </td>
+                    `
+                        tbody1.appendChild(tr)
+                    }
+                }
+                const catres = response['catres']
+                if (catres.length == 1) {
+                    const tbody1 = document.getElementById('tablefillcategory').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${catres[0]['0']}
+                        </td>
+                        <td>
+                            ${catres[0]['1']}
+                        </td>
+                        <td>
+                            ${catres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefillcategory').children[2]
+                    for (let i = 0; i < catres.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                        <td>
+                            ${catres[i]['0']}
+                        </td>
+                        <td>
+                            ${catres[i]['1']}
+                        </td>
+                        <td>
+                            ${catres[i]['2']}
+                        </td>
+                    `
+                        tbody1.appendChild(tr)
+                    }
+                }
+                const custres = response['custres']
+                if (custres.length == 1) {
+                    const tbody1 = document.getElementById('tablefillcustomer').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${custres[0]['0']}
+                        </td>
+                        <td>
+                            ${custres[0]['1']}
+                        </td>
+                        <td>
+                            ${custres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefillcustomer').children[2]
+                    for (let i = 0; i < custres.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                        <td>
+                            ${custres[i]['0']}
+                        </td>
+                        <td>
+                            ${custres[i]['1']}
+                        </td>
+                        <td>
+                            ${custres[i]['2']}
+                        </td>
+                    `
+                        tbody1.appendChild(tr)
+                    }
+                }
+
+                const statusres = response['statusres']
+                if (statusres.length == 1) {
+                    const tbody1 = document.getElementById('tablefillstatus').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${statusres[0]['0']}
+                        </td>
+                        <td>
+                            ${statusres[0]['1']}
+                        </td>
+                        <td>
+                            ${statusres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefillstatus').children[2]
+                    for (let i=0; i<statusres.length; i++) {
                         const tr = document.createElement('tr')
                         tr.innerHTML = `
                             <td>
-                                ${response[i]['id']}
+                                ${statusres[i]['0']}
                             </td>
                             <td>
-                                ${response[i]['leadTime']}
+                                ${statusres[i]['1']}
                             </td>
                             <td>
-                                ${response[i]['category']}
+                                ${statusres[i]['2']}
                             </td>
-                            <td>
-                                ${response[i]['userType']}
-                            </td>
-                            <td>
-                                ${response[i]['status']}
-                            </td>
-                            <td>
-                                ${response[i]['nights']}
-                            </td>     
-                            `
-                        
-                        tbody.appendChild(tr)
-                        total += parseInt(response[i]['nights'])
-                }
-
-                let value = total/count
-                value = +(Math.round(value + "e+2") + "e-2");
-                $("#avg").html(value)
+                        `
+                        tbody1.appendChild(tr)
+                    }
                 }
 
             }
@@ -159,6 +433,10 @@
         const params = new URLSearchParams();
         params.set('startDate', startDate)
         params.set('endDate', endDate)
+        params.set('leadtime', leadtime)
+        params.set('category', category)
+        params.set('customerType', customerType)
+        params.set('status', status)
         target.search = params.toString()
 
         xhttp.open("GET", target , true);
