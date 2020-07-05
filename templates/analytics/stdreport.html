@@ -1,6 +1,132 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <div class = 'spread'>
-        hi
+    <div class = 'spread4 mt-5' style = 'min-height: 100vh;'>
+
+    <form class = 'inline mb-5' onsubmit = 'view(event)'>
+        <div class='row mb-5 mt-5'>
+            <div class='col-sm-6'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                        id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                        id='endDateG' required>
+                </div>
+            </div>
+            <div class='col-sm-6'>
+                <button type='submit' class='ml-5 btn btn-info'>Download as excel</button>
+            </div>
+        </div>
+    </form>
+    <table class = 'table table-bordered table-responsive table-hovered' id = 'tab123'>
+        <thead class = 'thead-dark'>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
     </div>
+
+<script src="/static/js/jquery.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var $startDate = $('#startDateG');
+        var $endDate = $('#endDateG');
+
+        var d2 = new Date();
+        d2.setDate(d2.getDate() + 31);
+        var strDate2 = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            endDate: strDate2,
+            format: "dd/mm/yyyy",
+        });
+
+        $startDate.on('change', function () {
+            var d2 = $startDate.datepicker('getDate');
+            d2.setDate(d2.getDate() + 31);
+            var tDate = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('setEndDate', tDate);
+        });
+
+
+    });
+
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+    function view(e) {
+        e.preventDefault();
+        
+        const startDate = parseDate2($("#startDateG").val())
+        const endDate = parseDate2($("#endDateG").val())
+
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let response = JSON.parse(xhttp.responseText);
+                response = (response['response'])
+                
+                var table = $('#tab123')[0]
+                var thead = table.children[0]
+                var tbody = table.children[1]
+
+                var firstChild = response[0]
+                const tr = document.createElement('tr')
+                for (var key in firstChild) {
+                    const th = document.createElement('th');
+                    th.innerHTML = `
+                                    ${key}
+                                `
+                    tr.appendChild(th)
+                }
+
+                thead.appendChild(tr)
+
+                for (let i=0; i<response.length; i++ ){
+                    const tr = document.createElement('tr')
+
+                    
+                    for (var key in firstChild) {
+                        const th = document.createElement('th');
+                        th.innerHTML = `
+                                    ${response[i][key]}
+                                `
+                        tr.appendChild(th)
+                    }
+                    
+                    tbody.appendChild(tr)
+
+                }
+
+
+                var table = $('#tab123').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel'
+                    ]
+                });
+            };
+        };
+        var target = new URL('http://localhost:5000/analyticsstdreportGet')
+        const params = new URLSearchParams();
+        params.set('startDate', startDate)
+        params.set('endDate', endDate)
+        target.search = params.toString()
+
+        xhttp.open("GET", target, true);
+        xhttp.send();
+    }
+
+</script>
+
 {% endblock %}

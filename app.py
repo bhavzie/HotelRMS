@@ -8,6 +8,8 @@ from flask_mysqldb import MySQL
 import datetime
 import math
 import json
+import csv
+from xlsxwriter.workbook import Workbook
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -2907,7 +2909,7 @@ def showRequest1():
                         minDiscountVal = 0
                     val = te - (minDiscountVal * te)/100
                     rates.append({'val': val, 'count': t['count'], 'type': t['type']})
-                    t['rate'] = str(val) + " ( Rate Grid Value : " + str(te) + ")"
+                    t['rate'] = str(val) + " (Evaluated Rate : " + str(val) + "[" + str(te) + "] )"
          
 
         lead = lead + 1
@@ -4766,7 +4768,17 @@ def analyticstracking():
 def stdreport():
     return render_template('analytics/stdreport.html')
 
+@app.route('/analyticsstdreportGet', methods = ['GET', 'POST'])
+def analyticsstdreportGet():
+    cursor = mysql.connection.cursor()
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    requestData = cursor.fetchall()
+    
+    return {'response' : requestData}, 200
 
+    
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)
 
