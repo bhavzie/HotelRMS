@@ -5018,7 +5018,57 @@ def analyticsrevenueGet():
 @app.route('/analyticstracking', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticstracking():
-    return render_template('analytics/tracking.html')
+    cursor = mysql.connection.cursor()
+    date = datetime.date.today()
+    enddate = date + datetime.timedelta(days = 31)
+    enddate = datetime.datetime.combine(enddate, datetime.datetime.min.time())
+
+    cursor.execute('SELECT * from settingsTimelimit order by submittedOn desc limit 1')
+    expiry = cursor.fetchall()
+    expiry = expiry[0]['value']
+
+    cursor.execute('SELECT * From request where status = %s', [statusval2])
+    requests = cursor.fetchall()
+    result = []
+    for r in requests:
+        tempresult = {}
+        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
+        response = cursor.fetchall()
+        submittedOn = response[0]['submittedOn']
+        expiration = submittedOn + datetime.timedelta(hours = float(expiry))
+        if expiration < enddate:
+            tempresult['id'] = r['id']
+            tempresult['expiry'] = expiration
+            result.append(tempresult)
+    
+    cursor.execute('SELECT * From request where status = %s', [statusval4])
+    requests = cursor.fetchall()
+    result2 = []
+    for r in requests:
+        tempresult = {}
+        cursor.execute('SELECT paymentGtd from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval4])
+        response = cursor.fetchall()
+        if len(response) != 0:
+            if response[0]['paymentGtd'] == 1:
+                tempresult['id'] = r['id']
+                result2.append(tempresult)
+    
+    cursor.execute('SELECT * from request where checkIn >= %s && checkOut <= %s', [date, enddate])
+    requests = cursor.fetchall()
+    result3 = []
+    for r in requests:
+        tempresult = {}
+        tempresult['checkIn'] = r['checkIn']
+        tempresult['checkOut'] = r['checkOut']
+        tempresult['status'] = r['status']
+        tempresult['id'] = r['id']
+        tempresult['category'] = r['category']
+        tempresult['groupName'] = r['groupName']
+        result3.append(tempresult)
+
+    print(result3)
+
+    return render_template('analytics/tracking.html', result = result, result2 = result2, result3 = result3)
 
 
 @app.route('/stdreport', methods = ['GET', 'POST'])

@@ -1,66 +1,108 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="container">
-    <canvas id='myChart'></canvas>
+<div class='spread4' style="min-height: 100vh;">
+        <div class='table-responsive mb-5'>
+            <table class='table table-bordered table-hover' id='tablef'>
+                <caption>Tracking Quoted Requests</caption>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th>
+                            Request ID
+                        </th>
+                        <th>
+                            Expiry DateTime
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in result %}
+                        <tr>
+                            <td>
+                                {{ r['id'] }}
+                            </td>
+                            <td>
+                                {{ r['expiry'] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class='table-responsive mb-5'>
+            <table class='table table-bordered table-hover' id='tablef1'>
+                <caption>Accepted Requests with Payment Guarantee</caption>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th>
+                            Request ID
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in result2 %}
+                    <tr>
+                        <td>
+                            {{ r['id'] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class='table-responsive mb-5'>
+            <table class='table table-bordered table-hover' id='tablef1'>
+                <caption>All Upcoming Requests</caption>
+                <thead class='thead-dark'>
+                    <tr>
+                        <th>
+                            Request ID
+                        </th>
+                        <th>
+                            Group Name
+                        </th>
+                        <th>
+                            Category
+                        </th>
+                        <th>
+                            Check In Date
+                        </th>
+                        <th>
+                            Check Out Date
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in result3 %}
+                    <tr>
+                        <td>
+                            {{ r['id'] }}
+                        </td>
+                        <td>
+                            {{ r['groupName'] }}
+                        </td>
+                        <td>
+                            {{ r['category'] }}
+                        </td>
+                        <td>
+                            {{ r['checkIn'] }}
+                        </td>
+                        <td>    
+                            {{ r['checkOut'] }}
+                        </td>
+                        <td>
+                            {{ r['status'] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
 </div>
-<script src="/static/js/Chart.bundle.js"></script>
-<script>
-    let myChart = document.getElementById('myChart').getContext('2d');
 
-    // global options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
-
-    let massPopChart = new Chart(myChart, {
-        type: 'polarArea', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-        data: {
-            labels: ['Boston', 'Worcester', 'Srpingfield', 'Lowell', 'Cambridge', 'New Bedford'],
-            datasets: [{
-                label: 'Population',
-                data: [
-                    617594,
-                    181045,
-                    153060,
-                    106519,
-                    105162,
-                    95072
-                ],
-                //backgroundColor:'green'
-                backgroundColor: [
-                    'green',
-                    'orange',
-                    'blue',
-                    'yellow'
-                ],
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Largest Cities In Massachusetts',
-                fontSize: 25,
-            },
-            legend: {
-                position: 'right',
-            },
-            labels: {
-                fontColor: "#000"
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
-                }
-            }
-        },
-    });
-
-
-
-
-</script>
 {% endblock %}
