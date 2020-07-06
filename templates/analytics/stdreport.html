@@ -117,7 +117,8 @@
                 });
             };
         };
-        var target = new URL('http://localhost:5000/analyticsstdreportGet')
+        var url = "{{ url|safe }}" + "/analyticsstdreportGet"
+        var target = new URL(url)
         const params = new URLSearchParams();
         params.set('startDate', startDate)
         params.set('endDate', endDate)

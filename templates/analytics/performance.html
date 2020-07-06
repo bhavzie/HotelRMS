@@ -248,7 +248,8 @@
                 $("#23").html(table2["24 +"])
             }   
         };
-        var target = new URL("http://localhost:5000/analyticsperformanceGet")
+        var url = "{{ url|safe }}" + "/analyticsperformanceGet"
+        var target = new URL(url)
         const params = new URLSearchParams();
         params.set('startDate', startDate)
         params.set('endDate', endDate)

@@ -119,6 +119,8 @@ statusval8 = 'HOTEL DECLINED'
 statusval9 = 'EXPIRED'
 statusval10 = 'CONFIRMED'
 statusval11 = 'NOT CONFIRMED'
+url = app.config['SERVER_URL']
+
 
 @app.errorhandler(404)
 def error_404(e):
@@ -4296,9 +4298,10 @@ def changeOcc(id):
 @app.route('/analyticsbehavior', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticsbehavior():
-    return render_template('analytics/behavior.html')
+    return render_template('analytics/behavior.html', url = url)
 
 @app.route('/analyticsbehaviorGet', methods = ['GET'])
+@is_logged_in
 def analyticsbehaviorGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
@@ -4647,9 +4650,10 @@ def analyticsdashboard():
 @app.route('/analyticsperformance', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticsperformance():
-    return render_template('analytics/performance.html')
+    return render_template('analytics/performance.html', url = url)
 
 @app.route('/analyticsperformanceGet', methods = ['GET'])
+@is_logged_in
 def analyticsperformanceGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
@@ -4765,17 +4769,41 @@ def analyticstracking():
 
 
 @app.route('/stdreport', methods = ['GET', 'POST'])
+@is_logged_in
 def stdreport():
-    return render_template('analytics/stdreport.html')
+    return render_template('analytics/stdreport.html', url = url)
 
 @app.route('/analyticsstdreportGet', methods = ['GET', 'POST'])
+@is_logged_in
 def analyticsstdreportGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
     cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
     requestData = cursor.fetchall()
-    
+    for r in requestData:
+        cursor.execute('SELECT totalQuote, submittedOn From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
+        totalQuote = cursor.fetchall()
+        if len(totalQuote) == 0:
+            r['totalQuote'] = 0
+            r['evaluatedFare'] = 0
+        else:
+            r['totalQuote'] = totalQuote[0]['totalQuote']
+
+            responseId = r['id'] + "R"
+            submittedOn = totalQuote[0]['submittedOn']
+            cursor.execute('SELECT * from responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+            prev = cursor.fetchall()
+            total = 0
+            for p in prev:
+                rate = p['ratePerRoom'].split('(')
+                if len(rate) == 1:
+                    total = total + int(p['count']) * float(rate[0])
+                else:
+                    rate = rate[1].split(' : ')[1].split('[')[0]
+                    total = total + int(p['count']) * float(rate)
+            r['evaluatedFare'] = total
+
     return {'response' : requestData}, 200
 
     

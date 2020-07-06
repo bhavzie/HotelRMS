@@ -428,7 +428,8 @@
 
             }
         };
-        var target = new URL("http://localhost:5000/analyticsbehaviorGet")
+        var url = "{{ url|safe }}" + "/analyticsbehaviorGet"
+        var target = new URL(url)
         const params = new URLSearchParams();
         params.set('startDate', startDate)
         params.set('endDate', endDate)
