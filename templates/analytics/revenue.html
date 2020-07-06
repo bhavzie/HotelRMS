@@ -1,63 +1,273 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="container">
-    <canvas id='myChart'></canvas>
+<div class='spread4' style="min-height: 100vh;">
+    <form class='inline mb-5' onsubmit='view(event)'>
+        <div class='row mb-5 mt-5'>
+            <div class='col-sm-6'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name"
+                        class="form-control start-date  mb-2 " id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name"
+                        class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
+                </div>
+            </div>
+        </div>
+        <span class='badge badge-primary mb-5'>
+            Filters (Not Mandatory)
+        </span>
+        <div class='row mb-5'>
+            <div class='col-sm-3'>
+                <select class='form-control text-center' id='category' style='max-width: 90%;'>
+                    <option disabled selected>
+                        Category
+                    </option>
+                    <option>
+                        Bachelor-ette party
+                    </option>
+                    <option>
+                        Business meeting
+                    </option>
+                    <option>
+                        Corporate incentive travel
+                    </option>
+                    <option>
+                        Class re-union
+                    </option>
+                    <option>
+                        Family
+                    </option>
+                    <option>
+                        Military
+                    </option>
+                    <option>
+                        Music band
+                    </option>
+                    <option>
+                        Religious/Church event
+                    </option>
+                    <option>
+                        Sport team
+                    </option>
+                    <option>
+                        Theatre
+                    </option>
+                    <option>
+                        Wedding
+                    </option>
+                    <option>
+                        Other
+                    </option>
+                </select>
+            </div>
+            <div class='col-sm-3'>
+                <select class='form-control text-center' style='max-width: 60%;' id='customerType'>
+                    <option disabled selected>
+                        Customer Type
+                    </option>
+                    <option value='iata'>
+                        IATA
+                    </option>
+                    <option value='corporate'>
+                        Corporate
+                    </option>
+                    <option value='retail'>
+                        Retail
+                    </option>
+                    <option value='tour'>
+                        Tour Operator
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class='row mb-5'>
+            <div class='col-sm-6'>
+                <button type='submit' class='btn btn-info'>View Count & Revenue</button>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <div class='table-responsive mb-5'>
+        <table class='table table-bordered table-hover' id='tablefillcategory'>
+            <caption>Request Details in given date range</caption>
+            <thead class='thead-dark'>
+                <tr>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        Potential Revenue
+                    </th>
+                    <th>
+                        Booked Revenue
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <div class='table-responsive mb-5'>
+        <table class='table table-bordered table-hover' id='tablefillcustomer'>
+            <caption>Request Details in given date range</caption>
+            <thead class='thead-dark'>
+                <tr>
+                    <th>
+                        Customer Type
+                    </th>
+                    <th>
+                        Potential Revenue
+                    </th>
+                    <th>
+                        Booked Revenue
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
 </div>
-<script src="/static/js/Chart.bundle.js"></script>
+
+
+<script src="/static/js/jquery.js"></script>
 <script>
-    let myChart = document.getElementById('myChart').getContext('2d');
 
-    // global options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
+    $(document).ready(function () {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
 
-    let massPopChart = new Chart(myChart, {
-        type: 'polarArea', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-        data: {
-            labels: ['Boston', 'Worcester', 'Srpingfield', 'Lowell', 'Cambridge', 'New Bedford'],
-            datasets: [{
-                label: 'Population',
-                data: [
-                    617594,
-                    181045,
-                    153060,
-                    106519,
-                    105162,
-                    95072
-                ],
-                //backgroundColor:'green'
-                backgroundColor: [
-                    'green',
-                    'orange',
-                    'blue',
-                    'yellow'
-                ],
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Largest Cities In Massachusetts',
-                fontSize: 25,
-            },
-            legend: {
-                position: 'right',
-            },
-            labels: {
-                fontColor: "#000"
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
+        var d2 = new Date();
+        d2.setDate(d2.getDate() + 31);
+        var strDate2 = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            endDate: strDate2,
+            format: "dd/mm/yyyy",
+        });
+
+        $startDate.on('change', function () {
+            var d2 = $startDate.datepicker('getDate');
+            d2.setDate(d2.getDate() + 31);
+            var tDate = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('setEndDate', tDate);
+        });
+    });
+
+
+
+
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+    function view(e) {
+        e.preventDefault()
+        const startDate = parseDate2($("#startDateG").val())
+        const endDate = parseDate2($("#endDateG").val())
+        const category = $("#category option:selected").text().trim();
+        const customerType = $("#customerType option:selected").val();
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                const response = JSON.parse(xhttp.responseText)
+                console.log(response)
+                const catres = response['category']
+                if (catres.length == 1) {
+                    const tbody1 = document.getElementById('tablefillcategory').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${catres[0]['0']}
+                        </td>
+                        <td>
+                            ${catres[0]['1']}
+                        </td>
+                        <td>
+                            ${catres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefillcategory').children[2]
+                    for (let i = 0; i < catres.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                        <td>
+                            ${catres[i]['0']}
+                        </td>
+                        <td>
+                            ${catres[i]['1']}
+                        </td>
+                        <td>
+                            ${catres[i]['2']}
+                        </td>
+                    `
+                        tbody1.appendChild(tr)
+                    }
+                }
+                const custres = response['customerType']
+                if (custres.length == 1) {
+                    const tbody1 = document.getElementById('tablefillcustomer').children[2]
+                    const tr = document.createElement('tr')
+                    tr.innerHTML = `
+                        <td>
+                            ${custres[0]['0']}
+                        </td>
+                        <td>
+                            ${custres[0]['1']}
+                        </td>
+                        <td>
+                            ${custres[0]['2']}
+                        </td>
+                    `
+                    tbody1.appendChild(tr)
+                } else {
+                    const tbody1 = document.getElementById('tablefillcustomer').children[2]
+                    for (let i = 0; i < custres.length; i++) {
+                        const tr = document.createElement('tr')
+                        tr.innerHTML = `
+                        <td>
+                            ${custres[i]['0']}
+                        </td>
+                        <td>
+                            ${custres[i]['1']}
+                        </td>
+                        <td>
+                            ${custres[i]['2']}
+                        </td>
+                    `
+                        tbody1.appendChild(tr)
+                    }
                 }
             }
-        },
-    });
+        };
+        var url = "{{ url|safe }}" + "/analyticsrevenueGet"
+        var target = new URL(url)
+        const params = new URLSearchParams();
+        params.set('startDate', startDate)
+        params.set('endDate', endDate)
+        params.set('category', category)
+        params.set('customerType', customerType)
+        target.search = params.toString()
+
+        xhttp.open("GET", target, true);
+        xhttp.send();
+
+
+    }
+
 
 
 

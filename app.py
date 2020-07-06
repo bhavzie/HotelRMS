@@ -4760,7 +4760,260 @@ def analyticsperformanceGet():
 @app.route('/analyticsrevenue', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticsrevenue():
-    return render_template('analytics/revenue.html')
+    return render_template('analytics/revenue.html', url = url)
+
+
+@app.route('/analyticsrevenueGet', methods = ['GET', 'POST'])
+@is_logged_in
+def analyticsrevenueGet():
+    cursor = mysql.connection.cursor()
+    startDate = request.args.get('startDate')
+    endDate = request.args.get('endDate')
+    category = request.args.get('category')
+    customerType = request.args.get('customerType')
+
+    result = {}
+    result['category'] = []
+    result['customerType'] = []
+
+    if category != 'Category':
+        catres = []
+        tempres = {}
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, category])
+        tempres1 = cursor.fetchall()
+        tempres['0'] = category
+        if len(tempres1) != 0:
+            total1 = 0
+            total2 = 0
+            for r in tempres1:
+                if (r['status'] == statusval10):
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total2 = total2 + 0
+                    else:
+                        total2 = total2 + float(res[0]['totalQuote'])
+                elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total1 = total1 + 0
+                    else:
+                        total1 = total1 + float(res[0]['totalQuote'])
+            tempres['1'] = total1
+            tempres['2'] = total2
+        else:
+            tempres['1'] = 0
+            tempres['2'] = 0
+        catres.append(tempres)
+    else:
+        catres = []
+        cursor.execute('show columns from requestCategory')
+        categories = cursor.fetchall()
+        for c in categories:
+            cat = c['Field']
+            tempres = {}
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, cat])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = cat
+            if len(tempres1) != 0:
+                total1 = 0
+                total2 = 0
+                for r in tempres1:
+                    if (r['status'] == statusval10):
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total2 = total2 + 0
+                        else:
+                            total2 = total2 + float(res[0]['totalQuote'])
+                    elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total1 = total1 + 0
+                        else:
+                            total1 = total1 + float(res[0]['totalQuote'])
+                tempres['1'] = total1
+                tempres['2'] = total2
+            else:
+                tempres['1'] = 0
+                tempres['2'] = 0
+            
+            catres.append(tempres)
+    
+    if customerType != 'Customer Type':
+        custres = []
+        tempres = {}
+        if (customerType == 'iata'):
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = customerType
+            if len(tempres1) != 0:
+                total1 = 0
+                total2 = 0
+                for r in tempres1:
+                    if (r['status'] == statusval10):
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total2 = total2 + 0
+                        else:
+                            total2 = total2 + float(res[0]['totalQuote'])
+                    elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total1 = total1 + 0
+                        else:
+                            total1 = total1 + float(res[0]['totalQuote'])
+                tempres['1'] = total1
+                tempres['2'] = total2
+            else:
+                tempres['1'] = 0
+                tempres['2'] = 0
+            
+            custres.append(tempres)
+        else:
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s',
+                           [startDate, endDate, "customer"])
+            tempres1 = cursor.fetchall()
+            tempres['0'] = customerType
+            total1 = 0
+            total2 = 0
+            for r in tempres1:
+                cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+                dd = cursor.fetchall()
+                if (dd[0]['userSubType'] == customerType):
+                    if (r['status'] == statusval10):
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total2 = total2 + 0
+                        else:
+                            total2 = total2 + float(res[0]['totalQuote'])
+                    elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        res = cursor.fetchall()
+                        if len(res) == 0:
+                            total1 = total1 + 0
+                        else:
+                            total1 = total1 + float(res[0]['totalQuote'])
+            tempres['1'] = total1
+            tempres['2'] = total2
+
+        custres.append(tempres)
+    else:
+        custres = []
+        tempres = {}
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "iata"])
+        tempres1 = cursor.fetchall()
+        tempres['0'] = "iata"
+        if len(tempres1) != 0:
+            total1 = 0
+            total2 = 0
+            for r in tempres1:
+                if (r['status'] == statusval10):
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total2 = total2 + 0
+                    else:
+                        total2 = total2 + float(res[0]['totalQuote'])
+                elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total1 = total1 + 0
+                    else:
+                        total1 = total1 + float(res[0]['totalQuote'])
+            tempres['1'] = total1
+            tempres['2'] = total2
+        else:
+            tempres['1'] = 0
+            tempres['2'] = 0
+            
+        custres.append(tempres)
+
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "customer"])
+        total1 = 0
+        total2 = 0
+        total3 = 0
+        total4 = 0
+        total5 = 0
+        total6 = 0
+        tempres1 = cursor.fetchall()
+        for r in tempres1:
+            cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+            dd = cursor.fetchall()
+            if (dd[0]['userSubType'] == 'retail'):
+                if (r['status'] == statusval10):
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total2 = total2 + 0
+                    else:
+                        total2 = total2 + float(res[0]['totalQuote'])
+                elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total1 = total1 + 0
+                    else:
+                        total1 = total1 + float(res[0]['totalQuote'])
+            elif (dd[0]['userSubType'] == 'corporate'):
+                if (r['status'] == statusval10):
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total4 = total4 + 0
+                    else:
+                        total4 = total4 + float(res[0]['totalQuote'])
+                elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total3 = total3 + 0
+                    else:
+                        total3 = total3 + float(res[0]['totalQuote'])
+            elif (dd[0]['userSubType'] == 'tour'):
+                if (r['status'] == statusval10):
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total6 = total6 + 0
+                    else:
+                        total6 = total6 + float(res[0]['totalQuote'])
+                elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    res = cursor.fetchall()
+                    if len(res) == 0:
+                        total5 = total5 + 0
+                    else:
+                        total5 = total5 + float(res[0]['totalQuote'])
+
+        tempres1 = {}
+        tempres2 = {}
+        tempres3 = {}
+        tempres1['0'] = "retail"
+        tempres1['1'] = total1
+        tempres1['2'] = total2
+        custres.append(tempres1)
+
+        tempres2['0'] = "corporate"
+        tempres2['1'] = total3
+        tempres2['2'] = total4
+        custres.append(tempres2)
+
+        tempres3['0'] = "tour"
+        tempres3['1'] = total5
+        tempres3['2'] = total6
+        custres.append(tempres3)
+
+
+    result['category'] = catres
+    result['customerType'] = custres
+    return jsonify(result), 200
 
 @app.route('/analyticstracking', methods = ['GET', 'POST'])
 @is_logged_in
