@@ -1,63 +1,292 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="container">
-    <canvas id='myChart'></canvas>
+<div class="spread4" style="min-height: 100vh;">
+    <div class = 'mt-5'>
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <canvas id='leadres'></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id = 'hotelres'></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id='revenueres'></canvas>
+            </div>
+            <div class="col-md-6">
+                <div class = 'table-responsive'>
+                    <table class = 'table table-hovered table-bordered' id = 'tab55'>
+                        <caption>Upcoming Groups in the next 5 days</caption>
+                        <thead class = 'thead-dark'>
+                            <tr>
+                                <th>
+                                    Request ID
+                                </th>
+                                <th>
+                                    Group Name
+                                </th>
+                                <th>
+                                    Check-In Date
+                                </th>
+                                <th>
+                                    Check-Out Date
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in upcoming %}
+                                <tr>
+                                    <td>
+                                        {{ r['id'] }}
+                                    </td>
+
+                                    <td>
+                                        {{ r['groupName'] }}
+                                    </td>
+
+                                    <td>
+                                        {{ r['checkIn'] }}
+                                    </td>
+                                    <td>
+                                        {{ r['checkOut'] }}
+                                    </td>
+
+                                    <td>
+                                        {{ r['status'] }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script src="/static/js/jquery.js"></script>
+
 <script src="/static/js/Chart.bundle.js"></script>
 <script>
-    let myChart = document.getElementById('myChart').getContext('2d');
 
-    // global options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
+    $(document).ready(function() {
 
-    let massPopChart = new Chart(myChart, {
-        type: 'polarArea', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-        data: {
-            labels: ['Boston', 'Worcester', 'Srpingfield', 'Lowell', 'Cambridge', 'New Bedford'],
-            datasets: [{
-                label: 'Population',
-                data: [
-                    617594,
-                    181045,
-                    153060,
-                    106519,
-                    105162,
-                    95072
-                ],
-                //backgroundColor:'green'
-                backgroundColor: [
-                    'green',
-                    'orange',
-                    'blue',
-                    'yellow'
-                ],
-                borderWidth: 1,
-                borderColor: '#777',
-                hoverBorderWidth: 3,
-                hoverBorderColor: '#000',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Largest Cities In Massachusetts',
-                fontSize: 25,
+        $('#tab55').DataTable();
+        let leadres = document.getElementById('leadres').getContext('2d');
+        // global options
+        Chart.defaults.global.defaultFontFamily = 'Lato';
+        Chart.defaults.global.defaultFontSize = 18;
+
+        let leadres2 = "{{ leadres|safe }}"
+        leadres2 = leadres2.replace(/'/g, '"');
+        leadres2 = JSON.parse(leadres2)
+
+        let massPopChart = new Chart(leadres, {
+            type: 'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: ['0 - 14', '14 - 45', '45 - 120', '120 - 180', '180 +'],
+                datasets: [{
+                    label: 'Number of Requests',
+                    data: [
+                        leadres2[0][1],
+                        leadres2[1][1],
+                        leadres2[2][1],
+                        leadres2[3][1],
+                        leadres2[4][1],
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#777',
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#000'
+                }]
             },
-            legend: {
-                position: 'right',
-            },
-            labels: {
-                fontColor: "#000"
-            },
-            layout: {
-                padding: {
-                    left: 50,
-                    right: 0,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Buying Behavior & lead time',
+                    fontSize: 23,
+                    padding: 10,
+                    position: 'top'
+                },
+                legend: {
+                    position: 'right',
+                },
+                labels: {
+                    fontColor: "#000"
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number of Requests'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Lead time in Days'
+                        }
+                    }]
                 }
-            }
-        },
-    });
+            },
+        });
+
+
+        let hotelres = document.getElementById('hotelres').getContext('2d');
+
+        // global options
+
+        let hotelres2 = "{{ hotelres|safe }}"
+        hotelres2 = hotelres2.replace(/'/g, '"');
+        hotelres2 = JSON.parse(hotelres2)
+        let customeres = "{{ customeres|safe }}"
+        customeres = customeres.replace(/'/g, '"');
+        customeres = JSON.parse(customeres)
+        customeres = customeres[0]
+
+        let massPopChart2 = new Chart(hotelres, {
+            type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: ['0 - 2', '2 - 8', '8 - 24', '24 +', 'notSubmitted'],
+                datasets: [
+                    {
+                        label: 'Hotel',
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        data: [
+                            hotelres2['table']["0 - 2"],
+                            hotelres2['table']['2 - 8'],
+                            hotelres2['table']["8 - 24"],
+                            hotelres2['table']["24 +"],
+                            hotelres2['notSubmitted']
+                        ]
+                    },
+                    {
+                        label: 'Customer',
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        data: [
+                            customeres['table']["0 - 2"],
+                            customeres['table']['2 - 8'],
+                            customeres['table']["8 - 24"],
+                            customeres['table']["24 +"],
+                            customeres['notSubmitted']
+                        ] 
+                    }
+                ],
+                    borderWidth: 1,
+                    borderColor: '#777',
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#000'
+                },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Performance Time for Hotel',
+                    fontSize: 23,
+                    padding: 10,
+                    position: 'top'
+                },
+                legend: {
+                    position: 'right',
+                },
+                labels: {
+                    fontColor: "#000"
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        bottom: 15,
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Count'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time in Hours'
+                        }
+                    }]
+                }
+                
+            },
+        });
+
+        let revenueres = document.getElementById('revenueres').getContext('2d');
+
+
+        let revenueres2 = "{{ revenueres|safe }}"
+        revenueres2 = revenueres2.replace(/'/g, '"');
+        revenueres2 = JSON.parse(revenueres2)
+
+        let massPopChart3 = new Chart(revenueres, {
+            type: 'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: ['Potential(in $)', 'Booked(in $)'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [
+                        revenueres2[0][1],
+                        revenueres2[0][2],
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#777',
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#000'
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Revenue',
+                    fontSize: 23,
+                    padding: 10,
+                    position: 'top'
+                },
+                legend: {
+                    position: 'right',
+                },
+                labels: {
+                    fontColor: "#000"
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        bottom: 15,
+                    }
+                },
+
+            },
+        });
+
+
+        // table 
+        
+
+    })    
+    
+    
 
 
 

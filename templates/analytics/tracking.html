@@ -36,6 +36,15 @@
                         <th>
                             Request ID
                         </th>
+                        <th>
+                            Group Name
+                        </th>
+                        <th>
+                            Check-In Date
+                        </th>
+                        <th>
+                            Check-Out Date
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,6 +52,15 @@
                     <tr>
                         <td>
                             {{ r['id'] }}
+                        </td>
+                        <td>
+                            {{ r['groupName'] }}
+                        </td>
+                        <td>
+                            {{ r['checkIn']  }}
+                        </td>
+                        <td>
+                            {{ r['checkOut'] }}
                         </td>
                     </tr>
                     {% endfor %}

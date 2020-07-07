@@ -4645,7 +4645,154 @@ def analyticsbehaviorGet():
 @app.route('/analyticsdashboard', methods = ['GET', 'POST'])
 @is_logged_in
 def analyticsdashboard():
-    return render_template('analytics/dashboard.html')
+    cursor = mysql.connection.cursor()
+    endDate = datetime.datetime.today()
+    startDate = endDate - datetime.timedelta(days = 31)
+
+    result = {}
+    result['leadres'] = []
+    leadres = []
+    tempres1 = {}
+    tempres1['0'] = "0 - 14"
+    tempres2 = {}
+    tempres2['0'] = "14 - 45"
+    tempres3 = {}
+    tempres3['0'] = "45 - 120"
+    tempres4 = {}
+    tempres4['0'] = "120 - 180"
+    tempres5 = {}
+    tempres5['0'] = "180 +"
+
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, 0, 14])
+    leadres1 = cursor.fetchall()
+    tempres1['1'] = len(leadres1)
+    leadres.append(tempres1)
+
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 14, 45])
+    leadres2 = cursor.fetchall()
+    tempres2['1'] = len(leadres2)
+    leadres.append(tempres2)  
+
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 45, 120])
+    leadres3 = cursor.fetchall()
+    tempres3['1'] = len(leadres3)
+    leadres.append(tempres3)    
+
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 120, 180])
+    leadres4 = cursor.fetchall()
+    tempres4['1'] = len(leadres4)
+    leadres.append(tempres4)    
+
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s', [startDate, endDate, 180])
+    leadres5 = cursor.fetchall()
+    tempres5['1'] = len(leadres5)
+    leadres.append(tempres5)           
+
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    requests = cursor.fetchall()
+    table = {
+        "0 - 2": 0,
+        "2 - 8": 0,
+        "8 - 24":0,
+        "24 +":0,
+    }
+    notSubmitted = 0
+    resHours = []
+    for r in requests:
+        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
+        res = cursor.fetchall()
+        if len(res) == 0:
+            notSubmitted = notSubmitted + 1
+        else:
+            difference = abs(res[0]['submittedOn'] - r['createdOn'])
+            difference = difference.total_seconds()
+            hours = divmod(difference, 3600)[0]
+            resHours.append(hours)
+            if hours >= 0 and hours <= 2:
+                table["0 - 2"] = table["0 - 2"] + 1
+            elif hours >2 and hours <= 8:
+                table["2 - 8"] = table['2 - 8'] + 1
+            elif hours > 8 and hours <= 24:
+                table['8 - 24'] = table['8 - 24'] + 1
+            elif hours > 24:
+                table["24 +"] = table["24 +"] + 1
+
+    hotelres = {}
+    hotelres['notSubmitted'] = notSubmitted
+    hotelres['table'] = table
+
+
+    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s', [startDate, endDate, statusval2])
+    notSubmitted = 0
+    table = {
+        "0 - 2": 0,
+        "2 - 8": 0,
+        "8 - 24": 0,
+        "24 +": 0,
+    }
+    responseData = cursor.fetchall()
+    for r in responseData:
+        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId']])
+        tempres = cursor.fetchall()
+        if len(tempres) == 0:
+            notSubmitted = notSubmitted + 1
+        else:
+            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId']])
+            customerres = cursor.fetchall()
+            if len(customerres) == 0:
+                notSubmitted = notSubmitted + 1
+            else:
+                difference = customerres[0]['submittedOn'] - tempres[0]['submittedOn']
+                difference = difference.total_seconds()
+                hours = divmod(difference, 3600)[0]
+                if hours >= 0 and hours <= 2:
+                    table["0 - 2"] = table["0 - 2"] + 1
+                elif hours >2 and hours <= 8:
+                    table["2 - 8"] = table['2 - 8'] + 1
+                elif hours > 8 and hours <= 24:
+                    table['8 - 24'] = table['8 - 24'] + 1
+                elif hours > 24:
+                    table["24 +"] = table["24 +"] + 1
+
+    customeres = {}
+    customeres['notSubmitted'] = notSubmitted
+    customeres['table'] = table
+
+    revenueres = {}
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    tempres1 = cursor.fetchall()
+    if len(tempres1) != 0:
+        total1 = 0
+        total2 = 0
+        for r in tempres1:
+            if (r['status'] == statusval10):
+                cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                res = cursor.fetchall()
+                if len(res) == 0:
+                    total2 = total2 + 0
+                else:
+                    total2 = total2 + float(res[0]['totalQuote'])
+            elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
+                cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                res = cursor.fetchall()
+                if len(res) == 0:
+                    total1 = total1 + 0
+                else:
+                    total1 = total1 + float(res[0]['totalQuote'])
+            revenueres['1'] = total1
+            revenueres['2'] = total2
+    else:
+        revenueres['1'] = 0
+        revenueres['2'] = 0
+
+
+    startDate = datetime.datetime.today()
+    endDate = startDate + datetime.timedelta(days = 5)
+    cursor.execute('SELECT * From request where checkIn >= %s && checkOut <= %s order by checkIn', [startDate, endDate])
+    upcoming = cursor.fetchall()
+
+
+    return render_template('analytics/dashboard.html', leadres = leadres, hotelres = hotelres, revenueres = [revenueres], customeres = [customeres], upcoming = upcoming)
 
 @app.route('/analyticsperformance', methods = ['GET', 'POST'])
 @is_logged_in
@@ -5051,6 +5198,9 @@ def analyticstracking():
         if len(response) != 0:
             if response[0]['paymentGtd'] == 1:
                 tempresult['id'] = r['id']
+                tempresult['groupName'] = r['groupName']
+                tempresult['checkIn'] = r['checkIn']
+                tempresult['checkOut'] = r['checkOut']
                 result2.append(tempresult)
     
     cursor.execute('SELECT * from request where checkIn >= %s && checkOut <= %s', [date, enddate])
@@ -5066,7 +5216,6 @@ def analyticstracking():
         tempresult['groupName'] = r['groupName']
         result3.append(tempresult)
 
-    print(result3)
 
     return render_template('analytics/tracking.html', result = result, result2 = result2, result3 = result3)
 
