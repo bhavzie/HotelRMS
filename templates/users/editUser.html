@@ -27,43 +27,23 @@
             </div>
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>UserType : </span><br>
-                <select class='form-control text-center' name='userType' required>
-                    {% for value in subtypes %}
-                    {% if value != data['userType'] %}
-                    <option value={{ value }}>
-                        {{ value }}
-                    </option>
-                    {% else %}
-                    <option selected value={{ value }}>
-                        {{ value }}
-                    </option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
+                <input type = 'text' name='userType' value = '{{ data["userType"] }}' readonly class = 'form-control mt-3 text-center'>
             </div>
-            <div class='check mb-5 text-center'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        {% if data['email_verified'] == 'No' %}
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='email_verified'>
-                        {% else %}
-                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='email_verified'>
-                        {% endif %}
-                        <span style='font-weight: bold;'>Email Verified?</span>
-                    </label>
-                </div>
+            <div class='formhelp mb-5'>
+                <span class='btn btn-primary'>Email Verified : </span><br>
+                {% if data['active'] == 'No' %}
+                <input type="text" value=0 name='email_verified' class="form-control mt-3 text-center" readonly>
+                {% else %}
+                <input type="text" value=1 checked name='email_verified' class="form-control mt-3 text-center" readonly>
+                {% endif %}
             </div>
-            <div class='check mb-5 text-center'>
-                <div class="form-check checkbox-slider--b-flat">
-                    <label>
-                        {% if data['active'] == 'No' %}
-                        <input type="checkbox" value="True" onchange="handleChange(this)" name='active'>
-                        {% else %}
-                        <input type="checkbox" value="True" checked onchange="handleChange(this)" name='active'>
-                        {% endif %}
-                        <span style='font-weight: bold;'>User Active?</span>
-                    </label>
-                </div>
+            <div class='formhelp mb-5'>
+                <span class='btn btn-primary'>User Active : </span><br>
+                {% if data['active'] == 'No' %}
+                <input type="text" value=0 name='active' class="form-control mt-3 text-center" readonly>
+                {% else %}
+                <input type="text" value=1 checked name='active' class="form-control mt-3 text-center" readonly>
+                {% endif %}
             </div>
 
             <div class="row">

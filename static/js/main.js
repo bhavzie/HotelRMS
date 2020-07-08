@@ -1,14 +1,40 @@
 
-const checkp = () => {
+const checkp = (e) => {
     const password = document.querySelector('#password')
     const cpassword = document.querySelector('#cpassword')
+    var meter = document.getElementById('password-strength-meter');
+    var text = document.getElementById('password-strength-text');
     
     const msg = document.getElementById('msg')
     const submit = document.getElementById('subm')
 
+    var strength = {
+        0: "Worst",
+        1: "Bad",
+        2: "Weak",
+        3: "Good",
+        4: "Strong"
+    }
+    var result = zxcvbn(password.value);
+    meter.value = result.score;
+
+    if (password.value !== "") {
+        text.innerHTML = "Strength: " + strength[result.score];
+    } else {
+        text.innerHTML = "";
+    }
+
+    if (strength[result.score] == "Worst") {
+        msg.style.setProperty('color', 'red', 'important');
+        msg.innerHTML = 'Set a stronger Password';
+        submit.disabled = true
+        return false
+    }
+
     if (password.value == cpassword.value) {
         msg.style.setProperty('color', 'green', 'important');
         msg.innerHTML = 'Passwords Match'
+
         submit.disabled = false
     }
     else {
@@ -25,9 +51,13 @@ $(document).ready(function () {
         $("div.alert").remove();
     }, 6000);
 
-    $('#tableusers').DataTable();
+    $('#tableusers').DataTable({
+        responsive: true,
+    });
 
-    $('#tab1').DataTable();
+    $('#tab1').DataTable({
+        responsive: true,
+    });
 
     var table = $('#tab9').DataTable({
         columns: [
@@ -43,6 +73,7 @@ $(document).ready(function () {
             { width: '15%' },
         ],
         "ordering": true,
+        responsive: true
     });
 
     table.column(1).visible(false).draw()

@@ -109,7 +109,9 @@
     $(document).ready(function () {
         var $startDate = $('.start-date');
         var $endDate = $('.end-date');
-        table = $('#tab2').DataTable();
+        table = $('#tab2').DataTable({
+            responsive: true,
+        });
         var d = new Date();
         var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
 

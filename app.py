@@ -459,6 +459,10 @@ def login():
                         session.clear()
                         flash('You are de-activated. Kindly contact Super Admin!', 'danger')
                         return render_template('login.html', title = 'Login')
+                    if (dog['email_verified'] == 0 or dog['email_verified'] == None):
+                        session.clear()
+                        flash('Please verify your email address before you login', 'danger')
+                        return render_template('login.html')
 
                     if len(d) != 0:
                         d = d[0]
@@ -543,6 +547,11 @@ def login():
                         "SELECT * FROM iataUsers where email = %s", [email])
                     dog = cursor.fetchall()
                     dog = dog[0]
+                    if (dog['email_verified'] == 0 or dog['email_verified'] == None):
+                        session.clear()
+                        flash('Please verify your email address before you login', 'danger')
+                        return render_template('login.html')
+                    
                     if (dog['active'] == 0):
                         session.clear()
                         flash(
@@ -602,6 +611,11 @@ def login():
                     cursor.execute("SELECT * FROM customers where email = %s", [email])
                     dog = cursor.fetchall()
                     dog = dog[0]
+                    if (dog['email_verified'] == 0 or dog['email_verified'] == None):
+                        session.clear()
+                        flash('Please verify your email address before you login', 'danger')
+                        return render_template('login.html')
+
                     if (dog['active'] == 0):
                         session.clear()
                         flash('You are de-activated. Kindly contact Super Admin!', 'danger')
@@ -652,7 +666,19 @@ def login():
 
                     session['menuParams'] = menuParams
 
-                
+                elif session['userType'] == 'developer':
+                    cursor.execute("SELECT * FROM developers where email = %s", [email])
+                    dog = cursor.fetchall()
+                    dog = dog[0]
+                    if (dog['email_verified'] == 0 or dog['email_verified'] == None):
+                        session.clear()
+                        flash('Please verify your email address before you login', 'danger')
+                        return render_template('login.html')
+                    if (dog['active'] == 0):
+                        session.clear()
+                        flash('You are de-activated. Kindly contact Super Admin!', 'danger')
+                        return render_template('login.html', title = 'Login')
+
                 flash('You are now logged in', 'success')
                 return redirect(url_for('home2'))
             else:
@@ -1047,7 +1073,7 @@ def submitEditUser():
     cursor.close()
 
     flash('Hotel user has been edited', 'success')
-    return render_template('index2.html')
+    return redirect(url_for("home2"))
 
 
 @app.route('/submitEditUserAll2', methods = ["GET", 'POST'])
@@ -1092,7 +1118,7 @@ def deactivateUser(email):
     cursor.close()
 
     flash("User has been de-activated", 'success')
-    return render_template('index2.html')
+    return redirect(url_for("managehotelusers"))
 
 
 @app.route('/deactivateUserAll/<email>', methods=['GET', 'POST'])
@@ -1119,7 +1145,7 @@ def deactivateUserAll(email):
     cursor.close()
 
     flash("User has been de-activated", 'success')
-    return render_template('index2.html')
+    return redirect(url_for("managehotelusers"))
 
 
 @app.route('/activateUser/<email>', methods=['GET', 'POST'])
@@ -1132,7 +1158,7 @@ def activateUser(email):
     cursor.close()
 
     flash("User has been activated", 'success')
-    return render_template('index2.html')
+    return redirect(url_for("managehotelusers"))
 
 
 @app.route('/activateUserAll/<email>', methods=['GET', 'POST'])
@@ -1160,7 +1186,7 @@ def activateUserAll(email):
     cursor.close()
 
     flash("User has been activated", 'success')
-    return render_template('index2.html')
+    return redirect(url_for("managehotelusers"))
 
 
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
@@ -1234,7 +1260,7 @@ def submitEditUserAll():
     cursor.close()
 
     flash('User Details updated', 'success')
-    return render_template('users/index2.html')
+    return redirect(url_for('home2'))
 
 
 @app.route('/inviteemail', methods = ['GET', 'POST'])

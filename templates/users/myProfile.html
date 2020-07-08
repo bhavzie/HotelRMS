@@ -55,7 +55,8 @@
             
             <div class="formhelp mb-5">
                 <span class='btn btn-primary'>Password : </span><br>
-                <input type='password' class='form-control mt-3 text-center' value="{{ data['password'] }}" name='password' required />
+                <input type='password' id="password-field" class='form-control mt-3 text-center' value="{{ data['password'] }}" name='password' required />
+                <button type = 'button' toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></button >
             </div>
             {% if data['organizationName'] %}
             <div class="formhelp mb-5">
@@ -75,5 +76,17 @@
         {% endif %}
     </div>
 </div>
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(".toggle-password").click(function () {
 
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
 {% endblock %}
