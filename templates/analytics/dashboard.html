@@ -20,9 +20,9 @@
         </div>
     </form>
     <hr>
-    <div class = 'mt-5'>
-        <div class="row mb-5">
-            <div class="col-md-6">
+    <div>
+        <div class="row" style='border-bottom: 1px solid black;'>
+            <div class="col-md-6" style='border-right: 1px solid black;'>
                 <canvas id='leadres'></canvas>
             </div>
             <div class="col-md-6">
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6" style='border-right: 1px solid black;'>
                 <canvas id='hotelres'></canvas>
             </div>
             <div class="col-md-6">
@@ -153,11 +153,9 @@
                         leadres2[3][1],
                         leadres2[4][1],
                     ],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                    ],
+                    borderColor: "#8e5ea2",
+                    fill: false,
                     borderWidth: 1,
-                    borderColor: '#777',
                     hoverBorderWidth: 3,
                     hoverBorderColor: '#000'
                 }]
@@ -219,7 +217,7 @@
                 datasets: [
                     {
                         label: 'Hotel',
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        backgroundColor: "#3e95cd",
                         data: [
                             hotelres2['table']["0 - 2"],
                             hotelres2['table']['2 - 8'],
@@ -230,7 +228,7 @@
                     },
                     {
                         label: 'Customer',
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        backgroundColor: "#8e5ea2",
                         data: [
                             customeres['table']["0 - 2"],
                             customeres['table']['2 - 8'],
@@ -301,10 +299,7 @@
                         revenueres2[0][1],
                         revenueres2[0][2],
                     ],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                    ],
+                    backgroundColor: ["#e8c3b9", "#3e95cd"],
                     borderWidth: 1,
                     borderColor: '#777',
                     hoverBorderWidth: 3,
