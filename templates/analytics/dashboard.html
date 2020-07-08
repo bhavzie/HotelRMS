@@ -1,20 +1,42 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="spread4" style="min-height: 100vh;">
+<div class="spread4">
+    <form class = 'inline mb-5' onsubmit = 'view(event)'>
+        <div class = 'row mt-5 mb-5'>
+            <div class = 'col-sm-6'>
+                <div class="input-group-prepend col-sm">
+                    <span class="input-group-text  mb-2">Date range</span>
+                    <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
+                        id='startDateG' required>
+                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
+                        id='endDateG' required>
+                </div>
+            </div>
+            <div class = 'col-sm-6'>
+                <button type = 'submit' class = 'btn btn-info'>
+                    View Graphs
+                </button>
+            </div>
+        </div>
+    </form>
+    <hr>
     <div class = 'mt-5'>
         <div class="row mb-5">
             <div class="col-md-6">
                 <canvas id='leadres'></canvas>
             </div>
             <div class="col-md-6">
-                <canvas id = 'hotelres'></canvas>
+                <canvas id='revenueres'></canvas>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <canvas id='revenueres'></canvas>
+                <canvas id='hotelres'></canvas>
             </div>
             <div class="col-md-6">
+                <span class = 'badge badge-pill badge-primary mb-2'>
+                    Upcoming Groups in the next 5 days
+                </span>
                 <div class = 'table-responsive'>
                     <table class = 'table table-hovered table-bordered' id = 'tab55'>
                         <caption>Upcoming Groups in the next 5 days</caption>
@@ -68,11 +90,45 @@
     </div>
 </div>
 <script src="/static/js/jquery.js"></script>
-
 <script src="/static/js/Chart.bundle.js"></script>
 <script>
 
+    var massPopChart;
+    var massPopChart2;
+    var massPopChart3;
+
     $(document).ready(function() {
+
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+
+        var d2 = new Date();
+        d2.setDate(d2.getDate() + 31);
+        var strDate2 = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+        var d3 = new Date()
+        d3.setDate(d3.getDate - 31)
+        var strDate3 = d3.getDate() + "/" + (d3.getMonth() + 1) + "/" + d3.getFullYear()
+
+        $startDate.datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy",
+        });
+        $endDate.datepicker({
+            autoHide: true,
+            endDate: strDate2,
+            format: "dd/mm/yyyy",
+        });
+
+        $startDate.on('change', function () {
+            var d2 = $startDate.datepicker('getDate');
+            d2.setDate(d2.getDate() + 31);
+            var tDate = d2.getDate() + "/" + (d2.getMonth() + 1) + "/" + d2.getFullYear()
+            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('setEndDate', tDate);
+        });
+
+        $startDate.datepicker("setDate", strDate3)
+        $endDate.datepicker("setDate", strDate2)
 
         $('#tab55').DataTable();
         let leadres = document.getElementById('leadres').getContext('2d');
@@ -84,7 +140,7 @@
         leadres2 = leadres2.replace(/'/g, '"');
         leadres2 = JSON.parse(leadres2)
 
-        let massPopChart = new Chart(leadres, {
+        massPopChart = new Chart(leadres, {
             type: 'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
             data: {
                 labels: ['0 - 14', '14 - 45', '45 - 120', '120 - 180', '180 +'],
@@ -156,7 +212,7 @@
         customeres = JSON.parse(customeres)
         customeres = customeres[0]
 
-        let massPopChart2 = new Chart(hotelres, {
+        massPopChart2 = new Chart(hotelres, {
             type: 'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
             data: {
                 labels: ['0 - 2', '2 - 8', '8 - 24', '24 +', 'notSubmitted'],
@@ -192,7 +248,7 @@
             options: {
                 title: {
                     display: true,
-                    text: 'Performance Time for Hotel',
+                    text: 'Performance Time for Hotel & Customer',
                     fontSize: 23,
                     padding: 10,
                     position: 'top'
@@ -235,7 +291,7 @@
         revenueres2 = revenueres2.replace(/'/g, '"');
         revenueres2 = JSON.parse(revenueres2)
 
-        let massPopChart3 = new Chart(revenueres, {
+        massPopChart3 = new Chart(revenueres, {
             type: 'doughnut', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
             data: {
                 labels: ['Potential(in $)', 'Booked(in $)'],
@@ -286,9 +342,79 @@
 
     })    
     
-    
+    function parseDate2(x) {
+        return x.split("/").reverse().join("/");
+    }
+
+    function view(e) {
+        e.preventDefault()
+        const startDate = parseDate2($("#startDateG").val())
+        const endDate = parseDate2($("#endDateG").val())
 
 
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                const response = JSON.parse(xhttp.responseText)
+                const leadres = response['leadres']
+                const hotelres = response['hotelres']
+                const customeres = response['customeres']
+                const revenueres = response['revenueres']
+                
+                var leadres2 = []
+                leadres2.push(leadres[0]['1'])
+                leadres2.push(leadres[1]['1'])
+                leadres2.push(leadres[2]['1'])
+                leadres2.push(leadres[3]['1'])
+                leadres2.push(leadres[4]['1'])
+
+                massPopChart.data.datasets[0]['data'] = leadres2
+                massPopChart.update()
+
+
+                var revenueres2 = []
+                revenueres2.push(revenueres['1'])
+                revenueres2.push(revenueres['2'])
+
+                massPopChart3.data.datasets[0]['data'] = revenueres2
+                massPopChart3.update()
+
+                var hotelres2 = []
+
+                console.log(hotelres)
+                console.log(customeres)
+
+                hotelres2.push(hotelres['table']["0 - 2"])
+                hotelres2.push(hotelres['table']['2 - 8'])
+                hotelres2.push( hotelres['table']["8 - 24"])
+                hotelres2.push( hotelres['table']["24 +"])
+                hotelres2.push( hotelres['notSubmitted'])
+
+                var customeres2 = []
+                
+                customeres2.push(customeres['table']["0 - 2"])
+                customeres2.push(customeres['table']['2 - 8'])
+                customeres2.push(customeres['table']["8 - 24"])
+                customeres2.push(customeres['table']["24 +"])
+                customeres2.push(customeres['notSubmitted'])
+
+                massPopChart2.data.datasets[0]['data'] = hotelres2
+                massPopChart2.data.datasets[1]['data'] = customeres2
+
+                massPopChart2.update()
+
+            }
+        };
+        var url = "{{ url|safe }}" + "/analyticsDashboardGet"
+        var target = new URL(url)
+        const params = new URLSearchParams();
+        params.set('startDate', startDate)
+        params.set('endDate', endDate)
+        target.search = params.toString()
+
+        xhttp.open("GET", target, true);
+        xhttp.send();
+    }
 
 
 </script>
