@@ -38,7 +38,7 @@
             <div class="formhelp mb-5">
                 <span>Strategy* :</span>
                 <select class='form-control text-center col-sm-6 ml-5' required style='max-width: 40%; display: inline-block;'
-                    name='strategy' id = 'strat'>
+                    name='strategy' id = 'strat' disabled>
                     <option disabled>
                         Select Strategy
                     </option>
@@ -59,7 +59,7 @@
             <div class="row" style="margin-top: 100px;">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" id = 'subm' class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -74,6 +74,7 @@
         if (flag) {
             const option = "{{ result['strategy'] }}"
             $("#strat option[value = "+option+"]").attr('selected', 'selected')
+            $('#subm').hide();
         }
     });
 
@@ -81,6 +82,7 @@
     function edit() {
         let sel = $('#strat')
         let count = $('#count1')
+        $('#subm').show();
         sel = sel[0]
         count = count[0]
         $(sel).prop('disabled', false)

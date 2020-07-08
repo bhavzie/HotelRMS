@@ -9,10 +9,8 @@
         </div>
         {% if flag == False %}
             <div style="margin-bottom: 100px;">
+                <label class = 'mr-5'>Days</label>
                 <input type="number" class = 'form-control' placeholder="No of Days" style="display: inline-block; max-width: 30%;" min = 0 id = 'days' onchange="handle()">
-                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Hours" min = 0 id = 'hours' onchange="handle()" value = 0 hidden>
-                <input type="number" class='form-control' style="display: inline-block; max-width: 30%;" placeholder="No of Minutes"
-                    min=0 id = 'minutes' onchange="handle()" value = 0 hidden>
             </div>
             <div class = 'mt-5'>
                 Total evaluated Hours From quoted time : <span id = 'dem'>0</span>
@@ -20,12 +18,8 @@
         {% else %}
             <button type = 'button' class = 'btn btn-info mb-5' onclick="edit()">Edit</button>
             <div style="margin-bottom: 100px;">
-                Days<input type="number" class='form-control' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
+                Days<input type="number" class='form-control ml-5' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
                     min=0 id='days' onchange="handle()" value = "{{ result['days'] }}" readonly>
-                Hours<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Hours"
-                    min=0 id='hours' onchange="handle()" value = "{{ result['hours'] }}" readonly value = 0 hidden>
-                Minutes<input type="number" class='form-control' style="display: inline-block; max-width: 20%;" placeholder="No of Minutes"
-                    min=0 id='minutes' onchange="handle()" value = "{{ result['minutes'] }}" readonly value = 0 hidden>
             </div>
             <div class='mt-5'>
                 Total evaluated Hours From quoted time : <span id='dem'>{{ result['value'] }}</span>
@@ -44,21 +38,13 @@
 <script>
         function handle() {
             let days = parseInt($('#days').val()) * 24
-            let minutes = parseInt($('#minutes').val()) / 60
-            let hours = parseInt($('#hours').val())
-            
-            minutes = +(Math.round(minutes + "e+2") + "e-2")
+           
 
             if(Number.isNaN(days)) {
                 days = 0
             } 
-            if(Number.isNaN(minutes)) {
-                minutes = 0
-            }
-            if(Number.isNaN(hours)) {
-                hours = 0
-            }
-            let value = days + minutes + hours
+           
+            let value = days
             value = +(Math.round(value + "e+2") + "e-2")
             value = value.toString()
 
@@ -68,8 +54,6 @@
 
         function edit() {
             $('#days').removeAttr('readonly')
-            $('#hours').removeAttr('readonly')
-            $('#minutes').removeAttr('readonly')
         }
 
         function submit(e) {
@@ -79,8 +63,6 @@
             result = {}
             result['value'] = value
             result['days'] = $("#days").val()
-            result['hours'] = $("#hours").val()
-            result['minutes'] = $('#minutes').val()
 
             fetch('/settingsTimelimitSubmit', {
                 method: 'POST',

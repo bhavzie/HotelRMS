@@ -1574,7 +1574,7 @@ def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
     data = cursor.fetchall()
-    cursor.execute('SELECT email From users where userType != %s', ['hoteluser'])
+    cursor.execute('SELECT email From users where userType != %s && userType != %s', ['hoteluser', 'developer'])
     users = cursor.fetchall()
     cursor.execute('SELECT * From settingsRequest Order By submittedOn desc')
     result = cursor.fetchall()
@@ -2081,12 +2081,12 @@ def settingsTimelimitSubmit():
     len1 = cursor.fetchall()
 
     if len(len1) == 1:
-        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s, hours = %s, minutes = %s', [
-            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s', [
+            inp['value'], time, email, inp['days']
         ])
     else:
-        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days, hours, minutes) VALUES(%s, %s, %s, %s, %s, %s)', [
-            inp['value'], time, email, inp['days'], inp['hours'], inp['minutes']
+        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days) VALUES(%s, %s, %s, %s)', [
+            inp['value'], time, email, inp['days']
         ])
     mysql.connection.commit()
 
