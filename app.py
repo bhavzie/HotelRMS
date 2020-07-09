@@ -1343,7 +1343,8 @@ def euserType():
     cursor.execute(
         'SELECT * From hotelMenuAccess where userType = %s', [userType])
     datah = cursor.fetchall()
-    datah = datah[0]
+    if len(datah) != 0:
+        datah = datah[0]
     return render_template('users/eusertype.html', datah=datah, userType=userType)
 
 
