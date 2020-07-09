@@ -3565,10 +3565,12 @@ def showQuote(id):
         cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
         data10 = cursor.fetchall()
         data10 = data10[0]
+    
 
 
     declined = False
     declinedMsg = ""
+    endline = 0
     if (data['status'] == statusval2):
         cursor.execute('SELECT days from settingsTimelimit')
         days = cursor.fetchall()
@@ -3587,6 +3589,7 @@ def showQuote(id):
             declinedMsg = "Time limit expired"
             data['status'] = statusval9
             data2['status'] = statusval9
+
 
     cursor.execute('select count from settingsNegotiation')
     count = cursor.fetchall()
@@ -3612,7 +3615,9 @@ def showQuote(id):
     contract = cursor.fetchall()
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10)
+    endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
+
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
