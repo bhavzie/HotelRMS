@@ -39,17 +39,17 @@
             {% endif %}
             {% if data2['status'] == 'CONFIRMED' %}
                 <span class='badge badge-pill badge-primary'>
-                    Confirmation Code {{ data9['confirmationCode'] }}
+                    Confirmation Code : {{ data9['confirmationCode'] }}
                 </span>
                 <span class='badge badge-primary'>
-                    Comments {{ data9['comments'] }}
+                    Comments :  {{ data9['comments'] }}
                 </span>
             {% elif data2['status'] == 'NOT CONFIRMED' %}
                 <span class='badge badge-pill badge-primary'>
-                    Confirmation Code {{ data10['declinedBy'] }}
+                    Confirmation Code : {{ data10['declinedBy'] }}
                 </span>
                 <span class='badge badge-primary'>
-                    Comments {{ data10['comments'] }}
+                    Comments : {{ data10['comments'] }}
                 </span>
             {% endif %}
         </div>
