@@ -48,6 +48,28 @@
                         </span>
                     </div>
                 </div>
+            {% elif data['status'] == 'CONFIRMED' %}
+                <div class='mb-5'>
+                    <div class='mb-4'>
+                        <span class="badge badge-pill badge-primary">
+                           Confirmation Code : {{ data9['confirmationCode'] }}
+                        </span>
+                        <span class='badge badge-pill badge-primary'>
+                           Comments {{ data9['comments'] }}
+                        </span>
+                    </div>
+                </div>
+            {% elif data['status'] == 'NOT CONFIRMED' %}
+                <div class='mb-5'>
+                    <div class='mb-4'>
+                        <span class="badge badge-pill badge-primary">
+                            Sent for review by : {{ data10['confirmationCode'] }}
+                        </span>
+                        <span class='badge badge-pill badge-primary'>
+                            ON {{ data10['comments'] }}
+                        </span>
+                    </div>
+                </div>
             {% endif %}
             {% if decline %}
             <div class='mb-5'>

@@ -37,6 +37,21 @@
                 </div>
             </div>
             {% endif %}
+            {% if data2['status'] == 'CONFIRMED' %}
+                <span class='badge badge-pill badge-primary'>
+                    Confirmation Code {{ data9['confirmationCode'] }}
+                </span>
+                <span class='badge badge-primary'>
+                    Comments {{ data9['comments'] }}
+                </span>
+            {% elif data2['status'] == 'NOT CONFIRMED' %}
+                <span class='badge badge-pill badge-primary'>
+                    Confirmation Code {{ data10['declinedBy'] }}
+                </span>
+                <span class='badge badge-primary'>
+                    Comments {{ data10['comments'] }}
+                </span>
+            {% endif %}
         </div>
     </div>
     <div class = 'row mb-5'>

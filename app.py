@@ -2208,6 +2208,18 @@ def showRequest(token):
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
             data8 = data8[0]
+    
+        data9 = []
+        if (status == statusval10):
+            cursor.execute('SELECT * From confirmRequest where requestId = %s', [token])
+            data9 = cursor.fetchall()
+            data9 = data9[0]
+
+        data10 = []
+        if (status == statusval11):
+            cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [token])
+            data10 = cursor.fetchall()
+            data10 = data10[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
@@ -2381,7 +2393,7 @@ def showRequest(token):
 
         
 
-        return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate)
+        return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, data9 = data9, data10 = data10)
 
     elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
 
@@ -3490,6 +3502,19 @@ def showQuote(id):
         data6 = cursor.fetchall()
         data6 = data6[0]
 
+    data9 = []
+    if (data2['status'] == statusval10):
+        cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+        data9 = cursor.fetchall()
+        data9 = data9[0]
+
+    data10 = []
+    if (data2['status'] == statusval11):
+        cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
+        data10 = cursor.fetchall()
+        data10 = data10[0]
+
+
     declined = False
     declinedMsg = ""
     if (data['status'] == statusval2):
@@ -3535,7 +3560,7 @@ def showQuote(id):
     contract = cursor.fetchall()
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -3565,6 +3590,18 @@ def deleteRequest(id):
                 "SELECT * From review where requestId = %s", [id])
             data8 = cursor.fetchall()
             data8 = data8[0]
+
+        data9 = []
+        if (status[0]['status'] == statusval10):
+            cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+            data9 = cursor.fetchall()
+            data9 = data9[0]
+
+        data10 = []
+        if (status[0]['status'] == statusval11):
+            cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
+            data10 = cursor.fetchall()
+            data10 = data10[0]
 
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -3701,7 +3738,8 @@ def deleteRequest(id):
 
 
         deleteflag = True
-        return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8)
+
+        return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10)
     elif (status[0]['status'] == statusval1):
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
