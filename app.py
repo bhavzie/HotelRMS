@@ -1416,23 +1416,28 @@ def viewAllUsers():
             cursor.execute(
                 'SELECT active from developers where email = %s', [r['email']])
             rr = cursor.fetchall()
-            rr = rr[0]
+            if len(rr) != 0:
+                rr = rr[0]
         elif (r['userType'] == 'iata'):
             cursor.execute(
                 'SELECT active from iataUsers where email = %s', [r['email']])
             rr = cursor.fetchall()
-            rr = rr[0]
+            if len(rr) != 0:
+                rr = rr[0]
         elif (r['userType'] == 'hoteluser'):
             cursor.execute(
                 'SELECT active from hotelUsers where email = %s', [r['email']])
             rr = cursor.fetchall()
-            rr = rr[0]
+            if len(rr) != 0:
+                rr = rr[0]
         elif (r['userType'] == 'customer'):
             cursor.execute(
                 'SELECT active from customers where email = %s', [r['email']])
             rr = cursor.fetchall()
-            rr = rr[0]
-        r['active'] = rr['active']
+            if len(rr) != 0:
+                rr = rr[0]
+        if len(rr) != 0:
+            r['active'] = rr['active']
 
     cursor.close()
     return render_template('users/manageAllUsers.html', data=data)
@@ -1447,7 +1452,7 @@ def strategyRooms():
     cursor.execute('SELECT * From room')
     data = cursor.fetchall()
     if len(data) == 0:
-        return render_template('strategyRooms.html')
+        return render_template('strategy/strategyRooms.html')
     else:
         totalRooms = 0
         for d in data:
