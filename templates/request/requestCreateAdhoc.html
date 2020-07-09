@@ -144,13 +144,13 @@
                                 <tr>
                                     <td>1 Bed</td>
                                     <td>
-                                        <input type='number' class='num foccc' min='1' id='foc1' disabled required>
+                                        <input type='number' class='num foccc' min='1' id='foc1' disabled required onchange="notr(event)">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2 Bed</td>
                                     <td>
-                                        <input type='number' class='num foccc' min='1' id='foc2' disabled required>
+                                        <input type='number' class='num foccc' min='1' id='foc2' disabled required onchange="notr(event)">
                                     </td>
                                 </tr>
                             </tbody>
@@ -229,6 +229,15 @@
 
 <script src="/static/js/jquery.js"></script>
 <script>
+
+    function notr(event) {
+        const id = event.target.id
+        if (id == 'foc1') {
+            $('#foc2').prop('required', false)
+        } else {
+            $('#foc1').prop('required', false)
+        }
+    }
 
     function hdd(e) {
         const dede = document.getElementById('dede')
