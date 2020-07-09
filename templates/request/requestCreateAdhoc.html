@@ -548,12 +548,17 @@
             });
             $endDate.datepicker({
                 autoHide: true,
-                startDate: $startDate.datepicker('getDate'),
                 format: "dd/mm/yyyy",
+                startDate: $startDate.datepicker('getDate'),
             });
 
             $startDate.on('change', function () {
-                $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+                $endDate.datepicker('destroy')
+                $endDate.datepicker({
+                    autoHide: true,
+                    format: "dd/mm/yyyy",
+                    startDate: $startDate.datepicker('getDate')
+                });
                 calcNights()
             });
 

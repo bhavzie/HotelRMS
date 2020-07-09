@@ -3,7 +3,9 @@
 <div class="spread4">
     <div class='mb-5'>
         <div class='mb-3'>
-            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <button class='btn btn-primary'
+                onclick = "window.history.back();"
+            >Back <i class="fas fa-backward"></i></button>
             <span class="btn btn-success">Current Status : {{ requestData['status'] }}</span>
         </div>
     </div>
