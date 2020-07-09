@@ -1315,7 +1315,8 @@ def edituserType():
     cursor.execute(
         'SELECT * From hotelMenuAccess')
     datah = cursor.fetchall()
-    datah = datah[0]
+    if len(datah) != 0:
+        datah = datah[0]
     
     cursor.execute("SELECT userType FROM hotelMenuAccess")
     data = cursor.fetchall()
