@@ -5203,7 +5203,8 @@ def analyticstracking():
 
     cursor.execute('SELECT * from settingsTimelimit order by submittedOn desc limit 1')
     expiry = cursor.fetchall()
-    expiry = expiry[0]['value']
+    if len(expiry) != 0:
+        expiry = expiry[0]['value']
 
     cursor.execute('SELECT * From request where status = %s', [statusval2])
     requests = cursor.fetchall()
