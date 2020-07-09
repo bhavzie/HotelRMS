@@ -556,7 +556,11 @@
 
         th2.innerHTML = `
                         <input type = 'number' class = 'num3' min = ${min} max = ${max} required>
-                        <input type='number' class='num3' min = ${min} max = ${max} required>`
+                        <input type='number' class='num3' min = ${min} max = ${max} required>
+                        <button type = 'button' class = 'btn btn-outline-danger rept2' onclick = 'delsubcol(event)'>
+                                -
+                            </button>
+                        `
 
         g.appendChild(th2)
 
@@ -585,6 +589,39 @@
         buttons.forEach(button => {
             button.remove()
         })
+        let buttons1 = [...document.getElementsByClassName('rept2')]
+        buttons1.forEach(button => {
+            button.remove()
+        })
+
+    }
+
+    function del(e) {
+        let p = e.target.parentElement
+        let count = p.colSpan
+        p.remove()
+
+
+        let tr = document.getElementById('tab13').children[2].children[0].children
+        let k = 0
+        for (let i=tr.length-1; i>=0; i--) {
+            tr[i].remove()
+            k++
+            if (k == count) {
+                break
+            }
+        }
+
+        k = 0
+        let th = document.getElementById('tab13').children[1].children[1].children
+        for (let i = th.length - 1; i >= 0; i--) {
+            th[i].remove()
+            k++
+            if (k == count) {
+                break
+            }
+        }
+
 
     }
 
@@ -630,6 +667,11 @@
                 <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep2}, ${val})'>
                                 +
                             </button>
+                <button type = 'button' class = 'btn btn-outline-danger rept2'
+                            onclick = 'del(event)'
+                >
+                    -
+                </button>
             `
             theadr[0].append(th1)
 
@@ -638,12 +680,18 @@
             th2.innerHTML = `
                             <input type = 'number' class = 'num3' min = ${peep2} max = ${val} value = ${peep2} required>
                             <input type='number' class='num3'  min = ${peep2} max = ${val} value = ${val} required>
+                            <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'delsubcol(event)'>
+                                -
+                            </button>
                             `
             theadr[1].append(th2)
         } else {
             th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
                 <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep + 1}, ${val + peep})'>
                                 +
+                            </button>
+                <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'del(event)'>
+                                -
                             </button>
             `
             theadr[0].append(th1)
@@ -653,6 +701,9 @@
             th2.innerHTML = `
                             <input type = 'number' class = 'num3' min = ${peep + 1} max = ${val + peep} value = ${peep + 1} required>
                             <input type='number' class='num3'  min = ${peep + 1} max = ${val + peep} value = ${val + peep} required>
+                            <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'delsubcol(event)'>
+                                -
+                            </button>
                             `
             theadr[1].append(th2)
 
@@ -668,6 +719,18 @@
         })
 
         
+    }
+
+    function delsubcol(e) {
+        let p = e.target.parentElement
+        let tr = document.getElementById('tab13').children[2].children
+        
+        p.remove()
+        tr[0].children[tr[0].children.length - 1].remove()
+        let th = document.getElementById('tab13').children[1].children[0]
+        th = th.children[th.children.length - 1]
+        if (th.colSpan >= 1)
+            th.colSpan = th.colSpan - 1
     }
 
     function parseDate2(x) {

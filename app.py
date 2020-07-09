@@ -1584,6 +1584,15 @@ def requestCreateAdhoc():
     if len(data) == 0:
         flash('Kindly fill types of Rooms first', 'danger')
         return render_template('strategyRooms.html')
+    
+    c1 = 0
+    c2 = 0
+    for r in data:
+        if r['type'] == '1':
+            c1 = r['single'] + r['doublev'] + r['triple'] + r['quad']
+        elif r['type'] == '2':
+            c2 = r['single'] + r['doublev'] + r['triple'] + r['quad']
+
     cursor.execute('SELECT email From users where userType != %s && userType != %s', ['hoteluser', 'developer'])
     users = cursor.fetchall()
     cursor.execute('SELECT * From settingsRequest Order By submittedOn desc')
@@ -1593,7 +1602,7 @@ def requestCreateAdhoc():
         check_flag = True
         result = result[0]
 
-    return render_template('request/requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result)
+    return render_template('request/requestCreateAdhoc.html', data = data, users = users, check_flag = check_flag, result = result, c1 = c1, c2 = c2)
 
 
 @app.route('/requestCreateAdhocSubmit', methods = ['GET', 'POST'])
