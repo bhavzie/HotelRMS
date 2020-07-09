@@ -2191,7 +2191,7 @@ def showRequest(token):
 
         return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
 
-    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or status == statusval10 or status == statusval11 or  (status == statusval7 and ut['userSubType'] == 'reservation')):
+    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or status == statusval10 or status == statusval11 or  (status == statusval7 and ut['userSubType'] == 'reservation') or status == statusval9):
 
         data5 = []
         if (status == statusval4):
@@ -2392,8 +2392,51 @@ def showRequest(token):
                 if (today > endline):
                     cursor.execute(
                         'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
+
                     cursor.execute(
-                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])
+                            'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                    email = session['email']
+                    now = datetime.datetime.utcnow()
+                    prevresponse = cursor.fetchall()
+
+                    if len(prevresponse) != 0:
+                        prevresponse = prevresponse[0]
+                        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                            prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
+                                'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
+                            prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
+                                'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
+                            statusval9, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+                            prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                        ])
+
+                        cursor.execute(
+                            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+                        prevAvg = cursor.fetchall()
+                        if len(prevAvg) != 0:
+                            prevAvg = prevAvg[0]
+                            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                                prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
+                                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                            ])
+
+                        cursor.execute(
+                            'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                        submittedOn = cursor.fetchall()
+                        cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
+                                    [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+
+                        prevDaywise = cursor.fetchall()
+                        if len(prevDaywise) != 0:
+                            for p in prevDaywise:
+                                cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                                    p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
+                                        'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                                ])        
+                    
+                    cursor.execute(
+                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])              
+
                     mysql.connection.commit()
                     declined = True
                     declinedMsg = "Time limit expired"
