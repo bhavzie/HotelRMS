@@ -1581,6 +1581,9 @@ def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From room')
     data = cursor.fetchall()
+    if len(data) == 0:
+        flash('Kindly fill types of Rooms first', 'danger')
+        return render_template('strategyRooms.html')
     cursor.execute('SELECT email From users where userType != %s && userType != %s', ['hoteluser', 'developer'])
     users = cursor.fetchall()
     cursor.execute('SELECT * From settingsRequest Order By submittedOn desc')
