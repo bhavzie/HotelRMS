@@ -484,25 +484,29 @@
 
                 butt.addEventListener('click', () => {
                     let el = document.getElementById(i)
-                    if (el.style.display == 'none') {
-                        el.style.display = 'table'
-                        const buttons = [...document.getElementsByClassName('coll')]
-                        buttons.forEach(button => {
-                            const tb = button.nextElementSibling
-                            if (tb.id != i) {
-                                 tb.style.display = 'none'
-                            }
-                        })
+                    if (el != null) {
+                        if (el.style.display == 'none') {
+                            el.style.display = 'table'
+                        }
+                        else
+                            el.style.display = 'none'
                     }
-                    else
-                        el.style.display = 'none'
                 })
+
+
+
+                tb.appendChild(thead)
+                tb.appendChild(thead2)
+                tb5.appendChild(butt)
 
                 if (i == 0) {
                     const butt2 = document.createElement('button')
                     butt2.classList.add('btn', 'btn-primary', 'aple')
+                    butt2.id = 'ApplyAll'
+                    butt2.style = 'margin-left: 300px;'
                     butt2.type = 'button'
                     butt2.innerHTML = 'Apply All'
+                    butt.style.display = 'inline-block';
                     butt2.addEventListener('click', () => {
                         let el = document.getElementById(i)
                         for (let j = 1; j < diff; j++) {
@@ -518,10 +522,6 @@
                     butt.click()
                 }
 
-
-                tb.appendChild(thead)
-                tb.appendChild(thead2)
-                tb5.appendChild(butt)
                 tb5.appendChild(tb)
 
 

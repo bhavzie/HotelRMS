@@ -1145,7 +1145,7 @@ def deactivateUserAll(email):
     cursor.close()
 
     flash("User has been de-activated", 'success')
-    return redirect(url_for("managehotelusers"))
+    return redirect(url_for('viewAllUsers'))
 
 
 @app.route('/activateUser/<email>', methods=['GET', 'POST'])
@@ -1186,7 +1186,7 @@ def activateUserAll(email):
     cursor.close()
 
     flash("User has been activated", 'success')
-    return redirect(url_for("managehotelusers"))
+    return redirect(url_for('viewAllUsers'))
 
 
 @app.route('/myprofile/<email>', methods = ['GET', 'POST'])
