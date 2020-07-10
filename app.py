@@ -3544,20 +3544,22 @@ def showQuote(id):
 
     if data['foc'] != 0:
         for key in secondresult:
-            row = {}
-            row['type'] = 'foc'
+            row1 = {}
+            row2 = {}
+            row1['type'] = 'foc'
+            row2['type'] = 'foc'
             if data['foc1'] != '0':
-                row['count'] = data['foc1']
-                row['occupancy'] = 'Single'
-                row['ratePerRoom'] = "-"
-                row['total'] = "-"
-                secondresult[key].append(row)
+                row1['count'] = data['foc1']
+                row1['occupancy'] = 'Single'
+                row1['ratePerRoom'] = "-"
+                row1['total'] = "-"
+                secondresult[key].append(row1)
             if data['foc2'] != '0':
-                row['count'] = data['foc2']
-                row['occupancy'] = 'Double'
-                row['ratePerRoom'] = "-"
-                row['total'] = "-"
-                secondresult[key].append(row)
+                row2['count'] = data['foc2']
+                row2['occupancy'] = 'Double'
+                row2['ratePerRoom'] = "-"
+                row2['total'] = "-"
+                secondresult[key].append(row2)
 
 
     data5 = []
