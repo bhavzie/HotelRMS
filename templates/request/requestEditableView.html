@@ -481,15 +481,18 @@
         </div>
         <div class='row mb-5' id='msg'>
         </div>
-        <div class='row mb-5'>
-            <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6" placeholder="Enter Reason for decline" id='othert'></textarea>
+        <div class='row mb-5' id='dec'>
+            <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6"
+                placeholder="Enter Reason for decline" id='othert'></textarea>
         </div>
         <div style="margin-top: 100px;"></div>
         <div class='mt-5 mb-5'>
             {% if review == True%}
-            <button type='button' class="btn btn-info" onclick='sendreview()'>Send For Review</button> {% endif %}
-            <button type='button' class="btn btn-danger" onclick='decline()'>Decline</button>
-            <button type='button' class="btn btn-success" onclick='quote()'>Quote</button>
+            <button type='button' class="btn btn-info" onclick='sendreview()' id='sorb'>Send For Review</button>
+            {% endif %}
+            <button type='button' class="btn btn-danger" onclick='decline1()' id='decline1b'>Decline</button>
+            <button type='button' class='btn btn-danger' onclick='decline()' id='declineb'>Decline</button>
+            <button type='button' class="btn btn-success" onclick='quote()' id='quoteb'>Quote</button>
         </div>
         </div>
     {% endif %}
@@ -514,7 +517,18 @@
 
     }
 
+    function decline1() {
+            $('#dec').show();
+            $("#decline1b").hide();
+            $("#declineb").show();
+            $("#sorb").hide();
+            $("#quoteb").hide();
+        }
+
+
     $(document).ready(function () {
+        $('#dec').hide();
+        $("#declineb").hide();
             $('.payment').multiselect({
                 nonSelectedText: '-',
                 numberDisplayed: 0,

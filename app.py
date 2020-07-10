@@ -3589,7 +3589,10 @@ def showQuote(id):
             declinedMsg = "Time limit expired"
             data['status'] = statusval9
             data2['status'] = statusval9
+        
 
+        endline = datetime.datetime.combine(endline, datetime.datetime.min.time())    
+    
 
     cursor.execute('select count from settingsNegotiation')
     count = cursor.fetchall()
@@ -3615,7 +3618,6 @@ def showQuote(id):
     contract = cursor.fetchall()
 
 
-    endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
 
     return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline)
 
@@ -5539,6 +5541,43 @@ def analyticsDashboardGet():
 
     return jsonify(result), 200
 
+
+@app.route('/resubmitRequest', methods = ['GET', 'POST'])
+def resubmitRequest():
+    inp = request.json
+    username = session['email']
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From request where id = %s', [inp['id']])
+    prevRequest = cursor.fetchall()
+    cursor.execute('SELECT Count(*) from request')
+    count = cursor.fetchall()
+    count = count[0]['Count(*)'] + 1
+    if (count < 10):
+        id = "TR" + "00" + str(count)
+    elif (count < 99):
+        id = "TR" + "0" + str(count)
+    today = datetime.date.today()
+    d1 = prevRequest[0]['checkIn']
+    lead = d1 - today
+    lead = lead.days
+    today = datetime.datetime.today()
+    prevRequest = prevRequest[0]
+    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                   prevRequest['category'], prevRequest['groupName'], prevRequest['checkIn'], prevRequest['checkOut'], prevRequest['nights'], prevRequest['commissionable'], prevRequest['groupBlock'], prevRequest['foc'], prevRequest['foc1'], prevRequest['foc2'], prevRequest['budget'], prevRequest['formPayment'], prevRequest['paymentTerms'], prevRequest['paymentDays'], prevRequest['comments'], id, username, prevRequest['createdFor'], lead, statusval1, prevRequest['userType'], today   
+            ])
+    cursor.execute('SELECT * from request1Bed where id = %s', [inp['id']])
+    table = cursor.fetchall()
+    for t in table:
+        cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id])
+
+    cursor.execute('SELECT * from request2Bed where id = %s', [inp['id']])
+    table = cursor.fetchall()
+    for t in table:
+        cursor.execute('INSERT INTO request2Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id])
+
+    mysql.connection.commit()
+    flash('Your Request has been entered', 'success')
+    return ('', 204)
     
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)

@@ -382,6 +382,13 @@
             </div>
         </div>
     </div>
+    {% if data['status'] == 'EXPIRED' %}
+    <div class = 'row mb-5'>
+        <div class = 'col-sm-12 mt-3 text-center'>
+        <button type = 'submit' class = 'btn btn-success' onclick = 'resubmit(event)'>Resubmit</button>
+        </div>
+    </div>
+    {% endif %}
     {% if data['status'] == 'QUOTED'%}
     <div class = 'row mb-5'>
         <div class = 'col-sm-12'>
@@ -431,9 +438,10 @@
                     <div class = 'mt-5 text-center'>
                     <button class = 'btn btn-success' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
                     {% if canNegotiate == True %}
-                    <button class = 'btn btn-info' onclick = 'negotiate()'>NEGOTIATE</button>
+                    <button class = 'btn btn-info' onclick = 'negotiate()' id = 'negob'>NEGOTIATE</button>
                     {% endif %}
                     <button class = 'btn btn-danger' onclick = 'decline()'>DECLINE</button>
+                    <button class = 'btn btn-info' onclick = 'alloptions()' id = 'all'>Show all options</button>
                     </div>
                 </div>
             </div>
@@ -450,6 +458,7 @@
         $('#breakdown').hide();
         $('#dem').hide();
         $('#nego').hide();
+        $("#all").hide();
 
         const db = [...document.getElementsByClassName('dateButtons')]
         db.forEach(db => {
@@ -568,6 +577,27 @@
         })
     }
 
+    function resubmit(e) {
+        e.preventDefault()
+        result = {}
+        result['id'] = "{{ data['id'] }}"
+
+        fetch('/resubmitRequest', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(result)
+        })
+        .then(res => {
+            window.location.href = '/'
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     function negotiate() {
         const nego = document.getElementById('nego')
         if (nego.style.display == 'none') {
@@ -617,10 +647,20 @@
         }
     }
 
+    function alloptions() {
+        $("#dem").hide();
+        $("#acceptBtn").show()
+        $("#negob").show()
+        $("#all").hide()
+    }
+
     function decline() {
         const dem = document.getElementById('dem')
         if (dem.style.display == 'none') {
             dem.style.display = 'flex';
+            $("#acceptBtn").hide();
+            $("#negob").hide();
+            $("#all").show();
         } else {
             let d = $('#sel option:selected').text()
             d = d.trim()
