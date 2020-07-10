@@ -2200,10 +2200,11 @@ def showRequest(token):
             data5 = data5[0]
         
         data6 = []
-        if (status == statusval5):
+        if (status == statusval5 or status == statusval8):
             cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
             data6 = cursor.fetchall()
             data6 = data6[0]
+        
         
         data7 = []
         if (status == statusval6):
@@ -3539,7 +3540,24 @@ def showQuote(id):
             cursor.execute(query, [responseId])
             sv = cursor.fetchall()
             row['ratePerRoom'] = sv[0][search]
-            row['total'] = float(row['ratePerRoom']) * int(row['count']) 
+            row['total'] = float(row['ratePerRoom']) * int(row['count'])
+
+    if data['foc'] != 0:
+        for key in secondresult:
+            row = {}
+            row['type'] = 'foc'
+            if data['foc1'] != '0':
+                row['count'] = data['foc1']
+                row['occupancy'] = 'Single'
+                row['ratePerRoom'] = "-"
+                row['total'] = "-"
+                secondresult[key].append(row)
+            if data['foc2'] != '0':
+                row['count'] = data['foc2']
+                row['occupancy'] = 'Double'
+                row['ratePerRoom'] = "-"
+                row['total'] = "-"
+                secondresult[key].append(row)
 
 
     data5 = []
@@ -3549,7 +3567,7 @@ def showQuote(id):
         data5 = data5[0]
     
     data6 = []
-    if (data2['status'] == statusval5):
+    if (data2['status'] == statusval5 or data2['status'] == statusval8):
         cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
         data6 = cursor.fetchall()
         data6 = data6[0]
@@ -3591,8 +3609,8 @@ def showQuote(id):
             data2['status'] = statusval9
         
 
-        endline = datetime.datetime.combine(endline, datetime.datetime.min.time())    
-    
+        endline = datetime.datetime.combine(endline, datetime.datetime.max.time())
+
 
     cursor.execute('select count from settingsNegotiation')
     count = cursor.fetchall()
@@ -4190,6 +4208,15 @@ def requestHistory(id):
 
         if r['comments'].isspace():
             r['comments'] = ''
+        
+        data6 = []
+        if (r['status'] == statusval5 or r['status'] == statusval8):
+            cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
+            data6 = cursor.fetchall()
+            data6 = data6[0]
+            r['msg'] = data6['reason']
+            r['by'] = data6['declinedBy']
+            r['time'] = data6['time']
 
     responseId = id + "R"
     cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
@@ -4210,11 +4237,15 @@ def requestHistory(id):
     for key, value in responseDaywiseData.items():
         tdict = {}
         for r in value:
-            if (r['date'] in tdict):
-                r['total'] = int(r['count']) * float(r['ratePerRoom'].split('(')[0])
-                tdict[r['date']].append(r)
-            else:
-                r['total'] = int(r['count']) * float(r['ratePerRoom'].split("(")[0])
+            try:
+                if (r['date'] in tdict):
+                    r['total'] = int(r['count']) * float(r['ratePerRoom'].split('(')[0])
+                    tdict[r['date']].append(r)
+                else:
+                    r['total'] = int(r['count']) * float(r['ratePerRoom'].split("(")[0])
+                    tdict[r['date']] = [r]
+            except:
+                r['total'] = "-"
                 tdict[r['date']] = [r]
                 
         finalresult.append(tdict)
@@ -4222,7 +4253,8 @@ def requestHistory(id):
 
     responseDaywiseData = finalresult
 
-    return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData)
+
+    return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData, data6 = data6)
 
 
 @app.route('/confirmRequest/<token>', methods = ['GET', 'POST'])

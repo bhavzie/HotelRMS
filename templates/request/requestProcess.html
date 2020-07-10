@@ -142,9 +142,9 @@
                                                         step = 'any'>
                                                         {% else %}
                                                         <input type='number' class='num4 rateedit'
-                                                            value="{{ day['rate'].split(' (')[0] }}"  min = 10 onchange="down(event)" step = 'any'>
+                                                            value="{{ day['rate'].split(' (')[0] }}"  min = 10 onchange="down(event)" step = 'any' readonly>
                                                         <input type = 'text' class = 'form-control' value = "({{ day['rate'].split(' (')[1] }}" readonly>
-                                                        {% endif %}
+                                                    {% endif %}
                                                     {% elif day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num3' min = '10' onchange="up(event)" step = 'any'>
                                                     {% else %}

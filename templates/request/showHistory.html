@@ -75,6 +75,14 @@
             <div class = 'card-body'>
                 <h6>Response {{ loop.index }}</h6>
                 <h6>Status : {{ r['status'] }} </h6>
+                {% if r['status'] == 'CUSTOMER DECLINED' or r['status'] == 'HOTEL DECLINED' %}
+                    <span class='badge badge-pill badge-primary'>
+                        Declined By {{ r['by'] }} On : {{ r['time'] }}
+                    </span>
+                    <span class='badge badge-primary'>
+                        Reason : {{ r['msg'] }}
+                    </span>
+                {% endif %}
                 <hr>
                 <div class = 'row'>
                     <div class = 'col-6'>

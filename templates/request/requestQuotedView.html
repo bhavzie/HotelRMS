@@ -6,7 +6,14 @@
             <span class="btn btn-success">Status : {{ data['status'] }}</span>
         </div>
         <div class='mb-5'>
-            {% if data['status'] == 'DECLINED' %}
+            {% if data['status'] == 'HOTEL DECLINED' %}
+                <span class='badge badge-pill badge-primary'>
+                    Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
+                </span>
+                <span class='badge badge-primary'>
+                    Reason : {{ data6['reason'] }}
+                </span>
+            {% elif data['status'] == 'CUSTOMER DECLINED' %}
                 <span class='badge badge-pill badge-primary'>
                     Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
                 </span>
