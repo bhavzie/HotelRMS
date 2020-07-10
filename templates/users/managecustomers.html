@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-login">
+    <div class="wrap-login spread2">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Manage Customer</p><i class="fas fa-user"></i>
+            </div>
+        </div>
+        {% if data %}
+        <div class="table-responsive">
+            <table id='tableusers' class="table table-bordered table-hover">
+                <caption>List of users</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 10%;" scope="col">Name</th>
+                        <th scope="col"> Email</th>
+                        <th style="width: 10%;" scope="col">UserType</th>
+                        <th style="width: 10%;" scope='col'>User Sub Type</th>
+                        <th scope='col'>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data %}
+                    <tr>
+                        <td> {{ d['firstName'] }} </td>
+                        <td class='text-center'>
+                            <a class='btn btn-info' href='/showprofileAll/{{d["email"]}}'>
+                                {{ d['email'] }}
+                            </a>
+                        </td>
+                        <td> {{ d['userType'] }} </td>
+                        <td> {{ d['userSubType'] }} </td>
+                        <td>
+                            <a class='btn btn-warning' href="{{ url_for('editUserAll', email = d['email'] ) }}">Edit<i
+                                    class="fas fa-edit"></i></a>
+                            {% if d['active'] == 1 %}
+                            <a class='btn btn-danger'
+                                href="{{ url_for('deactivateC', email = d['email'] ) }}">Deactivate<i
+                                    class="fas fa-user-slash"></i></a>
+                            {% else %}
+                            <a class='btn btn-success' href="{{ url_for('activateC', email = d['email'] ) }}">Activate<i
+                                    class="fas fa-user-slash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+        
+{% endblock %}

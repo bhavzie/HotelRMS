@@ -580,6 +580,217 @@
         }   
     }
 
+    function calcNights2() {
+        var $startDate = $('.start-date');
+        var $endDate = $('.end-date');
+        var ni = $('#nights')
+        const tb5 = document.getElementById('ded')
+        const tables = tb5.getElementsByTagName('table')
+        
+        if ($endDate.val() != '' && $startDate.val() != '') {
+            const ed = $endDate.val()
+            const sd = $startDate.val()
+
+            var dateParts1 = sd.split("/");
+            var dateParts2 = ed.split("/");
+
+            var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]);
+            var dt2 = new Date(+dateParts2[2], dateParts2[1] - 1, +dateParts2[0]);
+            let dobj = dt2
+
+            const diff = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+
+            ni[0].value = diff
+
+            if (tables.length == 0) {
+                for (let i = 0; i < diff; i++) {
+
+                    const tb = document.createElement('table')
+                    tb.classList.add('table', 'table-hover', 'table-bordered', 'table-sm', 'tab7')
+                    tb.setAttribute('id', i)
+
+                    const thead = document.createElement("tr")
+                    thead.innerHTML = `   
+                                <tr>
+                                    <th>Room Type</th>
+                                    <th>Occupancy</th>
+                                    <th>Number of Rooms</th>
+                                    <th>Actions</th>
+                                </tr>
+                                `
+                    thead.classList.add('thead-dark')
+                    const thead2 = document.createElement("tr")
+                    thead2.innerHTML = `
+                                        <td>
+                                            <select onchange = 'poor(event)'>
+                                                <option value = '1'>1 Bed</option>
+                                                <option value = '2'>2 Bed</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class = 'seldom'>
+                                                <option class = "{{ data[0]['single'] }}">Single</option>
+                                                <option class = "{{ data[0]['double'] }}">Double</option>
+                                                <option class = "{{ data[0]['triple'] }}">Triple</option>
+                                                <option class = "{{ data[0]['quad'] }}">Quad</option>
+                                            </select>
+                                        </td>        
+                                        <td>
+                                        <input type="number" class = 'num'  required max = '{{ data[0]['count'] }}' min = 1>
+                                        </td>
+                                        <td>
+                                            <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
+                                                <i class="fas fa-plus-circle"></i>
+                                            </button>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                               <i class="fas fa-minus-circle"></i>
+                                            </button>
+                                        </td>
+                                    `
+
+                    const butt = document.createElement('button')
+                    butt.classList.add('btn', 'btn-info', 'coll')
+                    butt.type = 'button'
+                    butt.innerHTML = dobj.toDateString()
+                    dobj.setDate(dobj.getDate() + 1)
+
+
+                    butt.addEventListener('click', () => {
+                        let el = document.getElementById(i)
+                        if (el != null) {
+                            if (el.style.display == 'none') {
+                                el.style.display = 'table'
+                            }
+                            else
+                                el.style.display = 'none'
+                        }
+                    })
+
+
+
+                    tb.appendChild(thead)
+                    tb.appendChild(thead2)
+                    tb5.appendChild(butt)
+
+                    if (i == 0) {
+                        const butt2 = document.createElement('button')
+                        butt2.classList.add('btn', 'btn-primary', 'aple')
+                        butt2.id = 'ApplyAll'
+                        butt2.style = 'margin-left: 300px;'
+                        butt2.type = 'button'
+                        butt2.innerHTML = 'Apply All'
+                        butt.style.display = 'inline-block';
+                        butt2.addEventListener('click', () => {
+                            let el = document.getElementById(i)
+                            for (let j = 1; j < diff; j++) {
+                                let bel = document.getElementById(j)
+                                var copy = $(el).clone(true);
+                                copy[0].setAttribute('id', j);
+                                bel.parentNode.replaceChild(copy[0], bel);
+                            }
+                        })
+
+                        tb5.appendChild(butt2)
+                    } else {
+                        butt.click()
+                    }
+
+                    tb5.appendChild(tb)
+
+
+                    setOptionssel()
+                }
+
+
+                return true
+            }
+
+            if (diff > tables.length) {
+
+                
+                for (let i=tables.length; i<diff; i++) {
+                      const tb = document.createElement('table')
+                    tb.classList.add('table', 'table-hover', 'table-bordered', 'table-sm', 'tab7')
+                    tb.setAttribute('id', i)
+
+                    const thead = document.createElement("tr")
+                    thead.innerHTML = `   
+                                <tr>
+                                    <th>Room Type</th>
+                                    <th>Occupancy</th>
+                                    <th>Number of Rooms</th>
+                                    <th>Actions</th>
+                                </tr>
+                                `
+                    thead.classList.add('thead-dark')
+                    const thead2 = document.createElement("tr")
+                    thead2.innerHTML = `
+                                        <td>
+                                            <select onchange = 'poor(event)'>
+                                                <option value = '1'>1 Bed</option>
+                                                <option value = '2'>2 Bed</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class = 'seldom'>
+                                                <option class = "{{ data[0]['single'] }}">Single</option>
+                                                <option class = "{{ data[0]['double'] }}">Double</option>
+                                                <option class = "{{ data[0]['triple'] }}">Triple</option>
+                                                <option class = "{{ data[0]['quad'] }}">Quad</option>
+                                            </select>
+                                        </td>        
+                                        <td>
+                                        <input type="number" class = 'num'  required max = '{{ data[0]['count'] }}' min = 1>
+                                        </td>
+                                        <td>
+                                            <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
+                                                <i class="fas fa-plus-circle"></i>
+                                            </button>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                               <i class="fas fa-minus-circle"></i>
+                                            </button>
+                                        </td>
+                                    `
+
+                    const butt = document.createElement('button')
+                    butt.classList.add('btn', 'btn-info', 'coll')
+                    butt.type = 'button'
+                    butt.innerHTML = dobj.toDateString()
+                    dobj.setDate(dobj.getDate() + 1)
+
+
+                    butt.addEventListener('click', () => {
+                        let el = document.getElementById(i)
+                        if (el != null) {
+                            if (el.style.display == 'none') {
+                                el.style.display = 'table'
+                            }
+                            else
+                                el.style.display = 'none'
+                        }
+                    })
+
+
+
+                    tb.appendChild(thead)
+                    tb.appendChild(thead2)
+                    tb5.appendChild(butt)
+                    butt.click()
+                    tb5.appendChild(tb)
+
+
+                    setOptionssel()
+                }
+            } else if (diff < tables.length) {
+                for (let i=diff; i<=tables.length; i++) {
+                    const r = document.getElementById(i)
+                    r.previousElementSibling.remove()
+                    r.remove()
+                }
+            }
+        }
+    }
+
      $(document).ready(function () {
             var $startDate = $('.start-date');
             var $endDate = $('.end-date');
@@ -604,11 +815,11 @@
                     format: "dd/mm/yyyy",
                     startDate: $startDate.datepicker('getDate')
                 });
-                calcNights()
+                calcNights2();
             });
 
             $endDate.on('change', function() {
-                calcNights()
+                calcNights2();
             })
 
             $('.payment').multiselect({
@@ -656,7 +867,9 @@
         var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]);
         let dobj = dt1
         
+
         table_result = []
+        let flag = true
         tables.forEach(table => {
             
             let children = table.children
@@ -675,6 +888,47 @@
                 resArr['type'] = weak.options[weak.selectedIndex].value
                 let weak2 = subchildren[1].children[0]
                 resArr['occupancy'] = weak2.options[weak2.selectedIndex].value
+
+                let type = resArr['type']
+                let occupancy = resArr['occupancy']
+
+                if (type == '1') {
+                    if (occupancy == 'Single') {
+                        if ("{{ data[0]['single'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Double') {
+                        if ("{{ data[0]['doublev'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Triple') {
+                        if ("{{ data[0]['triple'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Quad') {
+                        if ("{{ data[0]['quad'] }}" == '0')
+                            flag = false
+                    }
+                } else if (type == '2') {
+                    if (occupancy == 'Single') {
+                        if ("{{ data[1]['single'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Double') {
+                        if ("{{ data[1]['doublev'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Triple') {
+                        if ("{{ data[1]['triple'] }}" == '0')
+                            flag = false
+                    }
+                    if (occupancy == 'Quad') {
+                        if ("{{ data[1]['quad'] }}" == '0')
+                            flag = false
+                    }
+                }
+
+
                 resArr['count'] = subchildren[2].children[0].value
                 
                 table_result.push(resArr)
@@ -683,6 +937,20 @@
 
             dobj.setDate(dobj.getDate() + 1)
         })
+
+
+        if (flag == false) {
+            let msg2 = document.getElementById('msg2')
+            msg2.style.setProperty('color', 'red', 'important');
+            msg2.innerHTML = "Please enter valid room combinations"
+            $(msg2).show()
+
+            calcNights()
+
+
+            return false
+        }
+
 
         const check_flag = "{{ check_flag|safe }}"
          if (check_flag == "True") {
