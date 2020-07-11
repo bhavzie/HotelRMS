@@ -3459,8 +3459,8 @@ def requestProcessQuote():
     days = days[0]
     days = int(days['days'])
     endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
-    endline = datetime.datetime.combine(endline, datetime.datetime.max.time())
-
+    endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
+    endline = endline + datetime.timedelta(hours = 23, minutes = 59)
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
         status, inp['paymentDays'], inp['nights'], inp['comments'],
