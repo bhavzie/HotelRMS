@@ -85,26 +85,34 @@
     $(document).ready(function () {
         $('#subm').hide();
         $('#dend').hide();
-        var $startDate = $('.start-date');
+        
+              var $startDate = $('.start-date');
         var $endDate = $('.end-date');
-
-        var d = new Date();
-        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
 
         $startDate.datepicker({
             autoHide: true,
-            format: "dd/mm/yyyy",
-            startDate: strDate,
+            dateFormat: "d M, y",
+            minDate: 0,
+            changeMonth: true,
+            changeYear: true,
         });
         $endDate.datepicker({
             autoHide: true,
-            format: "dd/mm/yyyy",
-            startDate: $startDate.datepicker('getDate'),
+            dateFormat: "d M, y",
+            minDate: 0,
+            changeMonth: true,
+            changeYear: true
         });
 
-
         $startDate.on('change', function () {
-            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('destroy')
+            $endDate.datepicker({
+                autoHide: true,
+                dateFormat: "d M, y",
+                minDate: $startDate.datepicker('getDate'),
+                changeMonth: true,
+                changeYear: true
+            });
         });
     });
 
@@ -133,7 +141,50 @@
     }
 
     function parseDate2(x) {
-        return x.split("/").reverse().join("/");
+         let y = x.split(' ')
+        let date = y[0]
+        let year = "20" + y[2]
+
+        let month = 0
+        if (y[1] == 'Jan,') {
+            month = "01"
+        }
+        if (y[1] == 'Feb,') {
+            month = "02"
+        }
+        if (y[1] == 'Mar,') {
+            month = "03"
+        }
+        if (y[1] == 'Apr,') {
+            month = "04"
+        }
+        if (y[1] == 'May,') {
+            month = "05"
+        }
+        if (y[1] == 'Jun,') {
+            month = "06"
+        }
+        if (y[1] == 'Jul,') {
+            month = "07"
+        }
+        if (y[1] == 'Aug,') {
+            month = "08"
+        }
+        if (y[1] == 'Sep,') {
+            month = "09"
+        }
+        if (y[1] == 'Oct,') {
+            month = "10"
+        }
+        if (y[1] == 'Nov,') {
+            month = "11"
+        }
+        if (y[1] == 'Dec,') {
+            month = "12"
+        }
+
+        const result = year + "/" + month + "/" + date
+        return result
     }
 
 

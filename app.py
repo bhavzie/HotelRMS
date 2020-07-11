@@ -1601,14 +1601,14 @@ def strategyRate():
 
                         d['dow'] = dow
 
-                        d['startDate'] = d['startDate'].strftime('%Y-%m-%d')
+                        d['startDate'] = d['startDate'].strftime('%y-%b-%d')
                         x = d['startDate'].split('-')
-                        strd = x[2] + "/" + x[1] + "/" + x[0]
+                        strd = x[2] + " " + x[1] + ", " + x[0]
                         d['startDate'] = strd
 
-                        d['endDate'] = d['endDate'].strftime('%Y-%m-%d')
+                        d['endDate'] = d['endDate'].strftime('%y-%b-%d')
                         x = d['endDate'].split('-')
-                        strd = x[2] + "/" + x[1] + "/" + x[0]
+                        strd = x[2] + " " + x[1] + ", " + x[0]
                         d['endDate'] = strd
                     
                     return render_template('strategy/editstrategyRate.html', data=data, data1=data1, storedDates=storedDates)
@@ -1762,6 +1762,15 @@ def strategyDiscountCreate():
         flag = True
         defaultId = f[0]['discountId']
 
+    for r in discountGrids:
+        r['startDate'] = r['startDate'].strftime('%y-%b-%d')
+        x = r['startDate'].split('-')
+        r['startDate']= x[2] + " " + x[1] + ", " + x[0]
+        r['endDate'] = r['endDate'].strftime('%y-%b-%d')
+        x = r['endDate'].split('-')
+        r['endDate'] = x[2] + " " + x[1] + ", " + x[0]
+
+
     cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
     storedDates = cursor.fetchall()
 
@@ -1860,6 +1869,12 @@ def showDiscountGrid(id):
     cursor.execute(
         'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
     storedDates = cursor.fetchall()
+    data['startDate'] = data['startDate'].strftime('%y-%b-%d')
+    x = data['startDate'].split('-')
+    data['startDate']= x[2] + " " + x[1] + ", " + x[0]
+    data['endDate'] = data['endDate'].strftime('%y-%b-%d')
+    x = data['endDate'].split('-')
+    data['endDate'] = x[2] + " " + x[1] + ", " + x[0]
 
     return render_template('strategy/showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
 
@@ -1967,6 +1982,18 @@ def settingsAutopilot():
         if d['policy'] == 'manual':
             d['policy'] = 'Manual Calculation'
 
+        d['startDate'] = d['startDate'].strftime('%y-%b-%d')
+        x = d['startDate'].split('-')
+        d['startDate']= x[2] + " " + x[1] + ", " + x[0]
+        d['endDate'] = d['endDate'].strftime('%y-%b-%d')
+        x = d['endDate'].split('-')
+        d['endDate'] = x[2] + " " + x[1] + ", " + x[0]
+        d['createdOn'] = d['createdOn'].strftime('%y-%b-%d')
+        x = d['createdOn'].split('-')
+        d['createdOn'] = x[2] + " " + x[1] + ", " + x[0]
+
+
+
     return render_template('settings/settingsAutopilot.html', data = data)
 
 
@@ -1995,7 +2022,15 @@ def showAutopilot(id):
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From autopilot where policyName = %s', [id])
     data = cursor.fetchall()
-    return render_template('settings/showAutopilot.html', data = data[0])
+    data = data[0]
+    data['startDate'] = data['startDate'].strftime('%y-%b-%d')
+    x = data['startDate'].split('-')
+    data['startDate']= x[2] + " " + x[1] + ", " + x[0]
+    data['endDate'] = data['endDate'].strftime('%y-%b-%d')
+    x = data['endDate'].split('-')
+    data['endDate'] = x[2] + " " + x[1] + ", " + x[0]
+
+    return render_template('settings/showAutopilot.html', data = data)
 
 
 @app.route('/editAutopilot', methods = ['GET', 'POST'])
@@ -2114,6 +2149,10 @@ def settingsContactCreate():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * from contract')
     result = cursor.fetchall()
+    for r in result:
+        r['submittedOn'] = r['submittedOn'].strftime('%y-%b-%d')
+        x = r['submittedOn'].split('-')
+        r['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
     return render_template('settings/settingsContractCreate.html', result=result)
 
 
@@ -4920,6 +4959,16 @@ def analyticsdashboard():
     cursor = mysql.connection.cursor()
     endDate = datetime.datetime.today()
     startDate = endDate - datetime.timedelta(days = 31)
+    
+
+    startDatePass = startDate.strftime('%y-%b-%d')
+    x = startDatePass.split('-')
+    startDatePass = x[2] + " " + x[1] + ", " + x[0]
+
+    endDatePass = endDate.strftime('%y-%b-%d')
+    x = endDatePass.split('-')
+    endDatePass = x[2] + " " + x[1] + ", " + x[0]
+
 
     result = {}
     result['leadres'] = []
@@ -5064,7 +5113,7 @@ def analyticsdashboard():
     upcoming = cursor.fetchall()
 
 
-    return render_template('analytics/dashboard.html', leadres = leadres, hotelres = hotelres, revenueres = [revenueres], customeres = [customeres], upcoming = upcoming, url = url)
+    return render_template('analytics/dashboard.html', leadres = leadres, hotelres = hotelres, revenueres = [revenueres], customeres = [customeres], upcoming = upcoming, url = url, startDatePass = startDatePass, endDatePass = endDatePass)
 
 @app.route('/analyticsperformance', methods = ['GET', 'POST'])
 @is_logged_in

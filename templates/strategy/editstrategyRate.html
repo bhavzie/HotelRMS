@@ -109,25 +109,31 @@
     $(document).ready(function () {
         var $startDate = $('.start-date');
         var $endDate = $('.end-date');
-        table = $('#tab2').DataTable({
-            responsive: true,
-        });
-        var d = new Date();
-        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
 
         $startDate.datepicker({
             autoHide: true,
-            format: "dd/mm/yyyy",
-            startDate: strDate,
+            dateFormat: "d M, y",
+            minDate: 0,
+            changeMonth: true,
+            changeYear: true,
         });
         $endDate.datepicker({
             autoHide: true,
-            startDate: $startDate.datepicker('getDate'),
-            format: "dd/mm/yyyy",
+            dateFormat: "d M, y",
+            minDate: 0,
+            changeMonth: true,
+            changeYear: true
         });
 
         $startDate.on('change', function () {
-            $endDate.datepicker('setStartDate', $startDate.datepicker('getDate'));
+            $endDate.datepicker('destroy')
+            $endDate.datepicker({
+                autoHide: true,
+                dateFormat: "d M, y",
+                minDate: $startDate.datepicker('getDate'),
+                changeMonth: true,
+                changeYear: true
+            });
         });
 
         $('.weekselect').multiselect({
@@ -135,6 +141,10 @@
             buttonWidth: '700px',
             numberDisplayed: 0,
         })
+
+        table = $('#tab2').DataTable({
+            responsive: true,
+        });
 
         bindButtons()
         bindButtons2()
@@ -283,8 +293,9 @@
         const edg = document.getElementById('endDateG')
         const dowG = document.getElementById('dowG')
 
-        const se = strDate(sdg.value).setHours(0, 0, 0, 0)
-        const ee = strDate(edg.value).setHours(0, 0, 0, 0)
+        const se = $("#startDateG").datepicker('getDate')
+        const ee = $("#endDateG").datepicker('getDate')
+
         
         
         let pas = true
@@ -441,9 +452,53 @@
 
     }
 
-    function parseDate(x) {
-        return x.split("/").reverse().join("/");
-    }
+      function parseDate(x) {
+            let y = x.split(' ')
+            let date = y[0]
+            let year = "20" + y[2]
+
+            let month = 0
+            if (y[1] == 'Jan,') {
+                month = "01"
+            }
+            if (y[1] == 'Feb,') {
+                month = "02"
+            }
+            if (y[1] == 'Mar,') {
+                month = "03"
+            }
+            if (y[1] == 'Apr,') {
+                month = "04"
+            }
+            if (y[1] == 'May,') {
+                month = "05"
+            }
+            if (y[1] == 'Jun,') {
+                month = "06"
+            }
+            if (y[1] == 'Jul,') {
+                month = "07"
+            }
+            if (y[1] == 'Aug,') {
+                month = "08"
+            }
+            if (y[1] == 'Sep,') {
+                month = "09"
+            }
+            if (y[1] == 'Oct,') {
+                month = "10"
+            }
+            if (y[1] == 'Nov,') {
+                month = "11"
+            }
+            if (y[1] == 'Dec,') {
+                month = "12"
+            }
+
+            const result = year + "/" + month + "/" + date
+            return result
+        }
+
 
     function parseDay(x, days) {
         if (days.includes(x))
@@ -458,7 +513,7 @@
         const dowG = document.getElementById('dowG')
         const dl = $('#dowG option').length
 
-        if (len == 0) {
+        if (len == 1) {
             let msg2 = document.getElementById('msg2')
             msg2.style.setProperty('color', 'red', 'important');
             msg2.innerHTML = 'Kindly add atleast one row'
@@ -503,8 +558,7 @@
             
         
 
-            //console.log(JSON.stringify(result))
-            
+            console.log(JSON.stringify(result))
             
             fetch('/strategyRateSubmit', {
                 method: 'POST',

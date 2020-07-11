@@ -811,7 +811,9 @@
                 $endDate.datepicker({
                     autoHide: true,
                     dateFormat: "d M, y",
-                    minDate: $startDate.datepicker('getDate')
+                    minDate: $startDate.datepicker('getDate'),
+                    changeMonth: true,
+                    changeYear: true
                 });
                 calcNights();
             });
