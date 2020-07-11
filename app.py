@@ -1151,8 +1151,16 @@ def deactivateUserAll(email):
 @is_logged_in
 def deactivateC(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('Update customers SET active = 0 where email = %s', [
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
+    if (data['userType'] == 'customer'):
+        cursor.execute('Update customers SET active = 0 where email = %s', [
                       email])
+    elif (data['userType'] == 'iata'):
+        cursor.execute('Update iataUsers SET active = 0 where email = %s', [
+                      email])
+
     mysql.connection.commit()
     flash("User has been de-activated", 'success')
     return redirect(url_for('editCustomers'))
@@ -1161,7 +1169,15 @@ def deactivateC(email):
 @is_logged_in
 def activateC(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('Update customers SET active = 1 where email = %s', [
+    cursor.execute('SELECT * FROM users where email = %s', [email])
+    data = cursor.fetchall()
+    data = data[0]
+
+    if (data['userType'] == 'customer'):
+        cursor.execute('Update customers SET active = 1 where email = %s', [
+                      email])
+    elif (data['userType'] == 'iata'):
+        cursor.execute('Update iataUsers SET active = 1 where email = %s', [
                       email])
 
     mysql.connection.commit()
@@ -1469,12 +1485,16 @@ def viewAllUsers():
 @is_logged_in
 def editCustomers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From users where userType = %s', ["customer"])
+    cursor.execute('SELECT * From users where userType = %s or userType = %s', ["customer", "iata"])
     data = cursor.fetchall()
 
     for r in data:
-        cursor.execute(
+        if (r['userType'] == 'customer'):
+            cursor.execute(
                 'SELECT active, email_verified from customers where email = %s', [r['email']])
+        elif (r['userType'] == 'iata'):
+            cursor.execute(
+                'SELECT active, email_verified from iataUsers where email = %s', [r['email']])
         rr = cursor.fetchall()
         if len(rr) != 0:
             rr = rr[0]
@@ -3440,7 +3460,9 @@ def requestProcessQuote():
     days = days[0]
     days = int(days['days'])
     endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
+    print(endline)
     endline = datetime.datetime.combine(endline, datetime.datetime.max.time())
+    print(endline)
 
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,

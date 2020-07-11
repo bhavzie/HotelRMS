@@ -92,11 +92,11 @@
                         <tbody>
                             <tr>
                                 <td>
-                            <input type="text" placeholder="Check-In" aria-label="First name" class=" start-date  mb-2 "
+                            <input type="text" placeholder="Check-In" class=" start-date  mb-2 "
                                 id='startDateG' required>
                                 </td>
                                 <td>
-                            <input type="text" placeholder="Check-Out" aria-label="Last name" class=" end-date  mb-2"
+                            <input type="text" placeholder="Check-Out" class=" end-date  mb-2"
                                 id='endDateG' required>
                                 </td>
                                 <td>
@@ -459,19 +459,15 @@
         
 
         if ($endDate.val() != '' && $startDate.val() != '') {
-            const ed = $endDate.val()
-            const sd = $startDate.val()
+            
+            const ed = $endDate.datepicker('getDate')
+            const sd = $startDate.datepicker('getDate')
 
-            var dateParts1 = sd.split("/");
-            var dateParts2 = ed.split("/");
-
-            var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]); 
-            var dt2 = new Date(+dateParts2[2], dateParts2[1] - 1, +dateParts2[0]);
-            let dobj = dt1
-
-            const diff = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+            const diff = (ed - sd) / (1000 * 60 * 60 * 24)
 
             ni[0].value = diff
+
+            let dobj = sd
 
             const tb5 = document.getElementById('ded')
 
@@ -588,22 +584,18 @@
         const tables = tb5.getElementsByTagName('table')
         
         if ($endDate.val() != '' && $startDate.val() != '') {
-            const ed = $endDate.val()
-            const sd = $startDate.val()
+            const ed = $endDate.datepicker('getDate')
+            const sd = $startDate.datepicker('getDate')
 
-            var dateParts1 = sd.split("/");
-            var dateParts2 = ed.split("/");
-
-            var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]);
-            var dt2 = new Date(+dateParts2[2], dateParts2[1] - 1, +dateParts2[0]);
-            let dobj = dt2
-
-            const diff = Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24))
+            const diff = (ed - sd)/ (1000 * 60 * 60 * 24)
 
             ni[0].value = diff
 
+
             if (tables.length == 0) {
                 for (let i = 0; i < diff; i++) {
+
+                    let dobj = sd
 
                     const tb = document.createElement('table')
                     tb.classList.add('table', 'table-hover', 'table-bordered', 'table-sm', 'tab7')
@@ -707,7 +699,10 @@
 
             if (diff > tables.length) {
 
-                
+                let dobj = document.getElementById(tables.length - 1).previousElementSibling.textContent
+                console.log(dobj)
+                dobj.setDate(dobj.getDate() + (diff - tables.length))
+                console.log(dobj)
                 for (let i=tables.length; i<diff; i++) {
                       const tb = document.createElement('table')
                     tb.classList.add('table', 'table-hover', 'table-bordered', 'table-sm', 'tab7')
@@ -782,6 +777,7 @@
                     setOptionssel()
                 }
             } else if (diff < tables.length) {
+                console.log(diff, tables.length)
                 for (let i=diff; i<=tables.length; i++) {
                     const r = document.getElementById(i)
                     r.previousElementSibling.remove()
@@ -795,31 +791,33 @@
             var $startDate = $('.start-date');
             var $endDate = $('.end-date');
 
-            var d = new Date();
-            var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
             $startDate.datepicker({
-             autoHide: true,
-             format: "dd/mm/yyyy",
-             startDate: strDate,
+                autoHide: true,
+                dateFormat: "d M, y",
+                minDate: 0,
+                changeMonth: true,
+                changeYear: true,
             });
             $endDate.datepicker({
                 autoHide: true,
-                format: "dd/mm/yyyy",
-                startDate: $startDate.datepicker('getDate'),
+                dateFormat: "d M, y",
+                minDate: 0,
+                changeMonth: true,
+                changeYear: true
             });
 
             $startDate.on('change', function () {
                 $endDate.datepicker('destroy')
                 $endDate.datepicker({
                     autoHide: true,
-                    format: "dd/mm/yyyy",
-                    startDate: $startDate.datepicker('getDate')
+                    dateFormat: "d M, y",
+                    minDate: $startDate.datepicker('getDate')
                 });
-                calcNights2();
+                calcNights();
             });
 
             $endDate.on('change', function() {
-                calcNights2();
+                calcNights();
             })
 
             $('.payment').multiselect({
@@ -835,20 +833,26 @@
     }
 
     function parseDate2(x) {
-        return x.split("/").reverse().join("/");
+        let y = new Date(x.getFullYear(), x.getMonth(), x.getDate());
+        const date = y.getDate()
+        const month = y.getMonth() + 1
+        const year = y.getFullYear()
+
+        const result = year + "/" + month + "/" + date
+        return result
     }
 
 
      function aj(e) {
         e.preventDefault()
-        const checkIn = $('.start-date').val();
+        const checkIn = $('.start-date').datepicker('getDate')
         result = {}
 
          result['category'] = $('#category option:selected').val()
          result['groupName'] = $('#groupName').val()
          result['createdFor'] = $('#createdFor option:selected').val()
-         result['checkIn'] = $('.start-date').val();
-         result['checkOut'] = $('.end-date').val();
+         result['checkIn'] = $('.start-date').datepicker('getDate')
+         result['checkOut'] = $('.end-date').datepicker('getDate')
          result['nights'] = $('#nights').val()
          result['commissionable'] = $('#ccomn').val()
          result['groupBlock'] = document.getElementById('groupBlock').checked
@@ -863,10 +867,8 @@
 
         const tb5 = document.getElementById('ded')
         const tables = [...tb5.getElementsByTagName('table')]
-        var dateParts1 = checkIn.split("/");
-        var dt1 = new Date(+dateParts1[2], dateParts1[1] - 1, +dateParts1[0]);
+        var dt1 = new Date(checkIn.getFullYear(), checkIn.getMonth(), checkIn.getDate());
         let dobj = dt1
-        
 
         table_result = []
         let flag = true
@@ -1006,6 +1008,7 @@
         result['checkIn'] = parseDate2(result['checkIn'])
         result['checkOut'] = parseDate2(result['checkOut'])
         result['table_result'] = table_result
+
 
         // get all values
 
