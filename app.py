@@ -1427,7 +1427,6 @@ def submiteditusertype():
     usersHotelEdit = getValC(request.form.get('usersHotelEdit'))
     userType = request.form['userType']
     analyticsStdReport = getValC(request.form['analyticsStdReport'])
-    print(analyticsStdReport)
 
     cursor = mysql.connection.cursor()
 
@@ -3460,9 +3459,7 @@ def requestProcessQuote():
     days = days[0]
     days = int(days['days'])
     endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
-    print(endline)
     endline = datetime.datetime.combine(endline, datetime.datetime.max.time())
-    print(endline)
 
     cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
@@ -4289,6 +4286,7 @@ def requestHistory(id):
 
     cursor.execute('SELECT * From response where requestId = %s', [id])
     responseData = cursor.fetchall()
+    data6 = []
 
     for r in responseData:
         v = r['paymentTerms']
@@ -4316,7 +4314,6 @@ def requestHistory(id):
         if r['comments'].isspace():
             r['comments'] = ''
         
-        data6 = []
         if (r['status'] == statusval5 or r['status'] == statusval8):
             cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
             data6 = cursor.fetchall()
@@ -5096,7 +5093,6 @@ def analyticsperformanceGet():
     for r in requests:
         cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
         res = cursor.fetchall()
-        #print(res)
         if len(res) == 0:
             notSubmitted = notSubmitted + 1
         else:
