@@ -3783,7 +3783,7 @@ def showQuote(id):
 
     data10 = []
     if (data2['status'] == statusval11):
-        cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
+        cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
         data10 = cursor.fetchall()
         data10 = data10[0]
         temp1 = data10['submittedOn'].strftime('%y-%b-%d')
