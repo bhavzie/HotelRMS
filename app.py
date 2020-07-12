@@ -3843,9 +3843,9 @@ def showQuote(id):
                 data2['status'] = statusval9
         
 
-        temp1 = endline.strftime('%y-%b-%d, %H:%M:%S')
-        x = temp1.split('-')
-        endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+            temp1 = endline.strftime('%y-%b-%d, %H:%M:%S')
+            x = temp1.split('-')
+            endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
 
     cursor.execute('select count from settingsNegotiation')
