@@ -2325,9 +2325,9 @@ def showRequest(token):
             cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
             data7 = cursor.fetchall()
             data7 = data7[0]
-            temp1 = data7['submittedOn'].strftime('%y-%b-%d')
+            temp1 = data7['time'].strftime('%y-%b-%d')
             x = temp1.split('-')
-            data7['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+            data7['time'] = x[2] + " " + x[1] + ", " + x[0]
 
         data8 = []
         if (status == statusval7):
