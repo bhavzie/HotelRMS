@@ -471,19 +471,26 @@
         db.forEach(db => {
 
             db.addEventListener('click', () => {
-                const cn = db.classList[3] + " " + db.classList[4]
+
+                const cn = db.classList[3] + " " + db.classList[4] + " " + db.classList[5] + " " +  db.classList[6]
                 const table = document.getElementById(cn)
 
 
                 const identify = db.classList[3]
                 const identify2 = db.classList[4]
+                const identify3 = db.classList[5]
+                const identify4 = db.classList[6]
                 db.classList.remove(identify)
                 db.classList.remove(identify2)
+                db.classList.remove(identify3)
+                db.classList.remove(identify4)
                 const color = db.classList[2]
                 db.classList.remove(color)
                 db.classList.add('btn-primary')
                 db.classList.add(identify)
                 db.classList.add(identify2)
+                db.classList.add(identify3)
+                db.classList.add(identify4)
 
                 if (table.style.display == 'none') {
                     table.style.display = 'table'

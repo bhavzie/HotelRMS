@@ -1732,12 +1732,16 @@ def home2():
                 cursor.execute('SELECT * FROM request')
                 data = cursor.fetchall()
                 data = data[::-1]
+                for d in data:
+                    d['checkIn'] = d['checkIn'].strftime("%d-%b-%y")
                 return render_template('index2.html', title = 'Home', data = data)
             else:
                 cursor = mysql.connection.cursor()
                 cursor.execute('SELECT * From request where createdFor = %s', [session['email']])
                 data = cursor.fetchall()
                 data = data[::-1]
+                for d in data:
+                    d['checkIn'] = d['checkIn'].strftime("%d-%b-%y")
                 return render_template('index2.html', title='Home', data=data)
             return render_template('index2.html', title='Home')
     except:
@@ -2362,7 +2366,11 @@ def showRequest(token):
         data = data[0]
         checkIn = data['checkIn']
         checkOut = data['checkOut']
-        data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
+        x = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
+        z = x.split(",")[0]
+        y = x.split(",")[1]
+        x = z.split("-")
+        data['createdOn'] = x[2] + " " + x[1] + ", " + x[0] + " : " + y
 
         email = session['email']
         now = datetime.datetime.utcnow()
@@ -2577,16 +2585,16 @@ def showRequest(token):
         
         for d in lefttable:
             y = d['date']
-            temp1 = d['date'].strftime('%y-%b-%d')
+            temp1 = d['date'].strftime('%Y-%b-%d-%A')
             x = temp1.split('-')
-            x = x[2] + " " + x[1] + "," + x[0]
+            x = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
             d['date'] = x
         
         for d in list(righttable):
             y = d
-            temp1 = d.strftime('%y-%b-%d')
+            temp1 = d.strftime('%Y-%b-%d-%A')
             x = temp1.split('-')
-            d = x[2] + " " + x[1] + "," + x[0]
+            d = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
             righttable[d] = righttable[y]
             
 
@@ -2901,16 +2909,16 @@ def showRequest(token):
 
         for d in lefttable:
             y = d['date']
-            temp1 = d['date'].strftime('%y-%b-%d')
+            temp1 = d['date'].strftime('%Y-%b-%d-%A')
             x = temp1.split('-')
-            x = x[2] + " " + x[1] + "," + x[0]
+            x = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
             d['date'] = x
         
         for d in list(righttable):
             y = d
-            temp1 = d.strftime('%y-%b-%d')
+            temp1 = d.strftime('%Y-%b-%d-%A')
             x = temp1.split('-')
-            d = x[2] + " " + x[1] + "," + x[0]
+            d = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
             righttable[d] = righttable[y]
 
         data3 = data3[0]
@@ -3188,7 +3196,7 @@ def showRequest1():
 
         lead = lead + 1
 
-        dates.append(curr_date.strftime('%B %d'))
+        dates.append(curr_date.strftime('%A : %d %b, %Y'))
 
     
         result.append(tempResult)
@@ -3509,7 +3517,8 @@ def showRequest1():
 
 
     # get right side values
-
+    print(result)
+    print(dates)
 
     if (mmp == 0):
         flash('No Rate Grid available (No OCC applicable as discount grid for this date range is not set)!', 'danger')
@@ -3887,9 +3896,9 @@ def showQuote(id):
     
     for d in list(dateButtons):
         y = d
-        temp1 = d.strftime('%y-%b-%d')
+        temp1 = d.strftime('%Y-%b-%d-%A')
         x = temp1.split('-')
-        d = x[2] + " " + x[1] + "," + x[0]
+        d = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
         result[d] = result[y]
         del result[y]
     
@@ -3946,7 +3955,7 @@ def deleteRequest(id):
 
         data10 = []
         if (status[0]['status'] == statusval11):
-            cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
+            cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
             data10 = cursor.fetchall()
             data10 = data10[0]
             temp1 = data10['submittedOn'].strftime('%y-%b-%d')
@@ -4107,6 +4116,10 @@ def deleteRequest(id):
 
         deleteflag = True
 
+        x = data2['submittedOn'].strftime('%y-%b-%d,  %H:%M:%S')
+        x = x.split("-")
+        data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+
         return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10)
     elif (status[0]['status'] == statusval1):
         cursor.execute('SELECT * From request where id = %s', [id])
@@ -4125,6 +4138,9 @@ def deleteRequest(id):
         if len(check) != 0:
             data['lastOpenedOn'] = check[0]['time']
             data['lastOpenedBy'] = check[0]['openedBy']
+            temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
         else:
             data['lastOpenedOn'] = ''
             data['lastOpenedBy'] = ''
