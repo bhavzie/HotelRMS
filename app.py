@@ -2282,7 +2282,17 @@ def showRequest(token):
                 newDates.append(d)
 
         dates = newDates
-        
+        newDates = []
+        for d in dates:
+            y = d
+            d = d.strftime('%y-%b-%d')
+            x = d.split('-')
+            d = x[2] + " " + x[1] + ", " + x[0]
+            newDates.append({'d': y, 's' : d})
+
+
+        dates = newDates
+
         f = True
         if len(dates) == 0:
             f = False
@@ -2296,12 +2306,18 @@ def showRequest(token):
             cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
             data5 = cursor.fetchall()
             data5 = data5[0]
+            temp1 = data5['time'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data5['time'] = x[2] + " " + x[1] + ", " + x[0]
         
         data6 = []
         if (status == statusval5 or status == statusval8):
             cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
             data6 = cursor.fetchall()
             data6 = data6[0]
+            temp1 = data6['time'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data6['time'] = x[2] + " " + x[1] + ", " + x[0]
         
         
         data7 = []
@@ -2309,6 +2325,9 @@ def showRequest(token):
             cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
             data7 = cursor.fetchall()
             data7 = data7[0]
+            temp1 = data7['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data7['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         data8 = []
         if (status == statusval7):
@@ -2316,25 +2335,34 @@ def showRequest(token):
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
             data8 = data8[0]
+            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
     
         data9 = []
         if (status == statusval10):
             cursor.execute('SELECT * From confirmRequest where requestId = %s', [token])
             data9 = cursor.fetchall()
             data9 = data9[0]
+            temp1 = data9['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data9['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         data10 = []
         if (status == statusval11):
-            cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [token])
+            cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [token])
             data10 = cursor.fetchall()
             data10 = data10[0]
+            temp1 = data10['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
         checkOut = data['checkOut']
-        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+        data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
 
         email = session['email']
         now = datetime.datetime.utcnow()
@@ -2343,6 +2371,11 @@ def showRequest(token):
         check = cursor.fetchall()
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
+        temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
+
+
         string = ''
         v = data['paymentTerms']
         if v != None:
@@ -2538,7 +2571,24 @@ def showRequest(token):
                         data['status'] = statusval9
                         data2['status'] = statusval9
 
+        temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')
+        x = temp1.split('-')
+        data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
         
+        for d in lefttable:
+            y = d['date']
+            temp1 = d['date'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            x = x[2] + " " + x[1] + "," + x[0]
+            d['date'] = x
+        
+        for d in list(righttable):
+            y = d
+            temp1 = d.strftime('%y-%b-%d')
+            x = temp1.split('-')
+            d = x[2] + " " + x[1] + "," + x[0]
+            righttable[d] = righttable[y]
+            
 
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, data9 = data9, data10 = data10)
 
@@ -2557,13 +2607,16 @@ def showRequest(token):
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
             data8 = data8[0]
+            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
         checkOut = data['checkOut']
-        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+        data['createdOn'] = data['createdOn'].strftime("%y/%b/%d, %H:%M:%S")
 
         email = session['email']
         now = datetime.datetime.utcnow()
@@ -2572,6 +2625,9 @@ def showRequest(token):
         check = cursor.fetchall()
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
+        temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
         string = ''
         v = data['paymentTerms']
         if v != None:
@@ -2655,8 +2711,7 @@ def showRequest(token):
                 cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
                 data3 = cursor.fetchall()
 
-            data3 = data3[0]
-
+            
             cursor.execute(
                 'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
             submittedOn = cursor.fetchall()
@@ -2844,6 +2899,25 @@ def showRequest(token):
         cursor.execute('SELECT * from contract')
         contracts = cursor.fetchall()
 
+        for d in lefttable:
+            y = d['date']
+            temp1 = d['date'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            x = x[2] + " " + x[1] + "," + x[0]
+            d['date'] = x
+        
+        for d in list(righttable):
+            y = d
+            temp1 = d.strftime('%y-%b-%d')
+            x = temp1.split('-')
+            d = x[2] + " " + x[1] + "," + x[0]
+            righttable[d] = righttable[y]
+
+        data3 = data3[0]
+        
+
+
+
         return render_template('request/requestEditableView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data8 = data8, contract = contract, contractv = contractv, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, review = review, contracts = contracts, roomCount = roomCount, fop = fop, pt = pt, single1f = single1f, double1f = double1f, triple1f = triple1f, quad1f = quad1f, single2f = single2f, double2f = double2f, triple2f = triple2f, quad2f = quad2f, single1c = single1c, double1c = double1c, triple1c = triple1c, quad1c = quad1c, single2c = single2c, double2c = double2c, triple2c = triple2c, quad2c = quad2c, foc1c = foc1c, foc2c = foc2c, occFlag = occFlag)
 
         
@@ -2884,6 +2958,9 @@ def showRequest1():
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
         cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s', [now, email, token])
+        temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
 
     mysql.connection.commit()
@@ -3536,7 +3613,7 @@ def showQuote(id):
     data = cursor.fetchall()
     data = data[0]
 
-    data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+    data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
     string = ''
     v = data['paymentTerms']
     if v != None:
@@ -3672,25 +3749,38 @@ def showQuote(id):
         cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
         data5 = cursor.fetchall()
         data5 = data5[0]
+        temp1 = data5['time'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data5['time'] = x[2] + " " + x[1] + ", " + x[0]
+        
     
     data6 = []
     if (data2['status'] == statusval5 or data2['status'] == statusval8):
         cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
         data6 = cursor.fetchall()
         data6 = data6[0]
+        temp1 = data6['time'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data6['time'] = x[2] + " " + x[1] + ", " + x[0]
 
     data9 = []
     if (data2['status'] == statusval10):
         cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
         data9 = cursor.fetchall()
         data9 = data9[0]
+        temp1 = data9['submittedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data9['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
     data10 = []
     if (data2['status'] == statusval11):
         cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
         data10 = cursor.fetchall()
         data10 = data10[0]
-    
+        temp1 = data10['submittedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+
 
 
     declined = False
@@ -3753,6 +3843,9 @@ def showQuote(id):
                 data2['status'] = statusval9
         
 
+        temp1 = endline.strftime('%y-%b-%d, %H:%M:%S')
+        x = temp1.split('-')
+        endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
 
     cursor.execute('select count from settingsNegotiation')
@@ -3778,7 +3871,29 @@ def showQuote(id):
                    data2['contract']])
     contract = cursor.fetchall()
 
+    temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')
+    x = temp1.split('-')
+    data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
+
+
+    temp1 = data['checkIn'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    data['checkIn'] = x[2] + " " + x[1] + ", " + x[0]
+
+    temp1 = data['checkOut'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    data['checkOut'] = x[2] + " " + x[1] + ", " + x[0]
+    
+    for d in list(dateButtons):
+        y = d
+        temp1 = d.strftime('%y-%b-%d')
+        x = temp1.split('-')
+        d = x[2] + " " + x[1] + "," + x[0]
+        result[d] = result[y]
+        del result[y]
+    
+    dateButtons = result.keys()
 
     return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline)
 
@@ -3796,6 +3911,9 @@ def deleteRequest(id):
                 'SELECT * From requestAccepted where requestId = %s', [id])
             data5 = cursor.fetchall()
             data5 = data5[0]
+            temp1 = data5['time'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data5['time'] = x[2] + " " + x[1] + ", " + x[0]
 
         data6 = []
         if (status[0]['status'] == statusval5):
@@ -3803,6 +3921,9 @@ def deleteRequest(id):
                 "SELECT * From DeclineRequest where requestId = %s", [id])
             data6 = cursor.fetchall()
             data6 = data6[0]
+            temp1 = data6['time'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data6['time'] = x[2] + " " + x[1] + ", " + x[0]
 
         data8 = []
         if (status[0]['status'] == statusval7):
@@ -3810,18 +3931,27 @@ def deleteRequest(id):
                 "SELECT * From review where requestId = %s", [id])
             data8 = cursor.fetchall()
             data8 = data8[0]
+            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         data9 = []
         if (status[0]['status'] == statusval10):
             cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
             data9 = cursor.fetchall()
             data9 = data9[0]
+            temp1 = data9['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data9['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         data10 = []
         if (status[0]['status'] == statusval11):
             cursor.execute('SELECT * From notconfirmRequest where requestId = %s', [id])
             data10 = cursor.fetchall()
             data10 = data10[0]
+            temp1 = data10['submittedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -3838,6 +3968,10 @@ def deleteRequest(id):
         check = cursor.fetchall()
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
+        temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
+
         string = ''
         v = data['paymentTerms']
         if v != None:
@@ -3956,6 +4090,20 @@ def deleteRequest(id):
 
             righttable[d['date']].append(tArr)
 
+
+        for d in lefttable:
+            y = d['date']
+            temp1 = d['date'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            x = x[2] + " " + x[1] + "," + x[0]
+            d['date'] = x
+        
+        for d in list(righttable):
+            y = d
+            temp1 = d.strftime('%y-%b-%d')
+            x = temp1.split('-')
+            d = x[2] + " " + x[1] + "," + x[0]
+            righttable[d] = righttable[y]
 
         deleteflag = True
 
@@ -4416,6 +4564,16 @@ def confirmRequest(token):
     totalQuote = cursor.fetchall()
     totalQuote = totalQuote[0]['totalQuote']
 
+    requestData['checkIn'] = requestData['checkIn']
+    temp1 = requestData['checkIn'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    requestData['checkIn'] = x[2] + " " + x[1] + ", " + x[0]
+
+    requestData['checkOut'] = requestData['checkOut']
+    temp1 = requestData['checkOut'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    requestData['checkOut'] = x[2] + " " + x[1] + ", " + x[0]
+
     return render_template('request/confirmRequest.html', requestData = requestData, acceptedOn = acceptedOn, totalQuote = totalQuote)
 
 @app.route('/confirmRequestSubmit', methods = ['GET', 'POST'])
@@ -4600,6 +4758,16 @@ def changeOcc(id):
             flag = True
         else:
             tempdict.pop(key)
+    
+    for d in list(tempdict):
+        y = d
+        d = d.strftime('%y-%b-%d')
+        x = d.split('-')
+        d = x[2] + " " + x[1] + ", " + x[0]
+        tempdict[d] = tempdict[y]
+        del tempdict[y]
+
+
     
     return render_template('request/getOccEdit.html', occ = tempdict, flag = flag, token = id)
 

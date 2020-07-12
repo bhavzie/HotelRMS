@@ -471,36 +471,23 @@
         db.forEach(db => {
 
             db.addEventListener('click', () => {
-                const cn = db.classList[3]
+                const cn = db.classList[3] + " " + db.classList[4]
                 const table = document.getElementById(cn)
-                
+
+
                 const identify = db.classList[3]
+                const identify2 = db.classList[4]
                 db.classList.remove(identify)
+                db.classList.remove(identify2)
                 const color = db.classList[2]
                 db.classList.remove(color)
                 db.classList.add('btn-primary')
                 db.classList.add(identify)
+                db.classList.add(identify2)
 
                 if (table.style.display == 'none') {
                     table.style.display = 'table'
                     const db2 = [...document.getElementsByClassName('dateButtons')]
-
-                    db2.forEach(db2 => {
-                        const cn2 = db2.classList[3]
-                        if (cn2 != cn) {
-                            const table2 = document.getElementById(cn2)
-                            table2.style.display = 'none';
-                            
-                            const identify = db2.classList[3]
-                            const color = db2.classList[2]
-                            db2.classList.remove(color)
-                            db2.classList.remove(identify)
-                            
-                            db2.classList.add('btn-secondary')
-                            db2.classList.add(identify)
-
-                        }
-                    })
 
                 } else {
                     table.style.display = 'none'
