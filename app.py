@@ -4508,6 +4508,9 @@ def requestHistory(id):
             r['msg'] = data6['reason']
             r['by'] = data6['declinedBy']
             r['time'] = data6['time']
+            temp1 = data6['time'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data6['time'] = x[2] + " " + x[1] + ", " + x[0]
 
     responseId = id + "R"
     cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
@@ -4541,6 +4544,16 @@ def requestHistory(id):
                 
         finalresult.append(tdict)
 
+    for d in finalresult:
+        for m in list(d):
+            y = m
+            temp1 = m.strftime('%y-%b-%d')
+            x = temp1.split('-')
+            z = x[2] + " " + x[1] + "," + x[0]
+            print(d)
+            print(z)
+            d[z] = d[m]
+            del d[m]
 
     responseDaywiseData = finalresult
 
