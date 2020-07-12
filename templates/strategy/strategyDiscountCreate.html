@@ -612,6 +612,14 @@
         let count = p.colSpan
         p.remove()
 
+        peep = peep - val
+        lastc = lastc - val
+
+        $('#fc').hide()
+        $('#adc').show()
+        $('#mincol').removeAttr('disabled')
+        $('#maxcol').removeAttr('disabled')
+
 
         let tr = document.getElementById('tab13').children[2].children[0].children
         let k = 0
@@ -639,6 +647,8 @@
     var peep = 0
 
     var lastc = 0
+
+    var val = 0
 
     function addcol() {
         const min = document.getElementById('mincol')
@@ -669,8 +679,9 @@
         const diff = max.value - min.value
 
         const m = Math.floor((max.value * rooms)/100);
-        const val = m - lastc;
+        val = m - lastc;
         lastc = m;
+
 
         if (peep == 0) {
             const peep2 = peep +  parseInt(min.value)
