@@ -61,19 +61,21 @@ $(document).ready(function () {
 
     var table = $('#tab9').DataTable({
         columns: [
-            { width: '3%' },
-            { width: '0%' },
-            { width: '0%' },
             { width: '5%' },
+            { width: '0%' },
+            { width: '0%' },
+            { width: '10%' },
             { width: '10%' },
             { width: '15%' },
             { width: '10%' },
             { width: '5%' },
             { width: '10%' },
-            { width: '15%' },
+            { width: '10%' },
         ],
         "ordering": true,
-        responsive: true
+        responsive: true,
+        className: 'dt-body-left',
+        className: 'dt-head-left'
     });
 
     table.column(1).visible(false).draw()

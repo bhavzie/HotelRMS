@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class='col-sm-6'>
-                <button type='submit' class='ml-5 btn btn-info'>Download as excel</button>
+                <button type='submit' class='ml-5 btn action'>Download as excel</button>
             </div>
         </div>
     </form>
@@ -161,9 +161,13 @@
                 var table = $('#tab123').DataTable({
                     dom: 'Bfrtip',
                     buttons: [
-                        'excel'
+                        { extend: 'excel', className: 'btn btn-primary' }
                     ]
                 });
+
+
+                $(".buttons-html5").removeClass('dt-button')
+                $(".buttons-html5").addClass('action')
             };
         };
         var url = "{{ url|safe }}" + "/analyticsstdreportGet"

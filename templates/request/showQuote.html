@@ -392,7 +392,7 @@
     {% if data['status'] == 'EXPIRED' %}
     <div class = 'row mb-5'>
         <div class = 'col-sm-12 mt-3 text-center'>
-        <button type = 'submit' class = 'btn btn-success' onclick = 'resubmit(event)'>Resubmit</button>
+        <button type = 'submit' class = 'btn action' onclick = 'resubmit(event)'>Resubmit</button>
         </div>
     </div>
     {% endif %}
@@ -443,12 +443,12 @@
                             ></textarea>
                     </div>
                     <div class = 'mt-5 text-center'>
-                    <button class = 'btn btn-success' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
+                    <button class = 'btn action' disabled onclick = 'accept()' id = 'acceptBtn'>ACCEPT</button>
                     {% if canNegotiate == True %}
-                    <button class = 'btn btn-info' onclick = 'negotiate()' id = 'negob'>NEGOTIATE</button>
+                    <button class = 'btn action' onclick = 'negotiate()' id = 'negob'>NEGOTIATE</button>
                     {% endif %}
-                    <button class = 'btn btn-danger' onclick = 'decline()' id = 'decline'>DECLINE</button>
-                    <button class = 'btn btn-primary' onclick = 'alloptions()' id = 'all'>Show all options</button>
+                    <button class = 'btn action' onclick = 'decline()' id = 'decline'>DECLINE</button>
+                    <button class = 'btn otherbtn' onclick = 'alloptions()' id = 'all'>Show all options</button>
                     </div>
                 </div>
             </div>

@@ -36,13 +36,13 @@
                 <label class = ''>
                     Check-In Date
                 </label>
-                <input type = 'text' value = "{{ requestData['checkIn'] }}" readonly class = 'form-control' style="width: 20%; display: inline-block;">
+                <input type = 'text' value = "{{ requestData['checkIn'] }}" readonly class = 'form-control' style="width: 40%; display: inline-block;">
             </div>
             <div class='form-group mb-5'>
                 <label class = ''>
                     Check-Out Date
                 </label>
-                <input type='text' value="{{ requestData['checkOut'] }}" readonly class = 'form-control' style="width: 20%; display: inline-block;">
+                <input type='text' value="{{ requestData['checkOut'] }}" readonly class = 'form-control' style="width: 40%; display: inline-block;">
             </div>
             <div class = 'form-group mb-5'>
                 <label class = ''>
@@ -66,8 +66,8 @@
             <div class = 'row mb-5'>
                 <div class = 'col-sm-12 mt-3'>
                     <div class = 'text-center'>
-                        <button type = 'submit' class = 'btn btn-danger mr-5' onclick = 'decline(event)'>Decline</button>
-                        <button type = 'submit' class = 'btn btn-success' onclick = 'accept(event)'>Confirm</button>
+                        <button type = 'submit' class = 'btn action mr-5' onclick = 'decline(event)'>Decline</button>
+                        <button type = 'submit' class = 'btn action' onclick = 'accept(event)'>Confirm</button>
                     </div>
                 </div>
             </div>

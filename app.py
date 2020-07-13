@@ -1438,7 +1438,7 @@ def submiteditusertype():
     cursor.close()
 
     flash('UserType updated!', 'success')
-    return render_template('users/index.html', title='UserType')
+    return redirect(url_for('home2'))
 
 
 @app.route('/viewAllUsers', methods=['GET', 'POST'])

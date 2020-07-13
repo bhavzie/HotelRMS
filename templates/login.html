@@ -25,13 +25,13 @@
             </div>
             <div class="sign mt-5">
                 <div class="text-center">
-                        <button type="submit" class="btnLogin">Sign In
+                        <button type="submit" class="btn btn-info action homebtn">Sign In
                         </button>
                 </div>
         </form>
                 <form action = '{{ url_for("forgotpassword") }}'>
                 <div class = 'text-center'>
-                    <button type="submit" class="btnLogin">Forgot Password
+                    <button type="submit" class="btn btn-info action homebtn">Forgot Password
                     </button>
                 </div>
                 </form>
@@ -44,7 +44,7 @@
         <div class = 'notReg'>
             <div class = 'nrg iata'>
                 <form action="{{ url_for('iatar') }}">
-                <button class = 'btnLogin' type = 'submit'>
+                <button class = 'btn btn-info action homebtn' type = 'submit'>
                      IATA
                 </button>
                 </form>
@@ -52,21 +52,21 @@
             </form>
             <div class='nrg niata'>
                 <form action = "{{ url_for('customerr') }}">
-                    <button class='btnLogin' type = 'submit'>
+                    <button class='btn btn-info action homebtn' type = 'submit'>
                       Retail
                     </button>
                 </form>
             </div>
             <div class='nrg niata'>
                 <form action="{{ url_for('customerC') }}">
-                    <button class='btnLogin' type='submit'>
+                    <button class='btn btn-info action homebtn' type='submit'>
                        Corporate
                     </button>
                 </form>
             </div>
             <div class='nrg niata'>
                 <form action="{{ url_for('customerT') }}">
-                    <button class='btnLogin' type='submit'>
+                    <button class='btn btn-info action homebtn' type='submit'>
                        Tour Operator
                     </button>
                 </form>

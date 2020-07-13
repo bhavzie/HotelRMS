@@ -1,7 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class='spread' style="height: 100vh;">
+<div class='spread container' style="height: 100vh;">
     <h1>You don't have permission to do that (403)</h1>
     <p>Please check your account and try again</p>
+    <a href='{{ url_for("home2") }}'>
+        Go Back?
+    </a>
 </div>
 {% endblock %}
