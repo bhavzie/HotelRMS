@@ -320,7 +320,7 @@ footer img {
 */
 
 .wrapper {
-  margin-top: 58px;
+  margin-top: 51px;
   text-align: center;
 }
 
@@ -353,14 +353,24 @@ footer img {
 }
 
 .wrap-login {
-  width: 700px;
+  width: 35vw;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
-  min-height: 700px;
-  max-height: 100%;
+  min-height: 85vh;
   margin-bottom: 20px;
   padding: 25px;
+}
+
+
+.loginH {
+  display: block;
+  font-size: 2rem;
+  color: #333333;
+  margin: 25px;
+  padding: 5px;
+  font-weight: bold;
+  margin-bottom: 75px;
 }
 
 
@@ -370,15 +380,33 @@ footer img {
 }
 
 .spread {
-  width: 1024px;
+  width: 30vw;
+   height: 100%;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 45px;
 }
 
 .spread2 {
-  width: 1200px;
+  width: 60vw;
+   height: 100%;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 45px;
 }
 
 .spread3 {
   width: 100vw;
+  min-height: 100vh;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 45px;
 }
 
 .spread4 {
@@ -389,20 +417,44 @@ footer img {
   margin-bottom: 20px;
 }
 
+.sign {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
 
 .xwrap {
   min-height: 550px !important;
 }
 
-.loginH {
-  display: block;
-  font-size: 40px;
-  color: #333333;
-  margin: 25px;
-  padding: 5px;
-  font-weight: bold;
-  margin-bottom: 75px;
+.sect {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
+
+
+.mg {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.mge {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.tentative {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 
 /* 
   * Containers End here
@@ -481,6 +533,20 @@ footer img {
   margin: 0 auto;
 }
 
+  .btn-toggle {
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000;
+  }
+
+  button.multiselect {
+  border: 1px solid #ced4da;
+}
+
+button.multiselect {
+  height: 40px !important;
+}
+
 
 /* 
   * Buttons End here
@@ -494,6 +560,51 @@ footer img {
   * Tables
 */
 
+#tab55 {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#tab55 th {
+  word-wrap: break-word;
+}
+
+
+
+.table-responsive {
+  overflow-y: visible !important;
+}
+
+
+td {
+  white-space: normal !important; 
+  word-wrap: break-word;  
+}
+table {
+  table-layout: fixed;
+}
+
+
+
+
+#tab4 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 50%;
+}
+
+#tab5 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 70%;
+}
+
+.tab7 {
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  max-width: 70%;
+}
+
 /* 
   * Tables End here
 */
@@ -503,6 +614,25 @@ footer img {
 /* 
   * Components
 */
+
+.num2 {
+  width: 96px;
+}
+
+
+.baddr:hover {
+  border: none !important;
+}
+
+.coll {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.aple {
+  margin-bottom: 5px;
+  display: inline-block;
+}
 
 .loginH p {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -516,6 +646,30 @@ footer img {
   margin-left: 5px;
   margin-bottom: 5px;
 
+}
+
+.num {
+    width: 80px;
+}
+
+.num3 {
+    width: 80px;
+    border: 1px solid black;
+}
+
+.num4 {
+    width: 80px;
+    border: 1px solid black;
+}
+
+
+
+.start-date {
+  width: 200px !important;
+}
+
+.end-date {
+  width: 200px !important;
 }
 
 .formhelp {
@@ -552,21 +706,8 @@ footer img {
   border-radius: 0;
 }
 
-
-/* 
-  * Components End here
-*/
-
-
 .alert {
   margin: 0 !important;
-}
-
-.sign {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
 }
 
 hr {
@@ -584,13 +725,6 @@ hr {
   border-radius: 0;
   outline: none !important;
 }
-
-  .btn-toggle {
-    top: 50%;
-    transform: translateY(-50%);
-    color: #000;
-  }
-
 
   .checkboxdiv {
     margin: auto;
@@ -616,7 +750,6 @@ hr {
 
 
 
-
   .infog {
     position: relative;
     border-bottom: 1px solid #000;
@@ -626,12 +759,8 @@ hr {
   .lilink{
     margin-right: 35px;
   }
+
   
-
-.table-responsive {
-  overflow-y: visible !important;
-}
-
 input[disabled] {
   background-color: #F2F2F2 !important;
   color: #000000;
@@ -639,116 +768,15 @@ input[disabled] {
 }
 
 
-button.multiselect {
-  border: 1px solid #ced4da;
-}
-
-td {
-  white-space: normal !important; 
-  word-wrap: break-word;  
-}
-table {
-  table-layout: fixed;
-}
-
-.num {
-    width: 80px;
-}
-
-.num3 {
-    width: 80px;
-    border: 1px solid black;
-}
-
-.num4 {
-    width: 80px;
-    border: 1px solid black;
-}
+/* 
+  * Components End here
+*/
 
 
 
-.start-date {
-  width: 200px !important;
-}
-
-.end-date {
-  width: 200px !important;
-}
-
-.mg {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-button.multiselect {
-  height: 40px !important;
-}
-
-.sect {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-}
-
-#tab4 {
-  table-layout: fixed;
-  overflow-wrap: break-word;
-  max-width: 50%;
-}
-
-#tab5 {
-  table-layout: fixed;
-  overflow-wrap: break-word;
-  max-width: 70%;
-}
-
-.tab7 {
-  table-layout: fixed;
-  overflow-wrap: break-word;
-  max-width: 70%;
-}
-
-.num2 {
-  width: 96px;
-}
-
-.mge {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.baddr:hover {
-  border: none !important;
-}
-
-.coll {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.aple {
-  margin-bottom: 5px;
-  display: inline-block;
-}
-
-.tentative {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-#tab55 {
-  table-layout: fixed;
-  width: 100%;
-}
-
-#tab55 th {
-  word-wrap: break-word;
-}
-
+/* 
+  * Password Check Meter
+*/
 
 meter {
   /* Reset the default appearance */
@@ -790,3 +818,12 @@ meter[value="4"]::-moz-meter-bar { background: green; }
   position: relative;
   z-index: 2;
 }
+
+/* 
+  * Password Meter Done
+*/
+
+
+
+
+
