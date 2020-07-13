@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="container-login">
-    <div class="wrap-login spread2">
+    <div class="wrap-login spread3">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Manage Users</p><i class="fas fa-user"></i>
@@ -12,7 +12,7 @@
         <div class="table-responsive">
             <table id='tableusers' class="table table-bordered table-hover">
                 <caption>List of users</caption>
-                <thead class="thead-dark">
+                <thead class="table-header">
                     <tr>
                         <th style="width: 10%;" scope="col">Name</th>
                         <th scope="col"> Email</th>
@@ -26,21 +26,21 @@
                     <tr>
                         <td> {{ d['firstName'] }} </td>
                         <td class='text-center'>
-                            <a class='btn btn-info' href='/showprofileAll/{{d["email"]}}'>
+                            <a class='btn action' href='/showprofileAll/{{d["email"]}}'>
                                 {{ d['email'] }}
                             </a>
                         </td>
                         <td> {{ d['userType'] }} </td>
                         <td> {{ d['userSubType'] }} </td>
                         <td>
-                            <a class='btn btn-warning' href="{{ url_for('editUserAll', email = d['email'] ) }}">Edit<i
+                            <a class='btn action' href="{{ url_for('editUserAll', email = d['email'] ) }}">Edit<i
                                     class="fas fa-edit"></i></a>
                             {% if d['active'] == 1 %}
-                            <a class='btn btn-danger'
+                            <a class='btn action'
                                 href="{{ url_for('deactivateUserAll', email = d['email'] ) }}">Deactivate<i
                                     class="fas fa-user-slash"></i></a>
                             {% else %}
-                            <a class='btn btn-success'
+                            <a class='btn action'
                                 href="{{ url_for('activateUserAll', email = d['email'] ) }}">Activate<i
                                     class="fas fa-user-slash"></i></a>
                             {% endif %}

@@ -12,7 +12,7 @@
         {% if data %}
         <form action="{{ url_for('submitEditUser') }}" method="POST">
             <div class="formhelp mb-5">
-                <span class='btn btn-primary'>Full Name : </span><br>
+                <span class='btn otherbtn'>Full Name : </span><br>
                 <input type = 'text' class='form-control mt-3 text-center' 
                     value="{{ data['fullName'] }}"
                     name = 'name'
@@ -20,17 +20,17 @@
                     />
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>Email : </span><br>
+                <span class='btn otherbtn'>Email : </span><br>
                 <input type = 'text' class='form-control mt-3 text-center' value = "{{ data['email'] }}" readonly
                 name = 'email'
                 >
             </div>
             <div class="formhelp mb-5">
-                <span class='btn btn-primary'>UserType : </span><br>
+                <span class='btn otherbtn'>UserType : </span><br>
                 <input type = 'text' name='userType' value = '{{ data["userType"] }}' readonly class = 'form-control mt-3 text-center'>
             </div>
             <div class='formhelp mb-5'>
-                <span class='btn btn-primary'>Email Verified : </span><br>
+                <span class='btn otherbtn'>Email Verified : </span><br>
                 {% if data['active'] == 'No' %}
                 <input type="text" value=0 name='email_verified' class="form-control mt-3 text-center" readonly>
                 {% else %}
@@ -38,7 +38,7 @@
                 {% endif %}
             </div>
             <div class='formhelp mb-5'>
-                <span class='btn btn-primary'>User Active : </span><br>
+                <span class='btn otherbtn'>User Active : </span><br>
                 {% if data['active'] == 'No' %}
                 <input type="text" value=0 name='active' class="form-control mt-3 text-center" readonly>
                 {% else %}

@@ -12,23 +12,23 @@
         {% if data %}
         <form action="{{ url_for('editUser', email = data['email'] ) }}" method="POST">
             <div class="infog mb-5">
-                <span class = 'btn btn-primary'>Full Name : </span><br>
+                <span class = 'btn otherbtn'>Full Name : </span><br>
                 <div class = 'mt-3 text-center'>{{ data['fullName'] }}</div>
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>Email : </span><br>
+                <span class='btn otherbtn'>Email : </span><br>
                 <div class='mt-3 text-center'>{{ data['email'] }}</div>
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>UserType : </span><br>
+                <span class='btn otherbtn'>UserType : </span><br>
                 <div class='mt-3 text-center'>{{ data['userType'] }}</div>
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>Email Verified? : </span><br>
+                <span class='btn otherbtn'>Email Verified? : </span><br>
                 <div class='mt-3 text-center'>{{ data['email_verified'] }}</div>
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>User Active? : </span><br>
+                <span class='btn otherbtn'>User Active? : </span><br>
                 <div class='mt-3 text-center'>{{ data['active'] }}</div>
             </div>
             <div class="row">

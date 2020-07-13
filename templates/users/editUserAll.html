@@ -12,12 +12,12 @@
         {% if data %}
         <form action="{{ url_for('submitEditUserAll2') }}" method="POST">
             <div class="formhelp mb-5">
-                <span class='btn btn-primary'>Full Name : </span><br>
+                <span class='btn otherbtn'>Full Name : </span><br>
                 <input type='text' class='form-control mt-3 text-center' value="{{ data['fullName'] }}" name='name'
                     required />
             </div>
             <div class="infog mb-5">
-                <span class='btn btn-primary'>Email : </span><br>
+                <span class='btn otherbtn'>Email : </span><br>
                 <input type='text' class='form-control mt-3 text-center' value="{{ data['email'] }}" readonly
                     name='email'>
             </div>

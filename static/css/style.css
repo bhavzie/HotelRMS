@@ -645,7 +645,8 @@ th {
 
 td {
   white-space: normal !important; 
-  word-wrap: break-word;  
+  word-wrap: break-word;
+  text-align: left;  
 }
 table {
   table-layout: fixed;
