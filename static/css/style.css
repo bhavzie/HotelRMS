@@ -28,7 +28,9 @@ body {
   min-width: 100vw;
   color: #444444;
   font-size: 16px;
+  width: 100%;
 }
+
 
 /* 
   * Navbar Styles
@@ -326,6 +328,12 @@ footer img {
   * Containers
 */
 
+.container-fluid {
+    padding-right:0;
+    padding-left:0;
+    margin-right:auto;
+    margin-left:auto
+ }
 
 
 .home {
