@@ -16,7 +16,7 @@
         <div id = 'contracts'>
             <table class = 'table table-bordered table-hover'>
                 <caption>Created Contract</caption>
-                <thead class='thead-dark'>
+                <thead class='table-header'>
                     <tr>
                         <th>
                             Contract ID
@@ -45,7 +45,7 @@
                             {{ r['submittedOn'] }}
                         </td>
                         <td>
-                            <button type = 'button' class = 'btn btn-info' id = '{{ r["id"] }}' onclick="preview(event)">Preview</button>
+                            <button type = 'button' class = 'btn otherbtn' id = '{{ r["id"] }}' onclick="preview(event)">Preview</button>
                             <div style="display:none;">{{ r['contract'] }}</div>
                         </td>
                     </tr>
@@ -54,7 +54,7 @@
             </table>
         </div>
         <button type='button' onclick='createsetup()' class='btn btn-primary' id = 'createBut'>Create New Contract</button>
-        <button type='button' onclick='viewgrid()'  id = 'view' class='btn btn-primary mb-5'>View Grids</button>
+        <button type='button' onclick='viewgrid()'  id = 'view' class='btn otherbtn mb-5'>View Grids</button>
         <div id = 'create'>
             <form method = 'POST'>
                 <div id = 'msg' class = 'mb-5'></div>

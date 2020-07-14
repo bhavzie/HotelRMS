@@ -13,7 +13,7 @@
             <span class='badge badge-danger mb-3'>Deactivated Grid Row</span>
             <table class = 'table table-bordered table-hover' id = 'tab99'>
                 <caption>View Autopilot Policy</caption>
-                <thead class = 'thead-dark'>
+                <thead class = 'table-header'>
                     <tr>
                         <th>
                             Policy Name
@@ -62,17 +62,17 @@
                                 {{ d['createdOn'] }}
                             </td>
                             <td>
-                                <a class='btn btn-info' href='{{ url_for("showAutopilot", id = d["policyName"] ) }}'>View</a>
+                                <a class='btn otherbtn' href='{{ url_for("showAutopilot", id = d["policyName"] ) }}'>View</a>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <button type='button' class='btn btn-primary mb-5' onclick='vr()' id = 'vrb'>
+        <button type='button' class='btn otherbtn mb-5' onclick='vr()' id = 'vrb'>
             View Policies
         </button>
-        <button type = 'button' class = 'btn btn-primary mb-5' onclick = 'cr()' id = 'crb'>
+        <button type = 'button' class = 'btn action mb-5' onclick = 'cr()' id = 'crb'>
             Create AutoPilot
         </button>
         <form action = '' method = 'POST' onsubmit="add(event)">

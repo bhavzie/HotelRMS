@@ -16,7 +16,7 @@
                 Total evaluated Hours From quoted time : <span id = 'dem'>0</span>
             </div>
         {% else %}
-            <button type = 'button' class = 'btn btn-info mb-5' onclick="edit()">Edit</button>
+            <button type = 'button' class = 'btn action mb-5' onclick="edit()">Edit</button>
             <div style="margin-bottom: 100px;">
                 Days<input type="number" class='form-control ml-5' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
                     min=0 id='days' onchange="handle()" value = "{{ result['days'] }}" readonly>

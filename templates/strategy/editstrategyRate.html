@@ -29,7 +29,7 @@
                     </select>
                 </div>
                 <div class="col-sm">
-                    <button type="submit" id='subm1' class="btn btn-info mb-2">Add Row</button>
+                    <button type="submit" id='subm1' class="btn action mb-2">Add Row</button>
                 </div>
             </div>
         </form>
@@ -39,7 +39,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id='tab2'>
                     <caption>Rate Grid</caption>
-                    <thead class="thead-dark">
+                    <thead class="table-header">
                         <tr>
                             <th style = 'width: 10%;' class = 'text-center'>Start Date</th>
                             <th style = 'width: 10%;' class = 'text-center'>End Date</th>
@@ -49,7 +49,7 @@
                             <th style = 'width: 5%;' class = 'text-center'>Double Occ</th>
                             <th style = 'width: 5%;' class = 'text-center'>Triple Occ</th>
                             <th style = 'width: 5%;' class = 'text-center'>Quad Occ</th>
-                            <th style = 'width: 20%;' class = 'text-center'>Actions</th>
+                            <th style = 'width: 15%;' class = 'text-center'>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,8 +81,8 @@
                                     <input type="number" class='num  {{d["qor"]}}' value="{{ d['qor'] }}" readonly min = '10'>
                                 </td>
                                 <td>
-                                    <button type='button' class='btn btn-warning res2'>Delete</button>
-                                    <button type='button' class='btn btn-info res3'>Edit</button>
+                                    <button type='button' class='btn action res2'>Delete</button>
+                                    <button type='button' class='btn action res3'>Edit</button>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -282,9 +282,17 @@
     }
 
     function convertDate(inputFormat) {
-        function pad(s) { return (s < 10) ? '0' + s : s; }
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
         var d = new Date(inputFormat)
-        return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/')
+        var date = d.getDate()
+        var month = monthNames[d.getMonth()]
+        var year = d.getFullYear() - 2000
+
+        return (date + " " + month + ", " + year)
+
     }
 
     function addRowSubmit(e) {
@@ -362,7 +370,7 @@
                                 <input type="number" class = 'num {{ data[0]['quad'] }}' required min = '10'>
                             </td>
                         <td  style="vertical-align : middle;text-align:center;">
-                            <button type='button' class='btn btn-warning res'>Delete</button>
+                            <button type='button' class='btn action res'>Delete</button>
                         </td>
                     `
 
@@ -394,7 +402,7 @@
                                 <input type="number" class = 'num {{ data[1]['quad'] }}' required min = '10'>
                             </td>
                         <td  style="vertical-align : middle;text-align:center;">
-                            <button type='button' class='btn btn-warning res'>Delete</button>
+                            <button type='button' class='btn action res'>Delete</button>
                         </td>
                     </tr>
                     `

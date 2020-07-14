@@ -3,54 +3,54 @@
     <div class='mb-5'>
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
-            <span class="btn btn-success">Status : {{ data['status'] }}</span>
+            <span class="btn otherbtn">Status : {{ data['status'] }}</span>
         </div>
         <div class='mb-5'>
             {% if data['status'] == 'HOTEL DECLINED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Reason : {{ data6['reason'] }}
                 </span>
             {% elif data['status'] == 'CUSTOMER DECLINED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Reason : {{ data6['reason'] }}
                 </span>
             {% endif %}
             {% if data['status'] == "DELETED" %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Deleted By : {{ data7['deletedBy'] }} On {{ data7['deletedOn'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Reason : {{ data7['reason'] }}
                 </span>
             {% endif %}
             {% if data['status'] == 'QUOTED' %}
             <div class='mb-5'>
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Quoted By : {{ data2['submittedBy'] }}
                 </span>
-                <span class='badge badge-pill  badge-primary'>
+                <span class='badge badge-pill  otherbtn'>
                     Quoted On : {{ data2['submittedOn'] }}
                 </span>
             </div>
             {% elif data['status'] == 'ACCEPTED' %}
                 <div class='mb-5'>
-                    <span class='badge badge-pill  badge-primary'>
+                    <span class='badge badge-pill  otherbtn'>
                         Accepted On : {{ data5['time'] }}
                     </span>
                 </div>
             {% elif data['status'] == 'SENT FOR REVIEW' %}
                 <div class='mb-5'>
                     <div class='mb-4'>
-                        <span class="badge badge-pill badge-primary">
+                        <span class="badge badge-pill otherbtn">
                             Sent for review by : {{ data8['sentBy'] }}
                         </span>
-                        <span class='badge badge-pill badge-primary'> 
+                        <span class='badge badge-pill otherbtn'> 
                             ON {{ data8['time'] }}
                         </span>
                     </div>
@@ -58,10 +58,10 @@
             {% elif data['status'] == 'CONFIRMED' %}
                 <div class='mb-5'>
                     <div class='mb-4'>
-                        <span class="badge badge-pill badge-primary">
+                        <span class="badge badge-pill otherbtn">
                            Confirmation Code : {{ data9['confirmationCode'] }}
                         </span>
-                        <span class='badge badge-pill badge-primary'>
+                        <span class='badge badge-pill otherbtn'>
                            Comments :  {{ data9['comments'] }}
                         </span>
                     </div>
@@ -69,10 +69,10 @@
             {% elif data['status'] == 'NOT CONFIRMED' %}
                 <div class='mb-5'>
                     <div class='mb-4'>
-                        <span class="badge badge-pill badge-primary">
+                        <span class="badge badge-pill otherbtn">
                             Confirmation Code : {{ data10['confirmationCode'] }}
                         </span>
-                        <span class='badge badge-pill badge-primary'>
+                        <span class='badge badge-pill otherbtn'>
                             Comments : {{ data10['comments'] }}
                         </span>
                     </div>
@@ -81,7 +81,7 @@
             {% if decline %}
             <div class='mb-5'>
                 {% if data['status'] == 'EXPIRED' %}
-                <span class='badge badge-pill badge-primary'>Time Limit Expired</span> {% endif %}
+                <span class='badge badge-pill otherbtn'>Time Limit Expired</span> {% endif %}
             </div>
             {% endif %}
         </div>
@@ -91,7 +91,7 @@
         <div class='row'>
             <div class='col-5'>
                 <div class='mb-4'>
-                    <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
+                    <span class="badge badge-pill otherbtn">Recieved : {{ data['createdOn'] }}</span>
                 </div>
                 <div class='mb-3'>
                     <span>Name : {{ data['groupName'] }}</span>
@@ -111,7 +111,7 @@
             </div>
             <div class='col-5'>
                 <div class='mb-4'>
-                    <span class="badge badge-pill badge-primary">Last Opened : {{ data['lastOpenedOn'] }} By
+                    <span class="badge badge-pill otherbtn">Last Opened : {{ data['lastOpenedOn'] }} By
                             {{ data['lastOpenedBy'] }}</span>
                 </div>
                 <div class='mb-3'>
@@ -148,15 +148,15 @@
         </div>
         {% endif %} {% if data2|length != 0 %}
         <div class='row mb-2'>
-            <button class='btn btn-primary mr-2' type='button'>Duplicate</button>
-            <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
+            <button class='btn action mr-2' type='button'>Duplicate</button>
+            <a class='btn action mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
         </div>
         <div class='row mt-5'>
             <div class='row col-12'>
                 {% for l in lefttable %}
                 <div class='col-5'>
                     <table class='table table-bordered table-hover' id={ { loop.index - 1 }}>
-                        <thead class='thead-dark'>
+                        <thead class='table-header2'>
                             <tr>
                                 <th>
                                     Date
@@ -204,7 +204,7 @@
                 </div>
                 <div class='col-7'>
                     <table class='table table-bordered table-hover' id='row{{ loop.index - 1 }}'>
-                        <thead class='thead-dark'>
+                        <thead class='table-header'>
                             <tr>
                                 <th>Occupancy</th>
                                 <th>Room Type</th>
@@ -241,119 +241,119 @@
     <div class='col-3'>
         <div class='mb-5'>
             <div class='mb-2'>
-                <span class='btn btn-info col-sm-6'>
+                <span class='btn otherbtn col-sm-6'>
                         Total Fare
                     </span>
-                <span class='btn btn-info col-sm-3' id='totalRate'>
+                <span class='btn otherbtn col-sm-3' id='totalRate'>
                         {{ data2['totalFare'] }}
                     </span>
             </div>
             <div class='mb-2 ff'>
                 {% if tfoc == True%}
-                <span class='btn btn-info col-sm-6'>
+                <span class='btn otherbtn col-sm-6'>
                         + FOC
                     </span>
-                <span class='btn btn-info col-sm-3' id='focRate'>
+                <span class='btn otherbtn col-sm-3' id='focRate'>
                         {{ data2['foc'] }}
                     </span> {% endif %}
             </div>
             <div class='mb-2 ff'>
                 {% if tcomm == True %}
-                <span class='btn btn-info col-sm-6'>
+                <span class='btn otherbtn col-sm-6'>
                         + Commission <span id = 'commission'>{{ data2['commission'] }}
                         </span>%</span>
-                <span class='btn btn-info col-sm-3' id='comv'>
+                <span class='btn otherbtn col-sm-3' id='comv'>
                         {{ data2['commissionValue'] }}
                     </span> {% endif %}
             </div>
             <hr>
             <div class='mb-1'>
-                <span class='btn btn-info col-sm-6'>
+                <span class='btn otherbtn col-sm-6'>
                         Total Quote
                     </span>
-                <span class='btn btn-info col-sm-3'>
+                <span class='btn otherbtn col-sm-3'>
                         {{ data2['totalQuote'] }}
                     </span>
             </div>
             <hr>
         </div>
         <div class='mb-5'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     Average Rate/ Room Night
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data2['averageRate'] }}
                 </span>
         </div>
         {% if data3['single1'] != '0'%}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     1 Bed Single
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['single1'] }}
                 </span>
         </div>
         {% endif %} {% if data3['double1'] != '0'%}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     1 Bed Double
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['double1'] }} 
                 </span>
         </div>
         {% endif %} {% if data3['triple1']!= '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'> 
+            <span class='btn otherbtn col-sm-8'> 
                     1 Bed Triple
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['triple1'] }}
                 </span>
         </div>
         {% endif %} {% if data3['quad1'] != '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     1 Bed Quad
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['quad1'] }}
                 </span>
         </div>
         {% endif %} {% if data3['single2'] != '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     2 Bed Single
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['single2'] }}
                 </span>
         </div>
         {% endif %} {% if data3['double2']!= '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     2 Bed Double
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['double2'] }}
                 </span>
         </div>
         {% endif %} {% if data3['triple2'] != '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     2 Bed Triple
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['triple2'] }}
                 </span>
         </div>
         {% endif %} {% if data3['quad2'] != '0' %}
         <div class='mb-2'>
-            <span class='btn btn-info col-sm-8'>
+            <span class='btn otherbtn col-sm-8'>
                     2 Bed Quad
                 </span>
-            <span class='btn btn-info col-sm-3'>
+            <span class='btn otherbtn col-sm-3'>
                     {{ data3['quad2'] }}
                 </span>
         </div>
@@ -388,7 +388,7 @@
         </div>
         {% endif %}
         <div class='mb-5'>
-            Contract : <button class='btn btn-info' onclick="hc()">
+            Contract : <button class='btn otherbtn' onclick="hc()">
                     {% if data2['contract'] %}
                     <span id = 'contracts1'>{{ data2['contract'] }}</span>
                     {% endif %}

@@ -6,7 +6,7 @@
             <button class='btn btn-primary'
                 onclick = "window.history.back();"
             >Back <i class="fas fa-backward"></i></button>
-            <span class="btn btn-success">Current Status : {{ requestData['status'] }}</span>
+            <span class="btn otherbtn">Current Status : {{ requestData['status'] }}</span>
         </div>
     </div>
     <div class = 'mb-5'>
@@ -16,7 +16,7 @@
                 <div class = 'row'>
                     <div class = 'col-6'>
                         <div class='mb-3'>
-                            <span class="badge badge-pill badge-primary">Recieved : {{ requestData['createdOn'] }}</span>
+                            <span class="badge badge-pill otherbtn">Recieved : {{ requestData['createdOn'] }}</span>
                         </div>
                         <div class='mb-3'>
                             <span>Name : {{ requestData['groupName'] }}</span>
@@ -76,10 +76,10 @@
                 <h6>Response {{ loop.index }}</h6>
                 <h6>Status : {{ r['status'] }} </h6>
                 {% if r['status'] == 'CUSTOMER DECLINED' or r['status'] == 'HOTEL DECLINED' %}
-                    <span class='badge badge-pill badge-primary'>
+                    <span class='badge badge-pill otherbtn'>
                         Declined By {{ r['by'] }} On : {{ r['time'] }}
                     </span>
-                    <span class='badge badge-primary'>
+                    <span class='badge otherbtn'>
                         Reason : {{ r['msg'] }}
                     </span>
                 {% endif %}
@@ -87,7 +87,7 @@
                 <div class = 'row'>
                     <div class = 'col-6'>
                         <div class='mb-5'>
-                            <span class='badge badge-pill badge-primary'>Last Responded On : {{ r['submittedOn'] }} By
+                            <span class='badge badge-pill otherbtn'>Last Responded On : {{ r['submittedOn'] }} By
                                 {{ r['submittedBy'] }} </span>
                         </div>
                         <div class='mb-5'>
@@ -220,12 +220,12 @@
                 </div>
                 <div class = 'mb-5'>
                     {% for key,value in responseDaywiseData[loop.index - 1].items() %}
-                    <button type='button' class='btn btn-primary mr-3'>
+                    <button type='button' class='btn otherbtn mr-3'>
                         {{ key }}
                     </button>
                         <div class = 'mt-5'>
                             <table class = 'table table-bordered table-hover'>
-                                <thead class = 'thead-dark'>
+                                <thead class = 'table-header'>
                                     <tr>
                                         <th>
                                             Type

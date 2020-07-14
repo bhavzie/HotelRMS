@@ -6,12 +6,12 @@
                 <div class = 'row'>
                     <div class = 'col-5'>
                         <div class = 'mb-4'>
-                            <span class="badge badge-pill badge-primary">Recieved : {{ data['createdOn'] }}</span>
+                            <span class="badge badge-pill otherbtn">Recieved : {{ data['createdOn'] }}</span>
                         </div>
                         {% if rvflag == True %}
                         <div class='mb-4'>
-                            <span class="badge badge-pill badge-primary">Sent for review by : {{ rvvv['sentBy'] }}</span>
-                                <span class = 'badge badge-pill badge-primary'> ON {{ rvvv['time'] }}</span>
+                            <span class="badge badge-pill otherbtn">Sent for review by : {{ rvvv['sentBy'] }}</span>
+                                <span class = 'badge badge-pill otherbtn'> ON {{ rvvv['time'] }}</span>
                         </div>
                         {% endif %}
                         <div class = 'mb-3'>
@@ -32,7 +32,7 @@
                     </div>
                     <div class = 'col-5'>
                         <div class='mb-4'>
-                            <span class="badge badge-pill badge-primary">Last Opened : {{ data['lastOpenedOn'] }} By {{ data['lastOpenedBy'] }}</span>
+                            <span class="badge badge-pill otherbtn">Last Opened : {{ data['lastOpenedOn'] }} By {{ data['lastOpenedBy'] }}</span>
                         </div>
                         <div class='mb-3'>
                             <span>Budget/RM/NT : ${{ data['budget'] }}</span>
@@ -66,19 +66,19 @@
                 </div>
                 <hr>
                 <div class = 'row mb-2'>
-                    <a class='btn btn-info mr-2' href='{{ url_for("showRequest", token = data["id"]) }}'>
+                    <a class='btn action mr-2' href='{{ url_for("showRequest", token = data["id"]) }}'>
                         Back
                     </a>
-                    <button class = 'btn btn-primary mr-2' type = 'button'>Duplicate</button>
-                    <a class='btn btn-primary mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
-                    <button class = 'btn btn-info mr-2' type = 'button' onclick = 'edit()'>Edit</button>
+                    <button class = 'btn action mr-2' type = 'button'>Duplicate</button>
+                    <a class='btn action mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
+                    <button class = 'btn action mr-2' type = 'button' onclick = 'edit()'>Edit</button>
                 </div>
                 <div class = 'row mt-5'>
                     <div class = 'row col-12'>
                         {% for i in range(length) %}
                         <div class = 'col-5'>
                             <table class="table table-bordered table-hover" id = {{ i }}>
-                                <thead class="thead-dark">
+                                <thead class="table-header2">
                                     <tr>
                                         <th style = 'width:50%'>Date</th>
                                         <th style = 'width:50%'>{{ dates[i] }}</th>
@@ -114,7 +114,7 @@
                         </div>
                         <div class = 'col-7'>
                                     <table class="table table-bordered table-hover" id = "row{{i}}">
-                                        <thead class="thead-dark">
+                                        <thead class="table-header">
                                             <tr>
                                                 <th style="width: 20%;">Occupancy</th>
                                                 <th style='width:20%;'>Room Type</th>
@@ -164,128 +164,128 @@
             <div class = 'col-3'>
                 <div class = 'mb-5'>
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-6'>
+                    <span class='btn otherbtn col-sm-6'>
                         Total Fare
                     </span>
-                    <span class='btn btn-info col-sm-3' id = 'totalRate'>
+                    <span class='btn otherbtn col-sm-3' id = 'totalRate'>
                         {{ totalRate }}
                     </span>
                 </div>
                 <div class='mb-2 ff'>
                     {% if tfoc == True%}
-                    <span class='btn btn-info col-sm-6'>
+                    <span class='btn otherbtn col-sm-6'>
                         + FOC
                     </span>
-                    <span class='btn btn-info col-sm-3' id = 'focRate'>
+                    <span class='btn otherbtn col-sm-3' id = 'focRate'>
                         {{ focv }}
                     </span>
                     {% endif %}
                 </div>
                 <div class = 'mb-2 ff'>
                         {% if tcomm == True%}
-                        <span class='btn btn-info col-sm-6'>
+                        <span class='btn otherbtn col-sm-6'>
                         + Commission <span id = 'commission'>{{ comP }}
                         </span>%</span>
-                    <span class = 'btn btn-info col-sm-3' id = 'comv'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'comv'>
                         {{ tcommv }}
                     </span>
                         {% endif %}
                 </div>
                 <hr>
                 <div class='mb-1'>
-                    <span class='btn btn-info col-sm-6'>
+                    <span class='btn otherbtn col-sm-6'>
                         Total Quote
                     </span>
-                    <span class='btn btn-info col-sm-3' id='totalQuote'>
+                    <span class='btn otherbtn col-sm-3' id='totalQuote'>
                         {{ totalQuote }}
                     </span>
                 </div>
                 <hr>
                 </div>
                 <div class='mb-5'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         Average Rate/ Room Night
                     </span>
-                    <span class='btn btn-info col-sm-3' id='avgRate'>
+                    <span class='btn otherbtn col-sm-3' id='avgRate'>
                         {{ avgRate }}
                     </span>
                 </div>
                 {% if single1f %}
                 <div class = 'mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         1 Bed Single
                     </span>
-                    <span class = 'btn btn-info col-sm-3' id = 'single1avg'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'single1avg'>
                         {{ single1avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if double1f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         1 Bed Double
                     </span>
-                    <span class = 'btn btn-info col-sm-3' id = 'double1avg'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'double1avg'>
                     {{ double1avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if triple1f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         1 Bed Triple
                     </span>
-                    <span class = 'btn btn-info col-sm-3' id = 'triple1avg'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'triple1avg'>
                         {{ triple1avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if quad1f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         1 Bed Quad
                     </span>
-                    <span class = 'btn btn-info col-sm-3' id = 'quad1avg'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'quad1avg'>
                         {{ quad1avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if single2f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         2 Bed Single
                     </span>
-                    <span class = 'btn btn-info col-sm-3' id = 'single2avg'>
+                    <span class = 'btn otherbtn col-sm-3' id = 'single2avg'>
                         {{ single2avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if double2f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         2 Bed Double
                     </span>
-                        <span class = 'btn btn-info col-sm-3' id = 'double2avg'>
+                        <span class = 'btn otherbtn col-sm-3' id = 'double2avg'>
                             {{ double2avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if triple2f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         2 Bed Triple
                     </span>
-                        <span class = 'btn btn-info col-sm-3' id = 'triple2avg'>
+                        <span class = 'btn otherbtn col-sm-3' id = 'triple2avg'>
                             {{ triple2avg }}
                     </span>
                 </div>
                 {% endif %}
                 {% if quad2f %}
                 <div class='mb-2'>
-                    <span class='btn btn-info col-sm-8'>
+                    <span class='btn otherbtn col-sm-8'>
                         2 Bed Quad
                     </span>
-                        <span class = 'btn btn-info col-sm-3' id = 'quad2avg'>
+                        <span class = 'btn otherbtn col-sm-3' id = 'quad2avg'>
                             {{ quad2avg }}
                     </span>
                 </div>
@@ -363,7 +363,7 @@
                     </div>
                 </div>
                 <div class='row mb-5'>
-                    <button type = 'button' class = 'btn btn-info col-sm-4 ml-2'  data-toggle="modal" data-target="#exampleModal">
+                    <button type = 'button' class = 'btn otherbtn col-sm-4 ml-2'  data-toggle="modal" data-target="#exampleModal">
                         Contract
                     </button>
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

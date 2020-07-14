@@ -15,7 +15,7 @@
                 <table class='table table-bordered table-hover' id='tab17'>
                     <caption>Created Discount Grid
                     </caption>
-                    <thead class='thead-dark'>
+                    <thead class='table-header'>
                         <tr>
                             <th>
                                 Discount ID
@@ -62,18 +62,18 @@
                                     {{ grid['createdOn'] }}
                                 </td>
                                 <td>
-                                    <a class = 'btn btn-info' href = '{{ url_for("showDiscountGrid", id = grid["discountId"] ) }}'>View</a>
+                                    <a class = 'btn otherbtn' href = '{{ url_for("showDiscountGrid", id = grid["discountId"] ) }}'>View</a>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>  
-            <button type = 'button' onclick = 'createsetup()' class = 'btn btn-primary'>Create Grid</button>
+            <button type = 'button' onclick = 'createsetup()' class = 'btn action'>Create Grid</button>
         </div>
         <div id = 'new'>
         <form id='formadd' class='inline mb-5' onsubmit="addDiscount(event)">
-            <button type='button' onclick='viewgrid()' class='btn btn-primary mb-5'>View Grids</button>
+            <button type='button' onclick='viewgrid()' class='btn otherbtn mb-5'>View Grids</button>
             <div class='mg mb-5'>
                 <div class="input-group-prepend col-sm">
                     <span class="input-group-text  mb-2">Date range</span>
@@ -96,7 +96,7 @@
         <div class = 'table-responsive'>
             <table class = 'table table-bordered table-hover' id = 'tab12'>
                 <caption>Default Discount Grid</caption>
-                <thead class = 'thead-dark'>
+                <thead class = 'table-header'>
                     <tr>
                         <th rowspan="2">
                             Lead Time (Days)
@@ -384,12 +384,12 @@
         </div>
         <div class = 'row'>
             <div class="col-sm-12 mt-3">
-                <button class = 'btn btn-info' type = 'button' id = 'createGrid11' onclick = 'createGrid1(event)'>Create Grid</button>
+                <button class = 'btn action' type = 'button' id = 'createGrid11' onclick = 'createGrid1(event)'>Create Grid</button>
             </div>
         </div>
         <div class='row mb-5'>
             <div class="col-sm-12 mt-3">
-                <button class='btn btn-info' type='button' id='createGrid12' onclick='createGrid2(event)'>Back to Default Grid</button>
+                <button class='btn otherbtn' type='button' id='createGrid12' onclick='createGrid2(event)'>Back to Default Grid</button>
             </div>
         </div>
         <div class = 'mb-5' id = 'point'>
@@ -397,20 +397,20 @@
                 <input type='number' class='form-control'  min=0 style = 'width:20%; display: inline-block;' max = 100 id = 'mincol' >
                 <input type='number' class='form-control'  min=0 style = 'width:20%; display: inline-block;' max = 100 id = 'maxcol' >
                 
-                <button type = 'button' class = 'ml-5 btn btn-primary' onclick = 'addcol(event)' id = 'adc'>Add Column</button>
+                <button type = 'button' class = 'ml-5 btn action' onclick = 'addcol(event)' id = 'adc'>Add Column</button>
 
-                <button type='button' class='ml-5 btn btn-primary' onclick='rescol(event)' id = 'fc'>Freeze Column</button>
+                <button type='button' class='ml-5 btn action' onclick='rescol(event)' id = 'fc'>Freeze Column</button>
 
-                <button type='button' class='ml-5 btn btn-primary' onclick='lockGrid(event)' id='lc'>Lock Grid Columns</button>
+                <button type='button' class='ml-5 btn action' onclick='lockGrid(event)' id='lc'>Lock Grid Columns</button>
 
-                <button type='button' class='ml-5 btn btn-primary' onclick='addRow(event)' id='ar'>Add Row</button>
+                <button type='button' class='ml-5 btn action' onclick='addRow(event)' id='ar'>Add Row</button>
 
         </div>
 
         <div class='table-responsive'>
             <table class='table table-bordered table-hover' id='tab13'>
                 <caption>Default Discount Grid</caption>
-                <thead class='thead-dark'>
+                <thead class='table-header'>
                     <tr>
                         <th rowspan="2">
                             Lead Time (Days)
@@ -573,7 +573,7 @@
         th2.innerHTML = `
                         <input type = 'number' class = 'num3' min = ${min} max = ${max} required>
                         <input type='number' class='num3' min = ${min} max = ${max} required>
-                        <button type = 'button' class = 'btn btn-outline-danger rept2' onclick = 'delsubcol(event)'>
+                        <button type = 'button' class = 'btn action rept2' onclick = 'delsubcol(event)'>
                                 -
                             </button>
                         `
@@ -691,10 +691,10 @@
         if (peep == 0) {
             const peep2 = peep +  parseInt(min.value)
             th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
-                <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep2}, ${val})'>
+                <button type = 'button' class = 'btn action rept' onclick = 'addcolcol(event, ${peep2}, ${val})'>
                                 +
                             </button>
-                <button type = 'button' class = 'btn btn-outline-danger rept2'
+                <button type = 'button' class = 'btn action rept2'
                             onclick = 'del(event)'
                 >
                     -
@@ -707,17 +707,17 @@
             th2.innerHTML = `
                             <input type = 'number' class = 'num3' min = ${peep2} max = ${val} value = ${peep2} required>
                             <input type='number' class='num3'  min = ${peep2} max = ${val} value = ${val} required>
-                            <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'delsubcol(event)'>
+                            <button type = 'button' class = 'btn action rept2'  onclick = 'delsubcol(event)'>
                                 -
                             </button>
                             `
             theadr[1].append(th2)
         } else {
             th1.innerHTML = `${min.value} - ${max.value} (${val} rooms)
-                <button type = 'button' class = 'btn btn-outline-warning rept' onclick = 'addcolcol(event, ${peep + 1}, ${val + peep})'>
+                <button type = 'button' class = 'btn action rept' onclick = 'addcolcol(event, ${peep + 1}, ${val + peep})'>
                                 +
                             </button>
-                <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'del(event)'>
+                <button type = 'button' class = 'btn action rept2'  onclick = 'del(event)'>
                                 -
                             </button>
             `
@@ -728,7 +728,7 @@
             th2.innerHTML = `
                             <input type = 'number' class = 'num3' min = ${peep + 1} max = ${val + peep} value = ${peep + 1} required>
                             <input type='number' class='num3'  min = ${peep + 1} max = ${val + peep} value = ${val + peep} required>
-                            <button type = 'button' class = 'btn btn-outline-danger rept2'  onclick = 'delsubcol(event)'>
+                            <button type = 'button' class = 'btn action rept2'  onclick = 'delsubcol(event)'>
                                 -
                             </button>
                             `

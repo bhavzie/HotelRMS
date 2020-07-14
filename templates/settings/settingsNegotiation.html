@@ -9,7 +9,7 @@
             </div>
         </div>
         {% if flag %}
-        <button type="submit" class="btn btn-info" onclick="edit()">Edit</button>
+        <button type="submit" class="btn action" onclick="edit()">Edit</button>
         {% endif %}
         <form method='POST' action="{{  url_for('settingsNegotiationSubmit') }}">
             <small id='smallID' class='form-text text-muted mb-5'>

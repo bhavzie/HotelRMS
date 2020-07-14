@@ -4,63 +4,63 @@
     <div class='mb-5'>
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
-            <span class="btn btn-success">Status : {{ data2['status'] }} </span>
+            <span class="btn otherbtn">Status : {{ data2['status'] }} </span>
             <div class = 'mb-5'>
             {% if data['status'] == 'ACCEPTED' %}
-                <span class='badge badge-pill  badge-primary'>
+                <span class='badge badge-pill  otherbtn'>
                     Accepted On : {{ data5['time'] }}
                 </span>
             {% endif %}
             </div>
             {% if data2['status'] == 'QUOTED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Fare Expires On : {{ endline }}
                 </span>
             {% endif %}
             <div class='mb-5'>
                 {% if data['status'] == 'HOTEL DECLINED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Reason : {{ data6['reason'] }}
                 </span>
                 {% elif data['status'] == 'CUSTOMER DECLINED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Declined By {{ data6['declinedBy'] }} On : {{ data6['time'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Reason : {{ data6['reason'] }}
                 </span>
                 {% endif %}
             </div>
             <div class = 'mb-5'>
                 {% if data['status'] == 'EXPIRED' %}
-                    <span class = 'badge badge-pill badge-primary'>Time Limit Expired</span>
+                    <span class = 'badge badge-pill otherbtn'>Time Limit Expired</span>
                 {% endif %}
             </div>
             {% if data2['status'] == 'NEGOTIATED' %}
             <div class='mb-5'>
                 <div class='mb-4'>
-                    <span class="badge badge-pill badge-primary">
+                    <span class="badge badge-pill otherbtn">
                         Expected Fare : {{ data2['expectedFare'] }}
                     </span>
-                    <span class='badge badge-pill badge-primary'> Negotiation Reason : {{ data2['negotiationReason'] }}</span>
+                    <span class='badge badge-pill otherbtn'> Negotiation Reason : {{ data2['negotiationReason'] }}</span>
                 </div>
             </div>
             {% endif %}
             {% if data2['status'] == 'CONFIRMED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Confirmation Code : {{ data9['confirmationCode'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Comments :  {{ data9['comments'] }}
                 </span>
             {% elif data2['status'] == 'NOT CONFIRMED' %}
-                <span class='badge badge-pill badge-primary'>
+                <span class='badge badge-pill otherbtn'>
                     Confirmation Code : {{ data10['declinedBy'] }}
                 </span>
-                <span class='badge badge-primary'>
+                <span class='badge otherbtn'>
                     Comments : {{ data10['comments'] }}
                 </span>
             {% endif %}
@@ -131,7 +131,7 @@
                         <span>Comments : {{ data['comments'] }}</span>
                     </div>
                     {% endif %}
-                    <button type='button' class='btn btn-info mb-5' onclick='showReq()'>View Request Details</button>
+                    <button type='button' class='btn otherbtn mb-5' onclick='showReq()'>View Request Details</button>
                 </div>
             </div>
         </div>
@@ -278,7 +278,7 @@
                 <div class = 'card-body'>
                     <div class = 'mb-5'>
                     {% for b in dateButtons %}
-                        <button type = 'button' class = 'btn dateButtons btn-secondary {{b}}'>
+                        <button type = 'button' class = 'btn dateButtons otherbtn {{b}}'>
                             {{ b }}
                         </button>
                     {% endfor %}
@@ -288,7 +288,7 @@
                         <div class = 'mb-5 col-sm-6'>
                         <table class = 'table table-bordered table-hover' style="display: none;" id = "{{key}}">
                             <caption>{{key}}</caption>
-                            <thead class = 'thead-dark'>
+                            <thead class = 'table-header'>
                                 <tr>
                                     <th>
                                         Type
@@ -326,12 +326,12 @@
     </div>
     <div class = 'row mb-5 mt-5'>
         <div class = 'col-sm-12'>
-            <button class='btn btn-info mb-4' type='button' onclick = 'viewbreakdown()'>View Breakdown</button>
+            <button class='btn otherbtn mb-4' type='button' onclick = 'viewbreakdown()'>View Breakdown</button>
             <div class = 'card' id = 'breakdown'>
                 <div class = 'card-body'>
                     <div class = 'mb-5'>
                         {% for b in dateButtons %}
-                            <button type = 'button' class = 'btn  btn-secondary' id = '{{b}}' onclick="showTable(event)">
+                            <button type = 'button' class = 'btn  otherbtn' id = '{{b}}' onclick="showTable(event)">
                                 {{ b }}
                             </button>
                         {% endfor %}
@@ -341,7 +341,7 @@
                             <div class = 'mb-5 col-sm-9'>
                                 <table class = 'table table-bordered table-hover {{key}}' style="display: none;">
                                     <caption>{{key}}</caption>
-                                    <thead class='thead-dark'>
+                                    <thead class='table-header'>
                                         <tr>
                                             <th>
                                                 Type

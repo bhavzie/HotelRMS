@@ -529,11 +529,8 @@ footer img {
 
 .action {
   text-transform: uppercase;
-  font-size: 16px;
   background-color: #2983fe !important;
-  padding: 10px;
-  margin: 0 auto;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff !important;
   box-shadow: 0 5px 15px rgba(0,0,0,0.20);
   transition: all 0.2s ease-in-out;
@@ -545,11 +542,8 @@ footer img {
 
 .otherbtn {
   text-transform: uppercase;
-  font-size: 16px;
   background-color: #807f80 !important;
-  padding: 10px;
-  margin: 0 auto;
-  font-weight: 700;
+  font-weight: 600;
   color: #ffffff !important;
   box-shadow: 0 5px 15px rgba(0,0,0,0.20);
   transition: all 0.2s ease-in-out;
@@ -618,6 +612,11 @@ button.multiselect {
 
 .table-header {
   background-color: #427ec2 !important;
+  color: #ffffff !important;
+}
+
+.table-header2 {
+  background-color: #807f80 !important;
   color: #ffffff !important;
 }
 

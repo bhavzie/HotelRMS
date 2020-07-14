@@ -23,13 +23,13 @@
                         <input type="text" placeholder="End date" aria-label="Last name"
                             class="form-control end-date  mb-2 mr-sm-2" id='endDateG' required>
                     </div>
-                    <span class='btn btn-info' id='de1'>Start Date: {{ data['startDate'] }} </span>
+                    <span class='btn otherbtn' id='de1'>Start Date: {{ data['startDate'] }} </span>
                 </div>
                 <div class='col-sm-3'>
-                    <span class='btn btn-info' id='de2'>End Date: {{ data['endDate'] }} </span>
+                    <span class='btn otherbtn' id='de2'>End Date: {{ data['endDate'] }} </span>
                 </div>
                 <div class='col-sm-3'>
-                    <span id = 'de5' class='btn btn-info'>Policy : {{ data['policy'] }} </span>
+                    <span id = 'de5' class='btn otherbtn'>Policy : {{ data['policy'] }} </span>
                     <select class='form-control text-center' required style='width: 90%; display: none;' id='pol'>
                         <option selected disabled>
                             Policy
@@ -40,28 +40,28 @@
                     </select>
                 </div>
                 <div class='col-sm-3'>
-                    <button class='btn btn-warning' onclick='edit()'>Edit</button>
+                    <button class='btn action' onclick='edit()'>Edit</button>
                 {% if data['active'] == 1%}
-                    <a class='btn btn-danger' href="{{ url_for('deactiveAutopilot', id = data['policyName']) }}">Deactivate</a>
+                    <a class='btn action' href="{{ url_for('deactiveAutopilot', id = data['policyName']) }}">Deactivate</a>
                 {% elif data['active'] == 0%}
-                    <a class='btn btn-danger' href="{{ url_for('activateAutopilot', id = data['policyName']) }}">Activate</a>
+                    <a class='btn action' href="{{ url_for('activateAutopilot', id = data['policyName']) }}">Activate</a>
                 {% endif %}
                 </div>
             </div>
             <div class='row mb-5 mt-5'>
                 <div class='col-sm-3'>
-                    <span class='btn btn-info'>PolicyName : {{ data['policyName'] }} </span>
+                    <span class='btn otherbtn'>PolicyName : {{ data['policyName'] }} </span>
                     <input type='hidden' id='policyName' value="{{ data['policyName'] }}">
                 </div>
             </div>
             <div class = 'row mb-5'>
                 <div class = 'col-sm-3'>
-                        <span class='btn btn-info'>CreatedBy : {{ data['createdBy'] }} </span>
+                        <span class='btn otherbtn'>CreatedBy : {{ data['createdBy'] }} </span>
                 </div>
             </div>
             <div class='row mb-5'>
                 <div class='col-sm-3'>
-                    <span class='btn btn-info'>CreatedOn : {{ data['createdOn'] }} </span>
+                    <span class='btn otherbtn'>CreatedOn : {{ data['createdOn'] }} </span>
                 </div>
             </div>
         </div>

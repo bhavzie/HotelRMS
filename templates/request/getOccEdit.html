@@ -11,14 +11,14 @@
         <small id='smallID' class='form-text text-muted mb-5'>
             All fields are in percentage (%)
         </small>
-        <button type = 'button' class = 'btn btn-info mb-5' onclick="edit()">Edit</button>
+        <button type = 'button' class = 'btn action mb-5' onclick="edit()">Edit</button>
         <form action='{{ url_for("showRequest1") }}' method='POST' id='gocc'>
             <input type='hidden' name='id' value='{{ token }}'>
 
             {% for date, value in occ.items() %}
             <div class='row mb-5'>
                 <div class='col-sm-6'>
-                        <label class='btn btn-info'>{{ date }}</label>
+                        <label class='btn otherbtn'>{{ date }}</label>
                 </div>
                 <div class='col-sm-6'>
                     <input type='number' step='any' min='0' max='100' class='form-control entry ml-5' style='width: 60%;'

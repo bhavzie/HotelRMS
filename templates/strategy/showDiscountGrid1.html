@@ -22,31 +22,31 @@
                         <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
                             id='endDateG' required>
                     </div>
-                    <span class = 'btn btn-info' id = 'de1'>Start Date: {{ data['startDate'] }} </span>
+                    <span class = 'btn otherbtn' id = 'de1'>Start Date: {{ data['startDate'] }} </span>
                 </div>
                 <div class = 'col-sm-3'>
-                    <span class = 'btn btn-info' id = 'de2'>End Date: {{ data['endDate'] }} </span>
+                    <span class = 'btn otherbtn' id = 'de2'>End Date: {{ data['endDate'] }} </span>
                 </div>
                 <div class='col-sm-3'>
-                    <span class='btn btn-info'>Discount ID : {{ data['discountId'] }} </span>
+                    <span class='btn otherbtn'>Discount ID : {{ data['discountId'] }} </span>
                     <input type = 'hidden' id = 'discountId' value = "{{ data['discountId'] }}">
                 </div>
                 <!-- {% if data['defaultm'] == 1 %}
                 <div class = 'col-sm-3'>
-                    <a class = 'btn btn btn-danger' href = '{{ url_for("unmarkDefault", id = data["discountId"]) }}'>Unmark as Default?</a>
+                    <a class = 'btn btn action' href = '{{ url_for("unmarkDefault", id = data["discountId"]) }}'>Unmark as Default?</a>
                 </div>
                 {% elif data['defaultm'] == 0 and flag == False %}
                 <div class='col-sm-3'>
-                    <a class='btn btn btn-danger' href='{{ url_for("markDefault", id = data["discountId"]) }}'>Mark as Default?</a>
+                    <a class='btn btn action' href='{{ url_for("markDefault", id = data["discountId"]) }}'>Mark as Default?</a>
                 </div>
                 {% endif %} -->
                 <div class = 'col-sm-3'>
-                    <button class = 'btn btn-warning' onclick = 'edit()'>Edit</button>
+                    <button class = 'btn action' onclick = 'edit()'>Edit</button>
                     {% if data['defaultm'] == 0%}
                     {% if data['active'] == 1 %}
-                    <a class = 'btn btn-danger' href = "{{ url_for('deactivateDiscount', id = data['discountId']) }}">Deactivate</a>
+                    <a class = 'btn action' href = "{{ url_for('deactivateDiscount', id = data['discountId']) }}">Deactivate</a>
                     {% elif data['active'] == 0 %}
-                    <a class='btn btn-danger' href="{{ url_for('activateDiscount', id = data['discountId']) }}">Activate</a>
+                    <a class='btn action' href="{{ url_for('activateDiscount', id = data['discountId']) }}">Activate</a>
                     {% endif %}
                     {% endif %}
                 </div>
@@ -54,7 +54,7 @@
         </div>
         <hr>
         <table class = 'table table-bordered table-hover' id = 'tab55'>
-            <thead class = 'thead-dark'>
+            <thead class = 'table-header'>
                 <tr>
                     <th style = 'width: 15%;' rowspan="2">
                         Lead Time
