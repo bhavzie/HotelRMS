@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="home">
-    <div class="spread3">
+    <div class="container spread3">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Rate Grid</p>
@@ -102,6 +102,7 @@
          });
             table = $('#tab2').DataTable({
              responsive: true,
+             "scrollX": true,
          });
 
               $('.weekselect').multiselect({

@@ -21,10 +21,11 @@
 </head>
 <body>
     {% include '_helpers/_navbar.html' %}
-    <div class = 'wrapper'></div>
-    {% include '_helpers/_messages.html' %}
-    {% block content %}
-    {% endblock %}
+    <div class = 'container'>
+        {% include '_helpers/_messages.html' %}
+        {% block content %}
+        {% endblock %}
+    </div>
     <footer>
         <a class='navbar-brand' style = 'color:white;'>
             T R <i class="fas fa-arrow-circle-up"></i> M P A R

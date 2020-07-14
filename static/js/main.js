@@ -70,12 +70,13 @@ $(document).ready(function () {
             { width: '10%' },
             { width: '5%' },
             { width: '10%' },
-            { width: '10%' },
+            { width: '14%' },
         ],
         "ordering": true,
         responsive: true,
         className: 'dt-body-left',
-        className: 'dt-head-left'
+        className: 'dt-head-left', 
+        "scrollX": true
     });
 
     table.column(1).visible(false).draw()
@@ -88,6 +89,26 @@ $(document).ready(function () {
 
     $('#datexdf').change(function() {
         table.draw()
+    })
+
+
+    
+    let nav = document.getElementsByTagName('nav')[0]
+    
+    $('body').css({
+        'padding-top': nav.offsetHeight + "px"
+    })
+
+    $(window).on('load', function() {
+        $('body').css({
+            'padding-top': nav.offsetHeight + "px"
+        })
+    })
+
+    $(window).on('resize', function () {
+        $('body').css({
+            'padding-top': nav.offsetHeight + "px"
+        })
     })
 
     $.fn.dataTable.ext.search.push(
@@ -108,6 +129,45 @@ $(document).ready(function () {
             return false;
         }
     );
+
+
+    //the trigger on hover when cursor directed to this class
+    $(".core-menu li").hover(
+        function () {
+            //i used the parent ul to show submenu
+            $(this).children('ul').slideDown('fast');
+        },
+        //when the cursor away 
+        function () {
+            $('ul', this).slideUp('fast');
+        });
+    //this feature only show on 600px device width
+    $(".hamburger-menu").click(function () {
+        $(".burger-1, .burger-2, .burger-3").toggleClass("open");
+        $(".core-menu").slideToggle("fast");
+    });
+
+    $('.dropdown-menu li').on('click', function () {
+        var getValue = $(this).text();
+        $('.dropdown-select').text(getValue);
+    });
+
+    (function (original) {
+        jQuery.fn.clone = function () {
+            var result = original.apply(this, arguments),
+                my_textareas = this.find('textarea').add(this.filter('textarea')),
+                result_textareas = result.find('textarea').add(result.filter('textarea')),
+                my_selects = this.find('select').add(this.filter('select')),
+                result_selects = result.find('select').add(result.filter('select'));
+
+            for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
+            for (var i = 0, l = my_selects.length; i < l; ++i) result_selects[i].selectedIndex = my_selects[i].selectedIndex;
+
+            return result;
+        };
+    })(jQuery.fn.clone);
+
+        
 
 });
 
@@ -157,47 +217,4 @@ function hchange(checkbox) {
 }
 
 
-$(document).ready(function () {
-    //the trigger on hover when cursor directed to this class
-    $(".core-menu li").hover(
-        function () {
-            //i used the parent ul to show submenu
-            $(this).children('ul').slideDown('fast');
-        },
-        //when the cursor away 
-        function () {
-            $('ul', this).slideUp('fast');
-        });
-    //this feature only show on 600px device width
-    $(".hamburger-menu").click(function () {
-        $(".burger-1, .burger-2, .burger-3").toggleClass("open");
-        $(".core-menu").slideToggle("fast");
-    });
-
-    $('.dropdown-menu li').on('click', function () {
-        var getValue = $(this).text();
-        $('.dropdown-select').text(getValue);
-    });
-
-    (function (original) {
-        jQuery.fn.clone = function () {
-            var result = original.apply(this, arguments),
-                my_textareas = this.find('textarea').add(this.filter('textarea')),
-                result_textareas = result.find('textarea').add(result.filter('textarea')),
-                my_selects = this.find('select').add(this.filter('select')),
-                result_selects = result.find('select').add(result.filter('select'));
-
-            for (var i = 0, l = my_textareas.length; i < l; ++i) $(result_textareas[i]).val($(my_textareas[i]).val());
-            for (var i = 0, l = my_selects.length; i < l; ++i) result_selects[i].selectedIndex = my_selects[i].selectedIndex;
-
-            return result;
-        };
-    })(jQuery.fn.clone);
-
-
-    
-    
-
-
-}); 
 

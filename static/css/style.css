@@ -44,7 +44,7 @@ body {
 }
 
 .navbar-brand {
-  font-size: 1.5rem !important;
+  font-size: 20px !important;
 }
 
 .menu {
@@ -181,44 +181,32 @@ body {
   Media Queries
 */
 
-@media (min-width: 979px) and (max-width: 1440px) {
+@media (min-width: 1155px) and (max-width: 1440px) {
   .mainWrap {
         width: 768px;
     }
 
-    .menu ul {
-        top: 37px;
-    }
+    
 
     .menu li a {
-        font-size: 12px;
+        font-size: 16px;
     }
 
     a.homer {
         background: #427ec2;
-    }
-
-    nav .navbar-brand {
-      display: 1rem;
-    }
-
-    #myProfile {
-      display: none;
     }
 
 }
 
-@media (min-width: 768px) and (max-width: 979px) {
+@media (min-width: 768px) and (max-width: 1155px) {
     .mainWrap {
         width: 768px;
     }
 
-    .menu ul {
-        top: 37px;
-    }
+    
 
     .menu li a {
-        font-size: 12px;
+        font-size: 16px;
     }
 
     a.homer {
@@ -229,14 +217,16 @@ body {
       display: none;
     }
 
-    #myProfile {
-      display: none;
-    }
 
     #help {
       display: none;
     }
 }
+
+/*
+  * Works till 925 px
+  * lower than that we need hamburger
+*/
 
 @media (max-width: 767px) {
     .mainWrap {
@@ -336,10 +326,7 @@ footer img {
   * Containers
 */
 
-.wrapper {
-  margin-top: 51px;
-  text-align: center;
-}
+
 
 .home {
   background:linear-gradient(45deg, #F4EBE5, #E3D4CA);
@@ -397,31 +384,28 @@ footer img {
 }
 
 .spread {
-  width: 30vw;
+  min-width: 30vw;
    height: 100%;
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
   margin-bottom: 20px;
   padding: 45px;
 }
 
 .spread2 {
-  width: 60vw;
+  min-width: 60vw;
    height: 100%;
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
   margin-bottom: 20px;
   padding: 45px;
 }
 
 .spread3 {
-  width: 100vw;
+  min-width: 100vw;
   min-height: 100vh;
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
   margin-bottom: 20px;
   padding: 45px;
 }
@@ -429,7 +413,7 @@ footer img {
 .spread4 {
   background: #fff;
   height: 100%;
-  width: 100vw;
+  min-width: 100vw;
   padding: 25px;
   margin-bottom: 20px;
 }
