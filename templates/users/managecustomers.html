@@ -25,8 +25,8 @@
                     {% for d in data %}
                     <tr>
                         <td> {{ d['firstName'] }} </td>
-                        <td class='text-center'>
-                            <a class='btn action' href='/showprofileAll/{{d["email"]}}'>
+                        <td>
+                            <a class='btn action' href='/showprofileAll/{{d["email"]}}' style="display: inline-block;">
                                 {{ d['email'] }}
                             </a>
                         </td>

@@ -614,9 +614,9 @@
 
     function del(e) {
         let p = e.target.parentElement
-        let count = p.colSpan
         p.remove()
-
+        let count = p.colSpan
+        
         peep = peep - val
         lastc = lastc - val
 
@@ -626,23 +626,26 @@
         $('#maxcol').removeAttr('disabled')
 
 
-        let tr = document.getElementById('tab13').children[2].children[0].children
-        let k = 0
-        for (let i=tr.length-1; i>=0; i--) {
-            tr[i].remove()
-            k++
-            if (k == count) {
-                break
-            }
-        }
+        if (count > 1) {
 
-        k = 0
-        let th = document.getElementById('tab13').children[1].children[1].children
-        for (let i = th.length - 1; i >= 0; i--) {
-            th[i].remove()
-            k++
-            if (k == count) {
-                break
+            let tr = document.getElementById('tab13').children[2].children[0].children
+            let k = 0
+            for (let i=tr.length-1; i>=0; i--) {
+                tr[i].remove()
+                k++
+                if (k == count) {
+                    break
+                }
+            }
+
+            k = 0
+            let th = document.getElementById('tab13').children[1].children[1].children
+            for (let i = th.length - 1; i >= 0; i--) {
+                th[i].remove()
+                k++
+                if (k == count) {
+                    break
+                }
             }
         }
 

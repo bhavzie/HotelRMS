@@ -9,7 +9,6 @@
         <title>TROMPAR</title>
     {% endif %}
     <link rel="stylesheet" href="/static/css/bootstrap.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
     <link rel="stylesheet" href="../static/fontawesome/css/all.css">
     <link rel="stylesheet" href="../static/css/titatoggle-dist.css">
     <link rel="stylesheet" href="../static/css/datatables.css">
@@ -18,6 +17,8 @@
     <link rel="stylesheet" href="/static/css/Chart.css">
     <link rel="stylesheet" href="/static/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="/static/css/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}">
 </head>
 <body>
     {% include '_helpers/_navbar.html' %}
