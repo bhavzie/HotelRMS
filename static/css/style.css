@@ -454,6 +454,12 @@ footer img {
   justify-content: space-around;
 }
 
+.fquote {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+}
+
 
 /* 
   * Containers End here
@@ -579,6 +585,10 @@ button.multiselect {
   height: 40px !important;
 }
 
+.morebuttonright {
+  margin-left: auto;
+}
+
 
 /* 
   * Buttons End here
@@ -663,6 +673,22 @@ table {
 /* 
   * Components
 */
+
+.quouteleft {
+  display: inline-block;
+  min-width: 180px;
+  background-color: #2983fe;
+  color: #fff;
+  font-size: 16px;
+}
+
+.quoteright {
+  display: inline-block;
+  min-width: 120px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
 
 .num2 {
   width: 96px;

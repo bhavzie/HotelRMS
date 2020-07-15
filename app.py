@@ -3699,12 +3699,13 @@ def showQuote(id):
     for t in temp2:
         result[t['date']] = []
 
-
+    totalRooms = 0
     for t in temp1:
         tArr = {}
         tArr['type'] = '1 Bed'
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
+        totalRooms += int(t['count'])
         result[t['date']].append(tArr)
     
     for t in temp2:
@@ -3712,6 +3713,7 @@ def showQuote(id):
         tArr['type'] = '2 Bed'
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
+        totalRooms += int(t['count'])
         result[t['date']].append(tArr)
 
     dateButtons = result.keys()
@@ -3741,12 +3743,14 @@ def showQuote(id):
             row2['type'] = 'foc'
             if data['foc1'] != '0':
                 row1['count'] = data['foc1']
+                totalRooms += int(data['foc1'])
                 row1['occupancy'] = 'Single'
                 row1['ratePerRoom'] = "-"
                 row1['total'] = "-"
                 secondresult[key].append(row1)
             if data['foc2'] != '0':
                 row2['count'] = data['foc2']
+                totalRooms += int(data['foc1'])
                 row2['occupancy'] = 'Double'
                 row2['ratePerRoom'] = "-"
                 row2['total'] = "-"
@@ -3880,6 +3884,13 @@ def showQuote(id):
                    data2['contract']])
     contract = cursor.fetchall()
 
+    cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
+    temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
+    x = temp1.split('-')
+    cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+    data2['cutoffDays'] = cutoff
+
+
     temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')
     x = temp1.split('-')
     data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
@@ -3904,7 +3915,8 @@ def showQuote(id):
     
     dateButtons = result.keys()
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline)
+
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
