@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="spread4">
+    {% if customer == False %}
     <div class='mb-5'>
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
@@ -61,6 +62,7 @@
             {% endif %}
         </div>
     </div>
+    {% endif %}
     <div class = 'row mb-5'>
         <div class = 'col-sm-12 text-center'>
             {% if data2['status'] == 'QUOTED' %}

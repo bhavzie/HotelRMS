@@ -45,6 +45,15 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
+def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
+    msg = Message(
+        subject = subjectv,
+        sender = app.config['MAIL_SENDER'],
+        recipients = recipientsv.split())
+    link = url_for(linkv, id=tokenv, _external=True)
+    msg.body = bodyv + ' ' + link
+    mail.send(msg)
+
 def sendMail2(subjectv, recipientsv, bodyv, senderv):
     msg = Message(
         subject = subjectv,
@@ -2236,7 +2245,7 @@ def reset():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    #reset()
+    reset()
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
@@ -3517,8 +3526,6 @@ def showRequest1():
 
 
     # get right side values
-    print(result)
-    print(dates)
 
     if (mmp == 0):
         flash('No Rate Grid available (No OCC applicable as discount grid for this date range is not set)!', 'danger')
@@ -3608,6 +3615,20 @@ def requestProcessQuote():
     ])
 
     mysql.connection.commit()
+    cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+    createdFor = cursor.fetchall()
+    createdFor = createdFor[0]['createdFor']
+
+    token = generateConfirmationToken(inp['requestId'])
+    sendMailQ(
+        subjectv = 'Quotation',
+        recipientsv=createdFor,
+        linkv = 'showQuoteEmail',
+        tokenv = token,
+        bodyv = 'View Quotation',
+        senderv = 'koolbhavya.epic@gmail.com'
+    )
+
 
     flash('The request has been quoted', 'success')
     return ('', 204)
@@ -3916,7 +3937,316 @@ def showQuote(id):
     dateButtons = result.keys()
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = False)
+
+
+@app.route('/showQuoteEmail/<id>', methods = ['GET', 'POST'])
+def showQuoteEmail(id):
+    id = confirmToken(id)
+    if (id == False):
+        flash('Unverified', 'danger')
+        return render_template('login.html', title = 'Login')
+    cursor = mysql.connection.cursor()
+
+    cursor.execute('SELECT * From request where id = %s', [id])
+    data = cursor.fetchall()
+    data = data[0]
+
+    data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
+    string = ''
+    v = data['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            data['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            data['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            data['paymentTerms'] = 'Prior To Arrival'
+
+    string = ''
+    v = data['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    data['formPayment'] = string
+
+    if data['comments'].isspace():
+        data['comments'] = ''
+
+    responseId = data['id'] + "R"
+    cursor.execute(
+        'SELECT * From response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+    data2 = cursor.fetchall()
+    data2 = data2[0]
+    negcheck = data2['negotiable']
+    if negcheck == 0:
+        negcheck = False
+    else:
+        negcheck = True
+
+    string = ''
+    v = data2['formPayment']
+    if v != None:
+        if v.count('cq') > 0:
+            string += '(Cheque),'
+        if v.count('bt') > 0:
+            string += ' (Bank Transfer),'
+        if v.count('cc') > 0:
+            string += '(Credit Card)'
+
+    data2['formPayment'] = string
+
+    string = ''
+    v = data2['paymentTerms']
+    if v != None:
+        if v.count('pc') > 0:
+            string = 'Post Checkout'
+            data2['paymentTerms'] = string
+        elif v.count('ac') > 0:
+            data2['paymentTerms'] = 'At Checkout'
+        elif v.count('poa') > 0:
+            data2['paymentTerms'] = 'Prior To Arrival'
+    
+    cursor.execute(
+        'SELECT * From responseAvg where responseId = %s  order by submittedOn desc limit 1', [responseId])
+    data3 = cursor.fetchall()
+    data3 = data3[0]
+
+    result = {}
+    cursor.execute('SELECT * From request1Bed where id = %s', [id])
+    temp1 = cursor.fetchall()
+    for t in temp1:
+        result[t['date']] = []
+
+    cursor.execute('SELECT * From request2Bed where id = %s', [id])
+    temp2 = cursor.fetchall()
+    for t in temp2:
+        result[t['date']] = []
+
+    totalRooms = 0
+    for t in temp1:
+        tArr = {}
+        tArr['type'] = '1 Bed'
+        tArr['occupancy'] = t['occupancy']
+        tArr['count'] = t['count']
+        totalRooms += int(t['count'])
+        result[t['date']].append(tArr)
+    
+    for t in temp2:
+        tArr = {}
+        tArr['type'] = '2 Bed'
+        tArr['occupancy'] = t['occupancy']
+        tArr['count'] = t['count']
+        totalRooms += int(t['count'])
+        result[t['date']].append(tArr)
+
+    dateButtons = result.keys()
+    
+    secondresult = result
+    for r,v in secondresult.items():
+        for row in v:
+            type1 = row['type'].split(' ')[0]
+            occupancy = row['occupancy'].lower()
+            count = row['count']
+            if data['status'] == statusval8:
+                row['ratePerRoom'] = "-"
+                row['total'] = "-"
+            else:
+                search = occupancy + type1
+                query = "SELECT {} from responseAvg where responseId = %s".format(search)
+                cursor.execute(query, [responseId])
+                sv = cursor.fetchall()
+                row['ratePerRoom'] = sv[0][search]
+                row['total'] = float(row['ratePerRoom']) * int(row['count'])
+
+    if data['foc'] != 0:
+        for key in secondresult:
+            row1 = {}
+            row2 = {}
+            row1['type'] = 'foc'
+            row2['type'] = 'foc'
+            if data['foc1'] != '0':
+                row1['count'] = data['foc1']
+                totalRooms += int(data['foc1'])
+                row1['occupancy'] = 'Single'
+                row1['ratePerRoom'] = "-"
+                row1['total'] = "-"
+                secondresult[key].append(row1)
+            if data['foc2'] != '0':
+                row2['count'] = data['foc2']
+                totalRooms += int(data['foc1'])
+                row2['occupancy'] = 'Double'
+                row2['ratePerRoom'] = "-"
+                row2['total'] = "-"
+                secondresult[key].append(row2)
+
+
+    data5 = []
+    if data2['status'] == statusval4:
+        cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
+        data5 = cursor.fetchall()
+        data5 = data5[0]
+        temp1 = data5['time'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data5['time'] = x[2] + " " + x[1] + ", " + x[0]
+        
+    
+    data6 = []
+    if (data2['status'] == statusval5 or data2['status'] == statusval8):
+        cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
+        data6 = cursor.fetchall()
+        data6 = data6[0]
+        temp1 = data6['time'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data6['time'] = x[2] + " " + x[1] + ", " + x[0]
+
+    data9 = []
+    if (data2['status'] == statusval10):
+        cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+        data9 = cursor.fetchall()
+        data9 = data9[0]
+        temp1 = data9['submittedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data9['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+
+    data10 = []
+    if (data2['status'] == statusval11):
+        cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
+        data10 = cursor.fetchall()
+        data10 = data10[0]
+        temp1 = data10['submittedOn'].strftime('%y-%b-%d')
+        x = temp1.split('-')
+        data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+
+
+
+    declined = False
+    declinedMsg = ""
+    endline = 0
+    if (data['status'] == statusval2):
+        endline = data2['expiryTime']
+        if (endline != None):
+            today = datetime.datetime.now()
+            if (today > endline):
+                cursor.execute(
+                    'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
+                cursor.execute(
+                                'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                email = session['email']
+                now = datetime.datetime.utcnow()
+                prevresponse = cursor.fetchall()
+
+                if len(prevresponse) != 0:
+                    prevresponse = prevresponse[0]
+                    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                        prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
+                            'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
+                        prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
+                            'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
+                        statusval9, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
+                        prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                    ])
+
+                    cursor.execute(
+                        'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+                    prevAvg = cursor.fetchall()
+                    if len(prevAvg) != 0:
+                        prevAvg = prevAvg[0]
+                        cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                            prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
+                                'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                        ])
+
+                    cursor.execute(
+                        'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                    submittedOn = cursor.fetchall()
+                    cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
+                                [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+
+                    prevDaywise = cursor.fetchall()
+                    if len(prevDaywise) != 0:
+                        for p in prevDaywise:
+                            cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                                p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
+                                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            ])        
+                
+                    cursor.execute(
+                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])              
+                mysql.connection.commit()
+                declined = True
+                declinedMsg = "Time limit expired"
+                data['status'] = statusval9
+                data2['status'] = statusval9
+        
+
+            temp1 = endline.strftime('%y-%b-%d, %H:%M:%S')
+            x = temp1.split('-')
+            endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+
+
+    cursor.execute('select count from settingsNegotiation')
+    count = cursor.fetchall()
+    if len(count) != 0:
+        count = count[0]['count']
+    else:
+        count = 100 # no hard limit so
+    cursor.execute('SELECT * from response where responseId = %s and status = %s', [responseId, statusval3])
+    negoTime = cursor.fetchall()
+    negoTimes = len(negoTime)
+    nego = False
+    negoInformation = {}
+    canNegotiate = False
+    if (int(negoTimes) <= int(count)):
+        canNegotiate = True
+    negoInformation['expectedFare'] = data2['expectedFare']
+    negoInformation['reason'] = data2['negotiationReason']
+
+    canNegotiate = canNegotiate and negcheck
+
+    cursor.execute('SELECT contract, id from contract where id = %s', [
+                   data2['contract']])
+    contract = cursor.fetchall()
+
+    cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
+    temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
+    x = temp1.split('-')
+    cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+    data2['cutoffDays'] = cutoff
+
+
+    temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')
+    x = temp1.split('-')
+    data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+
+
+
+    temp1 = data['checkIn'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    data['checkIn'] = x[2] + " " + x[1] + ", " + x[0]
+
+    temp1 = data['checkOut'].strftime('%y-%b-%d')
+    x = temp1.split('-')
+    data['checkOut'] = x[2] + " " + x[1] + ", " + x[0]
+    
+    for d in list(dateButtons):
+        y = d
+        temp1 = d.strftime('%Y-%b-%d-%A')
+        x = temp1.split('-')
+        d = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
+        result[d] = result[y]
+        del result[y]
+    
+    dateButtons = result.keys()
+
+
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = True)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -4234,7 +4564,6 @@ def DeleteRequest2():
     return ('', 204)
 
 @app.route('/NegotiateRequest', methods = ['GET', 'POST'])
-@is_logged_in
 def NegotiateRequest():
     inp = request.json
 
@@ -4248,7 +4577,14 @@ def NegotiateRequest():
 
     cursor.execute(
         'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
-    email = session['email']
+
+    try:
+        email = session.get('email')
+    except:
+        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        createdFor = cursor.fetchall()
+        createdFor = createdFor[0]['createdFor']
+        email = createdFor
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
 
@@ -4293,13 +4629,19 @@ def NegotiateRequest():
     return ('', 204)
 
 @app.route('/AcceptRequest', methods = ['GET', 'POST'])
-@is_logged_in
 def AcceptRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
     cursor.execute(
         'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
-    email = session['email']
+    try:
+        email = session.get('email')
+    except:
+        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        createdFor = cursor.fetchall()
+        createdFor = createdFor[0]['createdFor']
+        email = createdFor
+
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
 
@@ -4369,7 +4711,6 @@ def AcceptRequest():
 
 
 @app.route('/DeclineRequest', methods = ['GET', 'POST'])
-@is_logged_in
 def DeclineRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
@@ -4377,7 +4718,14 @@ def DeclineRequest():
     cursor.execute('UPDATE request set status = %s where id = %s', [statusval5, inp['id']])
     cursor.execute(
         'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
-    email = session['email']
+    
+    try:
+        email = session.get('email')
+    except:
+        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        createdFor = cursor.fetchall()
+        createdFor = createdFor[0]['createdFor']
+        email = createdFor
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
 
@@ -4578,8 +4926,6 @@ def requestHistory(id):
             temp1 = m.strftime('%y-%b-%d')
             x = temp1.split('-')
             z = x[2] + " " + x[1] + "," + x[0]
-            print(d)
-            print(z)
             d[z] = d[m]
             del d[m]
 
