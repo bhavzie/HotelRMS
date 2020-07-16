@@ -1,8 +1,9 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="spread4">
+    <div class = 'container'>
     {% if customer == False %}
-    <div class='mb-5'>
+    <div class='mb-2'>
         <div class='mb-3'>
             <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
             <span class="btn otherbtn">Status : {{ data2['status'] }} </span>
@@ -63,7 +64,7 @@
         </div>
     </div>
     {% endif %}
-    <div class = 'row mb-5'>
+    <div class = 'row mb-2'>
         <div class = 'col-sm-12 text-center'>
             {% if data2['status'] == 'QUOTED' %}
             <h4><span class='badge badge-danger'>
@@ -72,55 +73,61 @@
             {% endif %}
         </div>
     </div>
-    <div class = 'jumbotron jumbotron-fluid mb-5' style="padding-bottom: 0%; padding-top: 0%;">
-        <div class = 'container-fluid'>
-            <div class = 'mb-2'>
-                <span class = 'quouteleft'>
-                    Request ID
-                </span>
-                <span class = 'quoteright'>
-                    {{ data['id'] }}
-                </span>
-            </div>
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                        Group Name
-                </span>
-                <span class='quoteright'>
-                    {{ data['groupName'] }}
-                </span>
-            </div>
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                       Check In.
-                </span>
-                <span class='quoteright'>
-                    {{ data['checkIn'] }}
-                </span>
-            </div>
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                        Nights
-                </span>
-                <span class='quoteright'>
-                    {{ data['nights'] }}
-                </span>
-            </div>
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                        Rooms
-                </span>
-                <span class='quoteright'>
-                    {{ totalRooms }}
-                </span>
-            </div>
-            <div style="display: flex;">
-                <button class='btn btn-info morebuttonright mr-2' onclick="viewreqdetails()">
-                    More ...
-                </button>
-            </div>
-            <div class = 'mt-5' id = 'moreReqDetails'>
+    <div class = 'jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
+        <div class = 'row container'>
+            <div class = 'col-sm-6'>
                 <div class = 'mb-2'>
+                    <span class = 'quouteleft'>
+                        Request ID
+                    </span>
+                    <span class = 'quoteright'>
+                        {{ data['id'] }}
+                    </span>
+                </div>
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        Group Name
+                    </span>
+                    <span class='quoteright'>
+                        {{ data['groupName'] }}
+                    </span>
+                </div>
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        Check In.
+                    </span>
+                    <span class='quoteright'>
+                        {{ data['checkIn'] }}
+                    </span>
+                </div>
+            </div>
+            <div class = 'col-sm-6'>
+                <div class='mr-2 mb-2'>
+                    <span class='quouteleft'>
+                        Nights
+                    </span>
+                    <span class='quoteright'>
+                        {{ data['nights'] }}
+                    </span>
+                </div>
+                <div class='mr-2'>
+                    <span class='quouteleft'>
+                        Rooms
+                    </span>
+                    <span class='quoteright'>
+                        {{ totalRooms }}
+                    </span>
+                </div>
+                <div  style = 'display: flex;'>
+                    <button class='btn btn-info morebuttonright mr-2' onclick="viewreqdetails()">
+                        More ...
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class = 'container'>
+            <div class='mt-3' id='moreReqDetails'>
+                <div class='mb-2'>
                     <span class='quouteleft'>
                         Requested By
                     </span>
@@ -133,7 +140,7 @@
                         Budget
                     </span>
                     <span class='quoteright'>
-                        {{ data['budget'] }}
+                        $ {{ data['budget'] }}
                     </span>
                 </div>
                 {% if data['formPayment'] %}
@@ -159,7 +166,7 @@
                 </div>
                 {% endif %}
                 {% if data['comments'] != '' %}
-                <div class='mb-5'>
+                <div class='mb-2'>
                     <span class='quouteleft'>
                         Comments
                     </span>
@@ -168,18 +175,17 @@
                     </span>
                 </div>
                 {% endif %}
-                <div class='mb-5'>
+                <div class='mb-2 mt-4'>
                     {% for b in dateButtons %}
                     <button type='button' class='btn dateButtons otherbtn {{b}}'>
                         {{ b }}
                     </button>
                     {% endfor %}
                 </div>
-                <div class='mb-5'>
+                <div class='mb-2'>
                     {% for key, value in result.items() %}
-                    <div class='mb-5 col-sm-6'>
-                        <table class='table table-bordered table-hover'  id="{{key}}">
-                            <caption>{{key}}</caption>
+                    <div class='mb-2 col-sm-6'>
+                        <table class='table table-bordered table-hover' id="{{key}}">
                             <thead class='table-header'>
                                 <tr>
                                     <th>
@@ -215,7 +221,7 @@
             </div>
         </div>
     </div>
-    <div class = 'row mb-5'>
+    <div class = 'row mb-2'>
         <div class = 'col-sm-12 text-center'>
             <h4>
                 <span class = 'badge badge-danger'>
@@ -224,126 +230,144 @@
             </h4>
         </div>
     </div>
-    <div class='jumbotron jumbotron-fluid mb-5' style="padding-bottom: 0%; padding-top: 0%;">
-        <div class = 'container-fluid'>
-            {% if data3['single1'] != '0'%}
-            <div class = 'mb-2' style="display: flex;">
-                <div>
-                    <span class = 'quouteleft'>
-                        1 Bed (SGL)
+    <div class='jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
+        <div class = 'row container'>
+            <div class = 'col-sm-6'>
+                {% if data3['single1'] != '0'%} 
+                <div class = 'mb-2' style="display: flex;">
+                    <div>
+                        <span class = 'quouteleft'>
+                            1 Bed (SGL)
+                        </span>
+                        <span  class='quoteright'>
+                            ${{ data3['single1'] }} (Room/Night) + Tax
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+                {% if data3['double1'] != '0'%}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        1 Bed (DBL)
                     </span>
                     <span  class='quoteright'>
-                        ${{ data3['single1'] }} (Room/Night) + Tax
+                        ${{ data3['double1'] }} (Room/Night) + Tax
                     </span>
                 </div>
-                <div style="margin-left: auto;" class = 'mr-2'>
-                    <span class = 'quouteleft'>
+                {% endif %}
+                {% if data3['triple1']!= '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        1 Bed (TRP)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['triple1'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+                {% if data3['quad1'] != '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        1 Bed (QD)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['quad1'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+                {% if data3['single2'] != '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        2 Bed (SGL)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['single2'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+                {% if data3['double2']!= '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        2 Bed (DBL)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['double2'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+                {% if data3['triple2'] != '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        2 Bed (TRP)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['triple2'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+                {% if data3['quad2'] != '0' %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        2 Bed (QD)
+                    </span>
+                    <span class='quoteright'>
+                        ${{ data3['quad2'] }} (Room/Night) + Tax
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            <div class = 'col-sm-6'>
+                <div class='mb-2'>
+                    <span class='quouteleft'>
                         Total
                     </span>
-                    <span class = 'quoteright'>
-                        $ {{ data2['totalQuote'] }}.00 + Tax
+                    <span class='quoteright'>
+                        ${{ data2['totalQuote'] }} (Room/Night) + Tax
                     </span>
                 </div>
-            </div>
-            {% endif %}
-            {% if data3['double1'] != '0'%}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    1 Bed (DBL)
-                </span>
-                <span  class='quoteright'>
-                    ${{ data3['double1'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['triple1']!= '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    1 Bed (TRP)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['triple1'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['quad1'] != '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    1 Bed (QD)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['quad1'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['single2'] != '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    2 Bed (SGL)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['single2'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['double2']!= '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    2 Bed (DBL)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['double2'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['triple2'] != '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    2 Bed (TRP)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['triple2'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
-            {% if data3['quad2'] != '0' %}
-            <div class='mb-2'>
-                <span class='quouteleft'>
-                    2 Bed (QD)
-                </span>
-                <span class='quoteright'>
-                    ${{ data3['quad2'] }} (Room/Night) + Tax
-                </span>
-            </div>
-            {% endif %}
+                <div class='mb-2'>
+                    <span class='quouteleft'>
+                        Average Rate
+                    </span>
+                    <span class='quoteright'>
+                        ${{ avgRate }} (Room/Night) + Tax
+                    </span>
+                </div>
             <div style="display: flex;">
                 <button class='btn btn-info morebuttonright mr-2' onclick="viewresdetails()">
                     More ...
                 </button>
             </div>
-            <div class = 'mt-2' id = 'moreResDetails'>
+            </div>
+        </div>
+        <div class = 'container'>
+            <div class='mt-2' id='moreResDetails'>
                 <div class='mb-5'>
-                    Last Responded On : {{ data2['submittedOn'] }} By
-                    {{ data2['submittedBy'] }}
+                    <span class='quouteleft'>
+                        Last Responded On
+                    </span>
+                    <span class='quoteright'>
+                        {{ data2['submittedOn'] }} By
+                        {{ data2['submittedBy'] }}
+                    </span>
                 </div>
                 {% if data2['comments'] != '' %}
                 <div class='mb-3'>
                     <span>Comments : {{ data2['comments'] }}</span>
                 </div>
                 {% endif %}
-                <div class = 'col-sm-12'>
-                    <div class='mb-5'>
+                <div class='col-sm-12'>
+                    <div class='mb-2 mt-4'>
                         {% for b in dateButtons %}
                         <button type='button' class='btn  otherbtn' id='{{b}}' onclick="showTable(event)">
                             {{ b }}
                         </button>
                         {% endfor %}
                     </div>
-                    <div class='mb-5 mt-5'>
+                    <div class='mb-2'>
                         {% for key, value in secondresult.items() %}
                         <div class='mb-5 col-sm-9'>
                             <table class='table table-bordered table-hover {{key}}'>
-                                <caption>{{key}}</caption>
                                 <thead class='table-header'>
                                     <tr>
                                         <th>
@@ -392,7 +416,7 @@
             </div>
         </div>
     </div>
-    <div class='row mb-5'>
+    <div class='row mb-2'>
         <div class='col-sm-12 text-center'>
             <h4>
                 <span class='badge badge-danger'>
@@ -401,8 +425,8 @@
             </h4>
         </div>
     </div>
-    <div class = 'jumbotron jumbotron-fluid mb-5' style="padding-bottom: 0%; padding-top: 0%;">
-        <div class = 'container-fluid'>
+    <div class = 'jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
+        <div class = 'container'>
             <div class = 'mb-2 fquote'>
                 <div style="flex:1">
                     <span class='quouteleft'>
@@ -448,8 +472,8 @@
             </div>
         </div>
     </div>
-    <div class='jumbotron jumbotron-fluid mb-5' style="padding-bottom: 0%; padding-top: 0%;">
-        <div class='container-fluid'>
+    <div class='jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
+        <div class='container'>
             <div class='mt-5'>
                 {{ contract[0]['contract'] }}
             </div>
@@ -457,14 +481,14 @@
     </div>
 
     {% if data['status'] == 'EXPIRED' %}
-    <div class = 'row mb-5'>
+    <div class = 'row mb-2'>
         <div class = 'col-sm-12 mt-3 text-center'>
         <button type = 'submit' class = 'btn action' onclick = 'resubmit(event)'>Resubmit</button>
         </div>
     </div>
     {% endif %}
     {% if data['status'] == 'QUOTED'%}
-    <div class = 'row mb-5'>
+    <div class = 'row mb-2'>
         <div class = 'col-sm-12'>
             <div class = 'mt-5 mb-5'>
                 <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract
@@ -512,6 +536,7 @@
         </div>
     </div>
     {% endif %}
+    </div>
 </div>
 
 

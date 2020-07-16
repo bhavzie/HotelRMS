@@ -2245,7 +2245,7 @@ def reset():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    reset()
+    #reset()
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
@@ -3936,8 +3936,10 @@ def showQuote(id):
     
     dateButtons = result.keys()
 
+    avgRate = int(data2['totalQuote']) / int(totalRooms)
+    avgRate = round(avgRate, 2)
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = False)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = False, avgRate = avgRate)
 
 
 @app.route('/showQuoteEmail/<id>', methods = ['GET', 'POST'])
