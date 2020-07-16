@@ -186,6 +186,9 @@
                     {% for key, value in result.items() %}
                     <div class='mb-2 col-sm-6'>
                         <table class='table table-bordered table-hover' id="{{key}}">
+                            <caption>
+                                {{ key }}
+                            </caption>
                             <thead class='table-header'>
                                 <tr>
                                     <th>
@@ -368,6 +371,9 @@
                         {% for key, value in secondresult.items() %}
                         <div class='mb-5 col-sm-9'>
                             <table class='table table-bordered table-hover {{key}}'>
+                                <caption>
+                                    {{ key }}
+                                </caption>
                                 <thead class='table-header'>
                                     <tr>
                                         <th>
