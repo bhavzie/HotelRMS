@@ -5,7 +5,7 @@
     {% if customer == False %}
     <div class='mb-2'>
         <div class='mb-3'>
-            <a class='btn btn-primary' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
+            <a class='btn linkbtn' href='{{ url_for("home2")  }}'>Back <i class="fas fa-backward"></i></a>
             <span class="btn otherbtn">Status : {{ data2['status'] }} </span>
             <div class = 'mb-5'>
             {% if data['status'] == 'ACCEPTED' %}
@@ -177,7 +177,7 @@
                 {% endif %}
                 <div class='mb-2 mt-4'>
                     {% for b in dateButtons %}
-                    <button type='button' class='btn dateButtons otherbtn {{b}}'>
+                    <button type='button' class='btn dateButtons otherbtn {{b}}' onclick="showTable2(event)">
                         {{ b }}
                     </button>
                     {% endfor %}
@@ -185,7 +185,7 @@
                 <div class='mb-2'>
                     {% for key, value in result.items() %}
                     <div class='mb-2 col-sm-6'>
-                        <table class='table table-bordered table-hover' id="{{key}}">
+                        <table class='table table-bordered table-hover' id="{{key}}" style="display:none;">
                             <caption>
                                 {{ key }}
                             </caption>
@@ -369,8 +369,8 @@
                     </div>
                     <div class='mb-2'>
                         {% for key, value in secondresult.items() %}
-                        <div class='mb-5 col-sm-9'>
-                            <table class='table table-bordered table-hover {{key}}'>
+                        <div class='col-sm-9'>
+                            <table class='table table-bordered table-hover {{key}}' style="display:none; ">
                                 <caption>
                                     {{ key }}
                                 </caption>
@@ -478,7 +478,7 @@
             </div>
         </div>
     </div>
-    <div class='jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
+    <div class='jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%; overflow: auto; height: 300px;">
         <div class='container'>
             <div class='mt-5'>
                 {{ contract[0]['contract'] }}
@@ -497,7 +497,7 @@
     <div class = 'row mb-2'>
         <div class = 'col-sm-12'>
             <div class = 'mt-5 mb-5'>
-                <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I agree to the terms and conditions of the Contract
+                <input type = 'checkbox' id = 'checker' onchange = 'check(event)'> I /We agree to the terms and conditions of the Contract
             </div>  
             <div id='msg'></div>
             <div class='form-group row' id = 'dem'>
@@ -557,7 +557,23 @@
         $("#moreResDetails").hide();
 
         const db = [...document.getElementsByClassName('dateButtons')]
-        db.forEach(db => {
+        db.forEach((db, index) => {
+
+            if (index == 0) {
+                const cn = db.classList[3] + " " + db.classList[4] + " " + db.classList[5] + " " + db.classList[6]
+                const table = document.getElementById(cn)
+                table.style.display = 'table';
+
+                let checkId = cn.split(' : ')[1].split(" ")[0]
+                const tables = [...document.getElementsByTagName('table')]
+                tables.forEach(t => {
+                    if (t.classList.contains(checkId)) {
+                        t.style.display = 'table';
+                    }
+                })
+            
+            }
+
 
             db.addEventListener('click', () => {
 
@@ -567,7 +583,6 @@
                 if (table.style.display == 'none') {
                     table.style.display = 'table'
                     const db2 = [...document.getElementsByClassName('dateButtons')]
-
                 } else {
                     table.style.display = 'none'
                 }
@@ -626,10 +641,44 @@
                 }
             }
         })
+
+        
+
+        const div = e.target.parentElement.parentElement;
+        const tables = [...div.getElementsByTagName('table')]
+
+        let checkId = id.split(' : ')[1].split(" ")[0]
+
+        tables.forEach(t => {
+            if (!t.classList.contains(checkId)) {
+                t.style.display = 'none';
+            }
+        })
+
     }
 
+     function showTable2(e) {
+        
+        const cn = e.target.classList[3] + " " + e.target.classList[4] + " " + e.target.classList[5] + " " + e.target.classList[6]
+        const table = document.getElementById(cn)
 
-    //continue here
+
+
+        const div = e.target.parentElement.parentElement;
+        const tables = [...div.getElementsByTagName('table')]
+
+
+        tables.forEach(t => {
+            if (t.id != cn) {
+                t.style.display = 'none';
+            }
+        })
+
+    }
+
+    
+
+
     function accept() {
         result = {}
         result['id'] = "{{ data['id'] }}"

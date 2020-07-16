@@ -3,6 +3,11 @@
     <div class="spread4">
         <div class = 'row'>
             <div class = 'col-9' style = 'border-right: 1px solid black;'>
+                <div class='mb-4'>
+                    <a class='btn linkbtn mr-2' href='{{ url_for("showRequest", token = data["id"]) }}'>
+                        Back <i class="fas fa-backward"></i>
+                    </a>
+                </div>
                 <div class = 'row'>
                     <div class = 'col-5'>
                         <div class = 'mb-4'>
@@ -66,9 +71,6 @@
                 </div>
                 <hr>
                 <div class = 'row mb-2'>
-                    <a class='btn action mr-2' href='{{ url_for("showRequest", token = data["id"]) }}'>
-                        Back
-                    </a>
                     <button class = 'btn action mr-2' type = 'button'>Duplicate</button>
                     <a class='btn action mr-2' href='{{ url_for("requestHistory", id = data["id"]) }}'>History</a>
                     <button class = 'btn action mr-2' type = 'button' onclick = 'edit()'>Edit</button>
