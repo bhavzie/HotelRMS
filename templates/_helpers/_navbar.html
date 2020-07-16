@@ -90,10 +90,17 @@
                         {% endif %}
                         {% if session.menuParams['strategyForecast'] %}
                             <li>
-                                <a href="#">
+                                <a href="/strategyForecast">
                                     Forecast
                                 </a>
                             </li>
+                        {% endif %}
+                        {% if session.menuParams['strategyEvaluation'] %}
+                        <li>
+                            <a href="/strategyEvaluation">
+                                Evaluation
+                            </a>
+                        </li>
                         {% endif %}
                     </ul>
                 </li>
@@ -392,7 +399,12 @@
                             <li><a href="#">Map</a></li>
                         </ul>
                     </li>
-                    <li><a href = '#'>Forecast</a></li>
+                    <li><a href = '/strategyForecast'>Forecast</a></li>
+                    <li>
+                        <a href="/strategyEvaluation">
+                            Evaluation
+                        </a>
+                    </li>
                 </ul>
             </li>
         

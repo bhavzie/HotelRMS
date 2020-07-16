@@ -455,6 +455,7 @@ def login():
                     'helpFaq': True,
                     'helpTicketing': True,
                     'analyticsStdReport': True,
+                    'strategyEvaluation': True,
                     }
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
@@ -546,7 +547,7 @@ def login():
                         menuParams['usersHotelEdit'] = getValC2(
                                 d['usersHotelEdit'])
                         menuParams['analyticsStdReport'] = getValC2(d['analyticsStdReport'])        
-    
+                        menuParams['strategyEvaluation'] = getValC2(d['strategyEvaluation'])   
 
                     session['menuParams'] = menuParams
 
@@ -1436,11 +1437,12 @@ def submiteditusertype():
     usersHotelEdit = getValC(request.form.get('usersHotelEdit'))
     userType = request.form['userType']
     analyticsStdReport = getValC(request.form['analyticsStdReport'])
+    strategyEvaluation = getValC(request.form['strategyEvaluation'])
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s WHERE userType = %s', [
-                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, userType])
+    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s, strategyEvaluation = %s WHERE userType = %s', [
+                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation, userType])
 
 
     mysql.connection.commit()
@@ -6323,6 +6325,18 @@ def resubmitRequest():
     flash('Your Request has been entered', 'success')
     return ('', 204)
     
+# Req module ended
+
+
+@app.route('/strategyForecast', methods = ['GET', 'POST'])
+def strategyForecast():
+    return render_template('strategy/forecast.html')
+
+
+@app.route('/strategyEvaluation', methods = ['GET', 'POST'])
+def strategyEvaluation():
+    return render_template('strategy/evaluation.html')
+
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)
 
