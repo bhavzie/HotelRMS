@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="spread4">
-    <div class = 'container'>
+<div class="container-login">
+    <div class = 'wrap-login container'>
     {% if customer == False %}
     <div class='mb-2'>
         <div class='mb-3'>
@@ -67,7 +67,7 @@
     <div class = 'row mb-2'>
         <div class = 'col-sm-12 text-center'>
             {% if data2['status'] == 'QUOTED' %}
-            <h4><span class='badge badge-danger'>
+            <h4><span class='badge badge-danger1'>
                 Quote Expires On  {{ endline }}
             </span></h4>
             {% endif %}
@@ -227,7 +227,7 @@
     <div class = 'row mb-2'>
         <div class = 'col-sm-12 text-center'>
             <h4>
-                <span class = 'badge badge-danger'>
+                <span class = 'badge badge-danger1'>
                     Rooms and/or rates are subject to availability
                 </span>
             </h4>
@@ -425,14 +425,14 @@
     <div class='row mb-2'>
         <div class='col-sm-12 text-center'>
             <h4>
-                <span class='badge badge-danger'>
+                <span class='badge badge-danger1'>
                     Terms & Conditions
                 </span>
             </h4>
         </div>
     </div>
     <div class = 'jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%;">
-        <div class = 'container'>
+        <div class = 'container mb-2'>
             <div class = 'mb-2 fquote'>
                 <div style="flex:1">
                     <span class='quouteleft'>
@@ -451,7 +451,7 @@
                     </span>
                 </div>
             </div>
-            <div class='mb-2 fquote'>
+            <div class='fquote'>
                 <div style="flex:1">
                     <span class='quouteleft'>
                         Payment Terms
@@ -477,17 +477,14 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class='jumbotron  mb-2' style="padding-bottom: 0%; padding-top: 0%; overflow: auto; height: 300px;">
-        <div class='container'>
-            <div class='mt-5'>
+        <div class='container' style="padding-bottom: 0%; padding-top: 0%; overflow: auto; height: 300px;">
+            <div class='mt-2'>
                 {% if contract|length > 0 %}
                 {{ contract[0]['contract'] }}
                 {% endif %}
             </div>
         </div>
     </div>
-
     {% if data['status'] == 'EXPIRED' %}
     <div class = 'row mb-2'>
         <div class = 'col-sm-12 mt-3 text-center'>

@@ -82,15 +82,15 @@
                         <tbody>
                             <tr>
                                 <td>
-                            <input type="text" placeholder="Check-In" class=" start-date  mb-2 "
-                                id='startDateG' required>
+                            <input type="button" class=" start-date form-control mb-2 "
+                                id='startDateG' required style="display: inline-block;">
                                 </td>
                                 <td>
-                            <input type="text" placeholder="Check-Out" class=" end-date  mb-2"
-                                id='endDateG' required>
+                            <input type="button" class=" end-date form-control mb-2"
+                                id='endDateG' required style="display: inline-block;">
                                 </td>
                                 <td>
-                                    <input type='text' class = 'num2' id='nights' readonly>
+                                    <input type='text' class = 'form-control' id='nights' readonly>
                                 </td>
                             </tr>
                         </tbody>
@@ -204,6 +204,53 @@
 <script src="/static/js/jquery.js"></script>
 <script>
 
+      $(document).ready(function () {
+            var $startDate = $('#startDateG');
+            var $endDate = $('#endDateG');
+
+            $startDate.datepicker({
+                autoHide: true,
+                dateFormat: "d M, y",
+                minDate: 0,
+                changeMonth: true,
+                changeYear: true,
+                //showOn: "both",
+                //buttonText: "<i class='fa fa-calendar'></i>"
+            });
+            $endDate.datepicker({
+                autoHide: true,
+                dateFormat: "d M, y",
+                minDate: 0,
+                changeMonth: true,
+                changeYear: true, 
+                //showOn: "both",
+                //buttonText: "<i class='fa fa-calendar'></i>"
+            });
+
+            $startDate.on('change', function () {
+                $endDate.datepicker('destroy')
+                $endDate.datepicker({
+                    autoHide: true,
+                    dateFormat: "d M, y",
+                    minDate: $startDate.datepicker('getDate'),
+                    changeMonth: true,
+                    changeYear: true
+                });
+                calcNights();
+            });
+
+            $endDate.on('change', function () {
+                calcNights();
+            })
+
+            $('.payment').multiselect({
+                nonSelectedText: '-',
+                numberDisplayed: 0,
+                buttonWidth: '200px'
+            })
+
+        });
+
     function notr(event) {
         const id = event.target.id
         if (id == 'foc1') {
@@ -312,7 +359,7 @@
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle fa-2x"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-5'>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
                                                <i class="fas fa-minus-circle fa-2x"></i>
                                             </button>
                                         </td>
@@ -484,7 +531,7 @@
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle fa-2x"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-5'>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
                                                <i class="fas fa-minus-circle fa-2x"></i>
                                             </button>
                                         </td>
@@ -516,10 +563,20 @@
 
                 if (i == 0) {
                     const butt2 = document.createElement('button')
-                    butt2.classList.add('btn', 'action', 'aple')
+                    butt2.classList.add('btn', 'action', 'aple', 'ml-2')
+                    const input = document.createElement('input')
+                    input.setAttribute('type', 'checkbox')
+                    input.classList.add('ml-5')
+                    input.id = 'ApplyC'
                     butt2.id = 'ApplyAll'
-                    let width = "200px";
-                    butt2.style.marginLeft = width;
+                    butt2.disabled = true
+                    input.addEventListener('change', (e) => {
+                        if (e.target.checked == true) {
+                            butt2.disabled = false
+                        } else {
+                            butt2.disabled = true
+                        }
+                    })
                     butt2.type = 'button'
                     butt2.innerHTML = 'Apply All'
                     butt.style.display = 'inline-block';
@@ -532,7 +589,7 @@
                             bel.parentNode.replaceChild(copy[0], bel);
                         }
                     })
-
+                    tb5.append(input)
                     tb5.appendChild(butt2)
                 } else {
                     butt.click()
@@ -609,7 +666,7 @@
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
                                                <i class="fas fa-minus-circle"></i>
                                             </button>
                                         </td>
@@ -716,7 +773,7 @@
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
                                                 <i class="fas fa-plus-circle"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
                                                <i class="fas fa-minus-circle"></i>
                                             </button>
                                         </td>
@@ -761,49 +818,6 @@
             }
         }
     }
-
-     $(document).ready(function () {
-            var $startDate = $('.start-date');
-            var $endDate = $('.end-date');
-
-            $startDate.datepicker({
-                autoHide: true,
-                dateFormat: "d M, y",
-                minDate: 0,
-                changeMonth: true,
-                changeYear: true,
-            });
-            $endDate.datepicker({
-                autoHide: true,
-                dateFormat: "d M, y",
-                minDate: 0,
-                changeMonth: true,
-                changeYear: true
-            });
-
-            $startDate.on('change', function () {
-                $endDate.datepicker('destroy')
-                $endDate.datepicker({
-                    autoHide: true,
-                    dateFormat: "d M, y",
-                    minDate: $startDate.datepicker('getDate'),
-                    changeMonth: true,
-                    changeYear: true
-                });
-                calcNights();
-            });
-
-            $endDate.on('change', function() {
-                calcNights();
-            })
-
-            $('.payment').multiselect({
-                nonSelectedText: '-',
-                numberDisplayed: 0,
-                buttonWidth: '200px'
-            })
-
-     });
 
       function parseDate(x) {
             return x.split("-").reverse().join("/");
