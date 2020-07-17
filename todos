@@ -4,7 +4,7 @@ date table
 
 
 email
-foc
+foc, iata
 
 
 1366 X 666
@@ -12,4 +12,5 @@ foc
 //
 
 
-apply all, checkin checkout, process page
+
+process page
