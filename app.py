@@ -3907,7 +3907,7 @@ def showQuote(id):
                    data2['contract']])
     contract = cursor.fetchall()
 
-    if (data2['cutoffDays'] != None):
+    if (data2['cutoffDays'] != None or data2['cutoffDays'] == ''):
         cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
         temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
         x = temp1.split('-')
