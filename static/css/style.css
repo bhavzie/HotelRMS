@@ -684,11 +684,28 @@ table {
   font-size: 16px;
 }
 
+
 .quoteright {
   display: inline-block;
   min-width: 120px;
   font-size: 16px;
   margin-left: 10px;
+}
+
+.rleft {
+  height: 34px !important;
+  width: 50% !important;
+}
+
+.rright {
+  display: inline-block;
+  padding: 0 !important;
+}
+
+.multiselect.dropdown-toggle.btn.btn-default > div.restricted {
+    margin-left: 50px;
+    max-width: 100px;
+    overflow: hidden;
 }
 
 

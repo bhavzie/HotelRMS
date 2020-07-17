@@ -3907,11 +3907,12 @@ def showQuote(id):
                    data2['contract']])
     contract = cursor.fetchall()
 
-    cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
-    temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
-    x = temp1.split('-')
-    cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
-    data2['cutoffDays'] = cutoff
+    if (data2['cutoffDays'] != None):
+        cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
+        temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
+        x = temp1.split('-')
+        cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+        data2['cutoffDays'] = cutoff
 
 
     temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')

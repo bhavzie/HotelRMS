@@ -1,21 +1,33 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="spread4">
-        <div class='loginH'>
-            <div class='text-center'>
-                <p>Create Adhoc Request</p>
-            </div>
-        </div>
+
         <small id='smallID' class='form-text text-muted mb-5'>
             Fields marked with * are mandatory.
         </small>
         <form action="" method="POST" onsubmit="aj(event)" id='formF'>
             <div class = 'mge'>
                 <div class = 'mge1'>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-2 col-form-label">Category*</label>
-                    <div class="col-sm-10">
-                        <select class='form-control text-center' id='category' required style = 'max-width: 60%;'>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Requested By*</label>
+                    <select class='col-sm-6 form-control text-center rright' id='createdFor' required style="width: 45%;">
+                        <option selected disabled>
+                            Customer ID
+                        </option>
+                        {% for user in users %}
+                        <option>
+                            {{ user['email'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Group Name*</label>
+                    <input type="text" class="col-sm-6 form-control rright" style='max-width: 45%;' required id='groupName'>
+                </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Category*</label>
+                        <select class='col-sm-6 form-control text-center rright' id='category' required style = 'max-width: 45%;'>
                             <option disabled selected>
                                 Category
                             </option>
@@ -56,28 +68,6 @@
                             Other
                         </option>
                         </select>
-                    </div>
-                </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-2 col-form-label">Group Name*</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" style = 'max-width: 50%;' required id = 'groupName'>
-                    </div>
-                </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-2 col-form-label">Customer ID*</label>
-                    <div class="col-sm-10">
-                        <select class='form-control text-center mb-5' id='createdFor' required style='max-width: 60%;'>
-                            <option selected disabled>
-                                Customer ID
-                            </option>
-                            {% for user in users %}
-                                <option>
-                                    {{ user['email'] }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
                 </div>
                 <div id='msg2'></div>
                 <div class = 'form-group mb-5 mt-5'>
@@ -111,116 +101,100 @@
                 </div>
                 </div>
                 <div class = 'mge2'>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-3 col-form-label">Commissionable<i class="fas fa-info-circle"></i></label>
-                    
-                    <div class = 'col-sm-1'>    
-                        <input type='checkbox' class = 'mt-2' id = 'ccom' onclick="ccomf()">
+                    <div class="form-group mb-5">
+                        <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Group Block</label>
+                        <i class="fas fa-info-circle"></i>
+                        <input type='checkbox' class='col-sm-2 rright mr-2' id='groupBlock'>
                     </div>
-                    <div class="col-sm-7">
-                        <input type="number" class="form-control" style='max-width: 50%;' disabled id = 'ccomn' required value = '' name = 'commissionable' placeholder="In Percentage">
-                    </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Commissionable</label>
+                    <i class="fas fa-info-circle"></i>
+                    <input type='checkbox' class='col-sm-2 rright mr-2' id='ccom' onclick="ccomf()">
+                    <input type="number" class="form-control rright" style='max-width: 15%;' disabled id='ccomn' required value=''
+                        name='commissionable'>
+                    <label class = 'ml-2'> % </label>
                 </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-3 col-form-label">Group Block<i class="fas fa-info-circle"></i></label>
-                    <div class='col-sm-1'>
-                        <input type='checkbox' class='mt-2' id = 'groupBlock'>
-                    </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Free of Cost</label>
+                    <i class="fas fa-info-circle"></i>
+                    <input type='checkbox' class='col-sm-2 rright mr-2' id='focc' onclick="foccf()" name='foc'>
+                    <table class="table table-bordered table-hover table-sm" id='tab4' style="display: inline-table; width: 35%;">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Room Type</th>
+                                <th style="width: 40%;">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1 Bed</td>
+                                <td>
+                                    <input type='number' class='form-control foccc' min='1' id='foc1' disabled required onchange="notr(event)">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2 Bed</td>
+                                <td>
+                                    <input type='number' class='form-control foccc' min='1' id='foc2' disabled required onchange="notr(event)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-3 col-form-label">FOC<i class="fas fa-info-circle"></i></label>
-                    <div class='col-sm-1'>
-                        <input type='checkbox' class='mt-2' id = 'focc' onclick="foccf()" name = 'foc'>
-                    </div>
-                    <div class = 'col-sm-8'>
-                        <table class="table table-bordered table-hover table-sm" id='tab4'>
-                            <thead class="table-header">
-                                <tr>
-                                    <th>Room Type</th>
-                                    <th>Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1 Bed</td>
-                                    <td>
-                                        <input type='number' class='num foccc' min='1' id='foc1' disabled required onchange="notr(event)">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2 Bed</td>
-                                    <td>
-                                        <input type='number' class='num foccc' min='1' id='foc2' disabled required onchange="notr(event)">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Budget*</label>
+                    <i class="fas fa-info-circle"></i>
+                    <span class="col-sm-2 ml-2">$</span>
+                    <input type="number" class="form-control rright mr-2" style='max-width: 15%; display: inline-block' required id = 'budget' min = '10'>
+                    <span>Rooms/Night</span>
                 </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-4 col-form-label">Budget*(excluding Taxes)<i class="fas fa-info-circle"></i></label>
-                    <div class="col-sm-6 input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">$</span>
-                        </div>
-                        <input type="number" class="form-control mr-3" style='max-width: 50%; display: inline-block' required id = 'budget' min = '10'>
-                        
-                        <span>Rooms/Night</span>
-                    </div>
+                <div class="form-group mb-5">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Form of Payment</label>
+                    <i class="fas fa-info-circle mr-5"></i>
+                    <select class='col-sm-2 form-control text-center payment rright mr-2' id='formPayment'  style='max-width: 45%;' multiple = 'multiple'>
+                        <option value = 'bt'>
+                            Bank Transfer
+                        </option>
+                        <option value = 'cq'>
+                            Cheque
+                        </option>
+                        <option value = 'cc'>
+                            Credit Card
+                        </option>
+                    </select>
                 </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-3 col-form-label">Form of Payment<i class="fas fa-info-circle"></i></label>
-                    <div class="col-sm-7">
-                        <select class='form-control text-center payment' id='formPayment'  style='max-width: 60%;' multiple = 'multiple'>
-                            <option value = 'bt'>
-                                Bank Transfer
-                            </option>
-                            <option value = 'cq'>
-                                Cheque
-                            </option>
-                            <option value = 'cc'>
-                                Credit Card
-                            </option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Payment Terms</label>
+                    <i class="fas fa-info-circle"></i>
+                    <select class='col-sm-4 form-control text-center rright mr-2 ml-5' name='paymentTerms'  style='max-width: 35%;' onchange="hdd(event)" id = 'dede'>
+                        <option disabled selected>
+                            Payment Terms
+                        </option>
+                        <option value = 'poa'>
+                            Prior To Arrival
+                        </option>
+                        <option value = 'pc'>
+                            Post Checkout
+                        </option>
+                        <option value = 'ac'>
+                            At Checkout
+                        </option>
+                    </select>
                 </div>
-                <div class="form-group row mb-5">
-                    <label class="col-sm-3 col-form-label">Payment Terms<i class="fas fa-info-circle"></i></label>
-                    <div class="col-sm-5">
-                        <select class='form-control text-center' name='paymentTerms'  style='max-width: 90%;' onchange="hdd(event)" id = 'dede'>
-                            <option disabled selected>
-                                Payment Terms
-                            </option>
-                            <option value = 'poa'>
-                                Prior To Arrival
-                            </option>
-                            <option value = 'pc'>
-                                Post Checkout
-                            </option>
-                            <option value = 'ac'>
-                                At Checkout
-                            </option>
-                        </select>
+                    <div class = 'mb-5'  id = 'dede22'>
+                        <input type = 'number' class = 'form-control rright mr-2' style = 'max-width: 15%; display: inline-block; margin-left: 260px;'  name = 'paymentDays' id = 'dede33' disabled><span> Days</span>
                     </div>
-                    <div class = 'col-sm-4'  id = 'dede22'>
-                        <input type = 'number' class = 'form-control' style = 'max-width: 50%; display: inline-block;'  name = 'paymentDays' id = 'dede33' disabled><span> Days</span>
-                    </div>
+                <div class="form-group mb-5">
+                    <label class="col-sm-2 col-form-label quouteleft rleft mr-2">Comments</label>
+                    <textarea class="form-control col-sm-4 ml-5 rright" id = 'comments' style="display: inline-block;">
+                    </textarea>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Comments</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows = '2' id = 'comments'>
-
-                        </textarea>
-                    </div>
                 </div>
             </div>
-            </div>
-
             <div class="row">
                 <div class="col-sm-12 mt-3">
                     <div class="text-center">
-                        <button type="submit" id='subm' class="btn action">Submit</button>
+                        <button type="submit" id='subm' class="btn action"> <i class="fas fa-angle-double-right"></i> Submit</button>
                     </div>
                 </div>
             </div>
@@ -318,13 +292,13 @@
 
         thead2.innerHTML = `
                                         <td>
-                                         <select onchange = 'poor(event)'>
+                                         <select onchange = 'poor(event)' class = 'form-control'>
                                                 <option value = '1'>1 Bed</option>
                                                 <option value = '2'>2 Bed</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class = 'seldom'>
+                                            <select class = 'seldom form-control'>
                                                 <option class = "{{ data[0]['single'] }}">Single</option>
                                                 <option class = "{{ data[0]['double'] }}">Double</option>
                                                 <option class = "{{ data[0]['triple'] }}">Triple</option>
@@ -332,14 +306,14 @@
                                             </select>
                                         </td>
                                         <td>
-                                        <input type="number" class = 'num'  required max = '{{ data[0]['count'] }}' min = 1>
+                                        <input type="number" class = 'form-control'  required max = '{{ data[0]['count'] }}' min = 1>
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
-                                                <i class="fas fa-plus-circle"></i>
+                                                <i class="fas fa-plus-circle fa-2x"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
-                                               <i class="fas fa-minus-circle"></i>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-5'>
+                                               <i class="fas fa-minus-circle fa-2x"></i>
                                             </button>
                                         </td>
                                     ` 
@@ -490,13 +464,13 @@
                 const thead2 = document.createElement("tr")
                 thead2.innerHTML = `
                                         <td>
-                                            <select onchange = 'poor(event)'>
+                                            <select onchange = 'poor(event)' class = 'form-control'>
                                                 <option value = '1'>1 Bed</option>
                                                 <option value = '2'>2 Bed</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <select class = 'seldom'>
+                                            <select class = 'seldom form-control'>
                                                 <option class = "{{ data[0]['single'] }}">Single</option>
                                                 <option class = "{{ data[0]['double'] }}">Double</option>
                                                 <option class = "{{ data[0]['triple'] }}">Triple</option>
@@ -504,14 +478,14 @@
                                             </select>
                                         </td>        
                                         <td>
-                                        <input type="number" class = 'num'  required max = '{{ data[0]['count'] }}' min = 1>
+                                        <input type="number" class = 'form-control'  required max = '{{ data[0]['count'] }}' min = 1>
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
-                                                <i class="fas fa-plus-circle"></i>
+                                                <i class="fas fa-plus-circle fa-2x"></i>
                                             </button>
-                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr'>
-                                               <i class="fas fa-minus-circle"></i>
+                                            <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-5'>
+                                               <i class="fas fa-minus-circle fa-2x"></i>
                                             </button>
                                         </td>
                                     `                
@@ -519,7 +493,7 @@
                 const butt = document.createElement('button')
                 butt.classList.add('btn', 'otherbtn', 'coll')
                 butt.type = 'button'
-                butt.innerHTML = dobj.toDateString()
+                butt.innerHTML = dobj.toDateString() + `    <i class="fas fa-angle-double-up"></i>`
                 dobj.setDate(dobj.getDate() + 1)
 
 
@@ -544,7 +518,8 @@
                     const butt2 = document.createElement('button')
                     butt2.classList.add('btn', 'action', 'aple')
                     butt2.id = 'ApplyAll'
-                    butt2.style = 'margin-left: 300px;'
+                    let width = "200px";
+                    butt2.style.marginLeft = width;
                     butt2.type = 'button'
                     butt2.innerHTML = 'Apply All'
                     butt.style.display = 'inline-block';
@@ -823,9 +798,9 @@
             })
 
             $('.payment').multiselect({
-                nonSelectedText: 'Select Form of Payment',
+                nonSelectedText: '-',
                 numberDisplayed: 0,
-                buttonWidth: '350px'
+                buttonWidth: '200px'
             })
 
      });
