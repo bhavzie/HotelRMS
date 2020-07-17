@@ -958,14 +958,14 @@ color: #000;
 .ui-widget-content .ui-state-default:hover {
 border: 0px;
 text-align: center;
-background: #616eff;
+  background-color: #2983fe;
 font-weight: normal;
 color: #fff;
 }
 
 .ui-widget-content .ui-state-active {
 border: 0px;
-background: #616eff;
+  background-color: #2983fe;
 color: #fff;
 }
 
