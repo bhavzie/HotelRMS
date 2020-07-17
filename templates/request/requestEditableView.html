@@ -211,7 +211,7 @@
                                     {{ r['count'] }}
                                 </td>
                                 <td>
-                                    {% if r['type'] == 'foc' %}
+                                    {% if r['type'] == 'FOC' %}
                                         <input type = 'number' value = "{{ r['ratePerRoom'].split('(')[0] }}" readonly class = 'num4 rateedit' min = 10 onchange="down(event)" step = 'any'>
                                         {% if r['ratePerRoom'].split('(')[1] %}
                                         <input type='text' value="( {{ r['ratePerRoom'].split('(')[1] }}" readonly class='form-control'>
@@ -831,7 +831,7 @@
                             quad2v += v
                         }
                     }
-                } else if (type == 'foc') {
+                } else if (type == 'FOC') {
                     if (occ == 'Single') {
                         if (rate != -1 || rate != 0) {
                             const sep = " ("

@@ -160,7 +160,7 @@ def confirm_email(token):
 
         if data['userType'] == 'customer':
             cursor.execute('UPDATE customers SET email_verified = 1 WHERE email = %s', [email])
-        elif data['userType'] == 'iatauser':
+        elif data['userType'] == 'IATA':
             cursor.execute('UPDATE iataUsers SET email_verified = 1 WHERE email = %s', [email])
         elif data['userType'] == 'hoteluser':
             cursor.execute('UPDATE hotelUsers SET email_verified = 1 WHERE email = %s', [email])
@@ -236,7 +236,7 @@ def registerI():
                 senderv='koolbhavya.epic@gmail.com'
             )
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
-                           (firstName, email, password, 'iata', ''))
+                           (firstName, email, password, 'IATA', ''))
 
             cursor.execute('INSERT INTO iataUsers(fullName, email, country, phone, password, iataCode, agencyName) Values(%s, %s, %s, %s, %s, %s, %s)',
                            (fullName, email, country, phone, password, iataCode, agencyName))
@@ -747,7 +747,7 @@ def passwordupdatef():
 
     if data['userType'] == 'customer':
         cursor.execute('UPDATE customers SET password = %s where email = %s', [password, email])
-    elif data['userType'] == 'iatauser':
+    elif data['userType'] == 'IATA':
         cursor.execute('UPDATE iataUsers SET password = %s where email = %s', [password, email])
     elif data['userType'] == 'hotelUser':
         cursor.execute('UPDATE hotelUsers SET password = %s where email = %s', [password, email])
@@ -987,7 +987,7 @@ def showprofileAll(email):
         cursor.execute('SELECT active, email_verified from developers where email = %s', [email])
         rr = cursor.fetchall()
         rr = rr[0]
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute(
              'SELECT active, email_verified from iataUsers where email = %s', [email])
         rr = cursor.fetchall()
@@ -1041,7 +1041,7 @@ def editUserAll(email):
             'SELECT fullName, active, email_verified from developers where email = %s', [email])
         rr = cursor.fetchall()
         rr = rr[0]
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute(
             'SELECT fullName, active, email_verified from iataUsers where email = %s', [email])
         rr = cursor.fetchall()
@@ -1100,7 +1100,7 @@ def submitEditUserAll2():
     data = data[0]
     if (data['userType'] == 'developer'):
         cursor.execute('Update developers SET fullName = %s, email_verified = %s, active = %s where email = %s', [name, email_verified, active, email])
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute('Update iataUsers SET fullName = %s, email_verified = %s, active = %s where email = %s', [
                        name, email_verified, active, email])
     elif (data['userType'] == 'hoteluser'):
@@ -1141,7 +1141,7 @@ def deactivateUserAll(email):
     if (data['userType'] == 'developer'):
         cursor.execute('Update developers SET active = 0 where email = %s', [
                       email])
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute('Update iataUsers SET active = 0 where email = %s', [
                       email])
     elif (data['userType'] == 'hoteluser'):
@@ -1167,7 +1167,7 @@ def deactivateC(email):
     if (data['userType'] == 'customer'):
         cursor.execute('Update customers SET active = 0 where email = %s', [
                       email])
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute('Update iataUsers SET active = 0 where email = %s', [
                       email])
 
@@ -1186,7 +1186,7 @@ def activateC(email):
     if (data['userType'] == 'customer'):
         cursor.execute('Update customers SET active = 1 where email = %s', [
                       email])
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute('Update iataUsers SET active = 1 where email = %s', [
                       email])
 
@@ -1217,7 +1217,7 @@ def activateUserAll(email):
     if (data['userType'] == 'developer'):
         cursor.execute('Update developers SET active = 1 where email = %s', [
             email])
-    elif (data['userType'] == 'iata'):
+    elif (data['userType'] == 'IATA'):
         cursor.execute('Update iataUsers SET active = 1 where email = %s', [
             email])
     elif (data['userType'] == 'hoteluser'):
@@ -1250,7 +1250,7 @@ def myprofile(email):
     elif data == 'customer':
         cursor.execute('SELECT * From customers where email = %s', [email])
         result = cursor.fetchall()
-    elif data == 'iata':
+    elif data == 'IATA':
         cursor.execute('SELECT * From iataUsers where email = %s', [email])
         result = cursor.fetchall()
     elif data == 'developer':
@@ -1292,7 +1292,7 @@ def submitEditUserAll():
     elif data == 'customer':
         cursor.execute('Update customers SET fullName = %s, phone = %s, country = %s, password = %s WHERE email = %s',
                         (name, phone, country, password, email))
-    elif data == 'iata':
+    elif data == 'IATA':
         cursor.execute('Update iataUsers SET fullName = %s, phone = %s, country = %s, password = %s WHERE email = %s',
                         (name, phone, country, password, email))
     elif data == 'developer':
@@ -1466,7 +1466,7 @@ def viewAllUsers():
             rr = cursor.fetchall()
             if len(rr) != 0:
                 rr = rr[0]
-        elif (r['userType'] == 'iata'):
+        elif (r['userType'] == 'IATA'):
             cursor.execute(
                 'SELECT active from iataUsers where email = %s', [r['email']])
             rr = cursor.fetchall()
@@ -1495,14 +1495,14 @@ def viewAllUsers():
 @is_logged_in
 def editCustomers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From users where userType = %s or userType = %s', ["customer", "iata"])
+    cursor.execute('SELECT * From users where userType = %s or userType = %s', ["customer", "IATA"])
     data = cursor.fetchall()
 
     for r in data:
         if (r['userType'] == 'customer'):
             cursor.execute(
                 'SELECT active, email_verified from customers where email = %s', [r['email']])
-        elif (r['userType'] == 'iata'):
+        elif (r['userType'] == 'IATA'):
             cursor.execute(
                 'SELECT active, email_verified from iataUsers where email = %s', [r['email']])
         rr = cursor.fetchall()
@@ -2243,11 +2243,19 @@ def reset():
     mysql.connection.commit()
     return ''
 
+def updateIata():
+    cursor = mysql.connection.cursor()
+    cursor.execute("Update users set userType = %s where userType = %s", ['IATA', 'iata'])
+    cursor.execute('UPDATE request set userType = %s where userType = %s', ["IATA", 'iata'])
+    mysql.connection.commit()
+    return ''
+
 
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
     #reset()
+    updateIata()
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
@@ -2609,6 +2617,12 @@ def showRequest(token):
             righttable[d] = righttable[y]
             
 
+        for key,value in righttable.items():
+            for r in value:
+                if (r['type'] == 'foc'):
+                    r['type'] = 'FOC'
+
+
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, data9 = data9, data10 = data10)
 
     elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
@@ -2934,6 +2948,10 @@ def showRequest(token):
 
         data3 = data3[0]
         
+        for key,value in righttable.items():
+            for r in value:
+                if (r['type'] == 'foc'):
+                    r['type'] = 'FOC'
 
 
 
@@ -3109,7 +3127,7 @@ def showRequest1():
                 cursor.execute(query, ['1', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
                 r['foc1'] = tfoc1
-                r['type'] = 'foc'
+                r['type'] = 'FOC'
                 r['occupancy'] = 'Single'
                 r['count'] = tfoc1
                 if (len(pent) == 0):
@@ -3129,7 +3147,7 @@ def showRequest1():
                 cursor.execute(query, ['2', dateToCheck, dateToCheck])
                 pent = cursor.fetchall()
                 r['foc2'] = tfoc2
-                r['type'] = 'foc'
+                r['type'] = 'FOC'
                 r['occupancy'] = 'Double'
                 r['count'] = tfoc2
 
@@ -3217,12 +3235,12 @@ def showRequest1():
 
     focv = 0
     for r in rates:
-        if r['type'] == 'foc':
+        if r['type'] == 'FOC':
             focv += int(r['count']) * r['val']
 
     totalRate = 0
     for d in rates:
-        if (d['val'] == -1 or d['type'] == 'foc'):
+        if (d['val'] == -1 or d['type'] == 'FOC'):
             totalRate += 0
         else:
             totalRate += int(d['count']) * d['val']
@@ -3286,7 +3304,7 @@ def showRequest1():
 
     for r in result:
         for m in r:
-            if (m['type'] != 'foc'):
+            if (m['type'] != 'FOC'):
                 roomCount += int(m['count'])
             if (m['type'] == '1 Bed'):
                 if (m['occupancy'] == 'Single'):
@@ -3346,7 +3364,7 @@ def showRequest1():
                         quad2.append(v)
                     quad2c = quad2c + int(m['count'])
                     quad2f = True
-            elif (m['type'] == 'foc'):
+            elif (m['type'] == 'FOC'):
                 if (m['occupancy'] == 'Single'):
                     if (m['rate'] != -1):
                         s = m['rate'].split(' (')
@@ -3762,8 +3780,7 @@ def showQuote(id):
         for key in secondresult:
             row1 = {}
             row2 = {}
-            row1['type'] = 'foc'
-            row2['type'] = 'foc'
+            row1['type'] = 'FOC'
             if data['foc1'] != '0':
                 row1['count'] = data['foc1']
                 totalRooms += int(data['foc1'])
@@ -4463,6 +4480,11 @@ def deleteRequest(id):
             righttable[d] = righttable[y]
 
         deleteflag = True
+
+        for key, value in righttable.items():
+            for r in value:
+                if (r['type'] == 'foc'):
+                    r['type'] = "FOC"
 
         x = data2['submittedOn'].strftime('%y-%b-%d,  %H:%M:%S')
         x = x.split("-")
@@ -5354,7 +5376,7 @@ def analyticsbehaviorGet():
     if customerType != 'Customer Type':
         custres = []
         tempres = {}
-        if (customerType == 'iata'):
+        if (customerType == 'IATA'):
             cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
             tempres1 = cursor.fetchall()
             tempres['0'] = customerType
@@ -5396,9 +5418,9 @@ def analyticsbehaviorGet():
     else:
         custres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "iata"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "IATA"])
         tempres1 = cursor.fetchall()
-        tempres['0'] = "iata"
+        tempres['0'] = "IATA"
         tempres['1'] = len(tempres1)
         if len(tempres1) != 0:
             nights = 0
@@ -5873,7 +5895,7 @@ def analyticsrevenueGet():
     if customerType != 'Customer Type':
         custres = []
         tempres = {}
-        if (customerType == 'iata'):
+        if (customerType == 'IATA'):
             cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
             tempres1 = cursor.fetchall()
             tempres['0'] = customerType
@@ -5934,9 +5956,9 @@ def analyticsrevenueGet():
     else:
         custres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "iata"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "IATA"])
         tempres1 = cursor.fetchall()
-        tempres['0'] = "iata"
+        tempres['0'] = "IATA"
         if len(tempres1) != 0:
             total1 = 0
             total2 = 0

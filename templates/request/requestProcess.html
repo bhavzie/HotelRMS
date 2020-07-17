@@ -137,7 +137,7 @@
                                                         {{ day['count'] }}
                                                     </td>
                                                     <td>
-                                                    {% if day['type'] == 'foc' %}
+                                                    {% if day['type'] == 'FOC' %}
                                                         {% if day['rate'] == -1 %}
                                                         <input type = 'number' class = 'num4' min = '10'
                                                         onchange="down(event)"
@@ -857,7 +857,7 @@
                             quad2v += v
                         }
                     }
-                } else if (type == 'foc') {
+                } else if (type == 'FOC') {
                     if (occ == 'Single') {
                         if (rate != -1 || rate != 0) {
                             const sep = " ("
