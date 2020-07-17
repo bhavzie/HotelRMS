@@ -70,8 +70,9 @@
                         </select>
                 </div>
                 <div id='msg2'></div>
-                <div class = 'form-group mb-5 mt-5'>
-                    <table class="table table-hover table-bordered table-sm" id='tab5'>
+                <div class = 'mb-5 mt-5'>
+                    <div class="table-responsive-sm">
+                    <table class="table table-hover table-bordered table-md" id='tab5'>
                         <thead class="table-header">
                             <tr>
                                 <th>Check-In</th>
@@ -95,6 +96,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                     <div id = 'ded'>
 
                     </div>
@@ -111,7 +113,7 @@
                     <i class="fas fa-info-circle"></i>
                     <input type='checkbox' class='col-sm-2 rright mr-2' id='ccom' onclick="ccomf()">
                     <input type="number" class="form-control rright" style='max-width: 15%;' disabled id='ccomn' required value=''
-                        name='commissionable'>
+                        name='commissionable' min = 0>
                     <label class = 'ml-2'> % </label>
                 </div>
                 <div class="form-group mb-5">
@@ -357,10 +359,10 @@
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
-                                                <i class="fas fa-plus-circle fa-2x"></i>
+                                                <i class="fas fa-plus-circle fa-1x"></i>
                                             </button>
                                             <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
-                                               <i class="fas fa-minus-circle fa-2x"></i>
+                                               <i class="fas fa-minus-circle fa-1x"></i>
                                             </button>
                                         </td>
                                     ` 
@@ -529,10 +531,10 @@
                                         </td>
                                         <td>
                                             <button type = 'button' onclick = 'addr(event)' class = 'baddr'>
-                                                <i class="fas fa-plus-circle fa-2x"></i>
+                                                <i class="fas fa-plus-circle fa-1x"></i>
                                             </button>
                                             <button type = 'button' onclick = 'remr(event)' class = 'baddr ml-1'>
-                                               <i class="fas fa-minus-circle fa-2x"></i>
+                                               <i class="fas fa-minus-circle fa-1x"></i>
                                             </button>
                                         </td>
                                     `                

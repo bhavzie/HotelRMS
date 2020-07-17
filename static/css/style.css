@@ -524,12 +524,16 @@ footer img {
   transition: all 0.2s ease-in-out;
 }
 
+table td input {
+ width: 100%;   
+}
+
 .action:hover {
   transform: scale(1.1);
 }
 
 .otherbtn {
-  text-transform: uppercase;
+  text-transform: capitalize;
   background-color: #807f80 !important;
   font-weight: 600;
   color: #ffffff !important;
@@ -662,7 +666,7 @@ table {
 #tab5 {
   table-layout: fixed;
   overflow-wrap: break-word;
-  max-width: 70%;
+  max-width: 80%;
 }
 
 .tab7 {
@@ -765,15 +769,6 @@ table {
     border: 1px solid black;
 }
 
-
-
-.start-date {
-  width: 200px !important;
-}
-
-.end-date {
-  width: 200px !important;
-}
 
 .formhelp {
   position: relative;
