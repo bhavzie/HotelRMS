@@ -2255,7 +2255,7 @@ def updateIata():
 @is_logged_in
 def showRequest(token):
     #reset()
-    updateIata()
+    #updateIata()
     cursor = mysql.connection.cursor()
     email = session['email']
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])

@@ -341,7 +341,7 @@ footer img {
 }
 
 .container-login {
-  background-image: url('../images/loginPage.jpg');
+  background-image: url('../images/The_Blue_Lagoon.png');
   width: 100%;  
   min-height: 100vh;
   display: flex;
@@ -409,6 +409,7 @@ footer img {
 }
 
 .spread4 {
+  min-height: 100vh;
   background: #fff;
   height: 100%;
   min-width: 100vw;
@@ -666,7 +667,7 @@ table {
 #tab5 {
   table-layout: fixed;
   overflow-wrap: break-word;
-  max-width: 80%;
+  max-width: 70%;
 }
 
 .tab7 {

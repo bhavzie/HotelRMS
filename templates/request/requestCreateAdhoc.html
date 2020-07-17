@@ -72,11 +72,15 @@
                 <div id='msg2'></div>
                 <div class = 'mb-5 mt-5'>
                     <div class="table-responsive-sm">
-                    <table class="table table-hover table-bordered table-md" id='tab5'>
+                    <table class="table table-hover table-bordered" id='tab5'>
                         <thead class="table-header">
                             <tr>
-                                <th>Check-In</th>
-                                <th>Check-Out</th>
+                                <th>Check-In
+                                    <i class="fas fa-calendar-alt" id = 'checkin'></i>
+                                </th>
+                                <th>Check-Out
+                                    <i class="fas fa-calendar-alt" id = 'checkout'></i>
+                                </th>
                                 <th>Nights</th>
                             </tr>
                         </thead>
@@ -143,8 +147,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="form-group mb-5">
-                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Budget*</label>
+                <div class="form-group">
+                    <label class="quouteleft col-sm-2 col-form-label rleft mr-2">
+                        Budget* (Excl. Tax)
+                    </label>
                     <i class="fas fa-info-circle"></i>
                     <span class="col-sm-2 ml-2">$</span>
                     <input type="number" class="form-control rright mr-2" style='max-width: 15%; display: inline-block' required id = 'budget' min = '10'>
@@ -250,6 +256,13 @@
                 numberDisplayed: 0,
                 buttonWidth: '200px'
             })
+
+            $("#checkin").click(() => {
+                $startDate.datepicker('show')
+            })
+            $("#checkout").click(() => {
+              $endDate.datepicker('show')
+          })
 
         });
 
