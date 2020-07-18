@@ -1,11 +1,5 @@
 
 1) "Create New" option in "Requested by"  dropdown of Adhoc request page. -URGENT
-4) "Group Block/Commissionable/Free of cost" check boxes can be toggle buttons if possible.
-6) All the info text you can pick up from the document add that to the respective tooltip. (Group Block, Commisonable, Budget,etc)
-8) Strategy --> Rate,  the Day of the week should be Shorthand. [M, Tu, W, Th, F, Sa, Su]  URGENT
-13) Developers --> Edit User Type --> Reservations/Revenue. On editing them and submitting we are getting "Bad request" errors.
-16) Remove parentheses that have been applied on the display for Form of  payment everywhere in the Product.
-17) Privacy Policy & Terms of use to be added on the login page as well as the Acceptance page. - URGENT
 18) During rate override and submitting quotes, ask for reason, store in DB and display in History & std report.
 19) Processing page design. - URGENT
 20) Forecast file upload
@@ -15,4 +9,7 @@
 26) Email format & design.
 27) Google cloud Hosting.
 28) Security threats.
-29) Std report column formatting
+
+// create it in response
+
+bcc trompar.sales@gmail.com // gautam_1981

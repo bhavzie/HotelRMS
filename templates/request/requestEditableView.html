@@ -490,6 +490,10 @@
         </div>
         <div class='row mb-5' id='msg'>
         </div>
+        <div class='row mb-5' id='res'>
+            <span>Reason for Override : </span><textarea class='form-control col-sm-6' rows='2' cols="6"
+                placeholder="Enter Reason for override" id='overres'></textarea>
+        </div>
         <div class='row mb-5' id='dec'>
             <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6"
                 placeholder="Enter Reason for decline" id='othert'></textarea>
@@ -550,6 +554,7 @@
         $('#dec').hide();
         $("#declineb").hide();
         $("#all").hide();
+        $("#res").hide();
             $('.payment').multiselect({
                 nonSelectedText: '-',
                 numberDisplayed: 0,
@@ -656,6 +661,8 @@
         $("#nego").removeAttr('disabled')
         $("#comments").removeAttr('disabled')
         $("#editbutton").hide();
+        $("#res").show();
+        $("#overres").prop('readonly', true)
 
         const rateedit = [...document.getElementsByClassName('rateedit')]
         rateedit.forEach(rate => {
@@ -1325,6 +1332,15 @@
         } else {
             comments = $('#comments').val()
         }
+        const over = document.getElementById('res');
+        let overres = ''
+        if (over.style.display != 'none') {
+            overres = $('#overres').val();
+            if (overres == '') {
+                emsg('Enter reason for overriding rate')
+                return false
+            }
+        }
 
         let contract1 = $("#sele option:selected").text()
         contract = contract1.trim()
@@ -1402,7 +1418,7 @@
         result['nights'] = nights
         result['comments'] = comments
         result['contract'] = contract
-
+        result['overres'] = overres
 
         const averageRate = document.getElementById('avgRate').innerText
         result['averageRate'] = averageRate
@@ -1509,6 +1525,13 @@
             commissionValue = 0
         } else {
             commissionValue = commissionValue.innerText
+        }
+        if (over.style.display != 'none') {
+            overres = $('#overres').val();
+            if (overres == '') {
+                emsg('Enter reason for overriding rate')
+                return false
+            }
         }
         const totalQuote = document.getElementById('totalQuote').innerText
         const status = 'declined'
@@ -1648,7 +1671,7 @@
         result['nights'] = nights
         result['comments'] = comments
         result['contract'] = contract
-
+        result['overres'] = overres
 
         const averageRate = document.getElementById('avgRate').innerText
         result['averageRate'] = averageRate

@@ -124,13 +124,44 @@
             if (this.readyState == 4 && this.status == 200) {
                 let response = JSON.parse(xhttp.responseText);
                 response = (response['response'])
-                
+                if (response.length == 0) {
+                    alert('No records exist')
+                    return false
+                }
                 var table = $('#tab123')[0]
                 var thead = table.children[0]
                 var tbody = table.children[1]
 
                 var firstChild = response[0]
                 const tr = document.createElement('tr')
+                firstChild = {
+                    'id' : 'id',
+                    'status': 'status',
+                    'groupName': 'groupName', 
+                    'checkIn': 'checkIn',
+                    'checkOut': 'checkOut',
+                    'leadTime': 'leadTime',
+                    'nights': 'nights',
+                    'category': 'category',
+                    'userType': 'userType',
+                    'budget': 'budget',
+                    'createdBy': 'createdBy',
+                    'createdOn': 'createdOn',
+                    'evaluatedFare': 'evaluatedFare',
+                    'totalQuote': 'totalQuote',
+                    'foc': 'foc',
+                    'foc1': 'foc1',
+                    'foc2': 'foc2',
+                    'commissionable': 'commissionable',
+                    'groupBlock': 'groupBlock',
+                    'formPayment': 'formPayment',
+                    'paymentTerms': 'paymentTerms',
+                    'paymentDays': 'paymentDays',
+                    'comments': 'comments'
+
+                    
+                }
+
                 for (var key in firstChild) {
                     const th = document.createElement('th');
                     th.innerHTML = `
@@ -143,6 +174,7 @@
 
                 for (let i=0; i<response.length; i++ ){
                     const tr = document.createElement('tr')
+                    
 
                     
                     for (var key in firstChild) {
@@ -162,9 +194,10 @@
                     dom: 'Bfrtip',
                     buttons: [
                         { extend: 'excel', className: 'btn btn-primary' }
-                    ]
+                    ],
+                    'scrollX': true,
+                    "order": [0, 'desc'],
                 });
-
 
                 $(".buttons-html5").removeClass('dt-button')
                 $(".buttons-html5").addClass('action')

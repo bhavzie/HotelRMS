@@ -109,12 +109,16 @@
                 <div class = 'mge2'>
                     <div class="form-group mb-5">
                         <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Group Block</label>
-                        <i class="fas fa-info-circle"></i>
+                        <i class="fas fa-info-circle"
+                        data-toggle = 'tooltip' data-placement = 'bottom' title = 'Please select this option if each room will be paid for by corresponding guests in this group.'
+                        ></i>
                         <input type='checkbox' class='col-sm-2 rright mr-2' id='groupBlock'>
                     </div>
                 <div class="form-group mb-5">
                     <label class="quouteleft col-form-label col-sm-2 rleft mr-2">Commissionable</label>
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"
+                    data-toggle = 'tooltip' data-placement = 'bottom' title = 'Please mention the commission % that you desire for this group.'
+                    ></i>
                     <input type='checkbox' class='col-sm-2 rright mr-2' id='ccom' onclick="ccomf()">
                     <input type="number" class="form-control rright" style='max-width: 15%;' disabled id='ccomn' required value=''
                         name='commissionable' min = 0>
@@ -122,7 +126,9 @@
                 </div>
                 <div class="form-group mb-5">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Free of Cost</label>
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"
+                    data-toggle = 'tooltip' data-placement = 'bottom' title = 'Free of Charge (FOC), mention the number of rooms required for any tour guide,etc travelling with the group, without any cost.'
+                    ></i>
                     <input type='checkbox' class='col-sm-2 rright mr-2' id='focc' onclick="foccf()" name='foc'>
                     <table class="table table-bordered table-hover table-sm" id='tab4' style="display: inline-table; width: 35%;">
                         <thead class="table-header">
@@ -151,14 +157,18 @@
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">
                         Budget* (Excl. Tax)
                     </label>
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"
+                    data-toggle = 'tooltip' data-placement = 'bottom' title = 'Budget'
+                    ></i>
                     <span class="col-sm-2 ml-2">$</span>
                     <input type="number" class="form-control rright mr-2" style='max-width: 15%; display: inline-block' required id = 'budget' min = '10'>
                     <span>Room/Night</span>
                 </div>
                 <div class="form-group mb-5">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Form of Payment</label>
-                    <i class="fas fa-info-circle mr-5"></i>
+                    <i class="fas fa-info-circle mr-5"
+                    data-toggle = 'tooltip' data-placement = 'bottom' title = 'Your preference for making payment can be chosen from the dropdown.'
+                    ></i>
                     <select class='col-sm-6 form-control payment rright mr-2' id='formPayment'  style='max-width: 60%;' multiple = 'multiple'>
                         <option value = 'bt'>
                             Bank Transfer
@@ -173,7 +183,9 @@
                 </div>
                 <div class="form-group">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Payment Terms</label>
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle"
+                    data-toggle = 'tooltip' data-placement = 'bottom' title = 'Your preference on when you would make the payment.'
+                    ></i>
                     <select class='col-sm-4 form-control text-center rright mr-2 ml-5' name='paymentTerms'  style='max-width: 35%;' onchange="hdd(event)" id = 'dede'>
                         <option disabled selected>
                             Payment Terms

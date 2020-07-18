@@ -36,7 +36,7 @@ def confirmToken(token, expiration=3600):
         return False
     return email
 
-def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
+def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
@@ -45,7 +45,7 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
-def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
+def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
@@ -54,7 +54,7 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv, senderv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
-def sendMail2(subjectv, recipientsv, bodyv, senderv):
+def sendMail2(subjectv, recipientsv, bodyv):    
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
@@ -63,7 +63,7 @@ def sendMail2(subjectv, recipientsv, bodyv, senderv):
     msg.body = bodyv
     mail.send(msg)
 
-def sendMail3(subjectv, recipientsv, bodyv, senderv, attachv):
+def sendMail3(subjectv, recipientsv, bodyv, attachv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
@@ -73,6 +73,7 @@ def sendMail3(subjectv, recipientsv, bodyv, senderv, attachv):
     msg.attach(attachv)
     mail.send(msg)
     
+
 
 # DB Queries
 def dbQueryInsert(table, myDict):
@@ -103,6 +104,22 @@ def procArr(value):
     if value is None:
         return ''
     return ' '.join(value)
+
+def procArr2(value):
+    string = ''
+    if value != None:
+        if value.count('cq') > 0:
+            string += 'Cheque, '
+        if value.count('bt') > 0:
+            string += ' Bank Transfer, '
+        if value.count('cc') > 0:
+            string += 'Credit Card, '
+    
+    try:
+        string = string[:string.rindex(',')]
+    except:
+        string = string
+    return string
 
 # Decorators
 # Check if user logged in
@@ -1601,21 +1618,25 @@ def strategyRate():
                     for d in data1:
                         dow = ""
                         if (d['monday'] == '1'):
-                            dow += " Monday, "    
+                            dow += " M, "    
                         if (d['tuesday'] == '1'):
-                            dow += " Tuesday, "
+                            dow += " Tu, "
                         if (d['wednesday'] == '1'):
-                            dow += "Wednesday, "
+                            dow += "W, "
                         if (d['thursday'] == '1'):
-                            dow += "Thursday, "
+                            dow += "Th, "
                         if (d['friday'] == '1'):
-                            dow += "Friday, "
+                            dow += "F, "
                         if (d['saturday'] == '1'):
-                            dow += "Saturday, "
+                            dow += "Sa, "
                         if (d['sunday'] == '1'):
-                            dow += "Sunday"
+                            dow += "Su"
 
-                        d['dow'] = dow
+
+                        try:
+                            d['dow'] = dow[:dow.rindex(', ')]
+                        except:
+                            d['dow'] = dow
 
                         d['startDate'] = d['startDate'].strftime('%y-%b-%d')
                         x = d['startDate'].split('-')
@@ -2423,13 +2444,14 @@ def showRequest(token):
         v = data['formPayment']
         if v != None:
             if v.count('cq') > 0:
-                string += '(Cheque),'
+                string += 'Cheque, '
             if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
+                string += ' Bank Transfer, '
             if v.count('cc') > 0:
-                string += '(Credit Card)'
+                string += 'Credit Card, '
 
-        data['formPayment'] = string
+
+        data['formPayment'] = procArr2(data['formPayment'])
 
         if data['comments'].isspace():
             data['comments'] = ''
@@ -2458,17 +2480,7 @@ def showRequest(token):
             if (data2['commission'] != '0'):
                 tcomm = True
 
-            string = ''
-            v = data2['formPayment']
-            if v != None:
-                if v.count('cq') > 0:
-                    string += '(Cheque),'
-                if v.count('bt') > 0:
-                    string += ' (Bank Transfer),'
-                if v.count('cc') > 0:
-                    string += '(Credit Card)'
-
-            data2['formPayment'] = string
+            data2['formPayment'] = procArr2(data2['formPayment'])
 
             string = ''
             v = data2['paymentTerms']
@@ -2678,16 +2690,9 @@ def showRequest(token):
                 data['paymentTerms'] = 'Prior To Arrival'
 
         string = ''
-        v = data['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
+        
 
-        data['formPayment'] = string
+        data['formPayment'] = procArr2(data['formPayment'])
 
         if data['comments'].isspace():
             data['comments'] = ''
@@ -2716,16 +2721,8 @@ def showRequest(token):
 
             string = ''
             v = data2['formPayment']
-            fop = data2['formPayment']
-            if v != None:
-                if v.count('cq') > 0:
-                    string += '(Cheque),'
-                if v.count('bt') > 0:
-                    string += ' (Bank Transfer),'
-                if v.count('cc') > 0:
-                    string += '(Credit Card)'
-
-            data2['formPayment'] = string
+           
+            data2['formPayment'] = data2['formPayment']
 
             string = ''
             v = data2['paymentTerms']
@@ -3018,16 +3015,9 @@ def showRequest1():
             data['paymentTerms'] = 'Prior To Arrival'
 
     string = ''
-    v = data['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
 
-    data['formPayment'] = string
+
+    data['formPayment'] = procArr2(data['formPayment'])
 
     if data['comments'].isspace():
         data['comments'] = ''
@@ -3525,17 +3515,8 @@ def showRequest1():
 
         responseData = responseData[0]
         string = ''
-        v = responseData['formPayment']
-        fop = responseData['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
-
-        responseData['formPayment'] = string
+        
+        responseData['formPayment'] = procArr2(responseData['formPayment'])
 
         string = ''
         v = responseData['paymentTerms']
@@ -3639,6 +3620,9 @@ def requestProcessQuote():
         inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
     ])
 
+    if (inp['overres'] != ''):
+        cursor.execute('INSERT INTO rateOverride(requestId, responseId, submittedOn, submittedBy, reason) VALUES(%s, %s, %s, %s, %s) ', [inp['requestId'], responseId, now, email, inp['overres']])
+    
     mysql.connection.commit()
     cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
     createdFor = cursor.fetchall()
@@ -3651,9 +3635,10 @@ def requestProcessQuote():
         linkv = 'showQuoteEmail',
         tokenv = token,
         bodyv = 'View Quotation',
-        senderv = 'koolbhavya.epic@gmail.com'
     )
 
+    
+    
 
     flash('The request has been quoted', 'success')
     return ('', 204)
@@ -3681,16 +3666,8 @@ def showQuote(id):
             data['paymentTerms'] = 'Prior To Arrival'
 
     string = ''
-    v = data['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
 
-    data['formPayment'] = string
+    data['formPayment'] = procArr2(data['formPayment'])
 
     if data['comments'].isspace():
         data['comments'] = ''
@@ -3708,15 +3685,7 @@ def showQuote(id):
 
     string = ''
     v = data2['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
-
-    data2['formPayment'] = string
+    data2['formPayment'] = procArr2(data['formPayment'])
 
     string = ''
     v = data2['paymentTerms']
@@ -3965,6 +3934,7 @@ def showQuote(id):
     avgRate = round(avgRate, 2)
 
 
+
     return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = False, avgRate = avgRate)
 
 
@@ -3993,17 +3963,7 @@ def showQuoteEmail(id):
             data['paymentTerms'] = 'Prior To Arrival'
 
     string = ''
-    v = data['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
-
-    data['formPayment'] = string
-
+    data['formPayment'] = procArr2(data['formPayment'])
     if data['comments'].isspace():
         data['comments'] = ''
 
@@ -4019,17 +3979,7 @@ def showQuoteEmail(id):
         negcheck = True
 
     string = ''
-    v = data2['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
-
-    data2['formPayment'] = string
-
+    data2['formPayment'] = data2['formPayment']
     string = ''
     v = data2['paymentTerms']
     if v != None:
@@ -4363,17 +4313,8 @@ def deleteRequest(id):
                 data['paymentTerms'] = 'Prior To Arrival'
 
         string = ''
-        v = data['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
 
-        data['formPayment'] = string
-
+        data['formPayment'] = procArr2(data['formPayment'])
         if data['comments'].isspace():
             data['comments'] = ''
 
@@ -4396,16 +4337,7 @@ def deleteRequest(id):
                 tcomm = True
 
             string = ''
-            v = data2['formPayment']
-            if v != None:
-                if v.count('cq') > 0:
-                    string += '(Cheque),'
-                if v.count('bt') > 0:
-                    string += ' (Bank Transfer),'
-                if v.count('cc') > 0:
-                    string += '(Credit Card)'
-
-            data2['formPayment'] = string
+            data2['formPayment'] = data2['formPayment']
 
             string = ''
             v = data2['paymentTerms']
@@ -4532,15 +4464,8 @@ def deleteRequest(id):
 
         string = ''
         v = data['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
 
-        data['formPayment'] = string
+        data['formPayment'] = procArr2(data['formPayment'])
 
 
         if data['comments'].isspace():
@@ -4721,7 +4646,7 @@ def AcceptRequest():
     createdFor = cursor.fetchall()
     createdFor = createdFor[0]['createdFor']
 
-   
+
     if prevresponse['paymentGtd'] == 1:
         with app.open_resource("static/docs/ccauth_hotels.pdf") as fp:
             msg = Message(
@@ -4734,7 +4659,6 @@ def AcceptRequest():
                 "PaymentGuarantee.pdf", "application/pdf", fp.read()
             )
             mail.send(msg)
-
 
     mysql.connection.commit()
     cursor.close()
@@ -4840,6 +4764,10 @@ def requestProcessReview():
     ])
 
     cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['requestId'], email, now])
+
+    if (inp['overres'] != ''):
+        cursor.execute('INSERT INTO rateOverride(requestId, responseId, submittedOn, submittedBy, reason) VALUES(%s, %s, %s, %s, %s) ', [inp['requestId'], responseId, now, email, inp['overres']])
+
     mysql.connection.commit()
     flash("The request has been sent for review", 'success')
     return ('', 204)
@@ -4853,27 +4781,7 @@ def requestHistory(id):
     requestData = cursor.fetchall()
     requestData = requestData[0]
 
-    v = requestData['paymentTerms']
-    if v != None:
-        if v.count('pc') > 0:
-            string = 'Post Checkout'
-            requestData['paymentTerms'] = string
-        elif v.count('ac') > 0:
-            requestData['paymentTerms'] = 'At Checkout'
-        elif v.count('poa') > 0:
-            requestData['paymentTerms'] = 'Prior To Arrival'
-
-    string = ''
-    v = requestData['formPayment']
-    if v != None:
-        if v.count('cq') > 0:
-            string += '(Cheque),'
-        if v.count('bt') > 0:
-            string += ' (Bank Transfer),'
-        if v.count('cc') > 0:
-            string += '(Credit Card)'
-
-    requestData['formPayment'] = string
+    requestData['formPayment'] = procArr2(requestData['paymentTerms'])
 
     if requestData['comments'].isspace():
         requestData['comments'] = ''
@@ -4896,16 +4804,9 @@ def requestHistory(id):
                 r['paymentTerms'] = 'Prior To Arrival'
 
         string = ''
-        v = r['formPayment']
-        if v != None:
-            if v.count('cq') > 0:
-                string += '(Cheque),'
-            if v.count('bt') > 0:
-                string += ' (Bank Transfer),'
-            if v.count('cc') > 0:
-                string += '(Credit Card)'
+        
 
-        r['formPayment'] = string
+        r['formPayment'] = procArr2(r['formPayment'])
 
         if r['comments'].isspace():
             r['comments'] = ''
@@ -4935,11 +4836,20 @@ def requestHistory(id):
     for r in responseDaywiseData:
         tempdict[r['submittedOn']].append(r)
 
+    responseOverReason = []
     responseDaywiseData = tempdict
     finalresult = []
     for key, value in responseDaywiseData.items():
         tdict = {}
+        flag = False
         for r in value:
+            if flag == False:
+                reason = ''
+                if (r['ratePerRoom'].find('(') != -1):
+                    cursor.execute('SELECT * from rateOverride where requestId = %s', [id])
+                    reason = 'reason'
+                    flag = True
+                responseOverReason.append(reason)
             try:
                 if (r['date'] in tdict):
                     r['total'] = int(r['count']) * float(r['ratePerRoom'].split('(')[0])
@@ -4950,7 +4860,7 @@ def requestHistory(id):
             except:
                 r['total'] = "-"
                 tdict[r['date']] = [r]
-                
+
         finalresult.append(tdict)
 
     for d in finalresult:
@@ -4965,7 +4875,7 @@ def requestHistory(id):
     responseDaywiseData = finalresult
 
 
-    return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData, data6 = data6)
+    return render_template('request/showHistory.html', requestData = requestData, responseData = responseData, responseAvgData = responseAvgData, responseDaywiseData = responseDaywiseData, data6 = data6, responseOverReason = responseOverReason)
 
 
 @app.route('/confirmRequest/<token>', methods = ['GET', 'POST'])

@@ -544,6 +544,9 @@
                 <div class='row mb-5' id='msg'>
                 
                 </div>
+                <div class = 'row mb-5' id = 'res'>
+                    <span>Reason for Override : </span><textarea class='form-control col-sm-6' rows='2' cols="6" placeholder="Enter Reason for override" id='overres'></textarea>
+                </div>
                 <div class='row mb-5' id = 'dec'>
                     <span>Reason for Decline : </span><textarea class='form-control col-sm-6' rows='2' cols="6" placeholder="Enter Reason for decline" id='othert'
                     ></textarea>
@@ -590,6 +593,7 @@
         $('#dec').hide();
         $("#declineb").hide();
         $("#all").hide();
+        $("#res").hide();
 
         const responseData = "{{ responseData|safe }}"
         if (responseData == "()") {
@@ -652,6 +656,8 @@
         $("#nego").removeAttr('disabled')
         $("#comments").removeAttr('disabled')
         $("#editbutton").hide();
+        $("#res").show();
+        $("#overres").prop('required', true)
 
     }
 
@@ -1069,6 +1075,17 @@
                 negotiable = 0
             }
         }
+        const over = document.getElementById('res');
+        let overres = ''
+        if (over.style.display != 'none') {
+            overres = $('#overres').val();
+            if (overres == '') {
+                emsg('Enter reason for overriding rate')
+                return false
+            }
+        }
+
+
         const status = 'quoted'
 
         const checkIn = "{{ checkIn }}"
@@ -1146,6 +1163,7 @@
         result['checkOut'] = checkOut
         result['nights'] = nights
         result['comments'] = $('#comments').val()
+        result['overres'] = overres
         
         const averageRate = document.getElementById('avgRate').innerText
         result['averageRate'] = averageRate
@@ -1500,6 +1518,15 @@
         } else {
             negotiable = 0
         }
+        const over = document.getElementById('res');
+        let overres = ''
+        if (over.style.display != 'none') {
+            overres = $('#overres').val();
+            if (overres == '') {
+                emsg('Enter reason for overriding rate')
+                return false
+            }
+        }
 
         const checkIn = "{{ checkIn }}"
         const checkOut = "{{ checkOut }}"
@@ -1576,6 +1603,7 @@
         result['checkOut'] = checkOut
         result['nights'] = nights
         result['comments'] = $('#comments').val()
+        result['overres'] = overres
 
         const averageRate = document.getElementById('avgRate').innerText
         result['averageRate'] = averageRate

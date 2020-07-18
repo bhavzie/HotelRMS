@@ -90,6 +90,11 @@
                             <span class='badge badge-pill otherbtn'>Last Responded On : {{ r['submittedOn'] }} By
                                 {{ r['submittedBy'] }} </span>
                         </div>
+                            {% if responseOverReason[loop.index - 1] != '' %}
+                                <div class='mb-5'>
+                                    Reason for Override : {{ responseOverReason[loop.index - 1] }}
+                                </div>
+                            {% endif %}
                         <div class='mb-5'>
                             <span>
                                 Group Category : {{ r['groupCategory'] }}
