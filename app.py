@@ -121,6 +121,22 @@ def procArr2(value):
         string = string
     return string
 
+def checkOverride(value):
+    pre = value.split('(')
+    if len(pre) == 1:
+        return False
+    else:
+        try:
+            val = float(pre[0])
+            val2 = float(pre[1].split(" : ")[1].split('[')[0])
+            if (val != val2):
+                return True
+            else:
+                return False
+        except:
+            return False
+
+
 # Decorators
 # Check if user logged in
 def is_logged_in(f):
@@ -2657,9 +2673,9 @@ def showRequest(token):
                 "SELECT * From review where requestId = %s", [token])
             data8 = cursor.fetchall()
             data8 = data8[0]
-            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            temp1 = data8['time'].strftime('%y-%b-%d')
             x = temp1.split('-')
-            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+            data8['time'] = x[2] + " " + x[1] + ", " + x[0]
 
         cursor.execute('SELECT * From request where id = %s', [token])
         data = cursor.fetchall()
@@ -2710,7 +2726,8 @@ def showRequest(token):
         nego = False
         negoInformation = ''
         canNegotiate = False
-
+        fop = ''
+        pt = ''
         if len(data2) != 0:
             data['groupCategory'] = data2[0]['groupCategory']
             data2 = data2[0]
@@ -2721,8 +2738,8 @@ def showRequest(token):
 
             string = ''
             v = data2['formPayment']
-           
-            data2['formPayment'] = data2['formPayment']
+            fop = data2['formPayment']
+            data2['formPayment'] = procArr2(data2['formPayment'])
 
             string = ''
             v = data2['paymentTerms']
@@ -3515,7 +3532,7 @@ def showRequest1():
 
         responseData = responseData[0]
         string = ''
-        
+        fop = responseData['formPayment']
         responseData['formPayment'] = procArr2(responseData['formPayment'])
 
         string = ''
@@ -3599,17 +3616,27 @@ def requestProcessQuote():
     endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
     endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
     endline = endline + datetime.timedelta(hours = 23, minutes = 59)
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
-        status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate'], inp['contract'], endline
-    ])
 
     table = inp['table_result']
+    check_final = False
     for t in table:
         cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
+        check = checkOverride(t['ratePerRoom'])
+        if(check == True):
+            check_final = True
+    
+    if (check_final == True):
+        check_final = 1
+    else:
+        check_final = 0
+
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime, overrideReason, overrideFlag) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate'], inp['contract'], endline, inp['overres'], check_final
+    ])
     
     cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval2, inp['requestId']])
 
@@ -3619,9 +3646,6 @@ def requestProcessQuote():
     cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
     ])
-
-    if (inp['overres'] != ''):
-        cursor.execute('INSERT INTO rateOverride(requestId, responseId, submittedOn, submittedBy, reason) VALUES(%s, %s, %s, %s, %s) ', [inp['requestId'], responseId, now, email, inp['overres']])
     
     mysql.connection.commit()
     cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
@@ -4742,17 +4766,28 @@ def requestProcessReview():
     now = datetime.datetime.utcnow()
     status = statusval7
 
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
-        status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate'], inp['contract']
-    ])
-
     table = inp['table_result']
+    check_final = False
     for t in table:
         cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
         ])
+        check = checkOverride(t['ratePerRoom'])
+        if(check == True):
+            check_final = True
+
+        
+        if (check_final == True):
+            check_final = 1
+        else:
+            check_final = 0
+
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, overrideReason, overrideFlag) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
+        status, inp['paymentDays'], inp['nights'], inp['comments'],
+        inp['averageRate'], inp['contract'], inp['overres'], check_final
+    ])
+
     
     cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval7, inp['requestId']])
 
@@ -4765,8 +4800,6 @@ def requestProcessReview():
 
     cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['requestId'], email, now])
 
-    if (inp['overres'] != ''):
-        cursor.execute('INSERT INTO rateOverride(requestId, responseId, submittedOn, submittedBy, reason) VALUES(%s, %s, %s, %s, %s) ', [inp['requestId'], responseId, now, email, inp['overres']])
 
     mysql.connection.commit()
     flash("The request has been sent for review", 'success')
@@ -4803,6 +4836,7 @@ def requestHistory(id):
             elif v.count('poa') > 0:
                 r['paymentTerms'] = 'Prior To Arrival'
 
+        print(r['overrideReason'], r['overrideFlag'])
         string = ''
         
 
@@ -4841,15 +4875,7 @@ def requestHistory(id):
     finalresult = []
     for key, value in responseDaywiseData.items():
         tdict = {}
-        flag = False
         for r in value:
-            if flag == False:
-                reason = ''
-                if (r['ratePerRoom'].find('(') != -1):
-                    cursor.execute('SELECT * from rateOverride where requestId = %s', [id])
-                    reason = 'reason'
-                    flag = True
-                responseOverReason.append(reason)
             try:
                 if (r['date'] in tdict):
                     r['total'] = int(r['count']) * float(r['ratePerRoom'].split('(')[0])
