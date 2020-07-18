@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="container-login">
-    <div class="container spread3">
+<div class="">
+    <div class="container spread4">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Rate Grid</p>
@@ -10,15 +10,15 @@
         </div>
         <form id='formadd' class='inline mb-5' onsubmit="addRowSubmit(event)">
             <div class='mg'>
-                <div class="input-group-prepend col-sm">
+                <div class="input-group-prepend col-sm-3">
                     <span class="input-group-text  mb-2">Date range</span>
                     <input type="text" placeholder="Start date" aria-label="First name" class="form-control start-date  mb-2 "
-                        id='startDateG' required>
-                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-sm-2"
-                        id='endDateG' required>
+                        id='startDateG' required style = 'width:70%'>
+                    <input type="text" placeholder="End date" aria-label="Last name" class="form-control end-date  mb-2 mr-5"
+                        id='endDateG' required style = 'width:70%'>
                 </div>
-                <div class='col-sm mb-2'>
-                    <select class='weekselect' multiple="multiple" id='dowG' required>
+                <div class='col-sm-3 mb-2' style="margin-left: 100px;">
+                    <select class='weekselect' multiple="multiple" id='dowG' required style="width: 70%;">
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
                         <option value="Wednesday">Wednesday</option>
@@ -28,7 +28,7 @@
                         <option value="Sunday">Sunday</option>
                     </select>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm-2 ml-5">
                     <button type="submit" id='subm1' class="btn action mb-2">Add Row</button>
                 </div>
             </div>
@@ -138,7 +138,7 @@
 
         $('.weekselect').multiselect({
             nonSelectedText: 'Select Day of the week',
-            buttonWidth: '700px',
+            buttonWidth: '400px',
             numberDisplayed: 0,
         })
 

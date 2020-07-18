@@ -1,10 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class=''>
-    <div class="container-login spread3">
+    <div class="spread3">
         <div class = 'row'>
-        <div class="col-sm-6 mb-5">
-            <select class='form-control text-center' id='categoryxdf' required style='max-width: 45%;'>
+        <div class="col-sm-3 mb-5">
+            <select class='form-control text-center' id='categoryxdf' required style='max-width: 100%;'>
                 <option disabled selected>
                     Category
                 </option>
@@ -46,8 +46,8 @@
                 </option>
             </select>
         </div>
-        <div class="col-sm-5 mb-5">
-            <select class='form-control text-center' id='datexdf' required style='max-width: 35%;'>
+        <div class="col-sm-3 mb-5">
+            <select class='form-control text-center' id='datexdf' required style='max-width: 70%;'>
                 <option disabled selected>
                     Date Range
                 </option>
@@ -65,7 +65,7 @@
                 </option>
             </select>
         </div>
-        <div class = 'col-sm-1 mb-5'>
+        <div class = 'col-sm-4 mb-5'>
             <button class = 'btn otherbtn' onclick = 'clearfilters(event)'>Clear All</button>
         </div>
         </div>

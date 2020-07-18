@@ -10,7 +10,7 @@
         {% if flag == False %}
             <div style="margin-bottom: 100px;">
                 <label class = 'mr-5'>Days</label>
-                <input type="number" class = 'form-control' placeholder="No of Days" style="display: inline-block; max-width: 30%;" min = 0 id = 'days' onchange="handle()">
+                <input type="number" class = 'form-control'  style="display: inline-block; max-width: 30%;" min = 0 id = 'days' onchange="handle()">
             </div>
             <div class = 'mt-5'>
                 Total evaluated Hours From quoted time : <span id = 'dem'>0</span>
@@ -18,7 +18,7 @@
         {% else %}
             <button type = 'button' class = 'btn action mb-5' onclick="edit()">Edit</button>
             <div style="margin-bottom: 100px;">
-                Days<input type="number" class='form-control ml-5' placeholder="No of Days" style="display: inline-block; max-width: 20%;"
+                Days<input type="number" class='form-control ml-5'  style="display: inline-block; max-width: 20%;"
                     min=0 id='days' onchange="handle()" value = "{{ result['days'] }}" readonly>
             </div>
             <div class='mt-5'>

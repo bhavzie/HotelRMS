@@ -119,23 +119,19 @@
     $(document).ready(function () {
         $('#subm').hide();
         $('#dend').hide();
-        var $startDate = $('.start-date');
-        var $endDate = $('.end-date');
 
-              var $startDate = $('.start-date');
+        var $startDate = $('.start-date');
         var $endDate = $('.end-date');
 
         $startDate.datepicker({
             autoHide: true,
             dateFormat: "d M, y",
-            minDate: 0,
             changeMonth: true,
             changeYear: true,
         });
         $endDate.datepicker({
             autoHide: true,
             dateFormat: "d M, y",
-            minDate: 0,
             changeMonth: true,
             changeYear: true
         });
@@ -158,8 +154,9 @@
         var $startDate = $('.start-date');
         var $endDate = $('.end-date');
         
-        let startDate = parseDate("{{ data['startDate'] }}")
-        let endDate = parseDate("{{ data['endDate'] }}")
+        let startDate = ("{{ data['startDate'] }}")
+        let endDate = ("{{ data['endDate'] }}")
+
 
 
         $startDate.datepicker('setDate', startDate);
@@ -197,7 +194,7 @@
     }
 
     function parseDate2(x) {
-          let y = x.split(' ')
+        let y = x.split(' ')
         let date = y[0]
         let year = "20" + y[2]
 

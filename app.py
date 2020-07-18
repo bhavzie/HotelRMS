@@ -456,6 +456,8 @@ def login():
                     'helpTicketing': True,
                     'analyticsStdReport': True,
                     'strategyEvaluation': True,
+                    'strategyAncillary': True,
+                    'settingBusinessReward': True,
                     }
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
@@ -548,7 +550,8 @@ def login():
                                 d['usersHotelEdit'])
                         menuParams['analyticsStdReport'] = getValC2(d['analyticsStdReport'])        
                         menuParams['strategyEvaluation'] = getValC2(d['strategyEvaluation'])   
-
+                        menuParams['settingBusinessReward'] = getValC2(d['settingBusinessReward'])
+                        menuParams['strategyAncillary'] = getValC2(d['strategyAncillary'])    
                     session['menuParams'] = menuParams
 
 
@@ -1436,13 +1439,15 @@ def submiteditusertype():
     users = getValC(request.form.get('users'))
     usersHotelEdit = getValC(request.form.get('usersHotelEdit'))
     userType = request.form['userType']
-    analyticsStdReport = getValC(request.form['analyticsStdReport'])
-    strategyEvaluation = getValC(request.form['strategyEvaluation'])
+    analyticsStdReport = getValC(request.form.get('analyticsStdReport'))
+    strategyEvaluation = getValC(request.form.get('strategyEvaluation'))
+    settingBusinessReward = getValC(request.form.get('settingBusinessReward'))
+    strategyAncillary = getValC(request.form.get('strategyAncillary'))
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s, strategyEvaluation = %s WHERE userType = %s', [
-                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation, userType])
+    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s, strategyEvaluation = %s,strategyAncillary = %s, settingBusinessReward = %s WHERE userType = %s', [
+                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation,strategyAncillary, settingBusinessReward, userType])
 
 
     mysql.connection.commit()

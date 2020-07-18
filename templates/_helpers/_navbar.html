@@ -102,6 +102,13 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% if session.menuParams['strategyAncillary'] %}
+                        <li>
+                            <a href="/strategyAncillary">
+                                Ancillary
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
@@ -192,6 +199,13 @@
                                 Autopilot
                             </a>
                         </li>
+                    {% endif %}
+                    {% if session.menuParams['settingBusinessReward'] %}
+                    <li>
+                        <a href="/settingBusinessReward">
+                        Business Reward
+                        </a>
+                    </li>
                     {% endif %}
                     </ul>
                 </li>
@@ -405,6 +419,11 @@
                             Evaluation
                         </a>
                     </li>
+                    <li>
+                        <a href="/strategyAncillary">
+                            Ancillary
+                        </a>
+                    </li>
                 </ul>
             </li>
         
@@ -436,6 +455,11 @@
                     </li>
                     <li><a href="/settingsNegotiation">Negotiation</a></li>
                     <li><a href="/settingsAutopilot">Autopilot</a></li>
+                    <li>
+                        <a href="/settingBusinessReward">
+                            Business Reward
+                        </a>
+                    </li>
                 </ul>
             </li>
         

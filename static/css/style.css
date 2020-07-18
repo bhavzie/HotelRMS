@@ -341,7 +341,9 @@ footer img {
 }
 
 .container-login {
-  background-image: url('../images/The_Blue_Lagoon.png');
+  background: #43C6AC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #191654, #43C6AC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #191654, #43C6AC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   width: 100%;  
   min-height: 100vh;
   display: flex;
@@ -718,9 +720,14 @@ table {
     overflow: hidden;
 }
 
+.multiselect.dropdown-toggle {
+    text-align: right;
+}
+
 .pl:hover {
   color: #fff !important;
 }
+
 
 
 .num2 {

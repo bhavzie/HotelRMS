@@ -64,11 +64,11 @@ $(document).ready(function () {
             { width: '5%' },
             { width: '0%' },
             { width: '0%' },
-            { width: '10%' },
+            { width: '0%%' },
             { width: '10%' },
             { width: '15%' },
             { width: '10%' },
-            { width: '5%' },
+            { width: '10%' },
             { width: '10%' },
             { width: '14%' },
         ],
@@ -81,6 +81,7 @@ $(document).ready(function () {
 
     table.column(1).visible(false).draw()
     table.column(2).visible(false).draw()
+    table.column(3).visible(false).draw()
     table.column(0).order('desc').draw()
 
     $('#categoryxdf').change(function () {

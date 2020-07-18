@@ -154,12 +154,12 @@
                     <i class="fas fa-info-circle"></i>
                     <span class="col-sm-2 ml-2">$</span>
                     <input type="number" class="form-control rright mr-2" style='max-width: 15%; display: inline-block' required id = 'budget' min = '10'>
-                    <span>Rooms/Night</span>
+                    <span>Room/Night</span>
                 </div>
                 <div class="form-group mb-5">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Form of Payment</label>
                     <i class="fas fa-info-circle mr-5"></i>
-                    <select class='col-sm-2 form-control text-center payment rright mr-2' id='formPayment'  style='max-width: 45%;' multiple = 'multiple'>
+                    <select class='col-sm-6 form-control payment rright mr-2' id='formPayment'  style='max-width: 60%;' multiple = 'multiple'>
                         <option value = 'bt'>
                             Bank Transfer
                         </option>
@@ -192,18 +192,18 @@
                     <div class = 'mb-5'  id = 'dede22'>
                         <input type = 'number' class = 'form-control rright mr-2' style = 'max-width: 15%; display: inline-block; margin-left: 260px;'  name = 'paymentDays' id = 'dede33' disabled><span> Days</span>
                     </div>
-                <div class="form-group mb-5">
-                    <label class="col-sm-2 col-form-label quouteleft rleft mr-2">Comments</label>
-                    <textarea class="form-control col-sm-4 ml-5 rright" id = 'comments' style="display: inline-block;">
+                <div class="mb-5 form-group form-inline">
+                    <label class="col-sm-2 col-form-label quouteleft rleft" for ='comments'>Comments</label>
+                    <textarea class="form-control col-sm-6 mr-2 rright" id = 'comments' style="display: inline-block; margin-left: 70px; width: 400px;">
                     </textarea>
                 </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 mt-3">
-                    <div class="text-center">
-                        <button type="submit" id='subm' class="btn action"> <i class="fas fa-angle-double-right"></i> Submit</button>
+                <div class="row">
+                    <div class="col-sm-6 mt-3">
+                        <div style = 'text-align: right;'>
+                            <button type="submit" id='subm' class="btn action" style="font-size: large; width: 180px;"> <i class="fas fa-angle-double-right"></i> Submit</button>
+                        </div>  
                     </div>
+                </div>
                 </div>
             </div>
         </form>
@@ -252,9 +252,9 @@
             })
 
             $('.payment').multiselect({
-                nonSelectedText: '-',
+                nonSelectedText: ' ',
                 numberDisplayed: 0,
-                buttonWidth: '200px'
+                buttonWidth: '300px'
             })
 
             $("#checkin").click(() => {
@@ -579,19 +579,8 @@
                 if (i == 0) {
                     const butt2 = document.createElement('button')
                     butt2.classList.add('btn', 'action', 'aple', 'ml-2')
-                    const input = document.createElement('input')
-                    input.setAttribute('type', 'checkbox')
-                    input.classList.add('ml-5')
-                    input.id = 'ApplyC'
                     butt2.id = 'ApplyAll'
-                    butt2.disabled = true
-                    input.addEventListener('change', (e) => {
-                        if (e.target.checked == true) {
-                            butt2.disabled = false
-                        } else {
-                            butt2.disabled = true
-                        }
-                    })
+                    
                     butt2.type = 'button'
                     butt2.innerHTML = 'Apply All'
                     butt.style.display = 'inline-block';
@@ -604,7 +593,6 @@
                             bel.parentNode.replaceChild(copy[0], bel);
                         }
                     })
-                    tb5.append(input)
                     tb5.appendChild(butt2)
                 } else {
                     butt.click()
