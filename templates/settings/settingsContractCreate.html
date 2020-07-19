@@ -94,7 +94,6 @@
                 console.error(error.stack);
             });
 
-
     $(document).ready(function () {
         $('#create').hide();
         $('#view').hide()
@@ -117,6 +116,7 @@
     function preview(e) {
         const button = e.target
         const div = button.nextElementSibling;
+        div.innerHTML = div.innerText
         alert(div.innerText);
     }
 
@@ -131,7 +131,7 @@
             $(msg2).show()
             return false
         }
-        var contract = $(editor.getData()).text()
+        var contract = editor.getData()
         if (contract == '') {
             let msg2 = document.getElementById('msg')
             msg2.style.setProperty('color', 'red', 'important');

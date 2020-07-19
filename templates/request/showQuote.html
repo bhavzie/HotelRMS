@@ -478,7 +478,7 @@
             </div>
         </div>
         <div class='container' style="padding-bottom: 0%; padding-top: 0%; overflow: auto; height: 300px;">
-            <div class='mt-2'>
+            <div class='mt-2' id = 'contract'>
                 {% if contract|length > 0 %}
                 {{ contract[0]['contract'] }}
                 {% endif %}
@@ -560,6 +560,9 @@
         $("#all").hide();
         $("#moreReqDetails").hide();
         $("#moreResDetails").hide();
+
+        const contract = document.getElementById('contract')
+        contract.innerHTML = contract.innerText
 
         const db = [...document.getElementsByClassName('dateButtons')]
         db.forEach((db, index) => {

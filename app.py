@@ -10,6 +10,7 @@ import math
 import json
 import csv
 from xlsxwriter.workbook import Workbook
+from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -253,6 +254,7 @@ def registerI():
         country = request.form['country']
         agencyName = request.form['agencyName']
         iataCode = request.form['iataCode']
+        password = sha256_crypt.encrypt(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -266,7 +268,6 @@ def registerI():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
                            (firstName, email, password, 'IATA', ''))
@@ -294,6 +295,7 @@ def registerR():
         password = request.form['password']
         phone = request.form['phone']
         country = request.form['country']
+        password = sha256_crypt.encrypt(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -307,7 +309,6 @@ def registerR():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'retail'))
@@ -333,6 +334,7 @@ def registerC():
         phone = request.form['phone']
         country = request.form['country']
         organizationName = request.form['organizationName']
+        password = sha256_crypt.encrypt(password)
             
 
         cursor = mysql.connection.cursor()
@@ -347,7 +349,6 @@ def registerC():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'corporate'))
@@ -374,6 +375,8 @@ def registerT():
         phone = request.form['phone']
         country = request.form['country']
         agencyName = request.form['agencyName']
+        
+        password = sha256_crypt.encrypt(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -387,7 +390,6 @@ def registerT():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'tour'))
@@ -422,7 +424,7 @@ def login():
             data = data[0]
             password_match = data['password']
             
-            if (password == password_match):
+            if (sha256_crypt.verify(password, password_match)):
                 session['logged_in'] = True
                 session['email'] = email
                 session['userType'] = data['userType']
@@ -757,7 +759,6 @@ def passwordupdatereq():
             linkv='passwordupdate',
             tokenv=token,
             bodyv='Change your password by clicking this link ',
-            senderv='koolbhavya.epic@gmail.com'
         )
 
         flash('Kindly Check your email', 'success')
@@ -773,6 +774,7 @@ def passwordupdate(token):
 def passwordupdatef():
     email = request.form['email']
     password = request.form['password']
+    password = sha256_crypt.encrypt(password)
 
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From users where email = %s', [email])
@@ -835,6 +837,7 @@ def registerhotelusers():
         password = request.form['password']
         userType = request.form['userType']
         firstName = fullName.split(' ')[0]
+        password = sha256_crypt.encrypt(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -848,7 +851,6 @@ def registerhotelusers():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
 
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType))
@@ -878,6 +880,7 @@ def registerdeveloper():
         email = request.form['email']
         password = request.form['password']
         firstName = fullName.split(' ')[0]
+        password = sha256_crypt.encrypt(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -891,7 +894,6 @@ def registerdeveloper():
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-                senderv='koolbhavya.epic@gmail.com'
             )
 
             cursor.execute('INSERT INTO developers(fullName, email, password) values(%s, %s, %s)',
@@ -1315,6 +1317,8 @@ def submitEditUserAll():
     iataCode = request.form.get('iataCode')
     organizationName = request.form.get('organizationName')
 
+    password = sha256_crypt.encrypt(password)
+
     firstName = name.split(' ')[0]
     cursor = mysql.connection.cursor()
 
@@ -1368,8 +1372,7 @@ def inviteemail():
             recipientsv=email,
             linkv='addhoteluserinv',
             tokenv=token,
-            bodyv='Kindly fill the form to complete registration',
-            senderv='koolbhavya.epic@gmail.com'
+            bodyv='Kindly fill the form to complete registration'
         )
 
         flash('Invitation sent to email', 'success')
@@ -1798,6 +1801,7 @@ def home2():
                 return render_template('index2.html', title='Home', data=data)
             return render_template('index2.html', title='Home')
     except:
+        updatePasswords()
         return render_template('login.html', title='Login')
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
@@ -2292,6 +2296,14 @@ def updateIata():
     mysql.connection.commit()
     return ''
 
+def updatePasswords():
+    cursor = mysql.connection.cursor()
+    cursor.execute("Update users set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    cursor.execute("Update iataUsers set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    cursor.execute("Update hotelUsers set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    cursor.execute("Update developers set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    cursor.execute("Update customers set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    mysql.connection.commit()
 
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
@@ -3709,7 +3721,7 @@ def showQuote(id):
 
     string = ''
     v = data2['formPayment']
-    data2['formPayment'] = procArr2(data['formPayment'])
+    data2['formPayment'] = procArr2(data2['formPayment'])
 
     string = ''
     v = data2['paymentTerms']
@@ -4361,7 +4373,7 @@ def deleteRequest(id):
                 tcomm = True
 
             string = ''
-            data2['formPayment'] = data2['formPayment']
+            data2['formPayment'] = procArr2(data2['formPayment'])
 
             string = ''
             v = data2['paymentTerms']
@@ -4447,11 +4459,18 @@ def deleteRequest(id):
                 if (r['type'] == 'foc'):
                     r['type'] = "FOC"
 
+        cursor.execute('SELECT contract from contract where id = %s', [data2['contract']])
+        contractv = cursor.fetchall()
+        if len(contractv) != 0:
+            contractv = contractv[0]
+        else:
+            contractv = ''
+
         x = data2['submittedOn'].strftime('%y-%b-%d,  %H:%M:%S')
         x = x.split("-")
         data2['submittedOn'] = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
-        return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10)
+        return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10, contractv = contractv)
     elif (status[0]['status'] == statusval1):
         cursor.execute('SELECT * From request where id = %s', [id])
         data = cursor.fetchall()
@@ -5001,7 +5020,6 @@ def confirmRequestSubmit():
         subjectv = 'Confirmation Email',
         recipientsv = createdFor,
         bodyv = msg,
-        senderv = 'koolbhavya.epic@gmail.com'
     )
 
 
@@ -5087,7 +5105,6 @@ def notConfirmRequest():
         subjectv='Confirmation Email',
         recipientsv=createdFor,
         bodyv=msg,
-        senderv='koolbhavya.epic@gmail.com'
     )
 
     flash('The request is now declined', 'danger')
@@ -6079,14 +6096,19 @@ def analyticsstdreportGet():
     cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
     requestData = cursor.fetchall()
     for r in requestData:
-        cursor.execute('SELECT totalQuote, submittedOn From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
+        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
         totalQuote = cursor.fetchall()
         if len(totalQuote) == 0:
             r['totalQuote'] = 0
             r['evaluatedFare'] = 0
         else:
             r['totalQuote'] = totalQuote[0]['totalQuote']
-
+            r['expiryTime'] = totalQuote[0]['expiryTime']
+            r['negotiationReason'] = totalQuote[0]['negotiationReason']
+            r['expectedFare'] = totalQuote[0]['expectedFare']
+            r['overrideReason'] = totalQuote[0]['overrideReason']
+            r['overrideFlag'] = totalQuote[0]['overrideFlag']
+            r['timesNegotiated'] = totalQuote[0]['timesNegotiated']
             responseId = r['id'] + "R"
             submittedOn = totalQuote[0]['submittedOn']
             cursor.execute('SELECT * from responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
@@ -6301,6 +6323,16 @@ def strategyForecast():
 @app.route('/strategyEvaluation', methods = ['GET', 'POST'])
 def strategyEvaluation():
     return render_template('strategy/evaluation.html')
+
+
+@app.route('/strategyAncillary', methods = ['GET', 'POST'])
+def strategyAncillary():
+    return render_template('strategy/Ancillary.html')
+
+@app.route('/settingBusinessReward', methods = ['GET', 'POST'])
+def settingBusinessReward():
+    return render_template('settings/BusinessReward.html')
+
 
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)

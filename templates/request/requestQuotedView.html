@@ -390,8 +390,11 @@
         <div class='mb-5'>
             Contract : <button class='btn otherbtn' onclick="hc()">
                     {% if data2['contract'] %}
-                    <span id = 'contracts1'>{{ data2['contract'] }}</span>
+                    <div id = 'contract1'>{{ data2['contract'] }}</div>
                     {% endif %}
+                    <div id = 'contract2' style="display: none;">
+                       {{ contractv }}
+                    </div>
                 </button>
         </div>
         <div class='mb-5'>
@@ -457,12 +460,14 @@
 
     function hc() {
         const contractv = "{{ contractv }}"
-        alert(contractv)
+        const contract1 = document.getElementById('contract2')
+        contract1.innerHTML = contract1.innerText
+        alert(contract1.innerText)
     }
 
     function emsg(text) {
         let msg2 = document.getElementById('msg')
-        msg2.style.setProperty('color', 'red', 'important');
+        msg2.style.setProperty('color', 'red', '    important');
 
         msg2.innerHTML = `${text}`
         $(msg2).show()

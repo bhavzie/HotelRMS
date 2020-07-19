@@ -728,7 +728,9 @@ table {
   color: #fff !important;
 }
 
-
+.no-results{
+    cursor: pointer;
+}
 
 .num2 {
   width: 96px;

@@ -10,7 +10,7 @@
                 <div class = 'mge1'>
                 <div class="form-group mb-5">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Requested By*</label>
-                    <select class='col-sm-6 form-control text-center rright' id='createdFor' required style="width: 45%;">
+                    <select class='col-sm-5 text-center rright selectpicker selectpicker1 form-control' id='createdFor' required data-live-search="true">
                         <option selected disabled>
                             Customer ID
                         </option>
@@ -19,6 +19,9 @@
                             {{ user['email'] }}
                         </option>
                         {% endfor %}
+                        <option>
+                            Create New ID
+                        </option>
                     </select>
                 </div>
                 <div class="form-group mb-5">
@@ -275,6 +278,10 @@
             $("#checkout").click(() => {
               $endDate.datepicker('show')
           })
+
+            $('.selectpicker1').selectpicker({
+                noneResultsText : 'Create New ID'
+            });
 
         });
 
