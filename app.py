@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request, session, url_for, sess
 from config import Config
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from functools import wraps
+import smtplib
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 from flask_mysqldb import MySQL
@@ -41,7 +42,9 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
-        recipients = recipientsv.split())
+        recipients = recipientsv.split(),
+        bcc = ['trompar.sales@gmail.com']
+        )
     link = url_for(linkv, token=tokenv, _external=True)
     msg.body = bodyv + ' ' + link
     mail.send(msg)
@@ -50,25 +53,33 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
-        recipients = recipientsv.split())
+        recipients = recipientsv.split(),
+        bcc = ['trompar.sales@gmail.com', 'koolbhavya.epic@gmail.com']
+        )
     link = url_for(linkv, id=tokenv, _external=True)
-    msg.body = bodyv + ' ' + link
+    msg.body = bodyv +  'Press on the link  ' + link + '  to view & accept your rate quote \n\n Rooms & Rate are subject to availability at the time of booking. \n \n Thanks, \n The Row Hotel | 408-111-2255 \n Do Not Reply to this email'
+    msg.html = render_template('/mails/quote.html', link = link)
     mail.send(msg)
 
 def sendMail2(subjectv, recipientsv, bodyv):    
+    # Confirm Email
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
-        recipients = recipientsv.split())
+        recipients = recipientsv.split(),
+        bcc = ['trompar.sales@gmail.com']
+        )
 
     msg.body = bodyv
     mail.send(msg)
 
-def sendMail3(subjectv, recipientsv, bodyv, attachv):
+def sendMailA(subjectv, recipientsv, bodyv, attachv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
-        recipients = recipientsv.split())
+        recipients = recipientsv.split(),
+        bcc = ['trompar.sales@gmail.com']
+        )
 
     msg.body = bodyv
     msg.attach(attachv)
@@ -2308,7 +2319,7 @@ def updatePasswords():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    #reset()
+    reset()
     #updateIata()
     cursor = mysql.connection.cursor()
     email = session['email']
@@ -3666,11 +3677,11 @@ def requestProcessQuote():
 
     token = generateConfirmationToken(inp['requestId'])
     sendMailQ(
-        subjectv = 'Quotation',
+        subjectv = 'The Row Hotel(TR1101) - Group Rates',
         recipientsv=createdFor,
         linkv = 'showQuoteEmail',
         tokenv = token,
-        bodyv = 'View Quotation',
+        bodyv = 'Please Do Not Reply to this email, \n Hello, \n\n You have recieved a response to your group rate enquiry.',
     )
 
     
