@@ -2319,7 +2319,7 @@ def updatePasswords():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    reset()
+    #reset()
     #updateIata()
     cursor = mysql.connection.cursor()
     email = session['email']
