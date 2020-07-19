@@ -1801,7 +1801,7 @@ def home2():
                 return render_template('index2.html', title='Home', data=data)
             return render_template('index2.html', title='Home')
     except:
-        updatePasswords()
+        #updatePasswords()
         return render_template('login.html', title='Login')
 
 @app.route('/strategyDiscountCreate', methods = ['GET', 'POST'])
