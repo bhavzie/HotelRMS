@@ -1044,10 +1044,6 @@
 
             
         cutoffDays = document.getElementById('dedenewi').value
-        if (cutoffDays == '') {
-            emsg('Enter Cutoff Days')
-            return false
-        }
 
         formPayment = $('#formPayment').val()
         if (formPayment == '') {
@@ -1290,10 +1286,6 @@
 
 
         cutoffDays = document.getElementById('dedenewi').value
-        if (cutoffDays == '') {
-            emsg('Enter Cutoff Days')
-            return false
-        }
 
         formPayment = $('#formPayment').val()
         if (formPayment == '') {
@@ -1527,6 +1519,8 @@
         } else {
             commissionValue = commissionValue.innerText
         }
+
+        const over = document.getElementById('res');
         if (over.style.display != 'none') {
             overres = $('#overres').val();
             if (overres == '') {
@@ -1552,10 +1546,6 @@
 
 
         cutoffDays = document.getElementById('dedenewi').value
-        if (cutoffDays == '') {
-            emsg('Enter Cutoff Days')
-            return false
-        }
 
         formPayment = $('#formPayment').val()
         if (formPayment == '') {

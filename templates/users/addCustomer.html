@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container-login">
+    <div class="wrap-login">
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>Add Customer</p><i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+    <form action = '{{ url_for("addCustomerSubmit") }}' method = 'POST'>
+        <div class = 'formhelp mb-5'>
+            <label class = 'mb-5'>
+                Type of Customer :
+            </label>
+            <select class = 'form-control text-center' name = 'customerType' required>
+                <option selected disabled>
+                    Customer Type
+                </option>
+                <option value = 'iata'>
+                    IATA
+                </option>
+                <option value = 'retail'>
+                    Retail User
+                </option>
+                <option value = 'corporate'>
+                    Corporate
+                </option>
+                <option value = 'tour'>
+                    Tour Operator
+                </option>
+            </select>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 mt-3">
+                <div class="text-center">
+                    <button type="submit" id='subm' class="btn action">Register</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+{% endblock %}

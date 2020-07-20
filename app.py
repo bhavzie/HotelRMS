@@ -148,6 +148,17 @@ def checkOverride(value):
         except:
             return False
 
+def alterTables():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT table_name FROM information_schema.tables  where TABLE_SCHEMA="testHotel";')
+    data = cursor.fetchall()
+    for d in data:
+        table = d['table_name']
+        if table != 'mapHotelId':
+            query = 'UPDATE {} set hotelId = 1'.format(table)
+            cursor.execute(query)
+    mysql.connection.commit()
+    cursor.close()
 
 # Decorators
 # Check if user logged in
@@ -434,12 +445,12 @@ def login():
         else:
             data = data[0]
             password_match = data['password']
-            
             if (sha256_crypt.verify(password, password_match)):
                 session['logged_in'] = True
                 session['email'] = email
                 session['userType'] = data['userType']
                 session['firstName'] = data['firstName']
+                session['hotelId'] = data['hotelId']
 
                 ''' 
                     * userType:-
@@ -6344,6 +6355,45 @@ def strategyAncillary():
 def settingBusinessReward():
     return render_template('settings/BusinessReward.html')
 
+
+@app.route('/addHotel', methods = ['GET', 'POST'])
+def addHotel():
+    return render_template('developer/addHotel.html')
+
+@app.route('/addHotelSubmit', methods = ['GET', 'POST'])
+def addHotelSubmit():
+    
+    if request.method == 'POST':
+        hotelName = request.form['hotelName']
+        email = request.form['email']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * From mapHotelId where email = %s', [email])
+        data = cursor.fetchall()
+        if len(data) == 0:
+            cursor.execute('INSERT INTO mapHotelId(hotelName, email) VALUES(%s, %s)', [hotelName, email])
+            mysql.connection.commit()
+        else:
+            flash('Email already registered', 'danger')
+            return render_template('developer/addHotel.html')
+
+        flash('New Hotel has been registered', 'success')
+        return redirect(url_for('home2'))
+
+@app.route('/addCustomer', methods = ['GET', 'POST'])
+def addCustomer():
+    return render_template('users/addCustomer.html')
+
+@app.route('/addCustomerSubmit', methods = ['GET', 'POST'])
+def addCustomerSubmit():
+    customerType = request.form['customerType']
+    if customerType == 'iata':
+        return redirect(url_for('iatar'))
+    elif customerType == 'retail':
+        return redirect(url_for('customerr'))
+    elif customerType == 'corporate':
+        return redirect(url_for('customerC'))
+    elif customerType == 'tour':
+        return redirect(url_for('customerT'))
 
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)

@@ -1041,10 +1041,6 @@
         }
         const totalQuote = document.getElementById('totalQuote').innerText
         const cutoffDays = document.getElementById('dedenewi').value
-        if (cutoffDays == '') {
-            emsg('Enter Cutoff Days')   
-            return false
-        }
         const formPayment = $('#formPayment').val()
         if (formPayment == '') {
             emsg('Enter Form of Payment')
@@ -1488,10 +1484,7 @@
         }
         const totalQuote = document.getElementById('totalQuote').innerText
         const cutoffDays = document.getElementById('dedenewi').value
-        if (cutoffDays == '') {
-            emsg('Enter Cutoff Days')
-            return false
-        }
+
         const formPayment = $('#formPayment').val()
         if (formPayment == '') {
             emsg('Enter Form of Payment')
