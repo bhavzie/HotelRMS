@@ -155,7 +155,7 @@ def alterTables():
     for d in data:
         table = d['table_name']
         if table != 'mapHotelId':
-            query = 'UPDATE {} set hotelId = 1'.format(table)
+            query = 'UPDATE {} set hotelId = 1 where 1 = 1'.format(table)
             cursor.execute(query)
     mysql.connection.commit()
     cursor.close()
@@ -242,30 +242,36 @@ def index():
     return render_template('login.html', title = 'Login')
 
 @app.route('/iataRegistration', methods=['GET', 'POST'])
+@is_logged_in
 def iatar():
     return render_template('users/registerIata.html', title = 'Register')
 
 
 @app.route('/customerRegistrationR', methods=['GET', 'POST'])
+@is_logged_in
 def customerr():
     return render_template('users/rcustomer.html', title='Register')
 
 @app.route('/customerRegistrationI', methods=['GET', 'POST'])
+@is_logged_in
 def customerI():
     return render_template('users/icustomer.html', title='Register')
 
 
 @app.route('/customerRegistrationT', methods=['GET', 'POST'])
+@is_logged_in
 def customerT():
     return render_template('users/tcustomer.html', title='Register')
 
 
 @app.route('/customerRegistrationC', methods=['GET', 'POST'])
+@is_logged_in
 def customerC():
     return render_template('users/ccustomer.html', title='Register')
 
 
 @app.route('/registerI', methods = ['GET', 'POST'])
+@is_logged_in
 def registerI():
     if request.method == 'POST':
         fullName = request.form['fullName']
@@ -276,7 +282,8 @@ def registerI():
         country = request.form['country']
         agencyName = request.form['agencyName']
         iataCode = request.form['iataCode']
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
+        hotelId = session.get('hotelId')
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -291,11 +298,11 @@ def registerI():
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
             )
-            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
-                           (firstName, email, password, 'IATA', ''))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'IATA', '', hotelId))
 
-            cursor.execute('INSERT INTO iataUsers(fullName, email, country, phone, password, iataCode, agencyName) Values(%s, %s, %s, %s, %s, %s, %s)',
-                           (fullName, email, country, phone, password, iataCode, agencyName))
+            cursor.execute('INSERT INTO iataUsers(fullName, email, country, phone, password, iataCode, agencyName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, iataCode, agencyName, hotelId))
 
             mysql.connection.commit()
             cursor.close()
@@ -308,6 +315,7 @@ def registerI():
 
 
 @app.route('/registerR', methods = ['GET', 'POST'])
+@is_logged_in
 def registerR():
     if request.method == 'POST':
 
@@ -317,7 +325,8 @@ def registerR():
         password = request.form['password']
         phone = request.form['phone']
         country = request.form['country']
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
+        hotelId = session.get('hotelId')
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -332,10 +341,10 @@ def registerR():
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
             )
-            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
-                           (firstName, email, password, 'customer', 'retail'))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'retail', hotelId))
 
-            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType) Values(%s, %s, %s, %s, %s, %s)', (fullName, email, country, phone, password, 'retail'))
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, hotelId) Values(%s, %s, %s, %s, %s, %s, %s)', (fullName, email, country, phone, password, 'retail', hotelId))
             
             mysql.connection.commit()
             cursor.close()
@@ -347,6 +356,7 @@ def registerR():
         return render_template('login.html', title='Login')
 
 @app.route('/registerC', methods=['GET', 'POST'])
+@is_logged_in
 def registerC():
     if request.method == 'POST':
         fullName = request.form['fullName']
@@ -356,7 +366,8 @@ def registerC():
         phone = request.form['phone']
         country = request.form['country']
         organizationName = request.form['organizationName']
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
+        hotelId = session.get('hotelId')
             
 
         cursor = mysql.connection.cursor()
@@ -372,11 +383,11 @@ def registerC():
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
             )
-            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
-                           (firstName, email, password, 'customer', 'corporate'))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'corporate', hotelId))
 
-            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, organizationName) Values(%s, %s, %s, %s, %s, %s, %s)',
-                           (fullName, email, country, phone, password, 'corporate', organizationName))
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, organizationName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, 'corporate', organizationName, hotelId))
 
             mysql.connection.commit()
             cursor.close()
@@ -388,6 +399,7 @@ def registerC():
         return render_template('login.html', title='Login')
 
 @app.route('/registerT', methods=['GET', 'POST'])
+@is_logged_in
 def registerT():
     if request.method == 'POST':
         fullName = request.form['fullName']
@@ -398,7 +410,8 @@ def registerT():
         country = request.form['country']
         agencyName = request.form['agencyName']
         
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
+        hotelId = session.get('hotelId')
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -413,11 +426,11 @@ def registerT():
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
             )
-            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)',
-                           (firstName, email, password, 'customer', 'tour'))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'tour', hotelId))
 
-            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, agencyName) Values(%s, %s, %s, %s, %s, %s, %s)',
-                           (fullName, email, country, phone, password, 'tour', agencyName))
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, agencyName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, 'tour', agencyName, hotelId))
 
             mysql.connection.commit()
             cursor.close()
@@ -796,7 +809,7 @@ def passwordupdate(token):
 def passwordupdatef():
     email = request.form['email']
     password = request.form['password']
-    password = sha256_crypt.encrypt(password)
+    password = sha256_crypt.hash(password)
 
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From users where email = %s', [email])
@@ -832,7 +845,9 @@ def signOut():
 @is_logged_in
 def hoteladduser():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT userType FROM hotelMenuAccess")
+    hotelId = session.get('hotelId')
+    
+    cursor.execute("SELECT userType FROM hotelMenuAccess where hotelId = %s", [hotelId])
     data = cursor.fetchall()
     subtypes = []
 
@@ -859,7 +874,8 @@ def registerhotelusers():
         password = request.form['password']
         userType = request.form['userType']
         firstName = fullName.split(' ')[0]
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
+        hotelId = session.get('hotelId')
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -875,9 +891,9 @@ def registerhotelusers():
                 bodyv='Confirm your email by clicking this link ',
             )
 
-            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType) Values(%s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)', (firstName, email, password, "hoteluser", userType, hotelId))
 
-            cursor.execute('INSERT INTO hotelUsers(fullName,  email, password, userType) VALUES(%s, %s, %s, %s)', (fullName,  email, password, userType))
+            cursor.execute('INSERT INTO hotelUsers(fullName,  email, password, userType, hotelId) VALUES(%s, %s, %s, %s, %s)', (fullName,  email, password, userType, hotelId))
         else:
             flash('Email Already Registered', 'danger')
             return render_template('users/hoteladduser.html', title="Register")
@@ -902,7 +918,7 @@ def registerdeveloper():
         email = request.form['email']
         password = request.form['password']
         firstName = fullName.split(' ')[0]
-        password = sha256_crypt.encrypt(password)
+        password = sha256_crypt.hash(password)
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
@@ -985,15 +1001,15 @@ def addusertype():
     usersHotelEdit = getValC(request.form.get('usersHotelEdit'))
     userType = request.form['userType']
 
-
+    hotelId = session.get('hotelId')
 
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From hotelMenuAccess where userType = %s', [userType])
+    cursor.execute('SELECT * From hotelMenuAccess where userType = %s && hotelId = %s', [userType, hotelId])
     data = cursor.fetchall()
 
     if len(data) == 0:
-        cursor.execute('INSERT INTO hotelMenuAccess(userType,request, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue,analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap, settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                       userType, requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload])
+        cursor.execute('INSERT INTO hotelMenuAccess(userType,request, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue,analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap, settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                       userType, requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, hotelId])
 
     else:
         flash('UserType Already Registered', 'danger')
@@ -1011,7 +1027,8 @@ def addusertype():
 @is_logged_in
 def managehotelusers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT fullName, email, userType, active FROM hotelUsers')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT fullName, email, userType, active FROM hotelUsers where hotelId = %s', [hotelId])
 
     result = cursor.fetchall()
     cursor.close()
@@ -1068,10 +1085,11 @@ def showprofileAll(email):
 @is_logged_in
 def editUser(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM hotelUsers where email = %s', [email])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * FROM hotelUsers where email = %s && hotelId = %s', [email, hotelId])
 
     data = cursor.fetchall()
-    cursor.execute("SELECT userType FROM hotelMenuAccess")
+    cursor.execute("SELECT userType FROM hotelMenuAccess where hotelId = %s", [hotelId])
     data1 = cursor.fetchall()
     subtypes = []
 
@@ -1131,13 +1149,14 @@ def submitEditUser():
     active = getValC(request.form.get('active'))
     firstName = name.split()[0]
     email = request.form['email']
+    hotelId = session.get('hotelId')
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute('Update hotelUsers SET fullName = %s, userType = %s, email_verified = %s, active = %s WHERE email = %s',(name, userType, email_verified, active, email))
+    cursor.execute('Update hotelUsers SET fullName = %s, userType = %s, email_verified = %s, active = %s WHERE email = %s && hotelId = %s',(name, userType, email_verified, active, email, hotelId))
 
 
-    cursor.execute('Update users SET firstName = %s,  userSubType = %s WHERE email = %s', (firstName, userType, email))
+    cursor.execute('Update users SET firstName = %s,  userSubType = %s WHERE email = %s && hotelId = %s', (firstName, userType, email, hotelId))
 
     mysql.connection.commit()
     cursor.close()
@@ -1183,7 +1202,8 @@ def submitEditUserAll2():
 @app.route('/deactivateUser/<email>', methods = ['GET', 'POST'])
 def deactivateUser(email):
     cursor = mysql.connection.cursor()
-    cursor.execute("UPDATE hotelUsers SET active = 0 where email = %s", [email])
+    hotelId = session.get('hotelId')
+    cursor.execute("UPDATE hotelUsers SET active = 0 where email = %s && hotelId = %s", [email, hotelId])
     mysql.connection.commit()
     cursor.close()
 
@@ -1195,7 +1215,8 @@ def deactivateUser(email):
 @is_logged_in
 def deactivateUserAll(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM users where email = %s', [email])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * FROM users where email = %s && hotelId = %s', [email, hotelId])
     data = cursor.fetchall()
     data = data[0]
     if (data['userType'] == 'developer'):
@@ -1221,7 +1242,8 @@ def deactivateUserAll(email):
 @is_logged_in
 def deactivateC(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM users where email = %s', [email])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * FROM users where email = %s && hotelId = %s', [email, hotelId])
     data = cursor.fetchall()
     data = data[0]
     if (data['userType'] == 'customer'):
@@ -1239,7 +1261,8 @@ def deactivateC(email):
 @is_logged_in
 def activateC(email):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM users where email = %s', [email])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * FROM users where email = %s && hotelId = %s', [email, hotelId])
     data = cursor.fetchall()
     data = data[0]
 
@@ -1258,8 +1281,9 @@ def activateC(email):
 @is_logged_in
 def activateUser(email):
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute(
-        "UPDATE hotelUsers SET active = 1 where email = %s", [email])
+        "UPDATE hotelUsers SET active = 1 where email = %s && hotelId = %s", [email, hotelId])
     mysql.connection.commit()
     cursor.close()
 
@@ -1339,7 +1363,7 @@ def submitEditUserAll():
     iataCode = request.form.get('iataCode')
     organizationName = request.form.get('organizationName')
 
-    password = sha256_crypt.encrypt(password)
+    password = sha256_crypt.hash(password)
 
     firstName = name.split(' ')[0]
     cursor = mysql.connection.cursor()
@@ -1379,6 +1403,7 @@ def inviteemail():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From users where email = %s', [email])
     data = cursor.fetchall()
+    hotelId = session.get('hotelId')
 
     if len(data) != 0:
         flash('Email already registered', 'danger')
@@ -1386,7 +1411,7 @@ def inviteemail():
     else:
         token = generateConfirmationToken(email)
 
-        cursor.execute('INSERT INTO inviteEmail(email, userType) VALUES(%s, %s)', [email, userType])
+        cursor.execute('INSERT INTO inviteEmail(email, userType, hotelId) VALUES(%s, %s, %s)', [email, userType, hotelId])
         mysql.connection.commit()
         cursor.close()
         sendMail(
@@ -1558,7 +1583,8 @@ def viewAllUsers():
 @is_logged_in
 def editCustomers():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From users where userType = %s or userType = %s', ["customer", "IATA"])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From users where userType = %s or userType = %s && hotelId = %s', ["customer", "IATA", hotelId])
     data = cursor.fetchall()
 
     for r in data:
@@ -1584,7 +1610,8 @@ def editCustomers():
 @is_logged_in
 def strategyRooms():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From room')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From room where hotelId = %s', [hotelId])
     data = cursor.fetchall()
     if len(data) == 0:
         return render_template('strategy/strategyRooms.html')
@@ -1603,9 +1630,9 @@ def strategyRoomsSubmit():
     inp.remove(inp[0])
 
     cursor = mysql.connection.cursor()
-    
+    hotelId = session.get('hotelId')
     for i in inp:
-        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad) VALUES(%s, %s, %s, %s, %s, %s)" , [i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5])])
+        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)" , [i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5]), hotelId])
     
     mysql.connection.commit()
     cursor.close()
@@ -1623,12 +1650,13 @@ def editstrategyRoomsSubmit():
     inp.remove(inp[0])
         
     cursor = mysql.connection.cursor()
-    cursor.execute('DELETE FROM room')
+    hotelId = session.get('hotelId')
+    cursor.execute('DELETE FROM room where hotelId = %s', [hotelId])
     mysql.connection.commit()
 
     for i in inp:
-        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad) VALUES(%s, %s, %s, %s, %s, %s)", [
-                       i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5])])
+        cursor.execute("INSERT INTO room(type, count, single, doublev, triple, quad, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)", [
+                       i[0][0], i[1], int(i[2]), int(i[3]), int(i[4]), int(i[5]), hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -1642,19 +1670,20 @@ def editstrategyRoomsSubmit():
 @is_logged_in
 def strategyRate():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From room')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From room where hotelId = %s', [hotelId])
     data = cursor.fetchall()
     if len(data) == 0:
         flash('Kindly fill types of Rooms first', 'danger')
-        return render_template('strategyRooms.html')
+        return render_template('strategy/strategyRooms.html')
     else:
             cursor = mysql.connection.cursor()
-            cursor.execute('SELECT * From rate')
+            cursor.execute('SELECT * From rate where hotelId = %s', [hotelId])
             data1 = cursor.fetchall()
             if len(data1) == 0:
                 return render_template('strategy/strategyRate.html', data = data)
             else:
-                    cursor.execute('SELECT startDate, endDate from rate')
+                    cursor.execute('SELECT startDate, endDate from rate where hotelId = %s', [hotelId])
                     storedDates = cursor.fetchall()
                     for d in data1:
                         dow = ""
@@ -1701,10 +1730,11 @@ def strategyRateSubmit():
         return render_template('index2.html')
     
     cursor = mysql.connection.cursor()
-    cursor.execute('DELETE FROM rate')
+    hotelId = session.get('hotelId')
+    cursor.execute('DELETE FROM rate where hotelId = %s', [hotelId])
     mysql.connection.commit()
     for i in inp:
-        cursor.execute("INSERT INTO rate(startDate, endDate, monday, tuesday, wednesday, thursday, friday, saturday, sunday, type, sor, dor, tor, qor) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9][0], i[10], i[11], i[12], i[13]])
+        cursor.execute("INSERT INTO rate(startDate, endDate, monday, tuesday, wednesday, thursday, friday, saturday, sunday, type, sor, dor, tor, qor, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9][0], i[10], i[11], i[12], i[13], hotelId])
     mysql.connection.commit()
     cursor.close()
 
@@ -1716,7 +1746,8 @@ def strategyRateSubmit():
 @is_logged_in
 def requestCreateAdhoc():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From room')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From room where hotelId = %s', [hotelId])
     data = cursor.fetchall()
     if len(data) == 0:
         flash('Kindly fill types of Rooms first', 'danger')
@@ -1730,9 +1761,9 @@ def requestCreateAdhoc():
         elif r['type'] == '2':
             c2 = r['single'] + r['doublev'] + r['triple'] + r['quad']
 
-    cursor.execute('SELECT email From users where userType != %s && userType != %s', ['hoteluser', 'developer'])
+    cursor.execute('SELECT email From users where userType != %s && userType != %s && hotelId = %s', ['hoteluser', 'developer', hotelId])
     users = cursor.fetchall()
-    cursor.execute('SELECT * From settingsRequest Order By submittedOn desc')
+    cursor.execute('SELECT * From settingsRequest where hotelId = %s Order By submittedOn desc', [hotelId])
     result = cursor.fetchall()
     check_flag = False
     if len(result) != 0:
@@ -1751,6 +1782,7 @@ def requestCreateAdhocSubmit():
     cursor.execute('SELECT userType from users where email = %s', [inp['createdFor']])
     userType = cursor.fetchall()
     userType = userType[0]['userType']
+    hotelId = session.get('hotelId')
 
     if inp['commissionable'] == '':
         inp['commissionable'] = 0
@@ -1770,7 +1802,7 @@ def requestCreateAdhocSubmit():
     if inp['comments'] == '':
         inp['comments'] = 0
     
-    cursor.execute('SELECT Count(*) from request')
+    cursor.execute('SELECT Count(*) from request where hotelId = %s', [hotelId])
     count = cursor.fetchall()
     count = count[0]['Count(*)'] + 1
     if (count < 10):
@@ -1782,18 +1814,18 @@ def requestCreateAdhocSubmit():
     lead = d1 - today
     lead = lead.days
     today = datetime.datetime.today()
-    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, inp['createdFor'], lead, statusval1, userType, today   
+    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                   inp['category'], inp['groupName'], inp['checkIn'], inp['checkOut'], inp['nights'], inp['commissionable'], inp['groupBlock'], inp['foc'], inp['foc1'], inp['foc2'], inp['budget'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentDays'], inp['comments'], id, username, inp['createdFor'], lead, statusval1, userType, today, hotelId   
             ])
 
     table = inp['table_result']
     for t in table:
         if (t['type'] == '1'):
-            cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [
-                t['date'], t['occupancy'], t['count'], id])
+            cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id, hotelId) VALUES(%s, %s, %s, %s, %s)', [
+                t['date'], t['occupancy'], t['count'], id, hotelId])
         else:
             cursor.execute(
-                'INSERT INTO request2Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'],  t['occupancy'], t['count'], id])
+                'INSERT INTO request2Bed(date, occupancy, count, id, hotelId) VALUES(%s, %s, %s, %s, %s)', [t['date'],  t['occupancy'], t['count'], id, hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -1807,7 +1839,8 @@ def home2():
         if session['logged_in'] == True:
             if session['userType'] == 'hoteluser' or session['userType'] == 'developer':
                 cursor = mysql.connection.cursor()
-                cursor.execute('SELECT * FROM request')
+                hotelId = session.get('hotelId')
+                cursor.execute('SELECT * FROM request where hotelId = %s', [hotelId])
                 data = cursor.fetchall()
                 data = data[::-1]
                 for d in data:
@@ -1815,7 +1848,7 @@ def home2():
                 return render_template('index2.html', title = 'Home', data = data)
             else:
                 cursor = mysql.connection.cursor()
-                cursor.execute('SELECT * From request where createdFor = %s', [session['email']])
+                cursor.execute('SELECT * From request where createdFor = %s && hotelId = %s', [session['email'], hotelId])
                 data = cursor.fetchall()
                 data = data[::-1]
                 for d in data:
@@ -1830,14 +1863,15 @@ def home2():
 @is_logged_in
 def strategyDiscountCreate():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT count from room')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT count from room where hotelId = %s', [hotelId])
     data = cursor.fetchall()
     rooms = 0
     for d in data:
         rooms += int(d['count'])
-    cursor.execute('SELECT * FROM discountMap') 
+    cursor.execute('SELECT * FROM discountMap where hotelId = %s', [hotelId]) 
     discountGrids = cursor.fetchall()
-    cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE')
+    cursor.execute('SELECT * FROM discountMap WHERE defaultm = TRUE && hotelId = %s', [hotelId])
     f = cursor.fetchall()
     flag = False
     defaultId = -1
@@ -1854,7 +1888,7 @@ def strategyDiscountCreate():
         r['endDate'] = x[2] + " " + x[1] + ", " + x[0]
 
 
-    cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0')
+    cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0 && hotelId = %s', [hotelId])
     storedDates = cursor.fetchall()
 
     return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
@@ -1865,14 +1899,15 @@ def strategyDiscountCreate():
 def strategyDiscountSubmit():
     inp = request.json
     occ = inp['occ']
+    hotelId = session.get('hotelId')
         
     cursor = mysql.connection.cursor()
     for o in occ:
-        cursor.execute('INSERT INTO discountOcc(discountId, occ, col) VALUES(%s, %s, %s)', [inp['discountId'], o['occ'], o['col']])
+        cursor.execute('INSERT INTO discountOcc(discountId, occ, col, hotelId) VALUES(%s, %s, %s, %s)', [inp['discountId'], o['occ'], o['col'], hotelId])
 
     email = session['email']
     time = datetime.datetime.utcnow()   
-    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time])
+    cursor.execute('INSERT INTO discountMap(discountId, startDate, endDate, defaultm, createdBy, createdOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)', [inp['discountId'], inp['startDate'], inp['endDate'], inp['defaultm'], email, time, hotelId])
 
     for jindex, l in enumerate(inp['leadtime']):
         lead = l.split(' - ')
@@ -1890,7 +1925,7 @@ def strategyDiscountSubmit():
             values = inp['values']
             value = values[jindex][index]
             
-            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [discountId, leadMin, leadMax, roomMin, roomMax, value])
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)', [discountId, leadMin, leadMax, roomMin, roomMax, value, hotelId])
 
 
     mysql.connection.commit()
@@ -1903,14 +1938,15 @@ def strategyDiscountSubmit():
 @is_logged_in
 def showDiscountGrid(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from discountMap where discountId = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * from discountMap where discountId = %s && hotelId = %s', [id, hotelId])
     data = cursor.fetchall()
     data = data[0]
 
-    cursor.execute('SELECT * FROM discount where discountId = %s', [id])
+    cursor.execute('SELECT * FROM discount where discountId = %s && hotelId = %s', [id, hotelId])
     grid = cursor.fetchall()
 
-    cursor.execute('SELECT * FROM discountOcc where discountId = %s', [id])
+    cursor.execute('SELECT * FROM discountOcc where discountId = %s && hotelId = %s', [id, hotelId])
     occ = cursor.fetchall()
 
     ranges = []
@@ -1943,14 +1979,14 @@ def showDiscountGrid(id):
     
     result = tup
 
-    cursor.execute('SELECT * From discountMap where defaultm = 1')
+    cursor.execute('SELECT * From discountMap where defaultm = 1 && hotelId = %s', [hotelId])
     ffm = cursor.fetchall()
     flag = True
     if len(ffm) == 0:
         flag = False
 
     cursor.execute(
-        'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s', [id])
+        'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s && hotelId = %s', [id, hotelId])
     storedDates = cursor.fetchall()
     data['startDate'] = data['startDate'].strftime('%y-%b-%d')
     x = data['startDate'].split('-')
@@ -1989,8 +2025,9 @@ def markDefault(id):
 @is_logged_in
 def deactivateDiscount(id):
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute(
-        'UPDATE discountMap set active = 0 where discountId = %s', [id])
+        'UPDATE discountMap set active = 0 where discountId = %s && hotelId = %s', [id, hotelId])
     mysql.connection.commit()
     cursor.close()
     flash('Grid Deactivated', 'danger')
@@ -2001,8 +2038,9 @@ def deactivateDiscount(id):
 @is_logged_in
 def activateDiscount(id):
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute(
-        'UPDATE discountMap set active = 1 where discountId = %s', [id])
+        'UPDATE discountMap set active = 1 where discountId = %s && hotelId = %s', [id, hotelId])
     mysql.connection.commit()
     cursor.close()
     flash('Grid Activated', 'success')
@@ -2017,12 +2055,13 @@ def editDiscountGrid():
     cursor = mysql.connection.cursor()
     email = session['email']
     time = datetime.datetime.utcnow()
+    hotelId = session.get('hotelId')
 
-    cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s', [
-        inp['startDate'], inp['endDate'], email, time, inp['discountId']
+    cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s && hotelId = %s', [
+        inp['startDate'], inp['endDate'], email, time, inp['discountId'], hotelId
     ])
 
-    cursor.execute('DELETE FROM discount where discountId = %s', [inp['discountId']])
+    cursor.execute('DELETE FROM discount where discountId = %s && hotelId = %s', [inp['discountId'], hotelId])
 
     mysql.connection.commit()
 
@@ -2042,8 +2081,8 @@ def editDiscountGrid():
             values = inp['values']
             value = values[jindex][index]
             
-            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value) VALUES(%s, %s, %s, %s, %s, %s)', [
-                           discountId, leadMin, leadMax, roomMin, roomMax, value])
+            cursor.execute('INSERT INTO discount(discountId, leadMin, leadMax, roomMin, roomMax, value, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)', [
+                           discountId, leadMin, leadMax, roomMin, roomMax, value, hotelId])
 
 
     mysql.connection.commit()
@@ -2058,7 +2097,8 @@ def editDiscountGrid():
 @is_logged_in
 def settingsAutopilot():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from autopilot')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * from autopilot where hotelId = %s', [hotelId])
     data = cursor.fetchall()
 
     for d in data:
@@ -2087,8 +2127,9 @@ def settingsAutopilotSubmit():
     email = session['email']
     time = datetime.datetime.utcnow()
     cursor = mysql.connection.cursor()
-    cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn) VALUES(%s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
-    email, time
+    hotelId = session.get('hotelId')
+    cursor.execute('INSERT into autopilot(startDate, endDate, policy, policyName, createdBy, createdOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s)', [inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'],
+    email, time, hotelId
     ])
 
     mysql.connection.commit()
@@ -2103,9 +2144,11 @@ def settingsAutopilotSubmit():
 @is_logged_in
 def showAutopilot(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From autopilot where policyName = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From autopilot where policyName = %s && hotelId = %s', [id, hotelId])
     data = cursor.fetchall()
     data = data[0]
+    
     data['startDate'] = data['startDate'].strftime('%y-%b-%d')
     x = data['startDate'].split('-')
     data['startDate']= x[2] + " " + x[1] + ", " + x[0]
@@ -2120,10 +2163,10 @@ def showAutopilot(id):
 @is_logged_in
 def editAutopilot():
     inp = request.json
-
+    hotelId = session.get('hotelId')
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot SET startDate = %s, endDate = %s, policy = %s WHERE policyName = %s', [
-        inp['startDate'], inp['endDate'], inp['policy'], inp['policyName']
+    cursor.execute('UPDATE autopilot SET startDate = %s, endDate = %s, policy = %s WHERE policyName = %s && hotelId = %s', [
+        inp['startDate'], inp['endDate'], inp['policy'], inp['policyName'], hotelId
     ])
 
     mysql.connection.commit()
@@ -2137,7 +2180,8 @@ def editAutopilot():
 @is_logged_in
 def deactiveAutopilot(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot set active = 0 where policyName = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('UPDATE autopilot set active = 0 where policyName = %s && hotelId = %s', [id, hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -2150,7 +2194,8 @@ def deactiveAutopilot(id):
 @is_logged_in
 def activateAutopilot(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE autopilot set active = 1 where policyName = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('UPDATE autopilot set active = 1 where policyName = %s && hotelId = %s', [id, hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -2163,7 +2208,8 @@ def activateAutopilot(id):
 @is_logged_in
 def settingsRequestCreate():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from settingsRequest Order By submittedOn desc')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * from settingsRequest where hotelId = %s Order By submittedOn desc', [hotelId])
     result = cursor.fetchall()
     flag = True
     if len(result) == 0:
@@ -2181,9 +2227,10 @@ def settingsRequestSubmit():
     email = session['email']
     time = datetime.datetime.utcnow()
 
+    hotelId = session.get('hotelId')
     cursor = mysql.connection.cursor()
-    cursor.execute('INSERT INTO settingsRequest(strategy, count, submittedBy, submittedOn) VALUES(%s, %s, %s, %s)', [
-                   strategy, count, email, time])
+    cursor.execute('INSERT INTO settingsRequest(strategy, count, submittedBy, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s)', [
+                   strategy, count, email, time, hotelId])
     mysql.connection.commit()
     cursor.close()
     flash('Request Settings have been updated', 'success')
@@ -2194,7 +2241,7 @@ def settingsRequestSubmit():
 @is_logged_in
 def settingsNegotiation():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from settingsNegotiation')
+    cursor.execute('SELECT * from settingsNegotiation where hotelId = %s', [hotelId])
     result = cursor.fetchall()
     flag = True
     if len(result) == 0:
@@ -2210,16 +2257,16 @@ def settingsNegotiationSubmit():
     count = request.form['count']
     email = session['email']
     time = datetime.datetime.utcnow()
-
+    hotelId = session.get('hotelId')
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From settingsNegotiation')
+    cursor.execute('SELECT * From settingsNegotiation where hotelId = %s', [hotelId])
     data = cursor.fetchall()
     if len(data) == 0:
-        cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy) VALUES(%s, %s, %s)', [
-                       count, time, email])
+        cursor.execute('INSERT INTO settingsNegotiation(count, submittedOn, submittedBy, hotelId) VALUES(%s, %s, %s, %s)', [
+                       count, time, email, hotelId])
     else:
-        cursor.execute("UPDATE settingsNegotiation set count = %s, submittedOn = %s, submittedBy = %s", [
-                       count, time, email])
+        cursor.execute("UPDATE settingsNegotiation set count = %s, submittedOn = %s, submittedBy = %s where hotelId = %s", [
+                       count, time, email, hotelId])
     mysql.connection.commit()
     cursor.close()
     flash('Negotiation settings have been updated', 'success')
@@ -2230,7 +2277,8 @@ def settingsNegotiationSubmit():
 @is_logged_in
 def settingsContactCreate():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * from contract')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * from contract where hotelId = %s', [hotelId])
     result = cursor.fetchall()
     for r in result:
         r['submittedOn'] = r['submittedOn'].strftime('%y-%b-%d')
@@ -2246,8 +2294,9 @@ def settingsContractSubmit():
     cursor = mysql.connection.cursor()
     email = session['email']
     time = datetime.datetime.utcnow()
-    cursor.execute('INSERT INTO contract(id, contract, submittedOn, submittedBy) VALUES(%s, %s, %s, %s)', [
-        inp['id'], inp['contract'], time, email
+    hotelId = session.get('hotelId')
+    cursor.execute('INSERT INTO contract(id, contract, submittedOn, submittedBy, hotelId) VALUES(%s, %s, %s, %s, %s)', [
+        inp['id'], inp['contract'], time, email, hotelId
     ])
     mysql.connection.commit()
 
@@ -2259,7 +2308,9 @@ def settingsContractSubmit():
 @is_logged_in
 def settingsTimelimit():
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From settingsTimelimit')
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From settingsTimelimit where hotelId = %s', [hotelId])
+    
     result = cursor.fetchall()
     flag = True
     if len(result) == 0:
@@ -2276,17 +2327,18 @@ def settingsTimelimitSubmit():
     cursor = mysql.connection.cursor()
     email = session['email']
     time = datetime.datetime.utcnow()
+    hotelId = session.get('hotelId')
 
-    cursor.execute('SELECT * from settingsTimelimit')
+    cursor.execute('SELECT * from settingsTimelimit where hotelId =%s', [hotelId])
     len1 = cursor.fetchall()
 
     if len(len1) == 1:
-        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s', [
-            inp['value'], time, email, inp['days']
+        cursor.execute('Update settingsTimelimit SET value = %s, submittedOn = %s, submittedBy = %s, days = %s where hotelId = %s', [
+            inp['value'], time, email, inp['days'], hotelId
         ])
     else:
-        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days) VALUES(%s, %s, %s, %s)', [
-            inp['value'], time, email, inp['days']
+        cursor.execute('INSERT INTO settingsTimelimit(value, submittedOn, submittedBy, days, hotelId) VALUES(%s, %s, %s, %s, %s)', [
+            inp['value'], time, email, inp['days'], hotelId
         ])
     mysql.connection.commit()
 
@@ -2320,30 +2372,29 @@ def updateIata():
 
 def updatePasswords():
     cursor = mysql.connection.cursor()
-    cursor.execute("Update users set password = %s", [sha256_crypt.encrypt('trompar2020')])
-    cursor.execute("Update iataUsers set password = %s", [sha256_crypt.encrypt('trompar2020')])
-    cursor.execute("Update hotelUsers set password = %s", [sha256_crypt.encrypt('trompar2020')])
-    cursor.execute("Update developers set password = %s", [sha256_crypt.encrypt('trompar2020')])
-    cursor.execute("Update customers set password = %s", [sha256_crypt.encrypt('trompar2020')])
+    cursor.execute("Update users set password = %s", [sha256_crypt.hash('trompar2020')])
+    cursor.execute("Update iataUsers set password = %s", [sha256_crypt.hash('trompar2020')])
+    cursor.execute("Update hotelUsers set password = %s", [sha256_crypt.hash('trompar2020')])
+    cursor.execute("Update developers set password = %s", [sha256_crypt.hash('trompar2020')])
+    cursor.execute("Update customers set password = %s", [sha256_crypt.hash('trompar2020')])
     mysql.connection.commit()
 
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    #reset()
-    #updateIata()
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     email = session['email']
-    cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
+    cursor.execute('SELECT userType, userSubType from users where email = %s && hotelId = %s', [email, hotelId])
     ut = cursor.fetchall()
     if len(ut) != 0:
         ut = ut[0]
 
-    cursor.execute('SELECT status from request where id = %s', [token])
+    cursor.execute('SELECT status from request where id = %s && hotelId = %s', [token, hotelId])
     status = cursor.fetchall()
     status = status[0]['status']
     if (status == statusval1):
-        cursor.execute('SELECT checkIn, checkOut from request where id = %s', [token])
+        cursor.execute('SELECT checkIn, checkOut from request where id = %s && hotelId = %s', [token, hotelId])
         dates = cursor.fetchall()
         dates = dates[0]
         checkIn = dates['checkIn']
@@ -2351,7 +2402,7 @@ def showRequest(token):
         dates = []
         day = datetime.timedelta(days=1)
 
-        cursor.execute('SELECT startDate, endDate from autopilot where active = "1" AND policy = "manual"')
+        cursor.execute('SELECT startDate, endDate from autopilot where active = "1" AND policy = "manual" && hotelId = %s', [hotelId])
         excep = cursor.fetchall()
 
         while checkIn < checkOut:
@@ -2373,9 +2424,9 @@ def showRequest(token):
         for d in dates:
             day = d.strftime('%A')
             day = day.lower()
-            query = 'SELECT * from rate where startDate <= %s AND endDate >= %s AND {} = 1'.format(
+            query = 'SELECT * from rate where hotelId = %s && startDate <= %s AND endDate >= %s AND {} = 1'.format(
                 day)
-            cursor.execute(query, [d, d])
+            cursor.execute(query, [hotelId, d, d])
             pent = cursor.fetchall()
             if len(pent) != 0:
                 newDates.append(d)
@@ -2402,7 +2453,7 @@ def showRequest(token):
 
         data5 = []
         if (status == statusval4):
-            cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
+            cursor.execute('SELECT * From requestAccepted where requestId = %s && hotelId = %s', [token, hotelId])
             data5 = cursor.fetchall()
             data5 = data5[0]
             temp1 = data5['time'].strftime('%y-%b-%d')
@@ -2411,7 +2462,7 @@ def showRequest(token):
         
         data6 = []
         if (status == statusval5 or status == statusval8):
-            cursor.execute("SELECT * From DeclineRequest where requestId = %s", [token])
+            cursor.execute("SELECT * From DeclineRequest where requestId = %s && hotelId = %s", [token, hotelId])
             data6 = cursor.fetchall()
             data6 = data6[0]
             temp1 = data6['time'].strftime('%y-%b-%d')
@@ -2421,7 +2472,7 @@ def showRequest(token):
         
         data7 = []
         if (status == statusval6):
-            cursor.execute("SELECT * From deletedRequest where requestId = %s", [token])
+            cursor.execute("SELECT * From deletedRequest where requestId = %s && hotelId = %s", [token, hotelId])
             data7 = cursor.fetchall()
             data7 = data7[0]
             temp1 = data7['time'].strftime('%y-%b-%d')
@@ -2431,7 +2482,7 @@ def showRequest(token):
         data8 = []
         if (status == statusval7):
             cursor.execute(
-                "SELECT * From review where requestId = %s", [token])
+                "SELECT * From review where requestId = %s && hotelId = %s", [token, hotelId])
             data8 = cursor.fetchall()
             data8 = data8[0]
             temp1 = data8['submittedOn'].strftime('%y-%b-%d')
@@ -2440,7 +2491,7 @@ def showRequest(token):
     
         data9 = []
         if (status == statusval10):
-            cursor.execute('SELECT * From confirmRequest where requestId = %s', [token])
+            cursor.execute('SELECT * From confirmRequest where requestId = %s && hotelId = %s', [token, hotelId])
             data9 = cursor.fetchall()
             data9 = data9[0]
             temp1 = data9['submittedOn'].strftime('%y-%b-%d')
@@ -2449,14 +2500,14 @@ def showRequest(token):
 
         data10 = []
         if (status == statusval11):
-            cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [token])
+            cursor.execute('SELECT * From notConfirmRequest where requestId = %s && hotelId = %s', [token, hotelId])
             data10 = cursor.fetchall()
             data10 = data10[0]
             temp1 = data10['submittedOn'].strftime('%y-%b-%d')
             x = temp1.split('-')
             data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
-        cursor.execute('SELECT * From request where id = %s', [token])
+        cursor.execute('SELECT * From request where id = %s && hotelId = %s', [token, hotelId])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
@@ -2470,13 +2521,14 @@ def showRequest(token):
         email = session['email']
         now = datetime.datetime.utcnow()
 
-        cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+        cursor.execute('SELECT * From requestLastOpened where id = %s && hotelId = %s', [token, hotelId])
         check = cursor.fetchall()
-        data['lastOpenedOn'] = check[0]['time']
-        data['lastOpenedBy'] = check[0]['openedBy']
-        temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
-        x = temp1.split('-')
-        data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
+        if len(check) != 0:
+            data['lastOpenedOn'] = check[0]['time']
+            data['lastOpenedBy'] = check[0]['openedBy']
+            temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
+            x = temp1.split('-')
+            data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
 
         string = ''
@@ -2507,7 +2559,7 @@ def showRequest(token):
             data['comments'] = ''
 
         responseId = data['id'] + "R"
-        cursor.execute('SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
+        cursor.execute('SELECT * From response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
         data2 = cursor.fetchall()
         tfoc = False
         tcomm = False
@@ -2543,27 +2595,27 @@ def showRequest(token):
                 elif v.count('poa') > 0:
                     data2['paymentTerms'] = 'Prior To Arrival'
 
-            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             submittedOn = cursor.fetchall()
             if submittedOn[0]['submittedOn'] == 'None':
-                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+                cursor.execute('SELECT * From responseAvg where responseId = %s && hotelId = %s', [responseId, hotelId])
                 data3 = cursor.fetchall()
             else:
                 submittedOn = submittedOn[0]['submittedOn']
-                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn, hotelId])
                 data3 = cursor.fetchall()
 
             data3 = data3[0]
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+                'SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             submittedOn = cursor.fetchall()
             if submittedOn[0]['submittedOn'] == 'None':
                 cursor.execute(
-                    'SELECT * From responseDaywise where responseId = %s', [responseId])
+                    'SELECT * From responseDaywise where responseId = %s && hotelId = %s', [responseId, hotelId])
                 data4 = cursor.fetchall()
             else:
-                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
+                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn[0]['submittedOn'], hotelId])
                 data4 = cursor.fetchall()
 
             lefttable = []
@@ -2593,11 +2645,11 @@ def showRequest(token):
 
 
             cursor.execute(
-                'SELECT contract from response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+                'SELECT contract from response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             contract = cursor.fetchall()
             contract = contract[0]
 
-            cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
+            cursor.execute('SELECT contract from contract where id = %s && hotelId = %s', [contract['contract'], hotelId])
             contractv = cursor.fetchall()
             if len(contractv) != 0:
                 contractv = contractv[0]
@@ -2613,51 +2665,51 @@ def showRequest(token):
                     today = datetime.datetime.now()
                     if (today > endline):
                         cursor.execute(
-                            'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
+                            'UPDATE request set status = %s where id = %s && hotelId = %s', [statusval9, data['id'], hotelId])
 
                         cursor.execute(
-                                'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                                'SELECT * from response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [data['id'], hotelId])
                         email = session['email']
                         now = datetime.datetime.utcnow()
                         prevresponse = cursor.fetchall()
 
                         if len(prevresponse) != 0:
                             prevresponse = prevresponse[0]
-                            cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                            cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                                 prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                                     'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
                                 prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                                     'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
                                 statusval9, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-                                prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                                prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
                             ])
 
                             cursor.execute(
-                                'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+                                'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
                             prevAvg = cursor.fetchall()
                             if len(prevAvg) != 0:
                                 prevAvg = prevAvg[0]
-                                cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                                cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                                     prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                                        'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                                        'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
                                 ])
 
                             cursor.execute(
-                                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                                'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
                             submittedOn = cursor.fetchall()
-                            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                                        [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+                            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s',
+                                        [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
                             prevDaywise = cursor.fetchall()
                             if len(prevDaywise) != 0:
                                 for p in prevDaywise:
-                                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                                     ])        
                         
                         cursor.execute(
-                            'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])              
+                            'UPDATE response set status = %s where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [statusval9, data['id'], hotelId])              
 
                         mysql.connection.commit()
                         declined = True
@@ -2682,7 +2734,7 @@ def showRequest(token):
             x = temp1.split('-')
             d = x[3] + " : " + x[2] + " " + x[1] + "," + x[0]
             righttable[d] = righttable[y]
-            
+        
 
         for key,value in righttable.items():
             for r in value:
@@ -2694,7 +2746,7 @@ def showRequest(token):
 
     elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
 
-        cursor.execute('select count from settingsNegotiation')
+        cursor.execute('select count from settingsNegotiation where hotelId = %s', [hoteLid])
         count = cursor.fetchall()
         if len(count) != 0:
             count = count[0]['count']
@@ -2704,14 +2756,14 @@ def showRequest(token):
         data8 = []
         if (status == statusval7):
             cursor.execute(
-                "SELECT * From review where requestId = %s", [token])
+                "SELECT * From review where requestId = %s  && hotelId = %s", [token, hotelId])
             data8 = cursor.fetchall()
             data8 = data8[0]
             temp1 = data8['time'].strftime('%y-%b-%d')
             x = temp1.split('-')
             data8['time'] = x[2] + " " + x[1] + ", " + x[0]
 
-        cursor.execute('SELECT * From request where id = %s', [token])
+        cursor.execute('SELECT * From request where id = %s  && hotelId = %s', [token, hotelId])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
@@ -2721,7 +2773,7 @@ def showRequest(token):
         email = session['email']
         now = datetime.datetime.utcnow()
 
-        cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+        cursor.execute('SELECT * From requestLastOpened where id = %s && hotelId = %s', [token, hotelId])
         check = cursor.fetchall()
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
@@ -2748,7 +2800,7 @@ def showRequest(token):
             data['comments'] = ''
 
         responseId = data['id'] + "R"
-        cursor.execute('SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
+        cursor.execute('SELECT * From response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
         data2 = cursor.fetchall()
         tfoc = False
         tcomm = False
@@ -2787,26 +2839,26 @@ def showRequest(token):
                 elif v.count('poa') > 0:
                     data2['paymentTerms'] = 'Prior To Arrival'
 
-            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+            cursor.execute('SELECT submittedOn from responseAvg where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             submittedOn = cursor.fetchall()
             if submittedOn[0]['submittedOn'] == 'None':
-                cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+                cursor.execute('SELECT * From responseAvg where responseId = %s && hotelId = %s', [responseId, hotelId])
                 data3 = cursor.fetchall()
             else:
                 submittedOn = submittedOn[0]['submittedOn']
-                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+                cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn, hotelId])
                 data3 = cursor.fetchall()
 
             
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+                'SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             submittedOn = cursor.fetchall()
             if submittedOn[0]['submittedOn'] == 'None':
                 cursor.execute(
-                    'SELECT * From responseDaywise where responseId = %s', [responseId])
+                    'SELECT * From responseDaywise where responseId = %s && hotelId = %s', [responseId, hotelId])
                 data4 = cursor.fetchall()
             else:
-                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
+                cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn[0]['submittedOn'], hotelId])
                 data4 = cursor.fetchall()
 
             lefttable = []
@@ -2840,7 +2892,7 @@ def showRequest(token):
                 righttable[d['date']].append(tArr)
 
             cursor.execute(
-                'SELECT contract from response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+                'SELECT contract from response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
             contract = cursor.fetchall()
             contract = contract[0]
 
@@ -2954,14 +3006,14 @@ def showRequest(token):
 
 
 
-            cursor.execute('SELECT contract from contract where id = %s', [contract['contract']])
+            cursor.execute('SELECT contract from contract where id = %s && hotelId = %s', [contract['contract'], hotelId])
             contractv = cursor.fetchall()
             if len(contractv) != 0:
                 contractv = contractv[0]
             else:
                 contractv = ''
 
-            cursor.execute('SELECT * from response where responseId = %s && status = %s', [responseId, statusval3])
+            cursor.execute('SELECT * from response where responseId = %s && status = %s && hotelId = %s', [responseId, statusval3, hotelId])
             negoTime = cursor.fetchall()
             negoTimes = len(negoTime)
             nego = False
@@ -2974,7 +3026,7 @@ def showRequest(token):
 
         
         email = session['email']
-        cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+        cursor.execute('SELECT userType from hotelUsers where email = %s && hotelId = %s', [email, hotelId])
         ut = cursor.fetchall()
         review = True
         if len(ut) != 0:
@@ -2982,7 +3034,7 @@ def showRequest(token):
             if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
                 review = False
 
-        cursor.execute('SELECT * from contract')
+        cursor.execute('SELECT * from contract where hotelId = %s', [hotelId])
         contracts = cursor.fetchall()
 
         for d in lefttable:
@@ -3017,19 +3069,20 @@ def showRequest(token):
 def showRequest1():
     token = request.form['id']
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * FROM request where id = %s', [token])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * FROM request where id = %s && hotelId = %s', [token, hotelId])
     data = cursor.fetchall()
     data = data[0]
     checkIn = data['checkIn']
     checkOut = data['checkOut']
     data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
 
-    cursor.execute('SELECT status from request where id = %s', [token])
+    cursor.execute('SELECT status from request where id = %s && hotelId = %s', [token, hotelId])
     status = cursor.fetchall()
     rvflag = False
     rvvv = []
     if (status[0]['status'] == statusval7):
-        cursor.execute('SELECT * From review where requestId = %s', [token])
+        cursor.execute('SELECT * From review where requestId = %s && hotelId = %s', [token, hotelId])
         rvvv = cursor.fetchall()
         rvvv = rvvv[0]
         rvflag = True
@@ -3037,17 +3090,17 @@ def showRequest1():
     email = session['email']
     now = datetime.datetime.utcnow()
 
-    cursor.execute('SELECT * From requestLastOpened where id = %s', [token])
+    cursor.execute('SELECT * From requestLastOpened where id = %s && hotelId = %s', [token, hotelId])
     check = cursor.fetchall()
     if len(check) == 0:
-        cursor.execute('INSERT INTO requestLastOpened(id, time, openedBy) VALUES (%s, %s, %s)', [token, now ,email]
+        cursor.execute('INSERT INTO requestLastOpened(id, time, openedBy, hotelId) VALUES (%s, %s, %s, %s)', [token, now ,email, hotelId]
         )   
         data['lastOpenedOn'] = now
         data['lastOpenedBy'] = email
     else:
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
-        cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s', [now, email, token])
+        cursor.execute('UPDATE requestLastOpened SET time = %s, openedBy = %s where id = %s && hotelId = %s', [now, email, token, hotelId])
         temp1 = data['lastOpenedOn'].strftime('%y-%b-%d')
         x = temp1.split('-')
         data['lastOpenedOn'] = x[2] + " " + x[1] + ", " + x[0]
@@ -3101,7 +3154,7 @@ def showRequest1():
     mmp = 1
     for i in range(0, int(nights)):
         tempResult = []
-        cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s', [curr_date, token])
+        cursor.execute('SELECT * FROM request1Bed where date = %s AND id = %s && hotelId = %s', [curr_date, token, hotelId])
         resultPerDay1 = cursor.fetchall()
 
         roomsToBook = 0
@@ -3113,8 +3166,8 @@ def showRequest1():
 
                 day = curr_date.strftime('%A')
                 day = day.lower()
-                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(day)
-                cursor.execute(query, ['1', dateToCheck, dateToCheck])
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1 AND hotelId = %s)".format(day)
+                cursor.execute(query, ['1', dateToCheck, dateToCheck, hotelId])
                 pent = cursor.fetchall()
                 if (len(pent) == 0):
                     r['rate'] = -1
@@ -3134,16 +3187,16 @@ def showRequest1():
                 roomsToBook += int(r['count'])
         
         cursor.execute(
-            'SELECT * FROM request2Bed where date = %s AND id = %s', [curr_date, token])
+            'SELECT * FROM request2Bed where date = %s AND id = %s  && hotelId = %s', [curr_date, token, hotelId])
         resultPerDay2 = cursor.fetchall()
         for r in resultPerDay2:
             if (len(r) != 0):
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
                 day = curr_date.strftime('%A')
                 day = day.lower()
-                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1 AND hotelId = %s)".format(
                     day)
-                cursor.execute(query, ['2', dateToCheck, dateToCheck])
+                cursor.execute(query, ['2', dateToCheck, dateToCheck, hotelId])
                 pent = cursor.fetchall()
                 if (len(pent) == 0):
                     r['rate'] = -1
@@ -3168,9 +3221,9 @@ def showRequest1():
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
                 day = curr_date.strftime('%A')
                 day = day.lower()
-                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1 AND hotelId = %s)".format(
                     day)
-                cursor.execute(query, ['1', dateToCheck, dateToCheck])
+                cursor.execute(query, ['1', dateToCheck, dateToCheck, hotelId])
                 pent = cursor.fetchall()
                 r['foc1'] = tfoc1
                 r['type'] = 'FOC'
@@ -3188,9 +3241,9 @@ def showRequest1():
                 dateToCheck = curr_date.strftime('%Y-%m-%d')
                 day = curr_date.strftime('%A')
                 day = day.lower()
-                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1)".format(
+                query = "SELECT * FROM rate where (type = %s  AND (startDate <= %s AND endDate >= %s) AND {} = 1 AND hotelID = %s)".format(
                     day)
-                cursor.execute(query, ['2', dateToCheck, dateToCheck])
+                cursor.execute(query, ['2', dateToCheck, dateToCheck, hotelId])
                 pent = cursor.fetchall()
                 r['foc2'] = tfoc2
                 r['type'] = 'FOC'
@@ -3213,7 +3266,7 @@ def showRequest1():
         occ = request.form.get(str(curr_date))
         if occ == None:
             occs.append("-")
-            cursor.execute('SELECT policyName from autopilot where startDate <= %s AND endDate >= %s AND active = 1 AND policy = "manual"', [curr_date, curr_date])
+            cursor.execute('SELECT policyName from autopilot where startDate <= %s AND endDate >= %s AND active = 1 AND policy = "manual" && hotelId = %s', [curr_date, curr_date, hotelId])
             pn = cursor.fetchall()
             if len(pn) != 0:
                 discounts.append("0" + " (AutoPilot ID: " + pn[0]['policyName'] + ")")
@@ -3230,7 +3283,7 @@ def showRequest1():
 
             minDiscountVal = 101
             glid = 0
-            cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s AND active = 1', [dateToCheck, dateToCheck])
+            cursor.execute('SELECT discountId, defaultm from discountMap where startDate <= %s AND endDate >= %s AND active = 1 && hotelId = %s', [dateToCheck, dateToCheck, hotelId])
             di = cursor.fetchall()
 
             if len(di) == 0:
@@ -3244,7 +3297,7 @@ def showRequest1():
                             id = l['discountId']
                             break
                 for rv in range(pam, roomsToBook + pam):
-                    cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s)', [id, lead, lead, rv, rv])
+                    cursor.execute('SELECT * from discount where discountId = %s AND (leadMin <= %s && leadMax >= %s) AND (roomMin <= %s && roomMax >= %s && hotelId = %s)', [id, lead, lead, rv, rv, hotelId])
                     dd = cursor.fetchall()
                     if len(dd) == 0:
                         discounts.append('0' + "(No Grid Fits)")
@@ -3525,7 +3578,7 @@ def showRequest1():
     avgRate = str(round(totalQuote/roomCount, 2))
 
     email = session['email']
-    cursor.execute('SELECT userType from hotelUsers where email = %s', [email])
+    cursor.execute('SELECT userType from hotelUsers where email = %s && hotelId = %s', [email, hotelId])
     ut = cursor.fetchall()
     review = True
     if len(ut) != 0:
@@ -3533,29 +3586,29 @@ def showRequest1():
         if (ut['userType'] == "hotelAdmin" or ut['userType'] == "revenue"):
             review = False
 
-    cursor.execute('SELECT * from contract')
+    cursor.execute('SELECT * from contract where hotelId = %s', [hotelId])
     contracts = cursor.fetchall()
 
-    cursor.execute('SELECT * From room')
+    cursor.execute('SELECT * From room where hotelId = %s', [hotelId])
     roomData = cursor.fetchall()
 
     negoF = False
     fop = ''
     pt = ''
-    cursor.execute('SELECT * From response where requestId = %s order by submittedOn desc limit 1', [token])
+    cursor.execute('SELECT * From response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [token, hotelId])
     responseData = cursor.fetchall()
     if len(responseData) == 0:
-        cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
+        cursor.execute('SELECT count from settingsNegotiation  where hotelId = %s order by submittedOn desc', [hotelId])
         nego = cursor.fetchall()
         if len(nego) != 0:
             nego = nego[0]
             if (int(nego['count']) > 0):
                 negoF = True
     else:
-        cursor.execute('SELECT * from response where requestId = %s &&status = %s', [token, statusval3])
+        cursor.execute('SELECT * from response where requestId = %s &&status = %s  && hotelId = %s', [token, statusval3, hotelId])
         negoTime = cursor.fetchall()
         negoTimes = len(negoTime)
-        cursor.execute('SELECT count from settingsNegotiation order by submittedOn desc')
+        cursor.execute('SELECT count from settingsNegotiation  where hotelId = %s order by submittedOn desc', [hotelId])
         count = cursor.fetchall()
         if len(count) != 0:
             count = count[0]['count']
@@ -3597,34 +3650,35 @@ def requestProcessDecline():
     responseId = inp['requestId'] + "R"
     email = session['email']
     now = datetime.datetime.utcnow()
+    hotelId = session.get('hotelId')
     status = statusval8
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(
             inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
         status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate'], inp['contract']
+        inp['averageRate'], inp['contract'], hotelId
     ])
 
     table = inp['table_result']
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t[
-                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
+                'count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now, hotelId
         ])
 
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now, hotelId
     ])
 
     cursor.execute(
-        'UPDATE request set status = %s where id = %s', [statusval8, inp['requestId']])
+        'UPDATE request set status = %s where id = %s && hotelId = %s', [statusval8, inp['requestId'], hotelId])
     cursor.execute(
-        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval8, inp['requestId']])
+        'UPDATE response set status = %s where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [statusval8, inp['requestId'], hotelId])
 
     now = datetime.datetime.utcnow()
     email = session['email']
-    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [
-        inp['requestId'], now, inp['reason'], email])
+    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy, hotelId) VALUES(%s, %s, %s, %s, %s) ", [
+        inp['requestId'], now, inp['reason'], email, hotelId])
 
     mysql.connection.commit()
 
@@ -3642,8 +3696,9 @@ def requestProcessQuote():
     email = session['email']
     now = datetime.datetime.utcnow()
     status = statusval2
+    hotelId = session.get('hotelId')
 
-    cursor.execute('SELECT days from settingsTimelimit')
+    cursor.execute('SELECT days from settingsTimelimit where hotelId = %s', [hotelId])
     days = cursor.fetchall()
     days = days[0]
     days = int(days['days'])
@@ -3654,8 +3709,8 @@ def requestProcessQuote():
     table = inp['table_result']
     check_final = False
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now, hotelId
         ])
         check = checkOverride(t['ratePerRoom'])
         if(check == True):
@@ -3666,23 +3721,23 @@ def requestProcessQuote():
     else:
         check_final = 0
 
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime, overrideReason, overrideFlag) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expiryTime, overrideReason, overrideFlag, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
         status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate'], inp['contract'], endline, inp['overres'], check_final
+        inp['averageRate'], inp['contract'], endline, inp['overres'], check_final, hotelId
     ])
     
-    cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval2, inp['requestId']])
+    cursor.execute("UPDATE request SET status = %s WHERE id = %s && hotelId = %s", [statusval2, inp['requestId'], hotelId])
 
-    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval2, inp['requestId']]
+    cursor.execute('UPDATE response set status = %s where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [statusval2, inp['requestId'], hotelId]
         )
 
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now, hotelId
     ])
     
     mysql.connection.commit()
-    cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+    cursor.execute('SELECT createdFor from request where id = %s && hotelId = %s', [inp['requestId'], hotelId])
     createdFor = cursor.fetchall()
     createdFor = createdFor[0]['createdFor']
 
@@ -3706,8 +3761,8 @@ def requestProcessQuote():
 @is_logged_in
 def showQuote(id):
     cursor = mysql.connection.cursor()
-
-    cursor.execute('SELECT * From request where id = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [id, hotelId])
     data = cursor.fetchall()
     data = data[0]
 
@@ -3732,7 +3787,7 @@ def showQuote(id):
 
     responseId = data['id'] + "R"
     cursor.execute(
-        'SELECT * From response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+        'SELECT * From response where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
     data2 = cursor.fetchall()
     data2 = data2[0]
     negcheck = data2['negotiable']
@@ -3757,17 +3812,17 @@ def showQuote(id):
             data2['paymentTerms'] = 'Prior To Arrival'
     
     cursor.execute(
-        'SELECT * From responseAvg where responseId = %s  order by submittedOn desc limit 1', [responseId])
+        'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
     data3 = cursor.fetchall()
     data3 = data3[0]
 
     result = {}
-    cursor.execute('SELECT * From request1Bed where id = %s', [id])
+    cursor.execute('SELECT * From request1Bed where id = %s && hotelId = %s', [id, hotelId])
     temp1 = cursor.fetchall()
     for t in temp1:
         result[t['date']] = []
 
-    cursor.execute('SELECT * From request2Bed where id = %s', [id])
+    cursor.execute('SELECT * From request2Bed where id = %s && hotelId = %s', [id, hotelId])
     temp2 = cursor.fetchall()
     for t in temp2:
         result[t['date']] = []
@@ -3802,8 +3857,8 @@ def showQuote(id):
                 row['total'] = "-"
             else:
                 search = occupancy + type1
-                query = "SELECT {} from responseAvg where responseId = %s".format(search)
-                cursor.execute(query, [responseId])
+                query = "SELECT {} from responseAvg where responseId = %s && hotelId = %s".format(search)
+                cursor.execute(query, [responseId, hotelId])
                 sv = cursor.fetchall()
                 row['ratePerRoom'] = sv[0][search]
                 row['total'] = float(row['ratePerRoom']) * int(row['count'])
@@ -3831,7 +3886,7 @@ def showQuote(id):
 
     data5 = []
     if data2['status'] == statusval4:
-        cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
+        cursor.execute('SELECT * from requestAccepted where requestId = %s && hotelId = %s', [id, hotelId])
         data5 = cursor.fetchall()
         data5 = data5[0]
         temp1 = data5['time'].strftime('%y-%b-%d')
@@ -3841,7 +3896,7 @@ def showQuote(id):
     
     data6 = []
     if (data2['status'] == statusval5 or data2['status'] == statusval8):
-        cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
+        cursor.execute("SELECT * From DeclineRequest where requestId = %s && hotelId = %s", [id, hotelId])
         data6 = cursor.fetchall()
         data6 = data6[0]
         temp1 = data6['time'].strftime('%y-%b-%d')
@@ -3850,7 +3905,7 @@ def showQuote(id):
 
     data9 = []
     if (data2['status'] == statusval10):
-        cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+        cursor.execute('SELECT * From confirmRequest where requestId = %s && hotelId = %s', [id, hotelId])
         data9 = cursor.fetchall()
         data9 = data9[0]
         temp1 = data9['submittedOn'].strftime('%y-%b-%d')
@@ -3859,7 +3914,7 @@ def showQuote(id):
 
     data10 = []
     if (data2['status'] == statusval11):
-        cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
+        cursor.execute('SELECT * From notConfirmRequest where requestId = %s && hotelId = %s', [id, hotelId])
         data10 = cursor.fetchall()
         data10 = data10[0]
         temp1 = data10['submittedOn'].strftime('%y-%b-%d')
@@ -3877,50 +3932,50 @@ def showQuote(id):
             today = datetime.datetime.now()
             if (today > endline):
                 cursor.execute(
-                    'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
+                    'UPDATE request set status = %s where id = %s && hotelId = %s', [statusval9, data['id'], hotelId])
                 cursor.execute(
-                                'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                                'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [data['id'], hotelId])
                 email = session['email']
                 now = datetime.datetime.utcnow()
                 prevresponse = cursor.fetchall()
 
                 if len(prevresponse) != 0:
                     prevresponse = prevresponse[0]
-                    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                             'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
                         prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                             'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
                         statusval9, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-                        prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                        prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
                     ])
 
                     cursor.execute(
-                        'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+                        'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
                     prevAvg = cursor.fetchall()
                     if len(prevAvg) != 0:
                         prevAvg = prevAvg[0]
-                        cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                        cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                             prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                                'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                                'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
                         ])
 
                     cursor.execute(
-                        'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                        'SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
                     submittedOn = cursor.fetchall()
-                    cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                                [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+                    cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s',
+                                [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
                     prevDaywise = cursor.fetchall()
                     if len(prevDaywise) != 0:
                         for p in prevDaywise:
-                            cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                            cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                                 p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                             ])        
                 
                     cursor.execute(
-                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])              
+                        'UPDATE response set status = %s where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [statusval9, data['id'], hotelId])              
                 mysql.connection.commit()
                 declined = True
                 declinedMsg = "Time limit expired"
@@ -3933,13 +3988,13 @@ def showQuote(id):
             endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
 
-    cursor.execute('select count from settingsNegotiation')
+    cursor.execute('select count from settingsNegotiation where hotelId = %s', [hotelId])
     count = cursor.fetchall()
     if len(count) != 0:
         count = count[0]['count']
     else:
         count = 100 # no hard limit so
-    cursor.execute('SELECT * from response where responseId = %s and status = %s', [responseId, statusval3])
+    cursor.execute('SELECT * from response where responseId = %s and status = %s && hotelId = %s', [responseId, statusval3, hotelId])
     negoTime = cursor.fetchall()
     negoTimes = len(negoTime)
     nego = False
@@ -3952,8 +4007,8 @@ def showQuote(id):
 
     canNegotiate = canNegotiate and negcheck
 
-    cursor.execute('SELECT contract, id from contract where id = %s', [
-                   data2['contract']])
+    cursor.execute('SELECT contract, id from contract where id = %s && hotelId = %s', [
+                   data2['contract'], hotelId])
     contract = cursor.fetchall()
 
     if (data2['cutoffDays'] != None and data2['cutoffDays'] != ''):
@@ -3995,7 +4050,6 @@ def showQuote(id):
 
     return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = False, avgRate = avgRate)
 
-
 @app.route('/showQuoteEmail/<id>', methods = ['GET', 'POST'])
 def showQuoteEmail(id):
     id = confirmToken(id)
@@ -4003,8 +4057,8 @@ def showQuoteEmail(id):
         flash('Unverified', 'danger')
         return render_template('login.html', title = 'Login')
     cursor = mysql.connection.cursor()
-
-    cursor.execute('SELECT * From request where id = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [id, hotelId])
     data = cursor.fetchall()
     data = data[0]
 
@@ -4027,7 +4081,7 @@ def showQuoteEmail(id):
 
     responseId = data['id'] + "R"
     cursor.execute(
-        'SELECT * From response where responseId = %s  order by submittedOn desc limit 1', [responseId])
+        'SELECT * From response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
     data2 = cursor.fetchall()
     data2 = data2[0]
     negcheck = data2['negotiable']
@@ -4050,17 +4104,17 @@ def showQuoteEmail(id):
             data2['paymentTerms'] = 'Prior To Arrival'
     
     cursor.execute(
-        'SELECT * From responseAvg where responseId = %s  order by submittedOn desc limit 1', [responseId])
+        'SELECT * From responseAvg where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
     data3 = cursor.fetchall()
     data3 = data3[0]
 
     result = {}
-    cursor.execute('SELECT * From request1Bed where id = %s', [id])
+    cursor.execute('SELECT * From request1Bed where id = %s  && hotelId = %s', [id, hotelId])
     temp1 = cursor.fetchall()
     for t in temp1:
         result[t['date']] = []
 
-    cursor.execute('SELECT * From request2Bed where id = %s', [id])
+    cursor.execute('SELECT * From request2Bed where id = %s  && hotelId = %s', [id, hotelId])
     temp2 = cursor.fetchall()
     for t in temp2:
         result[t['date']] = []
@@ -4095,8 +4149,8 @@ def showQuoteEmail(id):
                 row['total'] = "-"
             else:
                 search = occupancy + type1
-                query = "SELECT {} from responseAvg where responseId = %s".format(search)
-                cursor.execute(query, [responseId])
+                query = "SELECT {} from responseAvg where responseId = %s  && hotelId = %s".format(search)
+                cursor.execute(query, [responseId, hotelId])
                 sv = cursor.fetchall()
                 row['ratePerRoom'] = sv[0][search]
                 row['total'] = float(row['ratePerRoom']) * int(row['count'])
@@ -4125,7 +4179,7 @@ def showQuoteEmail(id):
 
     data5 = []
     if data2['status'] == statusval4:
-        cursor.execute('SELECT * from requestAccepted where requestId = %s', [id])
+        cursor.execute('SELECT * from requestAccepted where requestId = %s  && hotelId = %s', [id, hotelId])
         data5 = cursor.fetchall()
         data5 = data5[0]
         temp1 = data5['time'].strftime('%y-%b-%d')
@@ -4135,7 +4189,7 @@ def showQuoteEmail(id):
     
     data6 = []
     if (data2['status'] == statusval5 or data2['status'] == statusval8):
-        cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
+        cursor.execute("SELECT * From DeclineRequest where requestId = %s  && hotelId = %s", [id, hotelId])
         data6 = cursor.fetchall()
         data6 = data6[0]
         temp1 = data6['time'].strftime('%y-%b-%d')
@@ -4144,7 +4198,7 @@ def showQuoteEmail(id):
 
     data9 = []
     if (data2['status'] == statusval10):
-        cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+        cursor.execute('SELECT * From confirmRequest where requestId = %s  && hotelId = %s', [id, hotelId])
         data9 = cursor.fetchall()
         data9 = data9[0]
         temp1 = data9['submittedOn'].strftime('%y-%b-%d')
@@ -4153,7 +4207,7 @@ def showQuoteEmail(id):
 
     data10 = []
     if (data2['status'] == statusval11):
-        cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
+        cursor.execute('SELECT * From notConfirmRequest where requestId = %s  && hotelId = %s', [id, hotelId])
         data10 = cursor.fetchall()
         data10 = data10[0]
         temp1 = data10['submittedOn'].strftime('%y-%b-%d')
@@ -4171,50 +4225,50 @@ def showQuoteEmail(id):
             today = datetime.datetime.now()
             if (today > endline):
                 cursor.execute(
-                    'UPDATE request set status = %s where id = %s', [statusval9, data['id']])
+                    'UPDATE request set status = %s where id = %s  && hotelId = %s', [statusval9, data['id'], hotelId])
                 cursor.execute(
-                                'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [data['id']])
+                                'SELECT * from response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [data['id'], hotelId])
                 email = session['email']
                 now = datetime.datetime.utcnow()
                 prevresponse = cursor.fetchall()
 
                 if len(prevresponse) != 0:
                     prevresponse = prevresponse[0]
-                    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                             'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
                         prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                             'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
                         statusval9, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-                        prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                        prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
                     ])
 
                     cursor.execute(
-                        'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+                        'SELECT * From responseAvg where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
                     prevAvg = cursor.fetchall()
                     if len(prevAvg) != 0:
                         prevAvg = prevAvg[0]
-                        cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                        cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                             prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                                'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                                'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
                         ])
 
                     cursor.execute(
-                        'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                        'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
                     submittedOn = cursor.fetchall()
-                    cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                                [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+                    cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s',
+                                [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
                     prevDaywise = cursor.fetchall()
                     if len(prevDaywise) != 0:
                         for p in prevDaywise:
-                            cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                            cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                                 p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                             ])        
                 
                     cursor.execute(
-                        'UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval9, data['id']])              
+                        'UPDATE response set status = %s where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [statusval9, data['id'], hotelId])              
                 mysql.connection.commit()
                 declined = True
                 declinedMsg = "Time limit expired"
@@ -4227,13 +4281,13 @@ def showQuoteEmail(id):
             endline = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
 
 
-    cursor.execute('select count from settingsNegotiation')
+    cursor.execute('select count from settingsNegotiation where hotelId = %s', [hotelId])
     count = cursor.fetchall()
     if len(count) != 0:
         count = count[0]['count']
     else:
         count = 100 # no hard limit so
-    cursor.execute('SELECT * from response where responseId = %s and status = %s', [responseId, statusval3])
+    cursor.execute('SELECT * from response where responseId = %s and status = %s  && hotelId = %s', [responseId, statusval3, hotelId])
     negoTime = cursor.fetchall()
     negoTimes = len(negoTime)
     nego = False
@@ -4246,8 +4300,8 @@ def showQuoteEmail(id):
 
     canNegotiate = canNegotiate and negcheck
 
-    cursor.execute('SELECT contract, id from contract where id = %s', [
-                   data2['contract']])
+    cursor.execute('SELECT contract, id from contract where id = %s  && hotelId = %s', [
+                   data2['contract'], hotelId])
     contract = cursor.fetchall()
 
     cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
@@ -4289,13 +4343,14 @@ def showQuoteEmail(id):
 @is_logged_in
 def deleteRequest(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT status from request where id = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT status from request where id = %s && hotelId = %s', [id, hotelId])
     status = cursor.fetchall()
     if (status[0]['status'] == statusval2) or (status[0]['status'] == statusval4) or (status[0]['status'] == statusval5 or status[0]['status'] == statusval7 or status[0]['status'] == statusval3 or status[0]['status'] == statusval8 or status[0]['status'] == statusval10 or status[0]['status'] == statusval11):
         data5 = []
         if (status[0]['status'] == statusval4):
             cursor.execute(
-                'SELECT * From requestAccepted where requestId = %s', [id])
+                'SELECT * From requestAccepted where requestId = %s && hotelId = %s', [id, hotelId])
             data5 = cursor.fetchall()
             data5 = data5[0]
             temp1 = data5['time'].strftime('%y-%b-%d')
@@ -4305,7 +4360,7 @@ def deleteRequest(id):
         data6 = []
         if (status[0]['status'] == statusval5):
             cursor.execute(
-                "SELECT * From DeclineRequest where requestId = %s", [id])
+                "SELECT * From DeclineRequest where requestId = %s && hotelId = %s", [id, hotelId])
             data6 = cursor.fetchall()
             data6 = data6[0]
             temp1 = data6['time'].strftime('%y-%b-%d')
@@ -4315,7 +4370,7 @@ def deleteRequest(id):
         data8 = []
         if (status[0]['status'] == statusval7):
             cursor.execute(
-                "SELECT * From review where requestId = %s", [id])
+                "SELECT * From review where requestId = %s && hotelId = %s", [id, hotelId])
             data8 = cursor.fetchall()
             data8 = data8[0]
             temp1 = data8['submittedOn'].strftime('%y-%b-%d')
@@ -4324,7 +4379,7 @@ def deleteRequest(id):
 
         data9 = []
         if (status[0]['status'] == statusval10):
-            cursor.execute('SELECT * From confirmRequest where requestId = %s', [id])
+            cursor.execute('SELECT * From confirmRequest where requestId = %s && hotelId = %s', [id, hotelId])
             data9 = cursor.fetchall()
             data9 = data9[0]
             temp1 = data9['submittedOn'].strftime('%y-%b-%d')
@@ -4333,14 +4388,14 @@ def deleteRequest(id):
 
         data10 = []
         if (status[0]['status'] == statusval11):
-            cursor.execute('SELECT * From notConfirmRequest where requestId = %s', [id])
+            cursor.execute('SELECT * From notConfirmRequest where requestId = %s && hotelId = %s', [id, hotelId])
             data10 = cursor.fetchall()
             data10 = data10[0]
             temp1 = data10['submittedOn'].strftime('%y-%b-%d')
             x = temp1.split('-')
             data10['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
 
-        cursor.execute('SELECT * From request where id = %s', [id])
+        cursor.execute('SELECT * From request where id = %s && hotelId = %s', [id, hotelId])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
@@ -4351,7 +4406,7 @@ def deleteRequest(id):
         now = datetime.datetime.utcnow()
 
         cursor.execute(
-            'SELECT * From requestLastOpened where id = %s', [id])
+            'SELECT * From requestLastOpened where id = %s && hotelId = %s', [id, hotelId])
         check = cursor.fetchall()
         data['lastOpenedOn'] = check[0]['time']
         data['lastOpenedBy'] = check[0]['openedBy']
@@ -4378,7 +4433,7 @@ def deleteRequest(id):
 
         responseId = data['id'] + "R"
         cursor.execute(
-            'SELECT * From response where responseId = %s order by submittedOn desc limit 1', [responseId])
+            'SELECT * From response where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
         data2 = cursor.fetchall()
         tfoc = False
         tcomm = False
@@ -4409,29 +4464,29 @@ def deleteRequest(id):
                     data2['paymentTerms'] = 'Prior To Arrival'
 
 
-        cursor.execute('SELECT submittedOn from responseAvg where responseId = %s order by submittedOn desc limit 1', [responseId])
+        cursor.execute('SELECT submittedOn from responseAvg where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
         submittedOn = cursor.fetchall()
         if submittedOn[0]['submittedOn'] == 'None':
             submittedOn = submittedOn[0]['submittedOn']
             cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
             data3 = cursor.fetchall()
         else:
-            cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseAvg where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn[0]['submittedOn'], hotelId])
             data3 = cursor.fetchall()
 
         data3 = data3[0]
 
         cursor.execute(
-            'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+            'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId], hotelId)
         submittedOn = cursor.fetchall()
         if submittedOn[0]['submittedOn'] == 'None':
             submittedOn = submittedOn[0]['submittedOn']
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s', [responseId])
+                'SELECT * From responseDaywise where responseId = %s  && hotelId = %s', [responseId, hotelId])
             data4 = cursor.fetchall()
         else:
             cursor.execute(
-                'SELECT * From responseDaywise where responseId = %s  and submittedOn = %s', [responseId, submittedOn[0]['submittedOn']])
+                'SELECT * From responseDaywise where responseId = %s  and submittedOn = %s  && hotelId = %s', [responseId, submittedOn[0]['submittedOn'], hotelId])
             data4 = cursor.fetchall()
             
         lefttable = []
@@ -4481,7 +4536,7 @@ def deleteRequest(id):
                 if (r['type'] == 'foc'):
                     r['type'] = "FOC"
 
-        cursor.execute('SELECT contract from contract where id = %s', [data2['contract']])
+        cursor.execute('SELECT contract from contract where id = %s  && hotelId = %s', [data2['contract'], hotelId])
         contractv = cursor.fetchall()
         if len(contractv) != 0:
             contractv = contractv[0]
@@ -4494,7 +4549,7 @@ def deleteRequest(id):
 
         return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10, contractv = contractv)
     elif (status[0]['status'] == statusval1):
-        cursor.execute('SELECT * From request where id = %s', [id])
+        cursor.execute('SELECT * From request where id = %s  && hotelId = %s', [id], hotelId)
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
@@ -4505,7 +4560,7 @@ def deleteRequest(id):
         now = datetime.datetime.utcnow()
 
         cursor.execute(
-            'SELECT * From requestLastOpened where id = %s', [id])
+            'SELECT * From requestLastOpened where id = %s  && hotelId = %s', [id, hotelId])
         check = cursor.fetchall()
         if len(check) != 0:
             data['lastOpenedOn'] = check[0]['time']
@@ -4542,43 +4597,44 @@ def deleteRequest(id):
 def DeleteRequest2():
     inp = request.json
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE request set status = %s where id = %s', [statusval6, inp['id']])
-    cursor.execute('SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+    hotelId = session.get('hotelId')
+    cursor.execute('UPDATE request set status = %s where id = %s  && hotelId = %s', [statusval6, inp['id'], hotelId])
+    cursor.execute('SELECT * from response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     email = session['email']
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse['foc'],prevresponse['commission'],prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
                 prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse['negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval6, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-            prevresponse['averageRate'], prevresponse['contract']
+            prevresponse['averageRate'], prevresponse['contract'], hotelId
         ])
 
-        cursor.execute('SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+        cursor.execute('SELECT * From responseAvg where responseId = %s &&hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-            prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg['triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg['triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
         
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s  &&hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s', [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  &&hotelId = %s', [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                    'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                 ])
 
 
-    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason, deletedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], email])
+    cursor.execute("INSERT INTO deletedRequest(requestId, time, reason, deletedBy, hotelId) VALUES(%s, %s, %s, %s, %s) ", [inp['id'], now, inp['reason'], email, hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -4589,22 +4645,22 @@ def DeleteRequest2():
 @app.route('/NegotiateRequest', methods = ['GET', 'POST'])
 def NegotiateRequest():
     inp = request.json
-
+    hotelId = session.get('hotelId')
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT timesNegotiated from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+    cursor.execute('SELECT timesNegotiated from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     dd = cursor.fetchall()
     dd = dd[0]
     times = int(dd['timesNegotiated']) + 1
     #here
-    cursor.execute('UPDATE request set status = %s where id = %s', [statusval3, inp['id']])
+    cursor.execute('UPDATE request set status = %s where id = %s && hotelId = %s', [statusval3, inp['id'], hotelId])
 
     cursor.execute(
-        'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+        'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
 
     try:
         email = session.get('email')
     except:
-        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        cursor.execute('SELECT createdFor from request where id = %s && hotelId = %s', [inp['requestId'], hotelId])
         createdFor = cursor.fetchall()
         createdFor = createdFor[0]['createdFor']
         email = createdFor
@@ -4613,37 +4669,37 @@ def NegotiateRequest():
 
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval3, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-            prevresponse['averageRate'], prevresponse['contract'], inp['expectedFare'], inp['reason'], times
+            prevresponse['averageRate'], prevresponse['contract'], inp['expectedFare'], inp['reason'], times, hotelId
         ])
 
         cursor.execute(
-            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+            'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                           [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s',
+                           [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                     ])
 
     mysql.connection.commit()
@@ -4655,12 +4711,13 @@ def NegotiateRequest():
 def AcceptRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute(
-        'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+        'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     try:
         email = session.get('email')
     except:
-        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        cursor.execute('SELECT createdFor from request where id = %s  && hotelId = %s', [inp['requestId'], hotelId])
         createdFor = cursor.fetchall()
         createdFor = createdFor[0]['createdFor']
         email = createdFor
@@ -4670,44 +4727,44 @@ def AcceptRequest():
 
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval4, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-            prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+            prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
         ])
 
         cursor.execute(
-            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+            'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                           [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s',
+                           [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                     ])
 
     
 
-    cursor.execute('INSERT INTO requestAccepted(requestId, time) VALUES(%s, %s)', [inp['id'], now])
-    cursor.execute('UPDATE request set status = %s where id = %s', [statusval4, inp['id']])
-    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    cursor.execute('INSERT INTO requestAccepted(requestId, time, hotelId) VALUES(%s, %s, %s)', [inp['id'], now, hotelId])
+    cursor.execute('UPDATE request set status = %s where id = %s && hotelId = %s', [statusval4, inp['id'], hotelId])
+    cursor.execute('SELECT createdFor from request where id = %s && hotelId = %s', [inp['id'], hotelId])
     createdFor = cursor.fetchall()
     createdFor = createdFor[0]['createdFor']
 
@@ -4736,15 +4793,15 @@ def AcceptRequest():
 def DeclineRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
-    #here
-    cursor.execute('UPDATE request set status = %s where id = %s', [statusval5, inp['id']])
+    hotelId = session.get('hotelId')
+    cursor.execute('UPDATE request set status = %s where id = %s && hotelId = %s', [statusval5, inp['id'], hotelId])
     cursor.execute(
-        'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+        'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     
     try:
         email = session.get('email')
     except:
-        cursor.execute('SELECT createdFor from request where id = %s', [inp['requestId']])
+        cursor.execute('SELECT createdFor from request where id = %s && hotelId = %s', [inp['requestId'], hotelId])
         createdFor = cursor.fetchall()
         createdFor = createdFor[0]['createdFor']
         email = createdFor
@@ -4753,44 +4810,44 @@ def DeclineRequest():
 
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval5, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract'], prevresponse[
-                'expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                'expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
         ])
 
         cursor.execute(
-            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+            'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                           [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s',
+                           [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                     ])
 
 
 
     now = datetime.datetime.utcnow()
-    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy) VALUES(%s, %s, %s, %s) ", [inp['id'], now, inp['reason'], inp['declinedBy']])
+    cursor.execute("INSERT INTO DeclineRequest(requestId, time, reason, declinedBy, hotelId) VALUES(%s, %s, %s, %s, %s) ", [inp['id'], now, inp['reason'], inp['declinedBy'], hotelId])
     mysql.connection.commit()
     cursor.close()
 
@@ -4806,12 +4863,13 @@ def requestProcessReview():
     email = session['email']
     now = datetime.datetime.utcnow()
     status = statusval7
+    hotelId = session.get('hotelId')
 
     table = inp['table_result']
     check_final = False
     for t in table:
-        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now
+        cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now, hotelId
         ])
         check = checkOverride(t['ratePerRoom'])
         if(check == True):
@@ -4823,23 +4881,23 @@ def requestProcessReview():
         else:
             check_final = 0
 
-    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, overrideReason, overrideFlag) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+    cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, overrideReason, overrideFlag, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
         inp['requestId'], responseId, inp['groupCategory'], inp['totalFare'], inp['foc'], str(inp['commission']), str(inp['commissionValue']), inp['totalQuote'], inp['cutoffDays'], procArr(inp['formPayment']), inp['paymentTerms'], inp['paymentGtd'], inp['negotiable'], inp['checkIn'], inp['checkOut'], email, now,
         status, inp['paymentDays'], inp['nights'], inp['comments'],
-        inp['averageRate'], inp['contract'], inp['overres'], check_final
+        inp['averageRate'], inp['contract'], inp['overres'], check_final, hotelId
     ])
 
     
-    cursor.execute("UPDATE request SET status = %s WHERE id = %s", [statusval7, inp['requestId']])
+    cursor.execute("UPDATE request SET status = %s WHERE id = %s && hotelId = %s", [statusval7, inp['requestId'], hotelId])
 
-    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval7, inp['requestId']]
+    cursor.execute('UPDATE response set status = %s where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [statusval7, inp['requestId'], hotelId]
         )
 
-    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
-        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now
+    cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)' , [
+        inp['single1'], inp['single2'], inp['double1'], inp['double2'], inp['triple1'], inp['triple2'], inp['quad1'], inp['quad2'], responseId, now, hotelId
     ])
 
-    cursor.execute('INSERT INTO review(requestId, sentBy, time) VALUES(%s, %s, %s)', [inp['requestId'], email, now])
+    cursor.execute('INSERT INTO review(requestId, sentBy, time, hotelId) VALUES(%s, %s, %s, %s)', [inp['requestId'], email, now, hotelId])
 
 
     mysql.connection.commit()
@@ -4851,7 +4909,8 @@ def requestProcessReview():
 @is_logged_in
 def requestHistory(id):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From request where id = %s', [id])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [id, hotelId])
     requestData = cursor.fetchall()
     requestData = requestData[0]
 
@@ -4862,7 +4921,7 @@ def requestHistory(id):
 
     
 
-    cursor.execute('SELECT * From response where requestId = %s', [id])
+    cursor.execute('SELECT * From response where requestId = %s && hotelId = %s', [id, hotelId])
     responseData = cursor.fetchall()
     data6 = []
 
@@ -4887,7 +4946,7 @@ def requestHistory(id):
             r['comments'] = ''
         
         if (r['status'] == statusval5 or r['status'] == statusval8):
-            cursor.execute("SELECT * From DeclineRequest where requestId = %s", [id])
+            cursor.execute("SELECT * From DeclineRequest where requestId = %s && hotelId = %s", [id, hotelId])
             data6 = cursor.fetchall()
             data6 = data6[0]
             r['msg'] = data6['reason']
@@ -4898,10 +4957,10 @@ def requestHistory(id):
             data6['time'] = x[2] + " " + x[1] + ", " + x[0]
 
     responseId = id + "R"
-    cursor.execute('SELECT * From responseAvg where responseId = %s', [responseId])
+    cursor.execute('SELECT * From responseAvg where responseId = %s && hotelId = %s', [responseId, hotelId])
 
     responseAvgData = cursor.fetchall()
-    cursor.execute('SELECT * From responseDaywise where responseId = %s ', [responseId])
+    cursor.execute('SELECT * From responseDaywise where responseId = %s  && hotelId = %s ', [responseId, hotelId])
     responseDaywiseData = cursor.fetchall()
     tempdict = {}
     for row in responseDaywiseData:
@@ -4949,15 +5008,16 @@ def requestHistory(id):
 @is_logged_in
 def confirmRequest(token):
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From request where id = %s', [token])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [token], hotelId)
     requestData = cursor.fetchall()
     requestData = requestData[0]
 
-    cursor.execute('SELECT * From requestAccepted where requestId = %s', [token])
+    cursor.execute('SELECT * From requestAccepted where requestId = %s && hotelId = %s', [token, hotelId])
     acceptedOn = cursor.fetchall()
     acceptedOn = acceptedOn[0]['time']
 
-    cursor.execute('SELECT totalQuote from response where requestId = %s order by submittedOn desc limit 1', [token])
+    cursor.execute('SELECT totalQuote from response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [token, hotelId])
     totalQuote = cursor.fetchall()
     totalQuote = totalQuote[0]['totalQuote']
 
@@ -4979,59 +5039,60 @@ def confirmRequestSubmit():
     inp = request.json
     cursor = mysql.connection.cursor()
     time = datetime.datetime.utcnow()
+    hotelId = session.get('hotelId')
 
     cursor.execute(
-        'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+        'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     email = session['email']
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
 
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval10, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
-            prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+            prevresponse['averageRate'], prevresponse['contract'], prevresponse['expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
         ])
 
         cursor.execute(
-            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+            'SELECT * From responseAvg where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                           [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s',
+                           [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                     ])
 
 
-    cursor.execute('INSERT INTO confirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn) VALUES(%s, %s, %s, %s, %s)', [inp['id'], inp['confirmationCode'], inp['comments'], email, time])
-    cursor.execute('UPDATE request set status = %s where id = %s', [
-        statusval10, inp['id']
+    cursor.execute('INSERT INTO confirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s)', [inp['id'], inp['confirmationCode'], inp['comments'], email, time, hotelId])
+    cursor.execute('UPDATE request set status = %s where id = %s && hotelId = %s', [
+        statusval10, inp['id'], hotelId
     ])
-    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [statusval10, inp['id']])
+    cursor.execute('UPDATE response set status = %s where requestId = %s   && hotelId = %s order by submittedOn desc limit 1', [statusval10, inp['id'], hotelId])
 
-    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    cursor.execute('SELECT createdFor from request where id = %s  && hotelId = %s', [inp['id'], hotelId])
     createdFor = cursor.fetchall()
     createdFor = createdFor[0]['createdFor']
-    cursor.execute('SELECT totalQuote from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+    cursor.execute('SELECT totalQuote from response where requestId = %s  && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     totalQuote = cursor.fetchall()
     totalQuote = totalQuote[0]['totalQuote']
     mysql.connection.commit()
@@ -5056,65 +5117,65 @@ def notConfirmRequest():
     cursor = mysql.connection.cursor()
     email = session['email']
     time = datetime.datetime.utcnow()
-
+    hotelId = session.get('hotelId')
     cursor.execute(
-        'SELECT * from response where requestId = %s order by submittedOn desc limit 1', [inp['id']])
+        'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     email = session['email']
     now = datetime.datetime.utcnow()
     prevresponse = cursor.fetchall()
 
     if len(prevresponse) != 0:
         prevresponse = prevresponse[0]
-        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('INSERT INTO response(requestId, responseId, groupCategory, totalFare, foc, commission, commissionValue, totalQuote, cutoffDays, formPayment, paymentTerms, paymentGtd, negotiable, checkIn, checkOut, submittedBy, submittedOn, status, paymentDays, nights, comments, averageRate, contract, expectedFare, negotiationReason, timesNegotiated, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             prevresponse['requestId'], prevresponse['responseId'], prevresponse['groupCategory'], prevresponse['totalFare'], prevresponse[
                 'foc'], prevresponse['commission'], prevresponse['commissionValue'], prevresponse['totalQuote'], prevresponse['cutoffDays'],
             prevresponse['formPayment'], prevresponse['paymentTerms'], prevresponse['paymentGtd'], prevresponse[
                 'negotiable'], prevresponse['checkIn'], prevresponse['checkOut'], email, now,
             statusval11, prevresponse['paymentDays'], prevresponse['nights'], prevresponse['comments'],
             prevresponse['averageRate'], prevresponse['contract'], prevresponse[
-                'expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated']
+                'expectedFare'], prevresponse['negotiationReason'], prevresponse['timesNegotiated'], hotelId
         ])
 
         cursor.execute(
-            'SELECT * From responseAvg where responseId = %s order by submittedOn desc limit 1', [prevresponse['responseId']])
+            'SELECT * From responseAvg where responseId = %s && hotelId = %s order by submittedOn desc limit 1', [prevresponse['responseId'], hotelId])
         prevAvg = cursor.fetchall()
         if len(prevAvg) != 0:
             prevAvg = prevAvg[0]
-            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+            cursor.execute('INSERT INTO responseAvg(single1, single2, double1, double2, triple1, triple2, quad1, quad2, responseId, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                 prevAvg['single1'], prevAvg['single2'], prevAvg['double1'], prevAvg['double2'], prevAvg[
-                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now
+                    'triple1'], prevAvg['triple2'], prevAvg['quad1'], prevAvg['quad2'], prevAvg['responseId'], now, hotelId
             ])
 
             cursor.execute(
-                'SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [prevAvg['responseId']])
+                'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s  order by submittedOn desc limit 1', [prevAvg['responseId'], hotelId])
             submittedOn = cursor.fetchall()
-            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s',
-                           [prevAvg['responseId'], submittedOn[0]['submittedOn']])
+            cursor.execute('SELECT * From responseDaywise where responseId = %s and submittedOn = %s  && hotelId = %s ',
+                           [prevAvg['responseId'], submittedOn[0]['submittedOn'], hotelId])
 
             prevDaywise = cursor.fetchall()
             if len(prevDaywise) != 0:
                 for p in prevDaywise:
-                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                    cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
                         p['date'], p['currentOcc'], p['discountId'], p['occupancy'], p['type'], p[
-                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now
+                            'count'], p['ratePerRoom'], prevAvg['responseId'], p['forecast'], p['leadTime'], p['groups'], now, hotelId
                     ])
 
 
 
-    cursor.execute('INSERT INTO notConfirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn) VALUES(%s, %s, %s, %s, %s)', [
-                   inp['id'], inp['confirmationCode'], inp['comments'], email, time])
+    cursor.execute('INSERT INTO notConfirmRequest(requestId, confirmationCode, comments, submittedBy, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s)', [
+                   inp['id'], inp['confirmationCode'], inp['comments'], email, time, hotelId])
 
-    cursor.execute('UPDATE request set status = %s where id = %s', [
-        statusval11, inp['id']
+    cursor.execute('UPDATE request set status = %s where id = %s  && hotelId = %s ', [
+        statusval11, inp['id'], hotelId
     ])
 
-    cursor.execute('UPDATE response set status = %s where requestId = %s order by submittedOn desc limit 1', [
-                   statusval11, inp['id']])
+    cursor.execute('UPDATE response set status = %s where requestId = %s  && hotelId = %s  order by submittedOn desc limit 1', [
+                   statusval11, inp['id'], hotelId])
 
 
     mysql.connection.commit()
 
-    cursor.execute('SELECT createdFor from request where id = %s', [inp['id']])
+    cursor.execute('SELECT createdFor from request where id = %s  && hotelId = %s ', [inp['id'], hotelId])
     createdFor = cursor.fetchall()
     createdFor = createdFor[0]['createdFor']
    
@@ -5136,12 +5197,14 @@ def notConfirmRequest():
 @is_logged_in
 def changeOcc(id):
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     responseId = id + "R"
-    cursor.execute('SELECT submittedOn from responseDaywise where responseId = %s order by submittedOn desc limit 1', [responseId])
+    cursor.execute('SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s  order by submittedOn desc limit 1', [responseId], hotelId)
     submittedOn = cursor.fetchall()
     submittedOn = submittedOn[0]['submittedOn']
+    
 
-    cursor.execute('SELECT date, currentOcc from responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+    cursor.execute('SELECT date, currentOcc from responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s ', [responseId, submittedOn, hotelId])
     occ = cursor.fetchall()
     tempdict = {}
     for row in occ:
@@ -5184,7 +5247,7 @@ def analyticsbehaviorGet():
     category = request.args.get('category')
     customerType = request.args.get('customerType')
     status = request.args.get('status')
-
+    hotelId = session.get('hotelId')
 
     result = {}
     result['leadres'] = []
@@ -5196,13 +5259,13 @@ def analyticsbehaviorGet():
         tempres = {}
         if leadtime == "180 +":
             lead1 = 180
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s', [startDate, endDate, lead1])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s && hotelId = %s', [startDate, endDate, lead1, hotelId])
             leadres1 = cursor.fetchall()
         else:
             t1 = leadtime.split(' - ')
             lead1 = t1[0]
             lead2 = t1[1]
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, int(lead1), int(lead2)])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s && hotelId = %s', [startDate, endDate, int(lead1), int(lead2), hotelId])
             leadres1 = cursor.fetchall()
         
 
@@ -5232,7 +5295,7 @@ def analyticsbehaviorGet():
         tempres5 = {}
         tempres5['0'] = "180 +"
 
-        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, 0, 14])
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 0, 14, hotelId])
         leadres1 = cursor.fetchall()
         tempres1['1'] = len(leadres1)
         if len(leadres1) != 0:
@@ -5247,7 +5310,7 @@ def analyticsbehaviorGet():
             tempres1['2'] = 0
         leadres.append(tempres1)
 
-        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 14, 45])
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 14, 45, hotelId])
         leadres2 = cursor.fetchall()
         tempres2['1'] = len(leadres2)
         if len(leadres2) != 0:
@@ -5262,7 +5325,7 @@ def analyticsbehaviorGet():
             tempres2['2'] = 0
         leadres.append(tempres2)  
 
-        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 45, 120])
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 45, 120, hotelId])
         leadres3 = cursor.fetchall()
         tempres3['1'] = len(leadres3)
         if len(leadres3) != 0:
@@ -5277,7 +5340,7 @@ def analyticsbehaviorGet():
             tempres3['2'] = 0
         leadres.append(tempres3)    
 
-        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 120, 180])
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 120, 180, hotelId])
         leadres4 = cursor.fetchall()
         tempres4['1'] = len(leadres4)
         if len(leadres4) != 0:
@@ -5292,7 +5355,7 @@ def analyticsbehaviorGet():
             tempres4['2'] = 0
         leadres.append(tempres4)    
 
-        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s', [startDate, endDate, 180])
+        cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && hotelId = %s', [startDate, endDate, 180, hotelId])
         leadres5 = cursor.fetchall()
         tempres5['1'] = len(leadres5)
         if len(leadres5) != 0:
@@ -5312,7 +5375,7 @@ def analyticsbehaviorGet():
     if category != 'Category':
         catres = []
         tempres = {} 
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, category])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s && hotelId = %s', [startDate, endDate, category, hotelId])
         tempres1 = cursor.fetchall()
         tempres['0'] = category
         tempres['1'] = len(tempres1)
@@ -5334,7 +5397,7 @@ def analyticsbehaviorGet():
         for c in categories:
             cat = c['Field']
             tempres = {}
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, cat])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s && hotelId = %s', [startDate, endDate, cat, hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = cat
             tempres['1'] = len(tempres1)
@@ -5357,7 +5420,7 @@ def analyticsbehaviorGet():
         custres = []
         tempres = {}
         if (customerType == 'IATA'):
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, customerType, hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = customerType
             tempres['1'] = len(tempres1)
@@ -5373,13 +5436,13 @@ def analyticsbehaviorGet():
                 tempres['2'] = 0
             catres.append(tempres)
         else:
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s',
-                           [startDate, endDate, "customer"])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s  && hotelId = %s',
+                           [startDate, endDate, "customer", hotelId])
             tempres1 = cursor.fetchall()
             count = 0
             nights = 0
             for r in tempres1:
-                cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+                cursor.execute('SELECT userSubType from users where email = %s && hotelId = %s', [r['createdFor'], hotelId])
                 dd = cursor.fetchall()
                 if (dd[0]['userSubType'] == customerType):
                     count = count + 1
@@ -5398,7 +5461,7 @@ def analyticsbehaviorGet():
     else:
         custres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "IATA"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "IATA"], hotelId)
         tempres1 = cursor.fetchall()
         tempres['0'] = "IATA"
         tempres['1'] = len(tempres1)
@@ -5414,7 +5477,7 @@ def analyticsbehaviorGet():
             tempres['2'] = 0
         custres.append(tempres)
 
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "customer"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "customer"], hotelId)
         count1 = 0
         count2 = 0
         count3 = 0
@@ -5423,7 +5486,7 @@ def analyticsbehaviorGet():
         night3 = 0
         tempres1 = cursor.fetchall()
         for r in tempres1:
-            cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+            cursor.execute('SELECT userSubType from users where email = %s && hotelId = %s', [r['createdFor'], hotelId])
             dd = cursor.fetchall()
             if (dd[0]['userSubType'] == 'retail'):
                 count1 = count1 + 1
@@ -5476,7 +5539,7 @@ def analyticsbehaviorGet():
     if (status != 'Status'):
         statusres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s', [startDate, endDate, status])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s && hotelId = %s', [startDate, endDate, status], hotelId)
         tempres1 = cursor.fetchall()
         tempres['0'] = status
         tempres['1'] = len(tempres1)
@@ -5496,7 +5559,7 @@ def analyticsbehaviorGet():
         statuses = [statusval1, statusval2, statusval3, statusval4, statusval5, statusval6, statusval7, statusval8, statusval9, statusval10, statusval11 ]
         for s in statuses:
             tempres = {}
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s', [startDate, endDate, s])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s && hotelId = %s', [startDate, endDate, s, hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = s
             tempres['1'] = len(tempres1)
@@ -5522,7 +5585,7 @@ def analyticsdashboard():
     cursor = mysql.connection.cursor()
     endDate = datetime.datetime.today()
     startDate = endDate - datetime.timedelta(days = 31)
-    
+    hotelId = session.get('hotelId')
 
     startDatePass = startDate.strftime('%y-%b-%d')
     x = startDatePass.split('-')
@@ -5547,32 +5610,32 @@ def analyticsdashboard():
     tempres5 = {}
     tempres5['0'] = "180 +"
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, 0, 14])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 0, 14, hotelId])
     leadres1 = cursor.fetchall()
     tempres1['1'] = len(leadres1)
     leadres.append(tempres1)
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 14, 45])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 14, 45, hotelId])
     leadres2 = cursor.fetchall()
     tempres2['1'] = len(leadres2)
     leadres.append(tempres2)  
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 45, 120])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 45, 120, hotelId])
     leadres3 = cursor.fetchall()
     tempres3['1'] = len(leadres3)
     leadres.append(tempres3)    
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 120, 180])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 120, 180, hotelId])
     leadres4 = cursor.fetchall()
     tempres4['1'] = len(leadres4)
     leadres.append(tempres4)    
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s', [startDate, endDate, 180])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && hotelId = %s', [startDate, endDate, 180, hotelId])
     leadres5 = cursor.fetchall()
     tempres5['1'] = len(leadres5)
     leadres.append(tempres5)           
 
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     requests = cursor.fetchall()
     table = {
         "0 - 2": 0,
@@ -5583,7 +5646,7 @@ def analyticsdashboard():
     notSubmitted = 0
     resHours = []
     for r in requests:
-        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
+        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s  && hotelId = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8, hotelId])
         res = cursor.fetchall()
         if len(res) == 0:
             notSubmitted = notSubmitted + 1
@@ -5606,7 +5669,7 @@ def analyticsdashboard():
     hotelres['table'] = table
 
 
-    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s', [startDate, endDate, statusval2])
+    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s && hotelId = %s', [startDate, endDate, statusval2, hotelId])
     notSubmitted = 0
     table = {
         "0 - 2": 0,
@@ -5616,12 +5679,12 @@ def analyticsdashboard():
     }
     responseData = cursor.fetchall()
     for r in responseData:
-        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId']])
+        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId'], hotelId])
         tempres = cursor.fetchall()
         if len(tempres) == 0:
             notSubmitted = notSubmitted + 1
         else:
-            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId']])
+            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s  && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId'], hotelId])
             customerres = cursor.fetchall()
             if len(customerres) == 0:
                 notSubmitted = notSubmitted + 1
@@ -5643,21 +5706,21 @@ def analyticsdashboard():
     customeres['table'] = table
 
     revenueres = {}
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     tempres1 = cursor.fetchall()
     if len(tempres1) != 0:
         total1 = 0
         total2 = 0
         for r in tempres1:
             if (r['status'] == statusval10):
-                cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                cursor.execute('SELECT * from response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                 res = cursor.fetchall()
                 if len(res) == 0:
                     total2 = total2 + 0
                 else:
                     total2 = total2 + float(res[0]['totalQuote'])
             elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                 res = cursor.fetchall()
                 if len(res) == 0:
                     total1 = total1 + 0
@@ -5672,7 +5735,7 @@ def analyticsdashboard():
 
     startDate = datetime.datetime.today()
     endDate = startDate + datetime.timedelta(days = 5)
-    cursor.execute('SELECT * From request where checkIn >= %s && checkOut <= %s order by checkIn', [startDate, endDate])
+    cursor.execute('SELECT * From request where checkIn >= %s && checkOut <= %s  && hotelId = %s order by checkIn', [startDate, endDate, hotelId])
     upcoming = cursor.fetchall()
 
 
@@ -5689,8 +5752,8 @@ def analyticsperformanceGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
-
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     requests = cursor.fetchall()
     result = {}
     result['requestsNo'] = len(requests)
@@ -5703,7 +5766,7 @@ def analyticsperformanceGet():
         "24 +":0,
     }
     for r in requests:
-        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
+        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s && hotelId = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8, hotelId])
         res = cursor.fetchall()
         if len(res) == 0:
             notSubmitted = notSubmitted + 1
@@ -5735,7 +5798,7 @@ def analyticsperformanceGet():
     result['table'] = table
 
     count = 0
-    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s', [startDate, endDate, statusval2])
+    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s && hotelId = %s', [startDate, endDate, statusval2, hotelId])
     notSubmitted = 0
     resHours = []
     table = {
@@ -5746,13 +5809,13 @@ def analyticsperformanceGet():
     }
     responseData = cursor.fetchall()
     for r in responseData:
-        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId']])
+        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s  && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId'], hotelId])
         tempres = cursor.fetchall()
         if len(tempres) == 0:
             notSubmitted = notSubmitted + 1
         else:
             count = count + 1
-            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId']])
+            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId'], hotelId])
             customerres = cursor.fetchall()
             if len(customerres) == 0:
                 notSubmitted = notSubmitted + 1
@@ -5801,7 +5864,7 @@ def analyticsrevenueGet():
     endDate = request.args.get('endDate')
     category = request.args.get('category')
     customerType = request.args.get('customerType')
-
+    hotelId = session.get('hotelId')
     result = {}
     result['category'] = []
     result['customerType'] = []
@@ -5809,7 +5872,7 @@ def analyticsrevenueGet():
     if category != 'Category':
         catres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, category])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s && hotelId = %s', [startDate, endDate, category, hotelId])
         tempres1 = cursor.fetchall()
         tempres['0'] = category
         if len(tempres1) != 0:
@@ -5817,14 +5880,14 @@ def analyticsrevenueGet():
             total2 = 0
             for r in tempres1:
                 if (r['status'] == statusval10):
-                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total2 = total2 + 0
                     else:
                         total2 = total2 + float(res[0]['totalQuote'])
                 elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total1 = total1 + 0
@@ -5843,7 +5906,7 @@ def analyticsrevenueGet():
         for c in categories:
             cat = c['Field']
             tempres = {}
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s', [startDate, endDate, cat])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && category = %s && hotelId = %s', [startDate, endDate, cat, hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = cat
             if len(tempres1) != 0:
@@ -5851,14 +5914,14 @@ def analyticsrevenueGet():
                 total2 = 0
                 for r in tempres1:
                     if (r['status'] == statusval10):
-                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total2 = total2 + 0
                         else:
                             total2 = total2 + float(res[0]['totalQuote'])
                     elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total1 = total1 + 0
@@ -5876,7 +5939,7 @@ def analyticsrevenueGet():
         custres = []
         tempres = {}
         if (customerType == 'IATA'):
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, customerType])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, customerType, hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = customerType
             if len(tempres1) != 0:
@@ -5884,14 +5947,14 @@ def analyticsrevenueGet():
                 total2 = 0
                 for r in tempres1:
                     if (r['status'] == statusval10):
-                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total2 = total2 + 0
                         else:
                             total2 = total2 + float(res[0]['totalQuote'])
                     elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total1 = total1 + 0
@@ -5905,25 +5968,25 @@ def analyticsrevenueGet():
             
             custres.append(tempres)
         else:
-            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s',
-                           [startDate, endDate, "customer"])
+            cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s  && hotelId = %s',
+                           [startDate, endDate, "customer", hotelId])
             tempres1 = cursor.fetchall()
             tempres['0'] = customerType
             total1 = 0
             total2 = 0
             for r in tempres1:
-                cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+                cursor.execute('SELECT userSubType from users where email = %s && hotelId = %s', [r['createdFor'], hotelId])
                 dd = cursor.fetchall()
                 if (dd[0]['userSubType'] == customerType):
                     if (r['status'] == statusval10):
-                        cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total2 = total2 + 0
                         else:
                             total2 = total2 + float(res[0]['totalQuote'])
                     elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                        cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                         res = cursor.fetchall()
                         if len(res) == 0:
                             total1 = total1 + 0
@@ -5936,7 +5999,7 @@ def analyticsrevenueGet():
     else:
         custres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "IATA"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "IATA", hotelId])
         tempres1 = cursor.fetchall()
         tempres['0'] = "IATA"
         if len(tempres1) != 0:
@@ -5944,14 +6007,14 @@ def analyticsrevenueGet():
             total2 = 0
             for r in tempres1:
                 if (r['status'] == statusval10):
-                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total2 = total2 + 0
                     else:
                         total2 = total2 + float(res[0]['totalQuote'])
                 elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total1 = total1 + 0
@@ -5965,7 +6028,7 @@ def analyticsrevenueGet():
             
         custres.append(tempres)
 
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s', [startDate, endDate, "customer"])
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "customer", hotelId])
         total1 = 0
         total2 = 0
         total3 = 0
@@ -5974,18 +6037,18 @@ def analyticsrevenueGet():
         total6 = 0
         tempres1 = cursor.fetchall()
         for r in tempres1:
-            cursor.execute('SELECT userSubType from users where email = %s', [r['createdFor']])
+            cursor.execute('SELECT userSubType from users where email = %s && hotelId = %s', [r['createdFor'], hotelId])
             dd = cursor.fetchall()
             if (dd[0]['userSubType'] == 'retail'):
                 if (r['status'] == statusval10):
-                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total2 = total2 + 0
                     else:
                         total2 = total2 + float(res[0]['totalQuote'])
                 elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total1 = total1 + 0
@@ -5993,14 +6056,14 @@ def analyticsrevenueGet():
                         total1 = total1 + float(res[0]['totalQuote'])
             elif (dd[0]['userSubType'] == 'corporate'):
                 if (r['status'] == statusval10):
-                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total4 = total4 + 0
                     else:
                         total4 = total4 + float(res[0]['totalQuote'])
                 elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total3 = total3 + 0
@@ -6008,14 +6071,14 @@ def analyticsrevenueGet():
                         total3 = total3 + float(res[0]['totalQuote'])
             elif (dd[0]['userSubType'] == 'tour'):
                 if (r['status'] == statusval10):
-                    cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * from response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total6 = total6 + 0
                     else:
                         total6 = total6 + float(res[0]['totalQuote'])
                 elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                    cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                    cursor.execute('SELECT * From response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                     res = cursor.fetchall()
                     if len(res) == 0:
                         total5 = total5 + 0
@@ -6052,18 +6115,19 @@ def analyticstracking():
     date = datetime.date.today()
     enddate = date + datetime.timedelta(days = 31)
     enddate = datetime.datetime.combine(enddate, datetime.datetime.min.time())
+    hotelId = session.get('hotelId')
 
-    cursor.execute('SELECT * from settingsTimelimit order by submittedOn desc limit 1')
+    cursor.execute('SELECT * from settingsTimelimit where hotelId = %s order by submittedOn desc limit 1', [hotelId])
     expiry = cursor.fetchall()
     if len(expiry) != 0:
         expiry = expiry[0]['value']
 
-    cursor.execute('SELECT * From request where status = %s', [statusval2])
+    cursor.execute('SELECT * From request where status = %s && hotelId = %s', [statusval2, hotelId])
     requests = cursor.fetchall()
     result = []
     for r in requests:
         tempresult = {}
-        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
+        cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], statusval2, hotelId])
         response = cursor.fetchall()
         submittedOn = response[0]['submittedOn']
         expiration = submittedOn + datetime.timedelta(hours = float(expiry))
@@ -6072,12 +6136,12 @@ def analyticstracking():
             tempresult['expiry'] = expiration
             result.append(tempresult)
     
-    cursor.execute('SELECT * From request where status = %s', [statusval4])
+    cursor.execute('SELECT * From request where status = %s && hotelId = %s', [statusval4, hotelId])
     requests = cursor.fetchall()
     result2 = []
     for r in requests:
         tempresult = {}
-        cursor.execute('SELECT paymentGtd from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval4])
+        cursor.execute('SELECT paymentGtd from response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], statusval4, hotelId])
         response = cursor.fetchall()
         if len(response) != 0:
             if response[0]['paymentGtd'] == 1:
@@ -6087,7 +6151,7 @@ def analyticstracking():
                 tempresult['checkOut'] = r['checkOut']
                 result2.append(tempresult)
     
-    cursor.execute('SELECT * from request where checkIn >= %s && checkOut <= %s', [date, enddate])
+    cursor.execute('SELECT * from request where checkIn >= %s && checkOut <= %s && hotelId = %s', [date, enddate, hotelId])
     requests = cursor.fetchall()
     result3 = []
     for r in requests:
@@ -6115,10 +6179,11 @@ def analyticsstdreportGet():
     cursor = mysql.connection.cursor()
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     requestData = cursor.fetchall()
     for r in requestData:
-        cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], statusval2])
+        cursor.execute('SELECT * From response where requestId = %s && status = %s && hotelId = %s order by submittedOn desc limit 1', [r['id'], statusval2, hotelId])
         totalQuote = cursor.fetchall()
         if len(totalQuote) == 0:
             r['totalQuote'] = 0
@@ -6133,7 +6198,7 @@ def analyticsstdreportGet():
             r['timesNegotiated'] = totalQuote[0]['timesNegotiated']
             responseId = r['id'] + "R"
             submittedOn = totalQuote[0]['submittedOn']
-            cursor.execute('SELECT * from responseDaywise where responseId = %s and submittedOn = %s', [responseId, submittedOn])
+            cursor.execute('SELECT * from responseDaywise where responseId = %s and submittedOn = %s && hotelId = %s', [responseId, submittedOn, hotelId])
             prev = cursor.fetchall()
             total = 0
             for p in prev:
@@ -6153,6 +6218,7 @@ def analyticsDashboardGet():
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     result = {}
     result['leadres'] = []
     leadres = []
@@ -6167,33 +6233,33 @@ def analyticsDashboardGet():
     tempres5 = {}
     tempres5['0'] = "180 +"
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s', [startDate, endDate, 0, 14])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime >= %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 0, 14, hotelId])
     leadres1 = cursor.fetchall()
     tempres1['1'] = len(leadres1)
     leadres.append(tempres1)
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 14, 45])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 14, 45, hotelId])
     leadres2 = cursor.fetchall()
     tempres2['1'] = len(leadres2)
     leadres.append(tempres2)  
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 45, 120])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 45, 120, hotelId])
     leadres3 = cursor.fetchall()
     tempres3['1'] = len(leadres3)
     leadres.append(tempres3)    
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s', [startDate, endDate, 120, 180])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && leadTime <= %s && hotelId = %s', [startDate, endDate, 120, 180, hotelId])
     leadres4 = cursor.fetchall()
     tempres4['1'] = len(leadres4)
     leadres.append(tempres4)    
 
-    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s', [startDate, endDate, 180])
+    cursor.execute('SELECT * from request where createdOn >= %s && createdOn <= %s && leadTime > %s && hotelId = %s', [startDate, endDate, 180, hotelId])
     leadres5 = cursor.fetchall()
     tempres5['1'] = len(leadres5)
     leadres.append(tempres5)
 
     result['leadres'] = leadres
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     requests = cursor.fetchall()
     table = {
         "0 - 2": 0,
@@ -6204,7 +6270,7 @@ def analyticsDashboardGet():
     notSubmitted = 0
     resHours = []
     for r in requests:
-        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8])
+        cursor.execute('SELECT submittedOn from response where requestId = %s && (status = %s or status = %s && hotelId = %s) order by submittedOn asc limit 1', [r['id'], statusval2, statusval8, hotelId])
         res = cursor.fetchall()
         if len(res) == 0:
             notSubmitted = notSubmitted + 1
@@ -6228,7 +6294,7 @@ def analyticsDashboardGet():
 
     result['hotelres'] = hotelres
 
-    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s', [startDate, endDate, statusval2])
+    cursor.execute('SELECT DISTINCT responseId From response where submittedOn >= %s && submittedOn <= %s && status = %s && hotelId = %s', [startDate, endDate, statusval2, hotelId])
     notSubmitted = 0
     table = {
         "0 - 2": 0,
@@ -6238,12 +6304,12 @@ def analyticsDashboardGet():
     }
     responseData = cursor.fetchall()
     for r in responseData:
-        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId']])
+        cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && status = %s && responseId = %s && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval2, r['responseId'], hotelId])
         tempres = cursor.fetchall()
         if len(tempres) == 0:
             notSubmitted = notSubmitted + 1
         else:
-            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId']])
+            cursor.execute('SELECT submittedOn From response where submittedOn >= %s && submittedOn <= %s && (status = %s or status = %s) && responseId = %s  && hotelId = %s order by submittedOn asc limit 1', [startDate, endDate, statusval4, statusval5, r['responseId'], hotelId])
             customerres = cursor.fetchall()
             if len(customerres) == 0:
                 notSubmitted = notSubmitted + 1
@@ -6266,21 +6332,21 @@ def analyticsDashboardGet():
 
     result['customeres'] = customeres
     revenueres = {}
-    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s', [startDate, endDate])
+    cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && hotelId = %s', [startDate, endDate, hotelId])
     tempres1 = cursor.fetchall()
     if len(tempres1) != 0:
         total1 = 0
         total2 = 0
         for r in tempres1:
             if (r['status'] == statusval10):
-                cursor.execute('SELECT * from response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                cursor.execute('SELECT * from response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                 res = cursor.fetchall()
                 if len(res) == 0:
                     total2 = total2 + 0
                 else:
                     total2 = total2 + float(res[0]['totalQuote'])
             elif (r['status'] == statusval2 or r['status'] == statusval4 or r['status'] == statusval8 or r['status'] == statusval11):
-                cursor.execute('SELECT * From response where requestId = %s && status = %s order by submittedOn desc limit 1', [r['id'], r['status']])
+                cursor.execute('SELECT * From response where requestId = %s && status = %s  && hotelId = %s order by submittedOn desc limit 1', [r['id'], r['status'], hotelId])
                 res = cursor.fetchall()
                 if len(res) == 0:
                     total1 = total1 + 0
@@ -6302,9 +6368,10 @@ def resubmitRequest():
     inp = request.json
     username = session['email']
     cursor = mysql.connection.cursor()
-    cursor.execute('SELECT * From request where id = %s', [inp['id']])
+    hotelId = session.get('hotelId')
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [inp['id'], hotelId])
     prevRequest = cursor.fetchall()
-    cursor.execute('SELECT Count(*) from request')
+    cursor.execute('SELECT Count(*) from request where hotelId = %s', [hotelId])
     count = cursor.fetchall()
     count = count[0]['Count(*)'] + 1
     if (count < 10):
@@ -6317,18 +6384,18 @@ def resubmitRequest():
     lead = lead.days
     today = datetime.datetime.today()
     prevRequest = prevRequest[0]
-    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
-                   prevRequest['category'], prevRequest['groupName'], prevRequest['checkIn'], prevRequest['checkOut'], prevRequest['nights'], prevRequest['commissionable'], prevRequest['groupBlock'], prevRequest['foc'], prevRequest['foc1'], prevRequest['foc2'], prevRequest['budget'], prevRequest['formPayment'], prevRequest['paymentTerms'], prevRequest['paymentDays'], prevRequest['comments'], id, username, prevRequest['createdFor'], lead, statusval1, prevRequest['userType'], today   
+    cursor.execute('INSERT INTO request(category, groupName, checkIn, checkOut, nights, commissionable, groupBlock, foc, foc1, foc2, budget, formPayment, paymentTerms, paymentDays, comments, id, createdBy, createdFor, leadTime, status, userType, createdOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
+                   prevRequest['category'], prevRequest['groupName'], prevRequest['checkIn'], prevRequest['checkOut'], prevRequest['nights'], prevRequest['commissionable'], prevRequest['groupBlock'], prevRequest['foc'], prevRequest['foc1'], prevRequest['foc2'], prevRequest['budget'], prevRequest['formPayment'], prevRequest['paymentTerms'], prevRequest['paymentDays'], prevRequest['comments'], id, username, prevRequest['createdFor'], lead, statusval1, prevRequest['userType'], today, hotelId   
             ])
-    cursor.execute('SELECT * from request1Bed where id = %s', [inp['id']])
+    cursor.execute('SELECT * from request1Bed where id = %s  && hotelId = %s', [inp['id'], hotelId])
     table = cursor.fetchall()
     for t in table:
-        cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id])
+        cursor.execute('INSERT INTO request1Bed(date, occupancy, count, id, hotelId) VALUES(%s, %s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id, hotelId])
 
-    cursor.execute('SELECT * from request2Bed where id = %s', [inp['id']])
+    cursor.execute('SELECT * from request2Bed where id = %s && hotelId = %s', [inp['id'], hotelId])
     table = cursor.fetchall()
     for t in table:
-        cursor.execute('INSERT INTO request2Bed(date, occupancy, count, id) VALUES(%s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id])
+        cursor.execute('INSERT INTO request2Bed(date, occupancy, count, id, hotelId) VALUES(%s, %s, %s, %s, %s)', [t['date'], t['occupancy'], t['count'], id, hotelId])
 
     mysql.connection.commit()
     flash('Your Request has been entered', 'success')
@@ -6366,11 +6433,20 @@ def addHotelSubmit():
     if request.method == 'POST':
         hotelName = request.form['hotelName']
         email = request.form['email']
+        address = request.form.get('address')
+        contactName = request.form['contactName']
+        city = request.form['city']
+        state = request.form['state']
+        country = request.form['country']
+        phone = request.form['phone']
+        zipv = request.form['zip']
+
+
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From mapHotelId where email = %s', [email])
         data = cursor.fetchall()
         if len(data) == 0:
-            cursor.execute('INSERT INTO mapHotelId(hotelName, email) VALUES(%s, %s)', [hotelName, email])
+            cursor.execute('INSERT INTO mapHotelId(hotelName, email, address, contactName, city, state, country, phone, zip) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [hotelName, email, address, contactName, city, state, country, phone, zipv])
             mysql.connection.commit()
         else:
             flash('Email already registered', 'danger')

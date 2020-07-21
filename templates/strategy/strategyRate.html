@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="">
-    <div class="container spread3">
+    <div class="container spread4">
         <div class='loginH'>
             <div class='text-center'>
                 <p>Rate Grid</p>
@@ -19,13 +19,13 @@
                 </div>
                 <div class='col-sm-3 mb-2' style="margin-left: 100px;">
                     <select class='weekselect' multiple="multiple" id='dowG' required style="width: 70%;">
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
+                        <option value="M">Monday</option>
+                        <option value="Tu">Tuesday</option>
+                        <option value="W">Wednesday</option>
+                        <option value="Th">Thursday</option>
+                        <option value="F">Friday</option>
+                        <option value="Sa">Saturday</option>
+                        <option value="Su">Sunday</option>
                     </select>
                 </div>
                 <div class="col-sm-2 ml-5">
@@ -41,15 +41,15 @@
                     <caption>Rate Grid</caption>
                     <thead class="table-header">
                         <tr>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>DOW</th>
-                            <th>Room Type</th>
-                            <th>Single Occ</th>
-                            <th>Double Occ</th>
-                            <th>Triple Occ</th>
-                            <th>Quad Occ</th>
-                            <th>Actions</th>
+                            <th style='width: 10%;' class='text-center'>Start Date</th>
+                            <th style='width: 10%;' class='text-center'>End Date</th>
+                            <th style='width: 15%;' class='text-center'>DOW</th>
+                            <th style='width: 5%;' class='text-center'>Room Type</th>
+                            <th style='width: 5%;' class='text-center'>Single Occ</th>
+                            <th style='width: 5%;' class='text-center'>Double Occ</th>
+                            <th style='width: 5%;' class='text-center'>Triple Occ</th>
+                            <th style='width: 5%;' class='text-center'>Quad Occ</th>
+                            <th style='width: 15%;' class='text-center'>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,11 +105,34 @@
              "scrollX": true,
          });
 
-              $('.weekselect').multiselect({
-                  nonSelectedText: 'Select Day of the week',
-                  buttonWidth: '400px',
-                   numberDisplayed: 0,
-              })
+          const nonSelectedText = 'Select Day of the Week'
+         const numberDisplayed = 6
+
+        $('.weekselect').multiselect({
+             buttonWidth: '400px',
+             numberDisplayed: 6,
+             numberDisplayed: 0,
+             buttonText: function (options, select) {
+                 var numberOfOptions = $(this).children('option').length;
+                 if (options.length === 0) {
+                     return nonSelectedText;
+                 }
+                 else {
+                     if (options.length > numberDisplayed) {
+                         if (options.length === numberOfOptions) {
+                             return ' All Selected';
+                         }
+                         return 'All Days of the Week'
+                     } else {
+                         var selected = '';
+                         options.each(function () {
+                             selected += $(this).val() + "  , "
+                         });
+                         return selected
+                     }
+                 }
+             }
+         })
     });
 
     function bindButtons() {
@@ -240,13 +263,13 @@
                 let msg2 = document.getElementById('msg2')
                 $(msg2).hide()
                 var week = [
-                    { label: 'Monday', title: 'Monday', value: 'Monday' },
-                    { label: 'Tuesday', title: 'Tuesday', value: 'Tuesday' },
-                    { label: 'Wednesday', title: 'Wednesday', value: 'Wednesday' },
-                    { label: 'Thursday', title: 'Thursday', value: 'Thursday' },
-                    { label: 'Friday', title: 'Friday', value: 'Friday' },
-                    { label: 'Saturday', title: 'Saturday', value: 'Saturday' },
-                    { label: 'Sunday', title: 'Sunday', value: 'Sunday'}
+                    { label: 'Monday', title: 'Monday', value: 'M' },
+                    { label: 'Tuesday', title: 'Tuesday', value: 'Tu' },
+                    { label: 'Wednesday', title: 'Wednesday', value: 'W' },
+                    { label: 'Thursday', title: 'Thursday', value: 'Th' },
+                    { label: 'Friday', title: 'Friday', value: 'F' },
+                    { label: 'Saturday', title: 'Saturday', value: 'Sa' },
+                    { label: 'Sunday', title: 'Sunday', value: 'Su' }
                 ];
 
                 
@@ -340,13 +363,14 @@
                 resArr[1] = parseDate(data[i][1]);
                 const days = data[i][2]
                 //datatable
-                resArr[2] = parseDay("Monday", days);
-                resArr[3] = parseDay("Tuesday", days)
-                resArr[4] = parseDay("Wednesday", days)
-                resArr[5] = parseDay("Thursday", days)
-                resArr[6] = parseDay("Friday", days)
-                resArr[7] = parseDay("Saturday", days)
-                resArr[8] = parseDay("Sunday", days)
+
+                resArr[2] = parseDay("M", days);
+                resArr[3] = parseDay("Tu", days)
+                resArr[4] = parseDay("W", days)
+                resArr[5] = parseDay("Th", days)
+                resArr[6] = parseDay("F", days)
+                resArr[7] = parseDay("Sa", days)
+                resArr[8] = parseDay("Su", days)
                 resArr[9] = data[i][3]
                 resArr[10] = table.cells(i, 4).nodes().to$().find('input').val();
                 resArr[11] = table.cells(i, 5).nodes().to$().find('input').val();

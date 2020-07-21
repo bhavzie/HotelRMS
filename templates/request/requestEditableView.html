@@ -404,8 +404,11 @@
         <div class='mb-5'>
             Contract : 
             <button type='button' class='btn otherbtn col-sm-4 ml-2' data-toggle="modal" data-target="#exampleModal">
-                Contract
+                Contract : 
             </button>
+            <span id='contractSelected' class='ml-5 btn otherbtn' style='display:none;'>
+                Contract ID
+            </span>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -611,6 +614,10 @@
             seleb.innerHTML = seleb.innerText
             $(seleb).show();
 
+
+            const con = document.getElementById('contractSelected')
+        con.innerText = con.innerText = "CONTRACT ID : " + selected
+        $("#contractSelected").show();
         }
 
     function del() {
