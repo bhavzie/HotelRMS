@@ -1891,7 +1891,10 @@ def strategyDiscountCreate():
     cursor.execute('SELECT startDate, endDate from discountMap where defaultm = 0 && hotelId = %s', [hotelId])
     storedDates = cursor.fetchall()
 
-    return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates)
+    factor = rooms * 20 // 100
+    halffactor = factor // 2
+
+    return render_template('strategy/strategyDiscountCreate.html', rooms = rooms, discountGrids = discountGrids, flag = flag, defaultId = defaultId, storedDates = storedDates, factor = factor, halffactor = halffactor)
 
 
 @app.route('/strategyDiscountSubmit', methods = ['GET', 'POST'])
@@ -1988,12 +1991,14 @@ def showDiscountGrid(id):
     cursor.execute(
         'SELECT startDate, endDate from discountMap where defaultm = 0 AND discountId != %s && hotelId = %s', [id, hotelId])
     storedDates = cursor.fetchall()
+
     data['startDate'] = data['startDate'].strftime('%y-%b-%d')
     x = data['startDate'].split('-')
     data['startDate']= x[2] + " " + x[1] + ", " + x[0]
     data['endDate'] = data['endDate'].strftime('%y-%b-%d')
     x = data['endDate'].split('-')
     data['endDate'] = x[2] + " " + x[1] + ", " + x[0]
+
 
     return render_template('strategy/showDiscountGrid1.html', grid = grid, data = data, ranges = ranges, result = result, occ = occ, flag = flag, storedDates = storedDates)
 
@@ -2056,6 +2061,7 @@ def editDiscountGrid():
     email = session['email']
     time = datetime.datetime.utcnow()
     hotelId = session.get('hotelId')
+    print(inp['startDate'])
 
     cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s && hotelId = %s', [
         inp['startDate'], inp['endDate'], email, time, inp['discountId'], hotelId
@@ -3134,7 +3140,7 @@ def showRequest1():
     lead = int(data['leadTime'])
     occs = []
 
-    cursor.execute('SELECT * From room')
+    cursor.execute('SELECT * From room where hotelId = %s', [hotelId])
     data7 = cursor.fetchall()
     totalRooms = 0
     for d in data7:
@@ -3700,11 +3706,13 @@ def requestProcessQuote():
 
     cursor.execute('SELECT days from settingsTimelimit where hotelId = %s', [hotelId])
     days = cursor.fetchall()
-    days = days[0]
-    days = int(days['days'])
-    endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
-    endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
-    endline = endline + datetime.timedelta(hours = 23, minutes = 59)
+    endline = datetime.datetime.now().date() + datetime.timedelta(days = 99)
+    if len(days) != 0:
+        days = days[0]
+        days = int(days['days'])
+        endline = datetime.datetime.now().date() + datetime.timedelta(days = days)
+        endline = datetime.datetime.combine(endline, datetime.datetime.min.time())
+        endline = endline + datetime.timedelta(hours = 23, minutes = 59)
 
     table = inp['table_result']
     check_final = False
@@ -4477,7 +4485,7 @@ def deleteRequest(id):
         data3 = data3[0]
 
         cursor.execute(
-            'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId], hotelId)
+            'SELECT submittedOn from responseDaywise where responseId = %s  && hotelId = %s order by submittedOn desc limit 1', [responseId, hotelId])
         submittedOn = cursor.fetchall()
         if submittedOn[0]['submittedOn'] == 'None':
             submittedOn = submittedOn[0]['submittedOn']
@@ -4549,7 +4557,7 @@ def deleteRequest(id):
 
         return render_template('request/requestQuotedView.html', data=data, data2=data2, tfoc=tfoc, tcomm=tcomm, data3=data3, lefttable=lefttable, righttable=righttable, data5=data5, data6=data6, deleteflag = deleteflag, data8 = data8, data9 = data9, data10 = data10, contractv = contractv)
     elif (status[0]['status'] == statusval1):
-        cursor.execute('SELECT * From request where id = %s  && hotelId = %s', [id], hotelId)
+        cursor.execute('SELECT * From request where id = %s  && hotelId = %s', [id, hotelId])
         data = cursor.fetchall()
         data = data[0]
         checkIn = data['checkIn']
@@ -5009,7 +5017,7 @@ def requestHistory(id):
 def confirmRequest(token):
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
-    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [token], hotelId)
+    cursor.execute('SELECT * From request where id = %s && hotelId = %s', [token, hotelId])
     requestData = cursor.fetchall()
     requestData = requestData[0]
 
@@ -5461,7 +5469,7 @@ def analyticsbehaviorGet():
     else:
         custres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "IATA"], hotelId)
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "IATA", hotelId])
         tempres1 = cursor.fetchall()
         tempres['0'] = "IATA"
         tempres['1'] = len(tempres1)
@@ -5477,7 +5485,7 @@ def analyticsbehaviorGet():
             tempres['2'] = 0
         custres.append(tempres)
 
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "customer"], hotelId)
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && userType = %s && hotelId = %s', [startDate, endDate, "customer", hotelId])
         count1 = 0
         count2 = 0
         count3 = 0
@@ -5539,7 +5547,7 @@ def analyticsbehaviorGet():
     if (status != 'Status'):
         statusres = []
         tempres = {}
-        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s && hotelId = %s', [startDate, endDate, status], hotelId)
+        cursor.execute('SELECT * From request where createdOn >= %s && createdOn <= %s && status = %s && hotelId = %s', [startDate, endDate, status, hotelId])
         tempres1 = cursor.fetchall()
         tempres['0'] = status
         tempres['1'] = len(tempres1)

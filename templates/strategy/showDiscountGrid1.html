@@ -300,6 +300,9 @@
                 startDate = parseDate2($('#startDateG').val())
                 endDate = parseDate2($('#endDateG').val())
             }
+        } else {
+            startDate = parseDate2($('#startDateG').val())
+            endDate = parseDate2($('#endDateG').val())
         }
 
         result['discountId'] = discountId
@@ -340,7 +343,6 @@
 
         result['values'] = values
         result['leadtime'] = leadtime
-
 
         fetch('/editDiscountGrid', {
             method: 'POST',

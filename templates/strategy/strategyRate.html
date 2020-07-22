@@ -103,6 +103,8 @@
             table = $('#tab2').DataTable({
              responsive: true,
              "scrollX": true,
+             "bPaginate": false,
+             "ordering": false
          });
 
           const nonSelectedText = 'Select Day of the Week'
@@ -163,13 +165,13 @@
         
         const tr1 = document.createElement('tr')
         tr1.innerHTML = `
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${sdg.value}
                         </td>
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${edg.value}
                         </td>
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${$(dowG).val()}
                         </td>
                         <td>
@@ -195,13 +197,13 @@
             const tr2 = document.createElement('tr')
             tr2.innerHTML = `
                     <tr>
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${sdg.value}
                         </td>
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${edg.value}
                         </td>
-                        <td style = 'vertical-align: middle; text-align:center'>
+                        <td     >
                             ${$(dowG).val()}
                         </td>
                         <td>
