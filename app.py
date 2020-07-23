@@ -444,6 +444,7 @@ def registerT():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #Dropdown for developers
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -761,6 +762,10 @@ def login():
                         session.clear()
                         flash('You are de-activated. Kindly contact Super Admin!', 'danger')
                         return render_template('login.html', title = 'Login')
+                    
+                    cursor.execute('SELECT hotelName From mapHotelId')
+                    hotelName = cursor.fetchall()
+                    return render_template('developer/hotelDropDown.html', hotelName = hotelName)
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('home2'))
@@ -770,6 +775,29 @@ def login():
 
     return render_template('login.html', title = 'Login')
 
+@app.route('/dropDownHotelSubmit', methods = ['GET', 'POST'])
+@is_logged_in
+def dropDownHotelSubmit():
+    hotelName = request.form['hotelName']
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT hotelId from mapHotelId where hotelName = %s', [hotelName])
+    hotelId = cursor.fetchall()
+    hotelId = hotelId[0]['hotelId']
+    session['hotelId'] = hotelId
+    flash('You are now logged in', 'success')
+    return redirect(url_for('home2'))
+
+@app.route('/switchHotel', methods = ['GET', "POST"])
+@is_logged_in
+def switchHotel():
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT hotelName From mapHotelId')
+    hotelName = cursor.fetchall()
+    selected = session.get('hotelId')
+    cursor.execute('SELECT hotelName from mapHotelId where hotelId = %s', [selected])
+    selected = cursor.fetchall()
+    selected = selected[0]['hotelName']
+    return render_template('developer/hotelDropDown.html', hotelName = hotelName, selected = selected)
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
 def forgotpassword():
@@ -797,7 +825,7 @@ def passwordupdatereq():
         )
 
         flash('Kindly Check your email', 'success')
-        return render_template('login.html', title = 'Login')
+        return redirect(url_for("home2"))
 
 
 @app.route('/passwordupdate/<token>', methods = ['GET', 'POST'])
@@ -1358,12 +1386,10 @@ def submitEditUserAll():
     phone = request.form.get('phone')
     country = request.form.get('country')
     email = request.form['email']
-    password = request.form['password']
     agencyName = request.form.get('agencyName')
     iataCode = request.form.get('iataCode')
     organizationName = request.form.get('organizationName')
 
-    password = sha256_crypt.hash(password)
 
     firstName = name.split(' ')[0]
     cursor = mysql.connection.cursor()
@@ -1373,20 +1399,20 @@ def submitEditUserAll():
 
     data = data[0]['userType']
     if data == 'hoteluser':
-        cursor.execute('Update hotelUsers SET fullName = %s, password = %s WHERE email = %s',
-                        (name, password, email))
+        cursor.execute('Update hotelUsers SET fullName = %s WHERE email = %s',
+                        (name, email))
     elif data == 'customer':
-        cursor.execute('Update customers SET fullName = %s, phone = %s, country = %s, password = %s WHERE email = %s',
-                        (name, phone, country, password, email))
+        cursor.execute('Update customers SET fullName = %s, phone = %s, country = %s WHERE email = %s',
+                        (name, phone, country, email))
     elif data == 'IATA':
-        cursor.execute('Update iataUsers SET fullName = %s, phone = %s, country = %s, password = %s WHERE email = %s',
-                        (name, phone, country, password, email))
+        cursor.execute('Update iataUsers SET fullName = %s, phone = %s, country = %s WHERE email = %s',
+                        (name, phone, country, email))
     elif data == 'developer':
-        cursor.execute('Update developers SET fullName = %s, password = %s, phone = %s WHERE email = %s',
-                        (name, password, phone, email))
+        cursor.execute('Update developers SET fullName = %s, phone = %s WHERE email = %s',
+                        (name, phone, email))
 
-    cursor.execute('Update users SET firstName = %s, password = %s WHERE email = %s',
-                    (firstName, password, email))
+    cursor.execute('Update users SET firstName = %s WHERE email = %s',
+                    (firstName, email))
     
     mysql.connection.commit()
     cursor.close()

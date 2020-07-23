@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class='container-login'>
+    <div class='wrap-login'>
+        <div class='loginH'>
+            <div class='text-center'>
+                <p>
+                    Select Hotel
+                </p>
+            </div>
+        </div>
+        <form method='POST' action='{{ url_for("dropDownHotelSubmit") }}'>
+            <small id='smallID' class='form-text text-muted mb-5'>
+                Fields marked with * are mandatory.
+            </small>
+            {% if selected %}
+            <div class = 'formhelp mb-5'>
+                <label class = 'mb-5'>
+                    Current Hotel : 
+                </label>
+                <span class = 'btn otherbtn'>
+                    {{ selected }} 
+                </span>
+            </div>
+            {% endif %}
+            <div class = 'formhelp mb-5'>
+                <label class = 'mb-5'>
+                    Select Hotel Name * :
+                </label>
+                <select class = 'form-control text-center' name = 'hotelName' required>
+                    <option selected disabled>
+                        Hotel Name
+                    </option>
+
+                    {% for hn in hotelName %}
+                    <option>
+                        {{ hn['hotelName'] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 mt-3">
+                    <div class="text-center">
+                        <button type="submit" id='subm' class="btn action">Login to selected Hotel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
