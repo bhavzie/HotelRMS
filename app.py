@@ -3115,7 +3115,7 @@ def showRequest1():
     data = data[0]
     checkIn = data['checkIn']
     checkOut = data['checkOut']
-    data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+    data['createdOn'] = data['createdOn'].strftime("%d %b ,%y, %H:%M:%S")
 
     cursor.execute('SELECT status from request where id = %s && hotelId = %s', [token, hotelId])
     status = cursor.fetchall()
@@ -3808,7 +3808,7 @@ def showQuote(id):
     data = cursor.fetchall()
     data = data[0]
 
-    data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
+    data['createdOn'] = data['createdOn'].strftime("%d %b ,%y, %H:%M:%S")
     string = ''
     v = data['paymentTerms']
     if v != None:
@@ -4104,7 +4104,7 @@ def showQuoteEmail(id):
     data = cursor.fetchall()
     data = data[0]
 
-    data['createdOn'] = data['createdOn'].strftime("%y-%b-%d, %H:%M:%S")
+    data['createdOn'] = data['createdOn'].strftime("%d %b ,%y, %H:%M:%S")
     string = ''
     v = data['paymentTerms']
     if v != None:
@@ -4442,7 +4442,7 @@ def deleteRequest(id):
         data = data[0]
         checkIn = data['checkIn']
         checkOut = data['checkOut']
-        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+        data['createdOn'] = data['createdOn'].strftime("%d %b ,%y, %H:%M:%S")
 
         email = session['email']
         now = datetime.datetime.utcnow()
@@ -4596,7 +4596,7 @@ def deleteRequest(id):
         data = data[0]
         checkIn = data['checkIn']
         checkOut = data['checkOut']
-        data['createdOn'] = data['createdOn'].strftime("%d/%B/%Y, %H:%M:%S")
+        data['createdOn'] = data['createdOn'].strftime("%d %b ,%y, %H:%M:%S")
 
         email = session['email']
         now = datetime.datetime.utcnow()
