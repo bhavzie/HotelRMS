@@ -311,7 +311,7 @@ def registerI():
             return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
-        return render_template('login.html', title='Login')
+        return redirect(url_for("home2"))
 
 
 @app.route('/registerR', methods = ['GET', 'POST'])
@@ -353,7 +353,7 @@ def registerR():
             return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
-        return render_template('login.html', title='Login')
+        return redirect(url_for("home2"))
 
 @app.route('/registerC', methods=['GET', 'POST'])
 @is_logged_in
@@ -396,7 +396,7 @@ def registerC():
             return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
-        return render_template('login.html', title='Login')
+        return redirect(url_for("home2"))
 
 @app.route('/registerT', methods=['GET', 'POST'])
 @is_logged_in
@@ -439,7 +439,7 @@ def registerT():
             return render_template('users/rcustomer.html', title="Register")
 
         flash('You are now registered and can log in', 'success')
-        return render_template('login.html', title='Login')
+        return redirect(url_for("home2"))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -465,6 +465,7 @@ def login():
                 session['userType'] = data['userType']
                 session['firstName'] = data['firstName']
                 session['hotelId'] = data['hotelId']
+                hotelId = data['hotelId']
 
                 ''' 
                     * userType:-
@@ -533,9 +534,9 @@ def login():
                     session['userSubType'] = data['userSubType']
                     userSubType = data['userSubType']
                     cursor.execute(
-                        "SELECT * FROM hotelMenuAccess where userType = %s", [userSubType])
+                        "SELECT * FROM hotelMenuAccess where userType = %s && hotelId = %s", [userSubType, hotelId])
                     d = cursor.fetchall()
-                    cursor.execute("SELECT * FROM hotelUsers where email = %s", [email])
+                    cursor.execute("SELECT * FROM hotelUsers where email = %s && hotelId = %s", [email, hotelId])
                     dog = cursor.fetchall()
                     dog = dog[0]
                     if (dog['active'] == 0):
@@ -628,7 +629,7 @@ def login():
 
                 elif session['userType'] == 'iata':
                     cursor.execute(
-                        "SELECT * FROM iataUsers where email = %s", [email])
+                        "SELECT * FROM iataUsers where email = %s && hotelId = %s", [email, hotelId])
                     dog = cursor.fetchall()
                     dog = dog[0]
                     if (dog['email_verified'] == 0 or dog['email_verified'] == None):
@@ -660,7 +661,7 @@ def login():
                     'helpFaq': True,
                     'helpTicketing': True
                     }
-                    cursor.execute("SELECT * FROM iataMenuAccess")
+                    cursor.execute("SELECT * FROM iataMenuAccess where hotelId = %s", [hotelId])
                     d = cursor.fetchall()
                     if len(d) != 0:
                         d = d[0]
@@ -692,7 +693,7 @@ def login():
                     session['menuParams'] = menuParams
 
                 elif session['userType'] == 'customer':
-                    cursor.execute("SELECT * FROM customers where email = %s", [email])
+                    cursor.execute("SELECT * FROM customers where email = %s && hotelId = %s", [email, hotelId])
                     dog = cursor.fetchall()
                     dog = dog[0]
                     if (dog['email_verified'] == 0 or dog['email_verified'] == None):
@@ -720,7 +721,7 @@ def login():
                         'helpFaq': True,
                         'helpTicketing': True
                     }
-                    cursor.execute("SELECT * FROM customerMenuAccess")
+                    cursor.execute("SELECT * FROM customerMenuAccess where hotelId = %s", [hotelid])
                     d = cursor.fetchall()
                     if len(d) != 0:
                         d = d[0]
@@ -1469,14 +1470,15 @@ def addhoteluserinv(token):
 @is_logged_in
 def edituserType():
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     
     cursor.execute(
-        'SELECT * From hotelMenuAccess')
+        'SELECT * From hotelMenuAccess where hotelId = %s', [hotelId])
     datah = cursor.fetchall()
     if len(datah) != 0:
         datah = datah[0]
     
-    cursor.execute("SELECT userType FROM hotelMenuAccess")
+    cursor.execute("SELECT userType FROM hotelMenuAccess where hotelId = %s", [hotelId])
     data = cursor.fetchall()
     subtypes = []
 
@@ -1498,8 +1500,9 @@ def edituserType():
 def euserType():
     userType = request.form.get('userType')
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute(
-        'SELECT * From hotelMenuAccess where userType = %s', [userType])
+        'SELECT * From hotelMenuAccess where userType = %s && hotelId = %s', [userType, hotelId])
     datah = cursor.fetchall()
     if len(datah) != 0:
         datah = datah[0]
@@ -1554,10 +1557,16 @@ def submiteditusertype():
     strategyAncillary = getValC(request.form.get('strategyAncillary'))
 
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
 
-    cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s, strategyEvaluation = %s,strategyAncillary = %s, settingBusinessReward = %s WHERE userType = %s', [
-                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation,strategyAncillary, settingBusinessReward, userType])
-
+    cursor.execute('SELECT * from hotelMenuAccess where userType = %s && hotelId = %s', [userType, hotelId])
+    length = cursor.fetchall()
+    if len(length) != 0:
+        cursor.execute('Update hotelMenuAccess SET request = %s, requestCreate = %s, requestManage = %s, strategy = %s, strategyRooms = %s, strategyForecast = %s, strategyRate = %s, strategyDiscount = %s, settings = %s, settingsRequest = %s, settingsContact = %s, settingsTime = %s, settingsNegotiation = %s, settingsAutopilot = %s, users = %s, usersHotel = %s, usersCustomer = %s, analytics = %s, analyticsDashboard = %s, analyticsBehavior = %s, analyticsPerformance = %s, analyticsRevenue = %s, analyticsTracking = %s, requestCreateAdhoc = %s, requestCreateSeries = %s, strategyDiscountCreate = %s, strategyDiscountMap = %s, settingsRequestCreate = %s, settingsRequestMap = %s, settingsContactCreate = %s, settingsContactMap = %s, settingsTimeMap = %s, settingsTimeCreate = %s, usersHotelAdd = %s, usersHotelEdit = %s, usersCustomerAdd = %s, usersCustomerEdit = %s, usersCustomerUpload = %s, analyticsStdReport = %s, strategyEvaluation = %s,strategyAncillary = %s, settingBusinessReward = %s WHERE userType = %s && hotelId = %s', [
+                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation,strategyAncillary, settingBusinessReward, userType, hotelId])
+    else:
+        cursor.execute('INSERT INTO hotelMenuAccess (request, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap, settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation,strategyAncillary, settingBusinessReward, userType, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ',[
+                    requestv, requestCreate, requestManage, strategy, strategyRooms, strategyForecast, strategyRate, strategyDiscount, settings, settingsRequest, settingsContact, settingsTime, settingsNegotiation, settingsAutopilot, users, usersHotel, usersCustomer, analytics, analyticsDashboard, analyticsBehavior, analyticsPerformance, analyticsRevenue, analyticsTracking, requestCreateAdhoc, requestCreateSeries, strategyDiscountCreate, strategyDiscountMap,  settingsRequestCreate, settingsRequestMap, settingsContactCreate, settingsContactMap, settingsTimeMap, settingsTimeCreate, usersHotelAdd, usersHotelEdit, usersCustomerAdd, usersCustomerEdit, usersCustomerUpload, analyticsStdReport, strategyEvaluation,strategyAncillary, settingBusinessReward, userType, hotelId])
 
     mysql.connection.commit()
     cursor.close()
@@ -1570,7 +1579,8 @@ def submiteditusertype():
 @is_logged_in
 def viewAllUsers():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM users")
+    hotelId = session.get('hotelId')
+    cursor.execute("SELECT * FROM users where hotelId = %s", [hotelId])
     data = cursor.fetchall()
 
     for r in data:
@@ -1610,9 +1620,8 @@ def viewAllUsers():
 def editCustomers():
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
-    cursor.execute('SELECT * From users where userType = %s or userType = %s && hotelId = %s', ["customer", "IATA", hotelId])
-    data = cursor.fetchall()
-
+    cursor.execute('SELECT * From users where (userType = %s or userType = %s) && hotelId = %s', ["customer", "IATA", hotelId])
+    data = cursor.fetchall() 
     for r in data:
         if (r['userType'] == 'customer'):
             cursor.execute(
@@ -6482,6 +6491,18 @@ def addHotelSubmit():
         data = cursor.fetchall()
         if len(data) == 0:
             cursor.execute('INSERT INTO mapHotelId(hotelName, email, address, contactName, city, state, country, phone, zip) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [hotelName, email, address, contactName, city, state, country, phone, zipv])
+
+            cursor.execute('SELECT hotelId from mapHotelId where hotelName = %s && email = %s', [hotelName, email])
+            hotelId = cursor.fetchall()
+            hotelId = hotelId[0]['hotelId']
+
+            password = sha256_crypt.hash('trompar2020')
+
+            firstName = contactName.split(' ')[0]
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) VALUES(%s, %s, %s, %s, %s, %s)', [firstName, email, password, "hoteluser", "hotelAdmin", hotelId])
+
+            cursor.execute('INSERT INTO hotelUsers(fullName,  email, password, userType, hotelId, email_verified, active) VALUES(%s, %s, %s, %s, %s, %s, %s)', (contactName,  email, password, "hotelAdmin", hotelId, 1 ,1))
+            
             mysql.connection.commit()
         else:
             flash('Email already registered', 'danger')
