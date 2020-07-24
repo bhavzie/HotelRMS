@@ -2273,6 +2273,7 @@ def settingsRequestSubmit():
 @is_logged_in
 def settingsNegotiation():
     cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
     cursor.execute('SELECT * from settingsNegotiation where hotelId = %s', [hotelId])
     result = cursor.fetchall()
     flag = True
@@ -2778,7 +2779,7 @@ def showRequest(token):
 
     elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
 
-        cursor.execute('select count from settingsNegotiation where hotelId = %s', [hoteLid])
+        cursor.execute('select count from settingsNegotiation where hotelId = %s', [hotelId])
         count = cursor.fetchall()
         if len(count) != 0:
             count = count[0]['count']
