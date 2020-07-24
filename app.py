@@ -948,7 +948,7 @@ def registerdeveloper():
         password = request.form['password']
         firstName = fullName.split(' ')[0]
         password = sha256_crypt.hash(password)
-
+        hotelId = session.get('hotelId')
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From users where email = %s', [email])
         data = cursor.fetchall()
@@ -963,10 +963,10 @@ def registerdeveloper():
                 bodyv='Confirm your email by clicking this link ',
             )
 
-            cursor.execute('INSERT INTO developers(fullName, email, password) values(%s, %s, %s)',
-            (fullName, email, password))
-            cursor.execute('INSERT INTO users(firstName, email, password, userType) Values(%s, %s, %s, %s)',
-                           (firstName, email, password, 'developer'))
+            cursor.execute('INSERT INTO developers(fullName, email, password, hotelId) values(%s, %s, %s, %s)',
+            (fullName, email, password, hotelId))
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, hotelId) Values(%s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'developer', hotelId))
         
         else:
             flash('Email Already Registered', 'danger')
