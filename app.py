@@ -1488,7 +1488,7 @@ def edituserType():
     if 'revenue' not in subtypes:
         subtypes.append('revenue')
     if 'reservation' not in subtypes:
-        subtypes.append('Reservation')
+        subtypes.append('reservation')
     if 'hotelAdmin' not in subtypes:
         subtypes.append('hotelAdmin')
 
@@ -1555,6 +1555,7 @@ def submiteditusertype():
     strategyEvaluation = getValC(request.form.get('strategyEvaluation'))
     settingBusinessReward = getValC(request.form.get('settingBusinessReward'))
     strategyAncillary = getValC(request.form.get('strategyAncillary'))
+    
 
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
