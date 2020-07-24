@@ -54,7 +54,7 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
         recipients = recipientsv.split(),
-        bcc = ['trompar.sales@gmail.com', 'koolbhavya.epic@gmail.com']
+        bcc = ['trompar.sales@gmail.com']
         )
     link = url_for(linkv, id=tokenv, _external=True)
     msg.body = bodyv +  'Press on the link  ' + link + '  to view & accept your rate quote \n\n Rooms & Rate are subject to availability at the time of booking. \n \n Thanks, \n The Row Hotel | 408-111-2255 \n Do Not Reply to this email'
@@ -2096,7 +2096,7 @@ def editDiscountGrid():
     email = session['email']
     time = datetime.datetime.utcnow()
     hotelId = session.get('hotelId')
-    print(inp['startDate'])
+
 
     cursor.execute('UPDATE discountMap SET startDate = %s, endDate = %s, createdBy = %s, createdOn = %s WHERE discountId = %s && hotelId = %s', [
         inp['startDate'], inp['endDate'], email, time, inp['discountId'], hotelId
@@ -2427,7 +2427,6 @@ def showRequest(token):
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
     email = session['email']
-    print(hotelId, email)
     cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
     ut = cursor.fetchall()
     if len(ut) != 0:
@@ -2694,7 +2693,7 @@ def showRequest(token):
             cursor.execute('SELECT contract from contract where id = %s && hotelId = %s', [contract['contract'], hotelId])
             contractv = cursor.fetchall()
             if len(contractv) != 0:
-                contractv = contractv[0]
+                contractv = contractv[0]['contract']
             else:
                 contractv = ''
 
@@ -3050,7 +3049,7 @@ def showRequest(token):
             cursor.execute('SELECT contract from contract where id = %s && hotelId = %s', [contract['contract'], hotelId])
             contractv = cursor.fetchall()
             if len(contractv) != 0:
-                contractv = contractv[0]
+                contractv = contractv[0]['contract']
             else:
                 contractv = ''
 
@@ -4582,7 +4581,7 @@ def deleteRequest(id):
         cursor.execute('SELECT contract from contract where id = %s  && hotelId = %s', [data2['contract'], hotelId])
         contractv = cursor.fetchall()
         if len(contractv) != 0:
-            contractv = contractv[0]
+            contractv = contractv[0]['contract']
         else:
             contractv = ''
 
@@ -5242,7 +5241,7 @@ def changeOcc(id):
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
     responseId = id + "R"
-    cursor.execute('SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s  order by submittedOn desc limit 1', [responseId], hotelId)
+    cursor.execute('SELECT submittedOn from responseDaywise where responseId = %s && hotelId = %s  order by submittedOn desc limit 1', [responseId, hotelId])
     submittedOn = cursor.fetchall()
     submittedOn = submittedOn[0]['submittedOn']
     

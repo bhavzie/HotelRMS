@@ -402,12 +402,11 @@
                 id='dede33' disabled value = "{{ data2['paymentDays'] }}"><span> Days</span>
         </div>
         <div class='mb-5'>
-            Contract : 
             <button type='button' class='btn otherbtn col-sm-4 ml-2' data-toggle="modal" data-target="#exampleModal">
                 Contract : 
             </button>
-            <span id='contractSelected' class='ml-5 btn otherbtn' style='display:none;'>
-                Contract ID
+            <span id='contractSelected' class='ml-5 btn otherbtn'>
+                Contract ID : {{ data2['contract'] }}
             </span>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
@@ -558,23 +557,23 @@
         $("#declineb").hide();
         $("#all").hide();
         $("#res").hide();
-            $('.payment').multiselect({
-                nonSelectedText: '-',
-                numberDisplayed: 0,
-                buttonWidth: '200px',
-                buttonText: function(options, select) {
-                    if (options.length == 0) {
-                        return 'FOP'
-                    } else {
-                        var selected = ''
-                        options.each(function() {
-                            selected += $(this).val() + ", "
-                        })
-                        return selected
-                    }
+        $('.payment').multiselect({
+            nonSelectedText: '-',
+            numberDisplayed: 0,
+            buttonWidth: '200px',
+            buttonText: function(options, select) {
+                if (options.length == 0) {
+                    return 'FOP'
+                } else {
+                    var selected = ''
+                    options.each(function() {
+                        selected += $(this).val() + ", "
+                    })
+                    return selected
                 }
-            })
-            $('#formPayment').multiselect('disable')
+            }
+        })
+        $('#formPayment').multiselect('disable')
             
 
             const res = "{{ righttable|safe }}"
