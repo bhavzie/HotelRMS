@@ -2427,7 +2427,8 @@ def showRequest(token):
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
     email = session['email']
-    cursor.execute('SELECT userType, userSubType from users where email = %s && hotelId = %s', [email, hotelId])
+    print(hotelId, email)
+    cursor.execute('SELECT userType, userSubType from users where email = %s', [email])
     ut = cursor.fetchall()
     if len(ut) != 0:
         ut = ut[0]
