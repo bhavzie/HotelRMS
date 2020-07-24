@@ -2491,8 +2491,7 @@ def showRequest(token):
 
         return render_template('request/getOcc.html', dates = dates, token = token, flag = f)
 
-    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or status == statusval10 or status == statusval11 or  (status == statusval7 and ut['userSubType'] == 'reservation') or status == statusval9):
-
+    elif (status == statusval2 or status == statusval4 or status == statusval5 or status == statusval6 or status == statusval8 or status == statusval10 or status == statusval11 or  (status == statusval7 and ut.get('userSubType') == 'reservation') or status == statusval9):
         data5 = []
         if (status == statusval4):
             cursor.execute('SELECT * From requestAccepted where requestId = %s && hotelId = %s', [token, hotelId])
@@ -2527,9 +2526,9 @@ def showRequest(token):
                 "SELECT * From review where requestId = %s && hotelId = %s", [token, hotelId])
             data8 = cursor.fetchall()
             data8 = data8[0]
-            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            temp1 = data8['time'].strftime('%y-%b-%d')
             x = temp1.split('-')
-            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+            data8['time'] = x[2] + " " + x[1] + ", " + x[0]
     
         data9 = []
         if (status == statusval10):
@@ -2786,8 +2785,7 @@ def showRequest(token):
 
         return render_template('request/requestQuotedView.html', data = data, data2= data2, tfoc = tfoc, tcomm = tcomm, data3 = data3, lefttable = lefttable, righttable = righttable, data5 = data5, data6 = data6, data7 = data7, data8 = data8, contract = contract, contractv = contractv, declined = declined, declinedMsg = declinedMsg, nego = nego, negoInformation = negoInformation, canNegotiate = canNegotiate, data9 = data9, data10 = data10)
 
-    elif (status == statusval3 or ( status == statusval7 and ut['userSubType'] != 'reservation')):
-
+    elif (status == statusval3 or ( status == statusval7 and ut.get('userSubType') != 'reservation')):
         cursor.execute('select count from settingsNegotiation where hotelId = %s', [hotelId])
         count = cursor.fetchall()
         if len(count) != 0:
