@@ -4417,9 +4417,9 @@ def deleteRequest(id):
                 "SELECT * From review where requestId = %s && hotelId = %s", [id, hotelId])
             data8 = cursor.fetchall()
             data8 = data8[0]
-            temp1 = data8['submittedOn'].strftime('%y-%b-%d')
+            temp1 = data8['time'].strftime('%y-%b-%d')
             x = temp1.split('-')
-            data8['submittedOn'] = x[2] + " " + x[1] + ", " + x[0]
+            data8['time'] = x[2] + " " + x[1] + ", " + x[0]
 
         data9 = []
         if (status[0]['status'] == statusval10):
