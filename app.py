@@ -6530,5 +6530,5 @@ def addCustomerSubmit():
         return redirect(url_for('customerT'))
 
 if __name__ == "__main__":
-    app.run(debug = True, threaded = True)
+    app.run(debug = True, threaded = True, port = 8080)
 
