@@ -7,5 +7,6 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 mysqlclient==1.4.6
+passlib==1.7.2
 Werkzeug==1.0.1
 XlsxWriter==1.2.9
