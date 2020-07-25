@@ -3352,7 +3352,10 @@ def showRequest1():
                 discounts.append(str(minDiscountVal) + " ( ID : " + str(glid) + " )")
 
             for t in tempResult:
-                te = int(t['rate'])
+                try:
+                    te = int(t['rate'])
+                except e:
+                    print(t['rate'])
                 if (te == -1):
                     rates.append({'val': -1, 'count': t['count'], 'type' : 'no'})
                 else:
