@@ -54,7 +54,7 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
         recipients = recipientsv.split(),
-        bcc = ['trompar.sales@gmail.com']
+        bcc = ['koolbhavya.epic@gmail.com']
         )
     link = url_for(linkv, id=tokenv, _external=True)
     with open('static/images/mail.png', 'rb') as fp:
