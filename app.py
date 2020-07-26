@@ -24,7 +24,7 @@ def generateConfirmationToken(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
-def confirmToken(token, expiration=3600):
+def confirmToken(token, expiration=10000000):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
         email = serializer.loads(
@@ -49,14 +49,14 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
-def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
+def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, bodyv):
     msg = Message(
         subject = subjectv,
         sender = app.config['MAIL_SENDER'],
         recipients = recipientsv.split(),
-        bcc = ['koolbhavya.epic@gmail.com']
+        bcc = ['trommpar.sales@gmail.com']
         )
-    link = url_for(linkv, id=tokenv, _external=True)
+    link = url_for(linkv, id=tokenv, hotelId = hotelId, _external=True)
     with open('static/images/mail.png', 'rb') as fp:
         msg.attach('mail.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon>']])
     msg.html = render_template('/mails/quote.html', link = link)
@@ -292,13 +292,13 @@ def registerI():
 
         if len(data) == 0:
             token = generateConfirmationToken(email)
-            sendMail(
+            """ sendMail(
                 subjectv='Confirm Email',
                 recipientsv=email,
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-            )
+            ) """
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
                            (firstName, email, password, 'IATA', '', hotelId))
 
@@ -335,13 +335,13 @@ def registerR():
 
         if len(data) == 0:
             token = generateConfirmationToken(email)
-            sendMail(
+            """ sendMail(
                 subjectv='Confirm Email',
                 recipientsv=email,
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-            )
+            ) """
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'retail', hotelId))
 
@@ -377,13 +377,13 @@ def registerC():
 
         if len(data) == 0:
             token = generateConfirmationToken(email)
-            sendMail(
+            """ sendMail(
                 subjectv='Confirm Email',
                 recipientsv=email,
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-            )
+            ) """
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'corporate', hotelId))
 
@@ -420,13 +420,13 @@ def registerT():
 
         if len(data) == 0:
             token = generateConfirmationToken(email)
-            sendMail(
+            """ sendMail(
                 subjectv='Confirm Email',
                 recipientsv=email,
                 linkv='confirm_email',
                 tokenv=token,
                 bodyv='Confirm your email by clicking this link ',
-            )
+            ) """
             cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
                            (firstName, email, password, 'customer', 'tour', hotelId))
 
@@ -3795,6 +3795,7 @@ def requestProcessQuote():
         recipientsv=createdFor,
         linkv = 'showQuoteEmail',
         tokenv = token,
+        hotelId = hotelId,
         bodyv = 'Please Do Not Reply to this email, \n Hello, \n\n You have recieved a response to your group rate enquiry.',
     )
 
@@ -4104,11 +4105,11 @@ def showQuote(id):
 @app.route('/showQuoteEmail/<id>', methods = ['GET', 'POST'])
 def showQuoteEmail(id):
     id = confirmToken(id)
+    hotelId = request.args.get('hotelId')
     if (id == False):
         flash('Unverified', 'danger')
         return render_template('login.html', title = 'Login')
     cursor = mysql.connection.cursor()
-    hotelId = session.get('hotelId')
     cursor.execute('SELECT * From request where id = %s && hotelId = %s', [id, hotelId])
     data = cursor.fetchall()
     data = data[0]
@@ -4171,12 +4172,14 @@ def showQuoteEmail(id):
         result[t['date']] = []
 
     totalRooms = 0
+    roomCount = 0
     for t in temp1:
         tArr = {}
         tArr['type'] = '1 Bed'
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
         totalRooms += int(t['count'])
+        roomCount += int(t['count'])
         result[t['date']].append(tArr)
     
     for t in temp2:
@@ -4185,6 +4188,7 @@ def showQuoteEmail(id):
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
         totalRooms += int(t['count'])
+        roomCount += int(t['count'])
         result[t['date']].append(tArr)
 
     dateButtons = result.keys()
@@ -4354,12 +4358,13 @@ def showQuoteEmail(id):
     cursor.execute('SELECT contract, id from contract where id = %s  && hotelId = %s', [
                    data2['contract'], hotelId])
     contract = cursor.fetchall()
+    if (data2['cutoffDays'] != None and data2['cutoffDays'] != ''):
+        cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
+        temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
+        x = temp1.split('-')
+        cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
+        data2['cutoffDays'] = cutoff
 
-    cutoff = data2['submittedOn'] + datetime.timedelta(days = int(data2['cutoffDays']))
-    temp1 = cutoff.strftime('%y-%b-%d, %H:%M:%S')
-    x = temp1.split('-')
-    cutoff = x[2].split(",")[0] + " " + x[1] + "," + x[0] + " " + x[2].split(",")[1]
-    data2['cutoffDays'] = cutoff
 
 
     temp1 = data2['submittedOn'].strftime('%y-%b-%d, %H:%M:%S')
@@ -4385,9 +4390,11 @@ def showQuoteEmail(id):
         del result[y]
     
     dateButtons = result.keys()
+    avgRate = int(data2['totalQuote']) / int(roomCount)
+    avgRate = round(avgRate, 2)
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = True)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = True, avgRate = avgRate)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -4987,7 +4994,6 @@ def requestHistory(id):
             elif v.count('poa') > 0:
                 r['paymentTerms'] = 'Prior To Arrival'
 
-        print(r['overrideReason'], r['overrideFlag'])
         string = ''
         
 
