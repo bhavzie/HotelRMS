@@ -1737,8 +1737,7 @@ def strategyRate():
                         if (d['saturday'] == '1'):
                             dow += "Sa, "
                         if (d['sunday'] == '1'):
-                            dow += "Su"
-
+                            dow += "Su, "
 
                         try:
                             d['dow'] = dow[:dow.rindex(', ')]
@@ -1754,6 +1753,7 @@ def strategyRate():
                         x = d['endDate'].split('-')
                         strd = x[2] + " " + x[1] + ", " + x[0]
                         d['endDate'] = strd
+                
                     
                     return render_template('strategy/editstrategyRate.html', data=data, data1=data1, storedDates=storedDates)
 
@@ -3875,12 +3875,14 @@ def showQuote(id):
         result[t['date']] = []
 
     totalRooms = 0
+    roomCount = 0
     for t in temp1:
         tArr = {}
         tArr['type'] = '1 Bed'
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
         totalRooms += int(t['count'])
+        roomCount += int(t['count'])
         result[t['date']].append(tArr)
     
     for t in temp2:
@@ -3889,6 +3891,7 @@ def showQuote(id):
         tArr['occupancy'] = t['occupancy']
         tArr['count'] = t['count']
         totalRooms += int(t['count'])
+        roomCount += int(t['count'])
         result[t['date']].append(tArr)
 
     dateButtons = result.keys()
@@ -4090,7 +4093,7 @@ def showQuote(id):
     
     dateButtons = result.keys()
 
-    avgRate = int(data2['totalQuote']) / int(totalRooms)
+    avgRate = int(data2['totalQuote']) / int(roomCount)
     avgRate = round(avgRate, 2)
 
 
