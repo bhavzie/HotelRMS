@@ -935,12 +935,10 @@ def registerhotelusers():
         return render_template('index2.html')
 
 @app.route('/adddeveloper', methods = ['GET', 'POST'])
-@is_logged_in
 def adddeeloper():
     return render_template('users/adddeveloper.html', title='Add')
 
 @app.route('/registerdeveloper', methods = ['GET', 'POST'])
-@is_logged_in
 def registerdeveloper():
     if request.method == 'POST':
 
