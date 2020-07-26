@@ -798,7 +798,8 @@ def switchHotel():
     selected = session.get('hotelId')
     cursor.execute('SELECT hotelName from mapHotelId where hotelId = %s', [selected])
     selected = cursor.fetchall()
-    selected = selected[0]['hotelName']
+    if len(selected) != 0:
+        selected = selected[0]['hotelName']
     return render_template('developer/hotelDropDown.html', hotelName = hotelName, selected = selected)
 
 @app.route('/forgotpassword', methods = ['GET', 'POST'])
