@@ -57,7 +57,8 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, bodyv):
         bcc = ['trompar.sales@gmail.com']
         )
     link = url_for(linkv, id=tokenv, _external=True)
-    msg.body = bodyv +  'Press on the link  ' + link + '  to view & accept your rate quote \n\n Rooms & Rate are subject to availability at the time of booking. \n \n Thanks, \n The Row Hotel | 408-111-2255 \n Do Not Reply to this email'
+    with open('static/images/mail.png', 'rb') as fp:
+        msg.attach('mail.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon>']])
     msg.html = render_template('/mails/quote.html', link = link)
     mail.send(msg)
 
