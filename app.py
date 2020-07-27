@@ -161,6 +161,12 @@ def alterTables():
     mysql.connection.commit()
     cursor.close()
 
+def dateFormat(value):
+    print(value)
+    result = s[0] + "-" + s[1] + "-" + s[2]
+    return result
+
+
 # Decorators
 # Check if user logged in
 def is_logged_in(f):
