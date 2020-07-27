@@ -1176,9 +1176,17 @@
         let flag = true
         for (let i = 0; i < nights; i++) {
 
-            const date = dobj.getDate()
-            const month = dobj.getMonth()
+             let date = dobj.getDate()
+            let month = dobj.getMonth()
+            month = month + 1
             const year = dobj.getFullYear()
+
+            if (month < 10) {
+                month = "0" + month
+            }
+            if (date < 10) {
+                date = "0" + date
+            }
 
 
             const table1 = document.getElementById(i)
@@ -1430,9 +1438,17 @@
         let flag = true
         for (let i = 0; i < nights; i++) {
 
-            const date = dobj.getDate()
-            const month = dobj.getMonth()
+             let date = dobj.getDate()
+            let month = dobj.getMonth()
+            month = month + 1
             const year = dobj.getFullYear()
+
+            if (month < 10) {
+                month = "0" + month
+            }
+            if (date < 10) {
+                date = "0" + date
+            }
 
 
             const table1 = document.getElementById(i)
@@ -1681,10 +1697,17 @@
         let flag = true
         for (let i = 0; i < nights; i++) {
 
-            const date = dobj.getDate()
-            const month = dobj.getMonth()
+             let date = dobj.getDate()
+            let month = dobj.getMonth()
+            month = month + 1
             const year = dobj.getFullYear()
 
+            if (month < 10) {
+                month = "0" + month
+            }
+            if (date < 10) {
+                date = "0" + date
+            }
 
             const table1 = document.getElementById(i)
             const table2 = document.getElementById("row" + i)

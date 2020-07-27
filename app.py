@@ -4932,6 +4932,7 @@ def requestProcessReview():
     table = inp['table_result']
     check_final = False
     for t in table:
+        print(t['date'])
         cursor.execute('INSERT INTO responseDaywise(date, currentOcc, discountId, occupancy, type, count, ratePerRoom, responseId, forecast, leadTime, groups, submittedOn, hotelId) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             t['date'], t['currentOcc'], t['discountId'], t['occupancy'], t['type'], t['count'], t['ratePerRoom'], responseId, t['forecast'], t['leadTime'], t['groups'], now, hotelId
         ])

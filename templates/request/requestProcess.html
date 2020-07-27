@@ -682,7 +682,6 @@
 
         const con = document.getElementById('contractSelected')
         con.innerText = "CONTRACT ID : " + selected
-        console.log(con)
         $("#contractSelected").show();
     }
 
@@ -1181,11 +1180,17 @@
         let flag = true
         for (let i = 0; i<nights; i++) {
 
-            const date = dobj.getDate()
+            let date = dobj.getDate()
             let month = dobj.getMonth()
             month = month + 1
             const year = dobj.getFullYear()
 
+            if (month < 10) {
+                month = "0" + month
+            }
+            if (date < 10) {
+                date = "0" + date
+            }
 
             const table1 = document.getElementById(i)
             const table2 = document.getElementById("row" + i)
@@ -1233,9 +1238,7 @@
 
         }
 
-
         result['table_result'] = table_result
-
 
         fetch('/requestProcessQuote', {
             method: 'POST',
@@ -1400,10 +1403,17 @@
             let flag = true
             for (let i = 0; i < nights; i++) {
 
-                const date = dobj.getDate()
+                let date = dobj.getDate()
                 let month = dobj.getMonth()
                 month = month + 1
                 const year = dobj.getFullYear()
+
+                if (month < 10) {
+                    month = "0" + month
+                }
+                if (date < 10) {
+                    date = "0" + date
+                }
 
 
                 const table1 = document.getElementById(i)
@@ -1430,10 +1440,6 @@
                     // check if input
                     let x = tr.children[3]
                     resArr['ratePerRoom'] = tr.children[3].children[0].value
-                    if (resArr['ratePerRoom'] == '') {
-                        flag = false
-                        emsg('Enter valid Rate per room')
-                    }
                     if (x.children.length == 2) {
                         resArr['ratePerRoom'] += (tr.children[3].children[1].value)
                     }
@@ -1446,8 +1452,8 @@
 
             }
 
-
             result['table_result'] = table_result
+
 
             fetch('/requestProcessDecline', {
                 method: 'POST',
@@ -1623,10 +1629,17 @@
         let flag = true
         for (let i = 0; i < nights; i++) {
 
-            const date = dobj.getDate()
+            let date = dobj.getDate()
             let month = dobj.getMonth()
             month = month + 1
             const year = dobj.getFullYear()
+
+            if (month < 10) {
+                month = "0" + month
+            }
+            if (date < 10) {
+                date = "0" + date
+            }
 
 
             const table1 = document.getElementById(i)
@@ -1674,7 +1687,6 @@
             dobj.setDate(dobj.getDate() + 1)
 
         }
-
 
         result['table_result'] = table_result
 
