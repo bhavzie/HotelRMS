@@ -41,7 +41,7 @@ def confirmToken(token, expiration=10000000):
 def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg = Message(
         subject = subjectv,
-        sender = app.config['MAIL_SENDER'],
+        sender = 'no-reply@trompar.com',
         recipients = recipientsv.split(),
         bcc = ['trompar.sales@gmail.com']
         )
@@ -52,7 +52,7 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
 def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, bodyv):
     msg = Message(
         subject = subjectv,
-        sender = app.config['MAIL_SENDER'],
+        sender = 'no-reply@trompar.com',
         recipients = recipientsv.split(),
         bcc = ['trompar.sales@gmail.com']
         )
@@ -66,7 +66,7 @@ def sendMail2(subjectv, recipientsv, bodyv):
     # Confirm Email
     msg = Message(
         subject = subjectv,
-        sender = app.config['MAIL_SENDER'],
+        sender = 'no-reply@trompar.com',
         recipients = recipientsv.split(),
         bcc = ['trompar.sales@gmail.com']
         )
@@ -77,7 +77,7 @@ def sendMail2(subjectv, recipientsv, bodyv):
 def sendMailA(subjectv, recipientsv, bodyv, attachv):
     msg = Message(
         subject = subjectv,
-        sender = app.config['MAIL_SENDER'],
+        sender = 'no-reply@trompar.com',
         recipients = recipientsv.split(),
         bcc = ['trompar.sales@gmail.com']
         )
