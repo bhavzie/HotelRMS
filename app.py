@@ -49,11 +49,12 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
-def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, hotelName, hotelPhone, bodyv):
+def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, hotelName, hotelPhone, default_email, bodyv):
     msg = Message(
         subject = subjectv,
         sender = 'no-reply@trompar.com',
         recipients = recipientsv.split(),
+        cc = [default_email],
         bcc = ['trompar.sales@gmail.com']
         )
     link = url_for(linkv, id=tokenv, hotelId = hotelId, _external=True)
@@ -2430,9 +2431,17 @@ def updatePasswords():
     cursor.execute("Update customers set password = %s", [sha256_crypt.hash('trompar2020')])
     mysql.connection.commit()
 
+
+def updateDefault():
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE mapHotelId set default_email = %s where 1 = 1', ['default_email@gmail.com'])
+    mysql.connection.commit()
+
+
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
+    updateDefault()
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
     email = session['email']
@@ -3801,6 +3810,7 @@ def requestProcessQuote():
     hotelData = cursor.fetchall()
     hotelName = hotelData[0]['hotelName']
     hotelPhone = hotelData[0]['phone']
+    default_email = hotelData[0]['default_email']
     sendMailQ(
         subjectv = hotelName + '  ' + inp['requestId'] + ' - Group Rates',
         recipientsv=createdFor,
@@ -3809,6 +3819,7 @@ def requestProcessQuote():
         hotelId = hotelId,
         hotelName = hotelName,
         hotelPhone = hotelPhone,
+        default_email = default_email,
         bodyv = 'Please Do Not Reply to this email, \n Hello, \n\n You have recieved a response to your group rate enquiry.',
     )
 
@@ -6511,13 +6522,14 @@ def addHotelSubmit():
         country = request.form['country']
         phone = request.form['phone']
         zipv = request.form['zip']
+        default_email = request.form['default_email']
 
 
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT * From mapHotelId where email = %s', [email])
         data = cursor.fetchall()
         if len(data) == 0:
-            cursor.execute('INSERT INTO mapHotelId(hotelName, email, address, contactName, city, state, country, phone, zip) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [hotelName, email, address, contactName, city, state, country, phone, zipv])
+            cursor.execute('INSERT INTO mapHotelId(hotelName, email, address, contactName, city, state, country, phone, zip, default_email) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', [hotelName, email, address, contactName, city, state, country, phone, zipv, default_email])
 
             cursor.execute('SELECT hotelId from mapHotelId where hotelName = %s && email = %s', [hotelName, email])
             hotelId = cursor.fetchall()
