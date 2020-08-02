@@ -2441,7 +2441,6 @@ def updateDefault():
 @app.route('/showRequest/<token>', methods = ['GET', 'POST'])
 @is_logged_in
 def showRequest(token):
-    updateDefault()
     cursor = mysql.connection.cursor()
     hotelId = session.get('hotelId')
     email = session['email']
