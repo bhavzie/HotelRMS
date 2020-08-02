@@ -49,7 +49,7 @@ def sendMail(subjectv, recipientsv, linkv, tokenv, bodyv):
     msg.body = bodyv + ' ' + link
     mail.send(msg)
 
-def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, bodyv):
+def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, hotelName, hotelPhone, bodyv):
     msg = Message(
         subject = subjectv,
         sender = 'no-reply@trompar.com',
@@ -59,7 +59,7 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, bodyv):
     link = url_for(linkv, id=tokenv, hotelId = hotelId, _external=True)
     with open('static/images/mail.png', 'rb') as fp:
         msg.attach('mail.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon>']])
-    msg.html = render_template('/mails/quote.html', link = link)
+    msg.html = render_template('/mails/quote.html', link = link, hotelName = hotelName, hotelPhone = hotelPhone)
     mail.send(msg)
 
 def sendMail2(subjectv, recipientsv, bodyv):    
@@ -3796,12 +3796,19 @@ def requestProcessQuote():
     createdFor = createdFor[0]['createdFor']
 
     token = generateConfirmationToken(inp['requestId'])
+
+    cursor.execute('SELECT * from mapHotelId where hotelId = %s', [hotelId])
+    hotelData = cursor.fetchall()
+    hotelName = hotelData[0]['hotelName']
+    hotelPhone = hotelData[0]['phone']
     sendMailQ(
-        subjectv = 'The Row Hotel(TR1101) - Group Rates',
+        subjectv = hotelName + '  ' + inp['requestId'] + ' - Group Rates',
         recipientsv=createdFor,
         linkv = 'showQuoteEmail',
         tokenv = token,
         hotelId = hotelId,
+        hotelName = hotelName,
+        hotelPhone = hotelPhone,
         bodyv = 'Please Do Not Reply to this email, \n Hello, \n\n You have recieved a response to your group rate enquiry.',
     )
 
@@ -6548,5 +6555,5 @@ def addCustomerSubmit():
         return redirect(url_for('customerT'))
 
 if __name__ == "__main__":
-    app.run(debug = True, threaded = True, port = 80)
+    app.run(debug = True, threaded = True)
 
