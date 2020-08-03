@@ -6295,6 +6295,7 @@ def analyticsstdreportGet():
 
 
 @app.route('/analyticsDashboardGet', methods = ['GET', 'POST'])
+@is_logged_in
 def analyticsDashboardGet():
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
@@ -6486,29 +6487,35 @@ def resubmitRequest():
 
 
 @app.route('/strategyForecast', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyForecast():
     return render_template('strategy/forecast.html')
 
 
 @app.route('/strategyEvaluation', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyEvaluation():
     return render_template('strategy/evaluation.html')
 
 
 @app.route('/strategyAncillary', methods = ['GET', 'POST'])
+@is_logged_in
 def strategyAncillary():
     return render_template('strategy/Ancillary.html')
 
 @app.route('/settingBusinessReward', methods = ['GET', 'POST'])
+@is_logged_in
 def settingBusinessReward():
     return render_template('settings/BusinessReward.html')
 
 
 @app.route('/addHotel', methods = ['GET', 'POST'])
+@is_logged_in
 def addHotel():
     return render_template('developer/addHotel.html')
 
 @app.route('/addHotelSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def addHotelSubmit():
     
     if request.method == 'POST':
@@ -6550,10 +6557,12 @@ def addHotelSubmit():
         return redirect(url_for('home2'))
 
 @app.route('/addCustomer', methods = ['GET', 'POST'])
+@is_logged_in
 def addCustomer():
     return render_template('users/addCustomer.html')
 
 @app.route('/addCustomerSubmit', methods = ['GET', 'POST'])
+@is_logged_in
 def addCustomerSubmit():
     customerType = request.form['customerType']
     if customerType == 'iata':
@@ -6564,6 +6573,50 @@ def addCustomerSubmit():
         return redirect(url_for('customerC'))
     elif customerType == 'tour':
         return redirect(url_for('customerT'))
+
+@app.route('/editHotel', methods = ['GET', 'POST'])
+@is_logged_in
+def editHotel():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT hotelName From mapHotelId")
+    hotels = cursor.fetchall()
+    data = []
+    for hotel in hotels:
+        data.append(hotel['hotelName'])
+    hotels = data
+    return render_template('developer/editHotel.html', hotels = hotels)
+
+@app.route('/eHotel', methods = ['GET', 'POST'])
+@is_logged_in
+def eHotel():
+    hotel = request.form.get('hotelName')
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT * From mapHotelId where hotelName = %s', [hotel])
+    data = cursor.fetchall()
+    return render_template('developer/eHotel.html', data = data[0])
+
+@app.route('/editHotelSubmit', methods = ['GET', 'POST'])
+@is_logged_in
+def editHotelSubmit():
+    hotelName = request.form['hotelName']
+    email = request.form['email']
+    address = request.form.get('address')
+    contactName = request.form['contactName']
+    city = request.form['city']
+    state = request.form['state']
+    country = request.form['country']
+    phone = request.form['phone']
+    zipv = request.form['zip']
+    default_email = request.form['default_email']
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE mapHotelId set address = %s, contactName = %s, city = %s, state = %s, country = %s, phone = %s, zip = %s, default_email = %s where hotelName = %s && email = %s', [address, contactName, city, state, country, phone, zipv, default_email, hotelName, email])
+    mysql.connection.commit()
+
+    flash('Hotel has been edited', 'success')
+    return redirect(url_for('home2'))
+
+
 
 if __name__ == "__main__":
     app.run(debug = True, threaded = True)
