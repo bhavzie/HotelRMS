@@ -6616,6 +6616,143 @@ def editHotelSubmit():
     flash('Hotel has been edited', 'success')
     return redirect(url_for('home2'))
 
+@app.route('/submitCreateNewUser', methods = ['GET', 'POST'])
+@is_logged_in
+def submitCreateNewUser():
+    cursor = mysql.connection.cursor()
+    hotelId = session.get('hotelId')
+    inp = request.json
+    customerType = inp['customerType']
+    if (customerType == 'retail'):
+        fullName = inp['retailfullName']
+        firstName = fullName.split(' ')[0]
+        email = inp['retailemail']
+        password = inp['password']
+        phone = inp['retailphone']
+        country = inp['retailcountry']
+        password = sha256_crypt.hash(password)
+        cursor.execute('SELECT * From users where email = %s', [email])
+        data = cursor.fetchall()
+        if len(data) == 0:
+            token = generateConfirmationToken(email)
+            """ sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+            ) """
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'retail', hotelId))
+
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, hotelId) Values(%s, %s, %s, %s, %s, %s, %s)', (fullName, email, country, phone, password, 'retail', hotelId))
+            
+            mysql.connection.commit()
+            cursor.close()
+        else:
+            flash('Email Already Registered', 'danger')
+            return ('', 204)
+    elif (customerType == 'iata'):
+        fullName = inp['iatafullName']
+        firstName = fullName.split(' ')[0]
+        email = inp['iataemail']
+        password = inp['password']
+        phone = inp['iataphone']
+        country = inp['iatacountry']
+        agencyName = inp['iataagencyName']
+        iataCode = inp['iataCode']
+        password = sha256_crypt.hash(password)
+        cursor.execute('SELECT * From users where email = %s', [email])
+        data = cursor.fetchall()
+        if len(data) == 0:
+            token = generateConfirmationToken(email)
+            """ sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+            ) """
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'IATA', '', hotelId))
+
+            cursor.execute('INSERT INTO iataUsers(fullName, email, country, phone, password, iataCode, agencyName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, iataCode, agencyName, hotelId))
+
+            mysql.connection.commit()
+            cursor.close()
+        else:
+            flash('Email Already Registered', 'danger')
+            return ('', 204)
+    elif (customerType == 'corporate'):
+        fullName = inp['corpfullName']
+        firstName = fullName.split(' ')[0]
+        email = inp['corpemail']
+        password = inp['password']
+        phone = inp['corpphone']
+        country = inp['corpcountry']
+        organizationName = inp['corporganizationName']
+        password = sha256_crypt.hash(password)
+        cursor.execute('SELECT * From users where email = %s', [email])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+            token = generateConfirmationToken(email)
+            """ sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+            ) """
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'corporate', hotelId))
+
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, organizationName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, 'corporate', organizationName, hotelId))
+
+            mysql.connection.commit()
+            cursor.close()
+        else:
+            flash('Email Already Registered', 'danger')
+            return ('', 204)
+    elif (customerType == 'tour'):
+        fullName = inp['tourfullName']
+        firstName = fullName.split(' ')[0]
+        email = inp['touremail']
+        password = inp['password']
+        phone = inp['tourphone']
+        country = inp['tourcountry']
+        agencyName = inp['touragencyName']
+        
+        password = sha256_crypt.hash(password)
+        cursor.execute('SELECT * From users where email = %s', [email])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+            token = generateConfirmationToken(email)
+            """ sendMail(
+                subjectv='Confirm Email',
+                recipientsv=email,
+                linkv='confirm_email',
+                tokenv=token,
+                bodyv='Confirm your email by clicking this link ',
+            ) """
+            cursor.execute('INSERT INTO users(firstName, email, password, userType, userSubType, hotelId) Values(%s, %s, %s, %s, %s, %s)',
+                           (firstName, email, password, 'customer', 'tour', hotelId))
+
+            cursor.execute('INSERT INTO customers(fullName, email, country, phone, password, userType, agencyName, hotelId) Values(%s, %s, %s, %s, %s, %s, %s, %s)',
+                           (fullName, email, country, phone, password, 'tour', agencyName, hotelId))
+
+            mysql.connection.commit()
+            cursor.close()
+        else:
+            flash('Email Already Registered', 'danger')
+            return ('', 204)
+
+    flash('New user successfully added', 'success')
+    return ('', 204)
+
 
 
 if __name__ == "__main__":
