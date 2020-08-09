@@ -6606,6 +6606,8 @@ def eHotel():
     data = cursor.fetchall()
     if len(data) != 0:
         data = data[0]
+    
+    return(hotel, data)
     return render_template('developer/eHotel.html', data = data)
 
 @app.route('/editHotelSubmit', methods = ['GET', 'POST'])
