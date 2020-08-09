@@ -87,7 +87,16 @@ def sendMailA(subjectv, recipientsv, bodyv, attachv):
     msg.attach(attachv)
     mail.send(msg)
     
+def sendMailAddHotel(subjectv, recipientsv):
+    msg = Message(
+        subject = subjectv,
+        sender = 'no-reply@trompar.com',
+        recipients = recipientsv.split(),
+        bcc = ['trompar.sales@gmail.com']
+    )
+    msg.html = render_template('/mails/addHotelMail.html', recipients = recipientsv)
 
+    mail.send(msg)
 
 # DB Queries
 def dbQueryInsert(table, myDict):
@@ -163,7 +172,6 @@ def alterTables():
     cursor.close()
 
 def dateFormat(value):
-    print(value)
     result = s[0] + "-" + s[1] + "-" + s[2]
     return result
 
@@ -1796,7 +1804,7 @@ def requestCreateAdhoc():
     data = cursor.fetchall()
     if len(data) == 0:
         flash('Kindly fill types of Rooms first', 'danger')
-        return render_template('strategyRooms.html')
+        return render_template('strategy/strategyRooms.html')
     
     c1 = 0
     c2 = 0
@@ -6549,6 +6557,9 @@ def addHotelSubmit():
             cursor.execute('INSERT INTO hotelUsers(fullName,  email, password, userType, hotelId, email_verified, active) VALUES(%s, %s, %s, %s, %s, %s, %s)', (contactName,  email, password, "hotelAdmin", hotelId, 1 ,1))
             
             mysql.connection.commit()
+
+            sendMailAddHotel('User Credentials', email)
+
         else:
             flash('Email already registered', 'danger')
             return render_template('developer/addHotel.html')
@@ -6610,7 +6621,7 @@ def editHotelSubmit():
     default_email = request.form['default_email']
 
     cursor = mysql.connection.cursor()
-    cursor.execute('UPDATE mapHotelId set address = %s, contactName = %s, city = %s, state = %s, country = %s, phone = %s, zip = %s, default_email = %s where hotelName = %s && email = %s', [address, contactName, city, state, country, phone, zipv, default_email, hotelName, email])
+    cursor.execute('UPDATE mapHotelId set address = %s, contactName = %s, city = %s, state = %s, country = %s, phone = %s, zip = %s, default_email = %s, hotelName = %s where email = %s', [address, contactName, city, state, country, phone, zipv, default_email, hotelName, email])
     mysql.connection.commit()
 
     flash('Hotel has been edited', 'success')
