@@ -6604,7 +6604,9 @@ def eHotel():
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT * From mapHotelId where hotelName = %s', [hotel])
     data = cursor.fetchall()
-    return render_template('developer/eHotel.html', data = data[0])
+    if len(data) != 0:
+        data = data[0]
+    return render_template('developer/eHotel.html', data = data)
 
 @app.route('/editHotelSubmit', methods = ['GET', 'POST'])
 @is_logged_in
