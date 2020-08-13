@@ -4425,7 +4425,7 @@ def showQuoteEmail(id):
     avgRate = round(avgRate, 2)
 
 
-    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = True, avgRate = avgRate)
+    return render_template('request/showQuote.html', data = data, data2 = data2, data3 = data3, dateButtons = dateButtons, result = result, secondresult = secondresult, data5 = data5, data6 = data6, contract = contract, declined = declined, declinedMsg = declinedMsg, canNegotiate = canNegotiate, negoInformation = negoInformation, data9 = data9, data10 = data10, endline = endline, totalRooms = totalRooms, customer = True, avgRate = avgRate, hotelId = hotelId)
 
 
 @app.route('/deleteRequest/<id>', methods = ['GET', 'POST'])
@@ -4734,7 +4734,7 @@ def DeleteRequest2():
 @app.route('/NegotiateRequest', methods = ['GET', 'POST'])
 def NegotiateRequest():
     inp = request.json
-    hotelId = session.get('hotelId')
+    hotelId = inp['hotelId']
     cursor = mysql.connection.cursor()
     cursor.execute('SELECT timesNegotiated from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     dd = cursor.fetchall()
@@ -4800,7 +4800,7 @@ def NegotiateRequest():
 def AcceptRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
-    hotelId = session.get('hotelId')
+    hotelId = inp['hotelId']
     cursor.execute(
         'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])
     try:
@@ -4882,7 +4882,7 @@ def AcceptRequest():
 def DeclineRequest():
     inp = request.json
     cursor = mysql.connection.cursor()
-    hotelId = session.get('hotelId')
+    hotelId = inp['hotelId']
     cursor.execute('UPDATE request set status = %s where id = %s && hotelId = %s', [statusval5, inp['id'], hotelId])
     cursor.execute(
         'SELECT * from response where requestId = %s && hotelId = %s order by submittedOn desc limit 1', [inp['id'], hotelId])

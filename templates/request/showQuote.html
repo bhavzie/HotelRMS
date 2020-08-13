@@ -690,6 +690,7 @@
     function accept() {
         result = {}
         result['id'] = "{{ data['id'] }}"
+        result['hotelId'] = "{{ data['hotelId'] }}"
 
         fetch('/AcceptRequest', {
             method : 'POST',
@@ -760,6 +761,7 @@
                 result['id'] = "{{ data['id'] }}"
                 result['reason'] = negoReason
                 result['expectedFare'] = expF
+                result['hotelId'] = "{{ data['hotelId'] }}"
 
                 fetch('/NegotiateRequest', {
                     method: 'POST',
@@ -834,6 +836,7 @@
             result['id'] = "{{ data['id'] }}"
             result['reason'] = reason
             result['declinedBy'] = "{{ data['createdFor'] }}"
+            result['hotelId'] = "{{ data['hotelId'] }}"
 
 
             fetch('/DeclineRequest', {
