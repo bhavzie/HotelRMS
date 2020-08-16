@@ -58,8 +58,11 @@ def sendMailQ(subjectv, recipientsv, linkv, tokenv, hotelId, hotelName, hotelPho
         bcc = ['trompar.sales@gmail.com']
         )
     link = url_for(linkv, id=tokenv, hotelId = hotelId, _external=True)
-    with open('static/images/mail.png', 'rb') as fp:
-        msg.attach('mail.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon>']])
+    with open('static/images/mail2.png', 'rb') as fp:
+        msg.attach('mail2.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon>']])
+    with open('static/images/footer2.png', 'rb') as fp:
+        msg.attach('footer2.jpg', 'image/jpg', fp.read(), 'inline', headers = [["Content-ID",'<ribbon2>']])
+    
     msg.html = render_template('/mails/quote.html', link = link, hotelName = hotelName, hotelPhone = hotelPhone)
     mail.send(msg)
 
@@ -4174,7 +4177,7 @@ def showQuoteEmail(id):
         negcheck = True
 
     string = ''
-    data2['formPayment'] = data2['formPayment']
+    data2['formPayment'] = procArr2(data2['formPayment'])
     string = ''
     v = data2['paymentTerms']
     if v != None:
@@ -4859,7 +4862,7 @@ def AcceptRequest():
 
 
     if prevresponse['paymentGtd'] == 1:
-        with app.open_resource("static/docs/ccauth_hotels.pdf") as fp:
+        with app.open_resource('static/docs/CC_Gurantee_Form.pdf') as fp:
             msg = Message(
                 'Payment Guarantee',
                 sender = 'no-reply@trompar.com',
@@ -6768,6 +6771,10 @@ def submitCreateNewUser():
     flash('New user successfully added', 'success')
     return ('', 204)
 
+
+@app.route('/postMail', methods = ['GET', 'POST'])
+def postMail():
+    return render_template('/mails/postMail.html')
 
 
 if __name__ == "__main__":
