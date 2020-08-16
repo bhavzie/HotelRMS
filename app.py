@@ -4862,7 +4862,7 @@ def AcceptRequest():
         with app.open_resource("static/docs/ccauth_hotels.pdf") as fp:
             msg = Message(
                 'Payment Guarantee',
-                sender = 'koolbhavya.epic@gmail.com',
+                sender = 'no-reply@trompar.com',
                 recipients= [createdFor],
             )
             msg.body = 'Kindly guarantee payment by filling this form'
