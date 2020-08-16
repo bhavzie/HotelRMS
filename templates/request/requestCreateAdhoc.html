@@ -11,7 +11,7 @@
                 <div class="form-group mb-5">
                     <label class="quouteleft col-sm-2 col-form-label rleft mr-2">Requested By*</label>
                     <select class='col-sm-5 text-center rright selectpicker selectpicker1 form-control' id='createdFor' required data-live-search="true">
-                        <option selected disabled>
+                        <option selected disabled value = 'Customer ID'>
                             Customer ID
                         </option>
                         {% for user in users %}
@@ -1443,6 +1443,14 @@
         let selected = $("#createdFor option:selected")
         selected = selected[0]['value']
         if (selected == 'Create New ID') {
+            $("#formmodal").modal({
+                backdrop: 'static',
+                keyboard: false,
+            })
+            $('#formmodal').on('hidden.bs.modal', function () {
+                document.getElementById('createdFor').selectedIndex = 0;
+                $("#createdFor").selectpicker('render')
+            })
             $("#formmodal").modal('show')
         }
     })
